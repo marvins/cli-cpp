@@ -108,7 +108,7 @@ A_Command_Result  A_Command_Result::Process_Arguments( const A_Command& command,
     for( size_t arg=0; arg < arguments.size(); arg++ )
     {
         // Check the types
-        if( command.Check_Argument( arg, arguments[arg] ) == false ){
+        if( command.Check_Argument_Type( arg, arguments[arg] ) == false ){
             return A_Command_Result( CommandParseStatus::INVALID_ARGUMENTS,
                                          command,
                                          arguments );

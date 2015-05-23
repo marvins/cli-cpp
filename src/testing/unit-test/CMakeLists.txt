@@ -51,9 +51,21 @@ include_directories(thirdparty/googletest/include)
 include_directories(thirdparty/googletest)
 
 #--------------------------------------------#
+#-      Include the CLI Library Headers     -#
+#--------------------------------------------#
+include_directories( "../../lib")
+find_library( LIB_CLI_CPP
+                NAMES
+                    cli_cpp
+                PATHS
+                    ${CMAKE_BINARY_DIR}/lib
+)
+
+#--------------------------------------------#
 #-      Define the Unit-Test Sources        -#
 #--------------------------------------------#
-set( CLI_CPP_TEST_SOURCES 
+set( CLI_CPP_TEST_SOURCES
+     cmd/TEST_A_Command.cpp
 )
 
 
@@ -74,12 +86,11 @@ add_executable( cli_cpp_unit_tests
                 ${GOOGLETEST_SOURCES}
 )
 
-
 #------------------------------------#
 #-      Link Other Libraries        -#
 #------------------------------------#
 target_link_libraries( cli_cpp_unit_tests 
-                       ${CLI_CPP}
+                       ${LIB_CLI_CPP}
 )
 
 

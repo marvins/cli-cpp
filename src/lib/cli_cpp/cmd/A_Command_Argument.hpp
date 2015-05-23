@@ -27,12 +27,18 @@ class A_Command_Argument{
 
         /**
          * @brief Constructor
+         * 
+         * @param[in] arg_name Argument name.
+         * @param[in] arg_type Argument type.
+         * @param[in] arg_description Description of the argument's purpose or function.
+         * @param[in] arg_required Flag if the argument is required on input.
+         * @param[in] arg_default_value Default value if the argument is not provided.
         */
-        A_Command_Argument( const std::string&             arg_name,
-                                const CommandArgumentType&  arg_type,
-                                const std::string&             arg_description,
-                                const bool&                    arg_required = true,
-                                const std::string&             arg_default_value = "" );
+        A_Command_Argument( const std::string&          arg_name,
+                            const CommandArgumentType&  arg_type,
+                            const std::string&          arg_description,
+                            const bool&                 arg_required = true,
+                            const std::string&          arg_default_value = "" );
 
         /**
          * @brief Get the Name
@@ -83,6 +89,17 @@ class A_Command_Argument{
             return m_required;
         }
 
+        /**
+         * @brief Equivalent Operator.
+         *
+         * This method will check if two arguments are the same.  Note that this will not 
+         * check the description as that does not affect the outcome of the argument input.
+         *
+         * @param[in] other Command argument to compare.
+         *
+         * @return True if equivalent, false otherwise.
+         */
+        bool operator == ( const A_Command_Argument& other )const;
 
     private:
         

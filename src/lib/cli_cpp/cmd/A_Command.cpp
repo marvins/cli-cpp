@@ -15,6 +15,10 @@ namespace CMD{
 /*          Constructor           */
 /**********************************/
 A_Command::A_Command()
+ :  m_class_name("A_Command"),
+    m_command_name(""),
+    m_command_description(""),
+    m_expect_response(false)
 {
 }
 
@@ -62,11 +66,11 @@ bool A_Command::Is_Name_Match( const std::string& command_name )const
 /************************************/
 /*         Check Arguments          */
 /************************************/
-bool A_Command::Check_Argument( const int& argument_idx,
-                                    const std::string& test_argument )const
+bool A_Command::Check_Argument_Type( const int& argument_idx,
+                                     const std::string& test_argument )const
 {
     // Check the size
-    if( argument_idx >= (int)m_command_argument_list.size() ){
+    if( argument_idx < 0 || argument_idx >= (int)m_command_argument_list.size() ){
         return false;
     }
 

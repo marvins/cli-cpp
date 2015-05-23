@@ -15,6 +15,7 @@
 // CLI Libraries
 #include "Log_Utilities.hpp"
 
+namespace CLI{
 namespace UTILS{
 
 
@@ -109,4 +110,5 @@ void Stack_Trace_Handler( int exec_code )
 } 
 
 } // End of UTILS Namespace
+} // End of CLI   Namespace
 

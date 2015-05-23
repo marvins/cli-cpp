@@ -105,14 +105,23 @@ class A_Command{
 
         
         /**
-         * @brief Check an argument against the list.
+         * @brief Check an argument against the list to see if it is a valid type.
+         *
+         * @param[in] argument_id Index of argument to fetch.
+         * @param[in] test_argument_value Value of argument to check type against.
+         *
+         * @return True if the test value has a valid type (i.e. Int, Float, Str, etc). False otherwise.
          */
-        bool Check_Argument( const int& argument_idx,
-                             const std::string& test_argument )const;
+        bool Check_Argument_Type( const int& argument_idx,
+                                  const std::string& test_argument_value )const;
                         
 
         /**
-         * @brief Check if Name Match
+         * @brief Check if the input command names matches this command.
+         *
+         * @param[in] command_name Command name to test.
+         *
+         * @return True if there is a match, false otherwise.
          */
         bool Is_Name_Match( const std::string& command_name )const;
         
@@ -124,6 +133,8 @@ class A_Command{
 
 
     private:
+        /// Class Name
+        std::string m_class_name;
 
         /// Command Name
         std::string m_command_name;
