@@ -18,6 +18,7 @@ A_Command::A_Command()
  :  m_class_name("A_Command"),
     m_command_name(""),
     m_command_description(""),
+    m_command_argument_list(0),
     m_expect_response(false)
 {
 }
@@ -26,11 +27,13 @@ A_Command::A_Command()
 /**********************************/
 /*          Constructor           */
 /**********************************/
-A_Command::A_Command( const std::string& command_name,
+A_Command::A_Command( const std::string&         command_name,
                               const std::string& command_description,
                               const bool&        command_expect_response )
-  : m_command_name(command_name),
+  : m_class_name("A_Command"),
+    m_command_name(command_name),
     m_command_description(command_description),
+    m_command_argument_list(0),
     m_expect_response(command_expect_response)
 {
 }
@@ -39,11 +42,12 @@ A_Command::A_Command( const std::string& command_name,
 /**********************************/
 /*          Constructor           */
 /**********************************/
-A_Command::A_Command( const std::string& command_name,
-                              const std::string& command_description,
-                              const bool&        command_expect_response,
-                              const std::vector<A_Command_Argument>&  command_arguments )
-  : m_command_name(command_name),
+A_Command::A_Command( const std::string&                      command_name,
+                      const std::string&                      command_description,
+                      const bool&                             command_expect_response,
+                      const std::vector<A_Command_Argument>&  command_arguments )
+  : m_class_name("A_Command"),
+    m_command_name(command_name),
     m_command_description(command_description),
     m_expect_response(command_expect_response),
     m_command_argument_list(command_arguments)

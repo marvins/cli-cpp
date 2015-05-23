@@ -113,6 +113,9 @@ class A_Command_Argument{
 
     private:
         
+        /// Class Name
+        std::string m_class_name;
+
         /// Argument Name
         std::string m_name;
 
