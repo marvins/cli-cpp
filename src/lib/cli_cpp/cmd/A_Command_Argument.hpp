@@ -41,7 +41,9 @@ class A_Command_Argument{
                             const std::string&          arg_default_value = "" );
 
         /**
-         * @brief Get the Name
+         * @brief Get the argument name.
+         *
+         * @return Argument name.
          */
         inline std::string Get_Name()const{
             return m_name;
@@ -49,7 +51,9 @@ class A_Command_Argument{
 
 
         /**
-         * @brief Get the Argument Type
+         * @brief Get the Argument Type.
+         *
+         * @return Argument type (See \CommandArgumentType).
          */
         inline CommandArgumentType Get_Type()const{
             return m_type;
@@ -57,7 +61,9 @@ class A_Command_Argument{
 
 
         /**
-         * @brief Get the description
+         * @brief Get the argument description.
+         *
+         * @return Argument description.
         */
         inline std::string Get_Description()const{
             return m_description;
@@ -75,7 +81,11 @@ class A_Command_Argument{
         
 
         /**
-         * @brief Is Valid Type.
+         * @brief Check if the test string is a valid type for the argument.
+         *
+         * @param[in] test_str Test string to evaluate.
+         *
+         * @return True if valid, false otherwise.
          */
         bool Is_Valid_Type( const std::string& test_str )const;
         

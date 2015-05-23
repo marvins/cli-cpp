@@ -19,6 +19,8 @@ namespace CMD{
 
 /**
  * @class A_Command
+ *
+ * @brief Stores Command attributes such as the name, description, arguments, and if a response is required.
 */
 class A_Command{
 
