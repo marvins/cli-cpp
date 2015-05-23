@@ -20,6 +20,8 @@ namespace CMD{
 
 /**
  * @class A_CLI_Command
+ *
+ * @brief CLI-specific command.
  */
 class A_CLI_Command{
 
@@ -31,6 +33,20 @@ class A_CLI_Command{
          * @param[in] mode Parsing mode type (Back, Help, Quit, etc).
          */
         A_CLI_Command( const CommandParseStatus& mode );
+        
+
+        /**
+         * @brief Constructor
+         *
+         * @param[in] mode Command parse status mode.
+         * @param[in] names Supported command names.
+         * @param[in] formal_name Formal name of the command.
+         * @param[in] description Description of the function's purpose.
+         */
+        A_CLI_Command( const CommandParseStatus&        mode,
+                       const std::vector<std::string>&  names,
+                       const std::string&               formal_name,
+                       const std::string&               description );
 
         
         /**
@@ -105,10 +121,23 @@ class A_CLI_Command{
         inline std::vector<std::string> Get_Command_Name_List()const{
             return m_names;
         }
+
+        
+        /**
+         * @brief Equivalent Operator
+         *
+         * @param[in] other CLI Command to compare.
+         *
+         * @return True if equal, false otherwise.
+        */
+        bool operator == ( A_CLI_Command const& other )const;
         
     
     private:
         
+        /// Class Name
+        std::string m_class_name;
+
         /// Mode
         CommandParseStatus m_mode;
 

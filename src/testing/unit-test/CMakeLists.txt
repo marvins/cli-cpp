@@ -65,6 +65,7 @@ find_library( LIB_CLI_CPP
 #-      Define the Unit-Test Sources        -#
 #--------------------------------------------#
 set( CLI_CPP_TEST_SOURCES
+     cmd/TEST_A_CLI_Command.cpp
      cmd/TEST_A_Command.cpp
      cmd/TEST_A_Command_Argument.cpp
 )

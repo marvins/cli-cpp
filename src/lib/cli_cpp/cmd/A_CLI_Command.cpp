@@ -14,9 +14,30 @@ namespace CMD{
 /*          Constructor            */
 /***********************************/
 A_CLI_Command::A_CLI_Command( const CommandParseStatus& mode )
-  : m_mode(mode)
+  : m_class_name("A_CLI_Command"),
+    m_mode(mode),
+    m_names(0),
+    m_formal_name(""),
+    m_description("")
 {
 }
+
+
+/***********************************/
+/*          Constructor            */
+/***********************************/
+A_CLI_Command::A_CLI_Command( const CommandParseStatus&        mode,
+                              const std::vector<std::string>&  names,
+                              const std::string&               formal_name,
+                              const std::string&               description )
+  : m_class_name("A_CLI_Command"),
+    m_mode(mode),
+    m_names(names),
+    m_formal_name(formal_name),
+    m_description(description)
+{
+}
+
 
 
 /************************************/
@@ -48,6 +69,35 @@ bool A_CLI_Command::Is_Match( const std::string& name )const
         }
     }
     return false;
+}
+
+/********************************/
+/*      Equivalent Operator     */
+/********************************/
+bool A_CLI_Command::operator ==( A_CLI_Command const& other )const
+{
+    // Check the name
+    if( m_formal_name != other.m_formal_name ){
+        return false;
+    }
+
+    // Check the mode
+    if( m_mode != other.m_mode ){
+        return false;
+    }
+
+    // Check the name list
+    if( m_names.size() != other.m_names.size() ){
+        return false;
+    }
+    for( int i=0; i<(int)m_names.size(); i++ ){
+        if( m_names[i] != other.m_names[i] ){
+            return false;
+        }
+    }
+
+    // return success
+    return true;
 }
 
 
