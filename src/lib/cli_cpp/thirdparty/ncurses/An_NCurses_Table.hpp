@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 
+namespace CLI{
 namespace NCURSES{
 
 /**
@@ -108,6 +109,6 @@ class An_NCurses_Table{
 }; // End of An_NCurses_Table Class
 
 } // End of NCURSES Namespace
-
+} // End of CLI     Namespace
 
 #endif

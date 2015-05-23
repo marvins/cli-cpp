@@ -10,8 +10,9 @@
 
 // CLI Libraries
 #include "NCurses_Utilities.hpp"
-#include "../../utils/String_Utilities.hpp"
+#include "../../utility/String_Utilities.hpp"
 
+namespace CLI{
 namespace NCURSES{
 
 /**************************/
@@ -169,4 +170,5 @@ void An_NCurses_Table::Add_Entry( const int& row,
 
 
 } // End of NCURSES Namspace
+} // End of CLI     Namespace
 

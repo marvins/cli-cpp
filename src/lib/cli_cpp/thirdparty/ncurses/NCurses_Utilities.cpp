@@ -8,6 +8,7 @@
 // C++ Standard Libraries
 #include <iostream>
 
+namespace CLI{
 namespace NCURSES{
 
 
@@ -107,4 +108,5 @@ void Abort()
 
 
 } // End of NCURSES Namespace
+} // End of CLI     Namespace
 

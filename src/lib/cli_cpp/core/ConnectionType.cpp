@@ -1,0 +1,51 @@
+/**
+ * @file    ConnectionType.cpp
+ * @author  Marvin Smith
+ * @date    5/18/2015
+ */
+#include "ConnectionType.hpp"
+
+
+namespace CLI{
+namespace CORE{
+
+
+/*******************************************/
+/*      Convert a string to CLI type       */
+/*******************************************/
+ConnectionType  StringToConnectionType( const std::string& cli_type )
+{
+    // Base 
+    if( cli_type == "BASE" ){
+        return ConnectionType::BASE;
+    }
+
+    // Local
+    if( cli_type == "LOCAL" ){
+        return ConnectionType::LOCAL;
+    }
+
+    // Socket
+    if( cli_type == "SOCKET" ){
+        return ConnectionType::SOCKET;
+    }
+
+    return ConnectionType::UNKNOWN;
+}
+
+
+
+/*************************************************/
+/*      Convert a connection type to string      */
+/*************************************************/
+std::string ConnectionTypeToString( const ConnectionType& cli_type )
+{
+    if( cli_type == ConnectionType::BASE  ){ return "BASE"; }
+    if( cli_type == ConnectionType::LOCAL ){ return "LOCAL"; }
+    if( cli_type == ConnectionType::SOCKET ){ return "SOCKET"; }
+    return "UNKONWN";
+}
+
+} // End of CORE Namespace
+} // End of CLI  Namespace
+

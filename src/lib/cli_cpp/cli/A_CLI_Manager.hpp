@@ -7,10 +7,10 @@
 #define __CLI_A_CLI_MANAGER_HPP__
 
 // CLI Libraries
-#include "A_CLI_Command_Queue.hpp"
 #include "A_CLI_Manager_Configuration.hpp"
 #include "A_Command_Response_Handler_Base.hpp"
-#include "A_Console_Render_Manager.hpp"
+#include "../cmd/A_Command_Queue.hpp"
+#include "../render/A_Render_Manager_Base.hpp"
 #include "../thirdparty/ncurses/NCurses_Utilities.hpp"
 
 
@@ -62,8 +62,8 @@ class A_CLI_Manager{
          *
          * @return CLI Connection Type.
          */
-        inline CLIConnectionType Get_CLI_Connection_Type()const{
-            return m_configuration.Get_CLI_Connection_Type();
+        inline CORE::ConnectionType Get_Connection_Type()const{
+            return m_configuration.Get_Connection_Type();
         }
 
 
@@ -90,20 +90,20 @@ class A_CLI_Manager{
         NCURSES::An_NCurses_Context::ptr_t m_ncurses_context;
 
         /// CLI Connection Handler
-        A_CLI_Connection_Handler_Base::ptr_t m_connection_handler;
+        A_Connection_Manager_Base::ptr_t m_connection_manager;
 
-        /// Console Render Manager
-        A_Console_Render_Manager::ptr_t m_console_render_manager;
+        /// Render Manager
+        RENDER::A_Render_Manager_Base::ptr_t m_render_manager;
 
         /// Handler Thread
         std::thread m_handler_thread;
         std::atomic<bool> m_handler_thread_running;
 
         /// Handler Queue
-        A_CLI_Command_Queue::ptr_t m_cli_command_queue;
+        CMD::A_Command_Queue::ptr_t m_command_queue;
 
         /// CLI Handler List
-        std::vector<A_Command_Response_Handler_Base::ptr_t> m_cli_command_handlers;
+        std::vector<A_Command_Response_Handler_Base::ptr_t> m_command_handlers;
 
 
 }; // End of A_CLI_Manager Class

@@ -13,6 +13,7 @@
 #include <memory>
 #include <string>
 
+namespace CLI{
 namespace NCURSES{
 
 
@@ -89,5 +90,6 @@ void Abort();
 
 
 } // End of NCURSES Namspace
+} // End of CLI     Namespace
 
 #endif

@@ -6,7 +6,7 @@
 #include "System_Utilities.hpp"
 
 // CLI Libraries
-#include <cli_cpp/utils/String_Utilities.hpp>
+#include <cli_cpp/utility/String_Utilities.hpp>
 
 // C++ Standard Libraries
 #include <cstdio>
@@ -54,7 +54,7 @@ bool Ping( const std::string& address,
            std::string&       details )
 {
     // Format a command string
-    std::string command = "ping -c " + UTILS::num2str(max_attempts) + " " + address + " 2>&1";
+    std::string command = "ping -c " + CLI::UTILS::num2str(max_attempts) + " " + address + " 2>&1";
     std::string output;
 
     // Execute the ping command

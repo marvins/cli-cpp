@@ -6,8 +6,8 @@
 #include "A_CLI_Manager_Configuration.hpp"
 
 // CLI Libraries
-#include "A_CLI_Connection_Handler_Local.hpp"
-#include "A_CLI_Connection_Handler_Socket.hpp"
+#include "A_Connection_Manager_Local.hpp"
+#include "A_Connection_Manager_Socket.hpp"
 
 
 // C++ Standard Libraries
@@ -21,9 +21,9 @@ namespace CLI{
 /***************************/
 /*      Constructor        */
 /***************************/
-A_CLI_Manager_Configuration::A_CLI_Manager_Configuration( CLIConnectionType const& cli_conn_type )
+A_CLI_Manager_Configuration::A_CLI_Manager_Configuration( CORE::ConnectionType const& cli_conn_type )
   : m_class_name("A_CLI_Manager_Configuration"),
-    m_cli_conn_type(cli_conn_type),
+    m_conn_type(cli_conn_type),
     m_command_parser(nullptr),
     m_socket_window_rows(20),
     m_socket_window_cols(80)
@@ -33,23 +33,23 @@ A_CLI_Manager_Configuration::A_CLI_Manager_Configuration( CLIConnectionType cons
 /***************************************************/
 /*          Get the Connection Handler             */
 /***************************************************/
-A_CLI_Connection_Handler_Base::ptr_t  A_CLI_Manager_Configuration::Get_Connection_Handler()const{
+A_Connection_Manager_Base::ptr_t  A_CLI_Manager_Configuration::Get_Connection_Manager()const{
 
     // Make sure the configuration is not null
-    if( m_connection_handler_configuration == nullptr ){
+    if( m_connection_manager_configuration == nullptr ){
         return nullptr;
     }
 
     // If we are Local, create the handelr
-    if( m_cli_conn_type == CLIConnectionType::LOCAL )
+    if( m_conn_type == CORE::ConnectionType::LOCAL )
     {
-        return std::make_shared<A_CLI_Connection_Handler_Local>( m_connection_handler_configuration );
+        return std::make_shared<A_Connection_Manager_Local>( m_connection_manager_configuration );
     }
 
     // If we are socket, create the handler
-    else if( m_cli_conn_type == CLIConnectionType::SOCKET )
+    else if( m_conn_type == CORE::ConnectionType::SOCKET )
     {
-        return std::make_shared<A_CLI_Connection_Handler_Socket>( m_connection_handler_configuration );
+        return std::make_shared<A_Connection_Manager_Socket>( m_connection_manager_configuration );
     }
 
     // otherwise, return null
@@ -69,7 +69,7 @@ NCURSES::An_NCurses_Context::ptr_t  A_CLI_Manager_Configuration::Create_NCurses_
 
 
     // Attach communication file pointers
-    if( m_cli_conn_type == CLIConnectionType::LOCAL ){
+    if( m_conn_type == CORE::ConnectionType::LOCAL ){
 
         // find the terminal name
         std::string terminal_name = getenv("TERM");
@@ -82,7 +82,7 @@ NCURSES::An_NCurses_Context::ptr_t  A_CLI_Manager_Configuration::Create_NCurses_
     }
 
     // Attach communication file pointers
-    else if( m_cli_conn_type == CLIConnectionType::SOCKET ){
+    else if( m_conn_type == CORE::ConnectionType::SOCKET ){
         
         // find the terminal name
         std::string terminal_name = getenv("TERM");
@@ -113,7 +113,7 @@ NCURSES::An_NCurses_Context::ptr_t  A_CLI_Manager_Configuration::Create_NCurses_
 bool A_CLI_Manager_Configuration::Is_Valid()const
 {
     // Check if the configuration is null
-    if( m_connection_handler_configuration == nullptr ){
+    if( m_connection_manager_configuration == nullptr ){
         return false;
     }
 

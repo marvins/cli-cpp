@@ -16,4 +16,8 @@ add_subdirectory(lib)
 #------------------------------------#
 add_subdirectory(app)
 
+#---------------------------------#
+#-    Add the Unit-Test Code     -#
+#---------------------------------#
+add_subdirectory(testing)
 

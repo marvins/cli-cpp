@@ -10,10 +10,10 @@
 #include <string>
 
 // CLI Libraries
-#include "A_CLI_Connection_Handler_Base.hpp"
-#include "A_CLI_Connection_Handler_Base_Config.hpp"
-#include "CLIConnectionType.hpp"
-#include "cmd/A_CLI_Command_Parser.hpp"
+#include "A_Connection_Manager_Base.hpp"
+#include "A_Connection_Manager_Base_Config.hpp"
+#include "../core/ConnectionType.hpp"
+#include "../cmd/A_Command_Parser.hpp"
 #include "../thirdparty/ncurses/NCurses_Utilities.hpp"
 
 namespace CLI{
@@ -28,47 +28,49 @@ class A_CLI_Manager_Configuration{
         
         /**
          * @brief Constructor
+         *
+         * @param[in] conn_type Connection type.
          */
-        A_CLI_Manager_Configuration( CLIConnectionType const& cli_conn_type );
+        A_CLI_Manager_Configuration( CORE::ConnectionType const& conn_type );
 
     
         /**
-         * @brief Get the CLI Communication Type
+         * @brief Get the Communication Type
          *
-         * @return CLI Communication Type
+         * @return Connection Type
         */
-        inline CLIConnectionType Get_CLI_Connection_Type()const{
-            return m_cli_conn_type;
+        inline CORE::ConnectionType Get_Connection_Type()const{
+            return m_conn_type;
         }
 
 
         /**
-         * @brief Set the CLI Connection Type.
+         * @brief Set the Connection Type.
          *
-         * @param[in] cli_conn_type CLI Connection Type.
+         * @param[in] conn_type Connection Type.
          */
-        inline void Set_CLI_Connection_Type( CLIConnectionType const& cli_conn_type )
+        inline void Set_Connection_Type( CORE::ConnectionType const& conn_type )
         {
-            m_cli_conn_type = cli_conn_type;
+            m_conn_type = conn_type;
         }
 
 
         /**
-         * @brief Get the CLI Connection Handler Configuration
+         * @brief Get the Connection Manager Configuration
          *
-         * @return Connection Handler Configuration.
+         * @return Connection Manager Configuration.
          */
-        A_CLI_Connection_Handler_Base::ptr_t  Get_Connection_Handler()const;
+        A_Connection_Manager_Base::ptr_t  Get_Connection_Manager()const;
 
         
         /**
-         * @brief Set the CLI Connection Handler Configuration
+         * @brief Set the Connection Manager Configuration
          *
          * @param[in] configuration Configuration object to set.
          */
-        inline void Set_CLI_Connection_Handler_Config( A_CLI_Connection_Handler_Base_Config::ptr_t configuration )
+        inline void Set_Connection_Manager_Config( A_Connection_Manager_Base_Config::ptr_t configuration )
         {
-            m_connection_handler_configuration = configuration;
+            m_connection_manager_configuration = configuration;
         }
 
 
@@ -77,7 +79,7 @@ class A_CLI_Manager_Configuration{
          * 
          * @return Command Parser.
          */
-        inline CMD::A_CLI_Command_Parser::ptr_t Get_CLI_Command_Parser()const{
+        inline CMD::A_Command_Parser::ptr_t Get_Command_Parser()const{
             return m_command_parser;
         }
 
@@ -85,7 +87,7 @@ class A_CLI_Manager_Configuration{
         /**
          * @brief Set the Command Parser
         */
-        inline void Set_CLI_Command_Parser( CMD::A_CLI_Command_Parser::ptr_t command_parser ){
+        inline void Set_Command_Parser( CMD::A_Command_Parser::ptr_t command_parser ){
             m_command_parser = command_parser;
         }
 
@@ -113,17 +115,17 @@ class A_CLI_Manager_Configuration{
         /**
          * @brief Get the CLI Command Queue Max Size
         */
-        inline int Get_CLI_Command_Queue_Max_Size()const{
-            return m_cli_command_queue_max_size;
+        inline int Get_Command_Queue_Max_Size()const{
+            return m_command_queue_max_size;
         }
 
 
         /**
-         * @brief Set the CLI Command Queue Max Size
+         * @brief Set the Command Queue Max Size
         */
-        inline void Set_CLI_Command_Queue_Max_Size( const int& cli_command_queue_max_size )
+        inline void Set_Command_Queue_Max_Size( const int& command_queue_max_size )
         {
-            m_cli_command_queue_max_size = cli_command_queue_max_size;
+            m_command_queue_max_size = command_queue_max_size;
         }
 
 
@@ -183,19 +185,19 @@ class A_CLI_Manager_Configuration{
         std::string m_class_name;
 
         /// CLI Communication Type
-        CLIConnectionType m_cli_conn_type;
+        CORE::ConnectionType m_conn_type;
 
-        /// Connection Handler Configuration
-        A_CLI_Connection_Handler_Base_Config::ptr_t m_connection_handler_configuration;
+        /// Connection Manager Configuration
+        A_Connection_Manager_Base_Config::ptr_t m_connection_manager_configuration;
 
         /// Command Parser
-        CMD::A_CLI_Command_Parser::ptr_t m_command_parser;
+        CMD::A_Command_Parser::ptr_t m_command_parser;
         
         /// Command-Line Title
         std::string m_cli_title;
             
-        /// CLI Command Queue Max Size
-        int m_cli_command_queue_max_size;
+        /// Command Queue Max Size
+        int m_command_queue_max_size;
 
         /// Socket window rows
         int m_socket_window_rows;

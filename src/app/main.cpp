@@ -15,7 +15,7 @@
 
 // CLI Libraries
 #include <cli_cpp/cli/A_CLI_Manager_Factory.hpp>
-#include <cli_cpp/utils/System_Utilities.hpp>
+#include <cli_cpp/utility/System_Utilities.hpp>
 
 using namespace std;
 
@@ -60,10 +60,10 @@ int main( int argc, char* argv[] )
     manager->Disconnect();
 
     } catch ( exception& e ){
-        NCURSES::Abort();  
+        CLI::NCURSES::Abort();  
         std::cerr << "exception caught What: " << e.what() << std::endl;
     } catch (...){
-        NCURSES::Abort();  
+        CLI::NCURSES::Abort();  
         std::cerr << "unknown exception detected." << std::endl;
     }
 
