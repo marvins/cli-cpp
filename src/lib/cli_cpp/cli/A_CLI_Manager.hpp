@@ -10,8 +10,8 @@
 #include "A_CLI_Manager_Configuration.hpp"
 #include "A_Command_Response_Handler_Base.hpp"
 #include "../cmd/A_Command_Queue.hpp"
+#include "../render/A_Render_Driver_Context_Base.hpp"
 #include "../render/A_Render_Manager_Base.hpp"
-#include "../thirdparty/ncurses/NCurses_Utilities.hpp"
 
 
 // C++ Standard Libraries
@@ -86,8 +86,8 @@ class A_CLI_Manager{
         /// Configuration
         A_CLI_Manager_Configuration m_configuration;
 
-        /// NCurses Context
-        NCURSES::An_NCurses_Context::ptr_t m_ncurses_context;
+        /// Render Driver Context
+        RENDER::A_Render_Driver_Context_Base::ptr_t m_render_driver_context;
 
         /// CLI Connection Handler
         A_Connection_Manager_Base::ptr_t m_connection_manager;

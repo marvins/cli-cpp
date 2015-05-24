@@ -29,7 +29,11 @@ enum class CommandParseStatus : uint8_t {
 }; // End of CommandParseStatus Enumeration
 
 /**
- * @brief Convert a CommandParseStatus to Color Code
+ * @brief Convert a CommandParseStatus to Color Code.
+ *
+ * @param[in] status Command parsing status to evaluate.
+ *
+ * @return Color code value.
  */
 int CommandParseStatusToColorCode( const CommandParseStatus& status );
 

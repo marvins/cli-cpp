@@ -8,7 +8,7 @@
 
 // C++ Standard Libraries
 #include <memory>
-
+#include <string>
 
 namespace CLI{
 namespace RENDER{
@@ -27,7 +27,18 @@ class A_Render_Driver_Context_Base{
          * @brief Constructor
         */
         A_Render_Driver_Context_Base();
+        
 
+        /**
+         * @brief Destructor
+        */
+        virtual ~A_Render_Driver_Context_Base();
+
+
+    private:
+
+        /// Class Name
+        std::string m_class_name;
 
 }; // End of A_Render_Driver_Context_Base Class
 

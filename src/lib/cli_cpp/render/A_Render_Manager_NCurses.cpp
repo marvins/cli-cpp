@@ -24,23 +24,15 @@ namespace RENDER{
 /****************************/
 /*      Constructor         */
 /****************************/
-A_Render_Manager_NCurses::A_Render_Manager_NCurses()
+A_Render_Manager_NCurses::A_Render_Manager_NCurses( A_Render_Driver_Context_Base::ptr_t driver_context )
   : A_Render_Manager_Base(),
     m_class_name("A_Render_Manager_NCurses"),
-    m_context(nullptr),
+    m_render_driver_context(std::dynamic_pointer_cast<A_Render_Driver_Context_NCurses>(driver_context)),
     m_render_state(std::make_shared<A_Render_State>( CORE::ConnectionType::LOCAL, 
                                                      m_command_history ))
 {
 }
 
-
-/****************************************/
-/*      Update the NCurses Context      */
-/****************************************/
-void A_Render_Manager_NCurses::Update_NCurses_Context( NCURSES::An_NCurses_Context::ptr_t context )
-{
-    m_context = context;
-}
 
 /********************************/
 /*      Initialize Curses       */
@@ -49,7 +41,7 @@ void A_Render_Manager_NCurses::Initialize()
 {
 
     // Initialize NCurses
-    NCURSES::Initialize( m_context );
+    NCURSES::Initialize();
 
     // Create new render state
     m_render_state.reset(new A_Render_State( CORE::ConnectionType::LOCAL, 
@@ -168,7 +160,7 @@ void A_Render_Manager_NCurses::Initialize_Command_Print_Tables(){
 void A_Render_Manager_NCurses::Finalize()
 {
     // Finalize NCurses
-    NCURSES::Finalize( m_context );
+    NCURSES::Finalize();
 }
 
 
@@ -249,7 +241,7 @@ int A_Render_Manager_NCurses::Wait_Keyboard_Input()
         }
 
         // Sleep
-        usleep( m_context->keyboard_timeout_usec );
+        usleep( 5000 );//m_context->keyboard_timeout_usec );
     }
 
     // Return value
@@ -350,8 +342,8 @@ void A_Render_Manager_NCurses::Print_CLI()
 /************************************************************/
 /*          Add History to the Command Parser Table         */
 /************************************************************/
-void  A_Render_Manager_NCurses::Add_Command_History( const std::string&                    command_string,
-                                                             const CMD::A_Command_Result&  command_result )
+void  A_Render_Manager_NCurses::Add_Command_History( const std::string&            command_string,
+                                                     const CMD::A_Command_Result&  command_result )
 {
 
     // Log

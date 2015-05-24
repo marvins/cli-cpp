@@ -13,6 +13,8 @@
 
 
 // CLI Libraries
+#include "A_Render_Driver_Context_Base.hpp"
+#include "A_Render_Driver_Context_NCurses.hpp"
 #include "A_Render_Manager_Base.hpp"
 #include "A_Render_State.hpp"
 #include "../thirdparty/ncurses/An_NCurses_Table.hpp"
@@ -37,19 +39,19 @@ class A_Render_Manager_NCurses : public A_Render_Manager_Base
         /**
          * @brief Constructor
          */
-        A_Render_Manager_NCurses();
+        A_Render_Manager_NCurses( A_Render_Driver_Context_Base::ptr_t context );
         
         
         /**
          * @brief Initialize
         */
-        void Initialize();
+        virtual void Initialize();
 
 
         /** 
          * @brief Finalize
         */
-        void Finalize();
+        virtual void Finalize();
 
 
         /**
@@ -67,14 +69,6 @@ class A_Render_Manager_NCurses : public A_Render_Manager_Base
 
 
         /**
-         * @brief Update the NCurses Context.
-         *
-         * @param[in] ncurses_context new context to register.
-         */
-        virtual void Update_NCurses_Context( NCURSES::An_NCurses_Context::ptr_t context );
-
-        
-        /**
          * @brief Get the render state
          */
         inline virtual A_Render_State::ptr_t Get_Render_State()const{
@@ -90,6 +84,17 @@ class A_Render_Manager_NCurses : public A_Render_Manager_Base
          */
         virtual void Add_Command_History( const std::string&            command_string,
                                           const CMD::A_Command_Result&  command_result );
+
+        
+        /**
+         * @brief Update the rendering driver context.
+         *
+         * @param[in] driver_context Rendering driver to register.
+         */
+        inline virtual void Update_Render_Driver_Context( A_Render_Driver_Context_Base::ptr_t driver_context )
+        {
+            m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_NCurses>( driver_context );
+        }
 
 
     protected:
@@ -127,9 +132,9 @@ class A_Render_Manager_NCurses : public A_Render_Manager_Base
 
         /// Class Name
         std::string m_class_name;
-
-        /// NCurses Context
-        NCURSES::An_NCurses_Context::ptr_t m_context;
+        
+        /// Render Context
+        A_Render_Driver_Context_NCurses::ptr_t m_render_driver_context;
 
         /// Render State
         A_Render_State::ptr_t m_render_state;

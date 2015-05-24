@@ -12,10 +12,10 @@
 #include <string>
 
 // CLI Libraries
+#include "A_Render_Driver_Context_ASCII.hpp"
 #include "A_Render_Manager_Base.hpp"
 #include "A_Render_State.hpp"
 #include "../cmd/A_Command_History.hpp"
-#include "../thirdparty/ncurses/NCurses_Utilities.hpp"
 
 
 namespace CLI{
@@ -36,7 +36,7 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         /**
          * @brief Constructor
          */
-        A_Render_Manager_ASCII();
+        A_Render_Manager_ASCII( A_Render_Driver_Context_Base::ptr_t context );
         
 
         /**
@@ -85,30 +85,14 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         
         
         /**
-         * @brief Set the Title
+         * @brief Update the rendering driver context.
          *
-         * @param[in] cli_title
-        */
-        inline virtual void Set_CLI_Title( const std::string& cli_title )
-        {
-            m_cli_title = cli_title;
-        }
-
-
-        /**
-         * @brief Append Command To History.
-         *
-         * @param[in] command_string String representing what the user typed in.
-         * @param[in] command_result Parsing and evaluation result.
+         * @param[in] driver_context Rendering driver to register.
          */
-        inline void Add_Command_History( const std::string&            command_string,
-                                         const CMD::A_Command_Result&  command_result )
+        inline virtual void Update_Render_Driver_Context( A_Render_Driver_Context_Base::ptr_t driver_context )
         {
-            m_command_history->Add_Entry( CMD::A_Command_History_Entry( ++m_command_counter,
-                                                                        command_string,
-                                                                        command_result ));
+            m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>( driver_context );
         }
-
 
 
     protected:
@@ -167,6 +151,9 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         /// General Help Buffer
         std::vector<std::string> m_help_general_buffer;
 
+        /// Render Context
+        A_Render_Driver_Context_ASCII::ptr_t m_render_driver_context;
+        
         /// Window Size
         int m_window_rows;
         int m_window_cols;

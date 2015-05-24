@@ -8,6 +8,8 @@
 // CLI Libraries
 #include "A_Connection_Manager_Socket_Config.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
+#include "../thirdparty/ncurses/NCurses_Utilities.hpp"
+
 
 // C++ Standard Libraries
 #include <cstring>
@@ -16,6 +18,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+
 
 // Keyboard Delete Key Value
 const std::string KEYBOARD_DELETE_KEY = "\033\133\063\176";

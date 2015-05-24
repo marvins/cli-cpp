@@ -12,9 +12,19 @@ namespace RENDER{
 /*          Constructor         */
 /********************************/
 A_Render_Driver_Context_Base::A_Render_Driver_Context_Base()
+  : m_class_name("A_Render_Driver_Context_Base")
 {
 
 }
+
+
+/**********************************/
+/*          Destructor            */
+/**********************************/
+A_Render_Driver_Context_Base::~A_Render_Driver_Context_Base()
+{
+}
+
 
 } // End of RENDER Namespace
 } // End of CLI    Namespace

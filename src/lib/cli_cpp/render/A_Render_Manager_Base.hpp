@@ -62,9 +62,7 @@ class A_Render_Manager_Base{
         /**
          * @brief Get the render state
          */
-        inline virtual A_Render_State::ptr_t Get_Render_State()const{
-            return m_render_state;
-        }
+        virtual A_Render_State::ptr_t Get_Render_State()const = 0;
 
 
         /**
@@ -82,10 +80,7 @@ class A_Render_Manager_Base{
          *
          * @param[in] driver_context Rendering driver to register.
          */
-        virtual void Update_Render_Driver_Context( A_Render_Driver_Context_Base::ptr_t driver_context )
-        {
-            m_render_driver_context = driver_context;
-        }
+        virtual void Update_Render_Driver_Context( A_Render_Driver_Context_Base::ptr_t driver_context ) = 0;
 
         
         /**
@@ -155,9 +150,6 @@ class A_Render_Manager_Base{
         /// Command Counter
         int m_command_counter;
         
-        /// Render Driver Context
-        A_Render_Driver_Context_Base::ptr_t  m_render_driver_context;
-
         /// Render State
         A_Render_State::ptr_t m_render_state;
 

@@ -14,7 +14,9 @@
 #include "A_Connection_Manager_Base_Config.hpp"
 #include "../core/ConnectionType.hpp"
 #include "../cmd/A_Command_Parser.hpp"
-#include "../thirdparty/ncurses/NCurses_Utilities.hpp"
+#include "../render/A_Render_Driver_Context_Base.hpp"
+#include "../render/A_Render_Manager_Base.hpp"
+
 
 namespace CLI{
 
@@ -130,11 +132,11 @@ class A_CLI_Manager_Configuration{
 
 
         /**
-         * @brief Create NCurses Context.
+         * @brief Get the Render Manager Configuration
          *
-         * @return NCurses Context.
+         * @return Configuration
          */
-         NCURSES::An_NCurses_Context::ptr_t Create_NCurses_Context()const;
+         RENDER::A_Render_Manager_Base::ptr_t  Get_Render_Manager();
          
         
          /**
@@ -193,6 +195,12 @@ class A_CLI_Manager_Configuration{
         /// Command Parser
         CMD::A_Command_Parser::ptr_t m_command_parser;
         
+        /// Render Driver Context
+        RENDER::A_Render_Driver_Context_Base::ptr_t m_render_driver_context;
+
+        /// Render Manager
+        RENDER::A_Render_Manager_Base::ptr_t m_render_manager;
+
         /// Command-Line Title
         std::string m_cli_title;
             

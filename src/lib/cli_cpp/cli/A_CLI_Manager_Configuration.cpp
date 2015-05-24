@@ -8,7 +8,8 @@
 // CLI Libraries
 #include "A_Connection_Manager_Local.hpp"
 #include "A_Connection_Manager_Socket.hpp"
-
+#include "../render/A_Render_Driver_Context_Factory.hpp"
+#include "../render/A_Render_Manager_Factory.hpp"
 
 // C++ Standard Libraries
 #include <iostream>
@@ -25,6 +26,8 @@ A_CLI_Manager_Configuration::A_CLI_Manager_Configuration( CORE::ConnectionType c
   : m_class_name("A_CLI_Manager_Configuration"),
     m_conn_type(cli_conn_type),
     m_command_parser(nullptr),
+    m_render_driver_context(nullptr),
+    m_render_manager(nullptr),
     m_socket_window_rows(20),
     m_socket_window_cols(80)
 {
@@ -61,49 +64,25 @@ A_Connection_Manager_Base::ptr_t  A_CLI_Manager_Configuration::Get_Connection_Ma
 /************************************/
 /*       Create NCurses Context     */
 /************************************/
-NCURSES::An_NCurses_Context::ptr_t  A_CLI_Manager_Configuration::Create_NCurses_Context()const
+RENDER::A_Render_Manager_Base::ptr_t  A_CLI_Manager_Configuration::Get_Render_Manager()
 {
-    
-    // Create new object
-    NCURSES::An_NCurses_Context::ptr_t context = std::make_shared<NCURSES::An_NCurses_Context>();
-
-
-    // Attach communication file pointers
-    if( m_conn_type == CORE::ConnectionType::LOCAL ){
-
-        // find the terminal name
-        std::string terminal_name = getenv("TERM");
-
-        // Create the context elements
-        context->tty_fd  = NULL;
-        context->tty_in  = stdin;
-        context->tty_out = stdout;
-        context->tty_terminal_name = terminal_name;
+    // Create the render driver context
+    if( m_render_driver_context == nullptr ){
+        m_render_driver_context = RENDER::A_Render_Driver_Context_Factory::Initialize( m_conn_type, 
+                                                                                       m_socket_window_rows,
+                                                                                       m_socket_window_cols );
     }
 
-    // Attach communication file pointers
-    else if( m_conn_type == CORE::ConnectionType::SOCKET ){
-        
-        // find the terminal name
-        std::string terminal_name = getenv("TERM");
-
-        // Create the context elements
-        context->tty_fd  = NULL;
-        context->tty_in  = stdin;
-        context->tty_out = stdout;
-        context->tty_terminal_name = terminal_name;
-
-
+    // Run the factory
+    if( m_render_manager == nullptr ){
+        m_render_manager = RENDER::A_Render_Manager_Factory::Initialize( m_conn_type,
+                                                                         m_cli_title,
+                                                                         m_command_parser->Get_Command_List(),
+                                                                         m_command_parser->Get_CLI_Command_List(),
+                                                                         m_render_driver_context );
     }
 
-    // Otherwise, there is a problem
-    else{
-        return nullptr;
-    }
-
-
-    // return the new context
-    return context;
+    return m_render_manager;
 }
 
 

@@ -18,11 +18,11 @@ namespace CMD{
 /*       Constructor         */
 /*****************************/
 A_Command_Parser::A_Command_Parser( const std::string&                 regex_split_pattern,
-                                    const std::vector<A_CLI_Command>&  parser_command_list,
+                                    const std::vector<A_CLI_Command>&  cli_command_list,
                                     const std::vector<A_Command>&      command_list )
   : m_class_name("A_Command_Parser"),
     m_command_list(command_list),
-    m_parser_command_list(parser_command_list),
+    m_cli_command_list(cli_command_list),
     m_regex_split_pattern(regex_split_pattern)
 {
 }
@@ -48,10 +48,10 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string& test_st
     
 
     // Iterate over parser commands
-    for( size_t idx=0; idx < m_parser_command_list.size(); idx++ ){
-        if( m_parser_command_list[idx].Is_Match( command_name ) == true )
+    for( size_t idx=0; idx < m_cli_command_list.size(); idx++ ){
+        if( m_cli_command_list[idx].Is_Match( command_name ) == true )
         {
-            return A_Command_Result( m_parser_command_list[idx].Get_Mode(),
+            return A_Command_Result( m_cli_command_list[idx].Get_Mode(),
                                      A_Command( "", "", false),
                                      components );
         }

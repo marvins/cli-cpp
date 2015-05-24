@@ -7,6 +7,7 @@
 
 // C++ Standard Libraries
 #include <iostream>
+#include <memory>
 #include <sstream>
 
 // CLI Libraries
@@ -21,12 +22,15 @@ const std::string BUFFER_NEWLINE = "\n\r";
 /****************************/
 /*      Constructor         */
 /****************************/
-A_Render_Manager_ASCII::A_Render_Manager_ASCII()
+A_Render_Manager_ASCII::A_Render_Manager_ASCII( A_Render_Driver_Context_Base::ptr_t driver_context )
  :  A_Render_Manager_Base(),
     m_class_name("A_Render_Manager_ASCII"),
     m_window_rows(0),
     m_window_cols(0)
 {
+    // Cast the driver
+    m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(driver_context);
+    
     // Create new render state
     m_render_state.reset(new A_Render_State( CORE::ConnectionType::SOCKET, 
                                              m_command_history));

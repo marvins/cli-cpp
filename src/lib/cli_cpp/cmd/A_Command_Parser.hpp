@@ -65,12 +65,12 @@ class A_Command_Parser {
 
 
         /**
-         * @brief Get the parser command list.
+         * @brief Get the CLI command list.
          *
-         * @return Parser command list
+         * @return CLI command list
          */
-        inline std::vector<A_CLI_Command> Get_Parser_Command_List()const{
-            return m_parser_command_list;
+        inline std::vector<A_CLI_Command> Get_CLI_Command_List()const{
+            return m_cli_command_list;
         }
 
     
@@ -89,7 +89,7 @@ class A_Command_Parser {
         std::vector<A_Command> m_command_list;
 
         /// CLI Command List
-        std::vector<A_CLI_Command> m_parser_command_list;
+        std::vector<A_CLI_Command> m_cli_command_list;
 
         /// Regex Split Pattern
         std::string m_regex_split_pattern;

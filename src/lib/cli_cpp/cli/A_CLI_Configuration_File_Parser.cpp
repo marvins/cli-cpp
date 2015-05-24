@@ -99,7 +99,10 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     // If we are Local, then load the local configuration
     if( cli_conn_type == CORE::ConnectionType::LOCAL ){
 
+        // Create the local configuration
         m_connection_manager_config = std::make_shared<A_Connection_Manager_Local_Config>();
+
+        // Set the configuration
         m_current_configuration.Set_Connection_Manager_Config( m_connection_manager_config );
     }
     else if( cli_conn_type == CORE::ConnectionType::SOCKET ){
