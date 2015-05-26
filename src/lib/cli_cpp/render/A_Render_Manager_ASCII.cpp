@@ -117,6 +117,10 @@ void A_Render_Manager_ASCII::Refresh()
 
     // If help is selected, then use that buffer
     if( m_render_state->Get_Help_Mode() == true ){
+        
+        // Print the CLI
+        Print_CLI( m_help_menu->Get_Buffer_Data() );
+        
         return; 
     }
 
@@ -157,88 +161,19 @@ void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffe
 /************************************************/
 void A_Render_Manager_ASCII::Print_Main_Content()
 {
-
-    // Define our stop and start rows
-    int starty = 2;
-    int endy   = m_render_state->Get_Rows() - 5;
     
+    // Set the min and max positions
+    int min_col = 3;
+    int max_col = m_render_state->Get_Cols()-3;
+    int min_row = 3;
+    int max_row = m_render_state->Get_Rows()-3;
     
-    // Define our start columns
-    int offset_col = 5;
-    std::string BUFFER_OFFSET( offset_col, ' ');
-
-    
-    // Table Sizes
-    const int cmd_entry_width   = 7;
-    const int input_entry_width = m_render_state->Get_Cols() - cmd_entry_width - (2*offset_col);
-
-
-    // Create Header lines
-    std::string header_line_row = "+";
-    std::string header_data_row = "|";
-    
-    
-    for( int i=0; i<cmd_entry_width; i++ ){ header_line_row += "-"; }
-    header_data_row += UTILS::Format_String("CMD", cmd_entry_width);
-    
-    header_line_row += "+";
-    header_data_row += "|";
-
-    for( int i=0; i<input_entry_width; i++ ){ header_line_row += "-"; }
-    header_data_row += UTILS::Format_String("  Input", input_entry_width, UTILS::StringAlignment::LEFT);
-    
-    header_line_row += "+" + BUFFER_NEWLINE;
-    header_data_row += "|" + BUFFER_NEWLINE;
-
-
-    // Print Table Header
-    m_console_buffer[starty++] = BUFFER_OFFSET + header_line_row;
-    m_console_buffer[starty++] = BUFFER_OFFSET + header_data_row;
-    m_console_buffer[starty++] = BUFFER_OFFSET + header_line_row;
-
-    // Build a blank table entry line
-    std::string blank_line_row  = "|" + std::string(cmd_entry_width, ' ') + "|" + std::string(input_entry_width,' ') + "|" + BUFFER_NEWLINE;
-    
-    // Iterate over main window region
-    int row_id = 0;
-    std::string row_data;
-    bool skip_row = false;
-    for( int row = starty; row <= endy; row++, row_id++ )
-    {
-        
-        // If we need to skip the row
-        if( skip_row == true ){ 
-            m_console_buffer[row] = BUFFER_OFFSET + blank_line_row;
-            continue;
-        }
-
-
-        // Check if we still have commands to print
-        else if( row_id < (int)m_command_history->Size() ){
-        
-            // Creatde new row string
-            row_data = "|" + UTILS::Format_String( UTILS::num2str<int>( m_command_history->Get_Entry( row_id ).Get_Command_ID()),
-                                                   cmd_entry_width );
-            row_data += "|" + UTILS::Format_String( "  " + m_command_history->Get_Entry( row_id ).Get_Command_String(),
-                                                    input_entry_width,
-                                                    UTILS::StringAlignment::LEFT );
-            row_data += "|";
-
-            // Print
-            m_console_buffer[row] = BUFFER_OFFSET + row_data + BUFFER_NEWLINE;
-        }
-
-
-        // Otherwise, print a blank line
-        else{
-            m_console_buffer[row] = BUFFER_OFFSET + blank_line_row;
-            continue;
-        }
-
-    }
-
-    // Print bottom row
-    m_console_buffer[endy+1] = BUFFER_OFFSET + header_line_row;
+    // Update the cli window
+    m_history_window->Print_Table( m_console_buffer, 
+                                   min_row,
+                                   max_row,
+                                   min_col,
+                                   max_col );
 
 
 }
@@ -262,6 +197,7 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
     // Set the buffer row
     int cli_row = m_window_rows - 2;
 
+    
     // Get the cursor text
     const std::string cursor_text = m_render_state->Get_Cursor_Text();
     const int cli_prompt_pos = m_render_state->Get_Cursor_Pos();
@@ -324,7 +260,7 @@ void A_Render_Manager_ASCII::Build_Help_General_Buffer()
                                                                m_render_state->Get_Cols(),
                                                                3,
                                                                3,
-                                                               m_render_state->Get_Rows()-4,
+                                                               m_render_state->Get_Rows(),
                                                                m_cli_command_list,
                                                                m_command_list );
 }

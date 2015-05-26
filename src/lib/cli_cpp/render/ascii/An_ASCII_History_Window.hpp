@@ -45,7 +45,8 @@ class An_ASCII_History_Window
          bool Print_Table( std::vector<std::string>& buffer_data,
                            const int&                min_row,
                            const int&                max_row,
-                           const int&                min_col ) const;
+                           const int&                min_col,
+                           const int&                max_col) const;
 
     private:
         

@@ -80,7 +80,7 @@ void An_ASCII_Help_Menu::Initialize()
         
     // Print Parse Table
     m_cli_command_print_table->Print_Table( m_buffer_data, m_min_row,     max_cli_row, m_min_col );
-    m_command_print_table->Print_Table(     m_buffer_data, max_cli_row+1, m_max_row,   m_min_col );
+    m_command_print_table->Print_Table(     m_buffer_data, max_cli_row+1, m_max_row-3,   m_min_col );
 
 
 }
