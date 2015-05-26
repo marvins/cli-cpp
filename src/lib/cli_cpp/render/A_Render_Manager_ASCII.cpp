@@ -26,7 +26,8 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( A_Render_Driver_Context_Base::pt
  :  A_Render_Manager_Base(),
     m_class_name("A_Render_Manager_ASCII"),
     m_window_rows(0),
-    m_window_cols(0)
+    m_window_cols(0),
+    m_history_window(nullptr)
 {
     // Cast the driver
     m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(driver_context);
@@ -46,11 +47,12 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( A_Render_Driver_Context_Base::pt
 /*      Constructor         */
 /****************************/
 A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int& window_rows,
-                                                    const int& window_cols )
+                                                const int& window_cols )
  :  A_Render_Manager_Base(),
     m_class_name("A_Render_Manager_ASCII"),
     m_window_rows(window_rows),
-    m_window_cols(window_cols)
+    m_window_cols(window_cols),
+    m_history_window(nullptr)
 {
     // Create new render state
     m_render_state.reset(new A_Render_State( CORE::ConnectionType::SOCKET, 
@@ -77,6 +79,9 @@ void A_Render_Manager_ASCII::Initialize()
     
     // Build the Help Buffer
     Build_Help_General_Buffer();
+
+    // Print the history
+    m_history_window = std::make_shared<ASCII::An_ASCII_History_Window>(m_command_history);
 
 }
 

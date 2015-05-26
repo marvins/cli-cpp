@@ -84,6 +84,11 @@ class An_ASCII_Print_Table
 
         /**
          * @brief Add Entry
+         *
+         * @param[in] row Row to be added.
+         * @param[in] col Column to be added.
+         * @param[in] data Data to append to the table.
+         * @param[in] color_code Color code to set the entry to.
         */
         void Add_Entry( const int& row, 
                         const int& col, 

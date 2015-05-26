@@ -18,6 +18,7 @@ set( LIB_CLI_RENDER_MODULE_SOURCES
     A_Render_Manager_Factory.cpp
     A_Render_State.cpp
     ascii/An_ASCII_Help_Menu.cpp
+    ascii/An_ASCII_History_Window.cpp
 )
 
 
@@ -35,6 +36,7 @@ set( LIB_CLI_RENDER_MODULE_HEADERS
     A_Render_Manager_Factory.hpp
     A_Render_State.hpp
     ascii/An_ASCII_Help_Menu.hpp
+    ascii/An_ASCII_History_Window.hpp
 )
 
 
