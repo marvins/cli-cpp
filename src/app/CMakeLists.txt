@@ -21,6 +21,7 @@ SET( LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib )
 #----------------------------------#
 set( CLI_APP_SOURCES
      main.cpp
+     cli/A_Netstat_Command_Response_Handler.cpp
      cli/A_Ping_Command_Response_Handler.cpp
      utils/System_Utilities.cpp
 )
@@ -29,6 +30,7 @@ set( CLI_APP_SOURCES
 #-    Define our demo headers     -#
 #----------------------------------#
 set( CLI_APP_HEADERS
+     cli/A_Netstat_Command_Response_Handler.hpp
      cli/A_Ping_Command_Response_Handler.hpp
      utils/System_Utilities.hpp
 )

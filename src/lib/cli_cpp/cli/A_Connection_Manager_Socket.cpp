@@ -22,6 +22,8 @@
 
 // Keyboard Delete Key Value
 const std::string KEYBOARD_DELETE_KEY = "\033\133\063\176";
+const std::string KEYBOARD_LEFT_KEY   = "\033\133\104";
+const std::string KEYBOARD_RIGHT_KEY  = "\033\133\103";
 
 namespace CLI{
 
@@ -172,6 +174,16 @@ void A_Connection_Manager_Socket::Run_Handler()
             // Check Delete Key
             if( input == KEYBOARD_DELETE_KEY ){
                 this->m_render_state->Process_Input( KEY_DC );
+            }
+
+            // Check Left Key
+            else if( input == KEYBOARD_LEFT_KEY ){
+                this->m_render_state->Process_Input( KEY_LEFT );
+            }
+
+            // Check Right Key
+            else if( input == KEYBOARD_RIGHT_KEY ){
+                this->m_render_state->Process_Input( KEY_RIGHT );
             }
             
             

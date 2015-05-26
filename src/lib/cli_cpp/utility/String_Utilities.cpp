@@ -11,6 +11,38 @@
 namespace CLI{
 namespace UTILS{
 
+/// Default String Trim Pattern
+const std::string DEFAULT_TRIM_PATTERN = " \n\0";
+
+/************************************/
+/*         Strip A String           */
+/************************************/
+std::string String_Trim( const std::string&  data )
+{
+    return String_Trim( data, DEFAULT_TRIM_PATTERN, StringDirection::BOTH );
+}
+
+
+/************************************/
+/*         Strip A String           */
+/************************************/
+std::string String_Trim( const std::string&  data,
+                         const std::string&  strip_pattern )
+{
+    return String_Trim( data, 
+                        strip_pattern,
+                        StringDirection::BOTH );
+}
+
+/************************************/
+/*         Strip A String           */
+/************************************/
+std::string String_Trim( const std::string&  data,
+                         const StringDirection& strip_direction )
+{
+    return String_Trim( data, DEFAULT_TRIM_PATTERN, strip_direction);
+}
+
 /************************************/
 /*         Strip A String           */
 /************************************/
@@ -49,6 +81,17 @@ std::string String_Fill( const std::string&      data,
 {
     // Create padding
     std::string padding( fill_cnt, fill_char);
+    
+    // If both
+    if( fill_direction == StringDirection::BOTH ){
+        return String_Fill( String_Fill( data, 
+                                         fill_char, 
+                                         fill_cnt, 
+                                         StringDirection::LEFT),
+                            fill_char,
+                            fill_cnt,
+                            StringDirection::RIGHT );
+    }
 
     // If left
     if( fill_direction == StringDirection::LEFT ){

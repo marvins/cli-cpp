@@ -16,6 +16,7 @@
 #include "A_Render_Manager_Base.hpp"
 #include "A_Render_State.hpp"
 #include "../cmd/A_Command_History.hpp"
+#include "../utility/An_ASCII_Print_Table.hpp"
 
 
 namespace CLI{
@@ -153,6 +154,10 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
 
         /// Render Context
         A_Render_Driver_Context_ASCII::ptr_t m_render_driver_context;
+        
+        /// Render Print Managers
+        UTILS::An_ASCII_Print_Table::ptr_t  m_command_print_table;
+        UTILS::An_ASCII_Print_Table::ptr_t  m_cli_command_print_table;
         
         /// Window Size
         int m_window_rows;

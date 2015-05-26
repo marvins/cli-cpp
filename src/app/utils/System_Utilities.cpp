@@ -55,10 +55,34 @@ bool Ping( const std::string& address,
 {
     // Format a command string
     std::string command = "ping -c " + CLI::UTILS::num2str(max_attempts) + " " + address + " 2>&1";
-    std::string output;
 
     // Execute the ping command
     int code = Execute_Command( command, details );
 
     return (code == 0);
+}
+
+
+/*************************************/
+/*          Netstat Command          */
+/*************************************/
+int Netstat( const int& port_number,
+             const std::string& protocol,
+             std::string& details )
+{
+
+    // Format the command string
+    std::string command = "netstat -an | grep ";
+    
+    if( protocol == "tcp" | protocol == "TCP" ){
+        command += "tcp";
+    }
+    if( protocol == "udp" | protocol == "UD" ){
+        command += "udp";
+    }
+
+    //execute command
+    int code = Execute_Command( command, details );
+
+    return (code == 0); 
 }

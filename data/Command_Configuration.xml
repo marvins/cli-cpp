@@ -40,6 +40,18 @@
                 <argument name="max_attempts"  type="INTEGER"  description="Max number of attempts to try."      required="false" default="1" />
             </arguments>
         </command>
+
+        <!-- Check the port status of a given host -->
+        <command>
+            <name value="check-port-status" />
+            <description value="Check the port status of localhost." />
+            <expect_response value="true" />
+            <arguments>
+                <argument name="port"  type="INTEGER" description="Port number to scan."  required="true" />
+                <argument name="proto" type="STRING"  description="Protocol (udp/tcp)."   required="false"  default="tcp" />  
+            </arguments>
+        </command>
+
     </commands>
 
 </command-configuration>

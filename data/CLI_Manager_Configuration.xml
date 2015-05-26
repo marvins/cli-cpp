@@ -17,7 +17,7 @@
           - LOCAL  : Connect via stdin
           - SOCKET : Connect via network
     -->
-    <connection-type value="LOCAL" />
+    <connection-type value="SOCKET" />
 
 
     <!-- Local CLI Configuration -->
@@ -33,7 +33,7 @@
         <listening-port value="12345" />
 
         <!-- Window Size -->
-        <window-size rows="25" cols="100" />
+        <window-size rows="30" cols="120" />
 
     </socket-configuration>
 

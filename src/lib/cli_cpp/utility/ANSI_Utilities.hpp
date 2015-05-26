@@ -17,16 +17,21 @@ namespace UTILS{
 const std::string ANSI_CLEARSCREEN = "\033[2J";
 const std::string ANSI_RESETCURSOR = "\033[;H";
 
+/// ANSI Newlines
+const std::string ANSI_NEWLINE = "\n\r";
+
 /// ANSI Color Codes
 const std::string ANSI_RESET = "\033[m";
 const std::string ANSI_BLACK = "\033[30m";
 const std::string ANSI_RED   = "\033[31m";
 const std::string ANSI_GREEN = "\033[32m";
+const std::string ANSI_WHITE = "\033[37m";
 
 /// ANSI Background Colors
 const std::string ANSI_BACK_BLACK = "\033[40m";
 const std::string ANSI_BACK_RED   = "\033[41m";
 const std::string ANSI_BACK_GREEN = "\033[42m";
+const std::string ANSI_BACK_WHITE = "\033[47m";
 
 
 } // End of UTILS Namespace

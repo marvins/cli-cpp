@@ -19,6 +19,8 @@ namespace CMD{
 
 /**
  * @class A_Command_History_Entry
+ *
+ * @brief Stores the command which was processed along with the actual text entered.
  */
 class A_Command_History_Entry{
 
@@ -26,7 +28,11 @@ class A_Command_History_Entry{
         
     
         /**
-         * @brief Constructor
+         * @brief Constructor.
+         *
+         * @param[in] command_count Entry number corresponding to when the command was entered in order.
+         * @param[in] command_string Actual user text entered.
+         * @param[in] command_result Command result.
          */
         A_Command_History_Entry( const int&                    command_count,
                                  const std::string&            command_string,
@@ -34,7 +40,9 @@ class A_Command_History_Entry{
    
         
         /**
-         * @brief Get the Command ID
+         * @brief Get the Command ID.
+         *
+         * @return Command ID.
          */
         inline int Get_Command_ID()const{
             return m_command_id;
@@ -42,7 +50,9 @@ class A_Command_History_Entry{
 
         
         /**
-         * @brief Get the Command String
+         * @brief Get the Command String.
+         *
+         * @return Command string text.
          */
         inline std::string Get_Command_String()const{
             return m_command_string;

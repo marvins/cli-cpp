@@ -25,7 +25,13 @@ A_Ping_Command_Response_Handler::A_Ping_Command_Response_Handler()
 /****************************************/
 bool A_Ping_Command_Response_Handler::Is_Supported( CLI::CMD::A_Command_Result const& result ) const
 {
-    return true;
+    // Make sure the command name matches
+    if( result.Get_Command().Get_Name() == "ping" ){
+        return true;
+    }
+
+    // Otherwise, return false
+    return false;
 }
 
 /****************************************/

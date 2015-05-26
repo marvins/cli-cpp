@@ -39,6 +39,19 @@ int Execute_Command( const std::string&  command,
 bool Ping( const std::string& address,
            const int&         max_attempts,
            std::string&       details );
-                          
+     
+/**
+ * @brief Run Netstat.
+ *
+ * @param[in] port_number Port number to check.
+ * @param[in] protocol Protocol (TCP/UDP).
+ * @param[out] details  Details if operation fails.
+ *
+ * @return Status. 
+*/
+int Netstat( const int& port_number,
+             const std::string& protocol,
+             std::string& details );
+
 
 #endif

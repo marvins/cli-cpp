@@ -52,27 +52,68 @@ TP str2num( const std::string& value )
  * @enum StringAlignment
  */
 enum class StringAlignment : uint8_t{
-    CENTER = 0,
-    LEFT   = 1,
-    RIGHT  = 2,
+    CENTER = 1,
+    LEFT   = 2,
+    RIGHT  = 3,
 }; // End of StringAlignment Enum Class
+
 
 /**
  * @enum StringDirection
  */
 enum class StringDirection : uint8_t{
-    LEFT  = 0,
-    RIGHT = 1,
-    BOTH  = 2,
+    LEFT  = 1,
+    RIGHT = 2,
+    BOTH  = 3,
 }; // End of StringDirection Enum Class
 
 
 /**
- * @brief String Strip
+ * @brief Trim a string.
+ *
+ * @param[in] data Data to trim.
+ * @param[in] strip_patterns Pattern to strip.
+ * @param[in] strip_direction Direction to strip.
+ * 
+ * @return Resulting string.
  */
 std::string String_Trim( const std::string&     data,
-                         const std::string&     strip_patterns = "\n\0 ",
-                         const StringDirection& strip_direction = StringDirection::BOTH );
+                         const std::string&     strip_patterns,
+                         const StringDirection& strip_direction);
+
+
+/**
+ * @brief Trim a string.
+ *
+ * @param[in] data Data to trim.
+ * @param[in] strip_direction Direction to strip.
+ *
+ * @return Trimmed string.
+ */
+std::string String_Trim( const std::string&     data,
+                         const StringDirection& strip_direction);
+
+
+/**
+ * @brief Trim a string.
+ *
+ * @param[in] data Data to trim.
+ * @param[in] strip_pattern Pattern to strip.
+ *
+ * @return Trimmed string.
+ */
+std::string String_Trim( const std::string&     data,
+                         const std::string&     strip_pattern );
+
+
+/**
+ * @brief Trim a string.
+ *
+ * @param[in] data Data to trim.
+ * 
+ * @return Resulting string.
+ */
+std::string String_Trim( const std::string&     data );
 
                 
 /**

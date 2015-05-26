@@ -289,6 +289,8 @@ void A_Render_Manager_NCurses::Print_Help_Content()
     // Define our stop and start rows
     int min_row = 3;
     int max_row   = m_render_state->Get_Rows() - 5;
+    int help_table_size = 10;
+    int max_cli_row = help_table_size + min_row;
     
     // Define our start columns
     int offset_col = 3;
@@ -312,8 +314,8 @@ void A_Render_Manager_NCurses::Print_Help_Content()
     mvprintw( min_row++, offset_col, header_line_row.c_str());
 
     // Print Parse Table
-    m_cli_command_print_table->Print_Table( min_row, max_row/3, offset_col );
-    m_command_print_table->Print_Table( max_row/3+1, max_row, offset_col );
+    m_cli_command_print_table->Print_Table( min_row, max_cli_row, offset_col );
+    m_command_print_table->Print_Table( max_cli_row+1, max_row, offset_col );
 
 }
 

@@ -141,6 +141,15 @@ A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string
 
     }
 
+    // Make sure the command lists have values
+    if( parser_command_list.size() <= 0 ){
+        throw std::runtime_error("CLI Command-List is currently empty.");
+    }
+
+    if( command_list.size() <= 0 ){
+        throw std::runtime_error("Command-list is currently empty.");
+    }
+
     // Create the parser
     A_Command_Parser::ptr_t parser = std::make_shared<A_Command_Parser>( regex_split_pattern, parser_command_list, command_list );
 

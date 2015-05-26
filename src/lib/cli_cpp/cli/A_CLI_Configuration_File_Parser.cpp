@@ -131,8 +131,18 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
         return;
     }
 
-    // Set the parser
-    m_current_configuration.Set_Command_Parser( CMD::A_Command_Parser_Factory::Initialize( temp_str ));
+    // Parse the command file
+    CMD::A_Command_Parser::ptr_t command_parser = CMD::A_Command_Parser_Factory::Initialize( temp_str );
+
+    // Make sure the parser is not null
+    if( command_parser == nullptr ){
+        std::cerr << "error: " << temp_str << " parsed with errors." << std::endl;
+        return;
+    }
+    else{
+        // Set the parser
+        m_current_configuration.Set_Command_Parser(command_parser);
+    }
 
     // Grab the CLI Node
     pugi::xml_node cli_node = root_node.child(CLI_CONFIG_QUERY.c_str());

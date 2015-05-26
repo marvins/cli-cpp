@@ -40,62 +40,43 @@ void A_Render_State::Process_Input( const int& input )
     // SKip if < 0
     if( input < 0 ){ return; }
 
-    // Process commands over the socket
-    if( m_connection_type == CORE::ConnectionType::SOCKET ){
-        
-        // Check for backspace on socket
-        if( input == 127 ){
-            Apply_Backspace();
-            return;
-        }
 
-        // Check for Delete Key
-        if( input == KEY_DC ){
-            Apply_Delete();
-            return;
-        }
-
+    // check for backspace
+    if( input == KEY_BACKSPACE || input == 127 ){
+        Apply_Backspace();
+        return;
     }
 
-    // NCURSES
-    else{
-
-        // check for backspace
-        if( input == KEY_BACKSPACE || input == 127 ){
-            Apply_Backspace();
-            return;
-        }
-    
-        // check for delete
-        else if( input == KEY_DC ){
-            Apply_Delete();
-            return;
-        }
-
-        // Check for left-key
-        else if( input == KEY_LEFT ){
-            Apply_Left_Key();
-            return;
-        }
-
-        // Check for right-key
-        else if( input == KEY_RIGHT ){
-            Apply_Right_Key();
-            return;
-        }
-
-        // Check for up-key
-        else if( input == KEY_UP ){
-            Apply_Up_Key();
-            return;
-        }
-
-        // Check for down-key
-        else if( input == KEY_DOWN ){
-            Apply_Down_Key();
-            return;
-        }
+    // check for delete
+    else if( input == KEY_DC ){
+        Apply_Delete();
+        return;
     }
+
+    // Check for left-key
+    else if( input == KEY_LEFT ){
+        Apply_Left_Key();
+        return;
+    }
+
+    // Check for right-key
+    else if( input == KEY_RIGHT ){
+        Apply_Right_Key();
+        return;
+    }
+
+    // Check for up-key
+    else if( input == KEY_UP ){
+        Apply_Up_Key();
+        return;
+    }
+
+    // Check for down-key
+    else if( input == KEY_DOWN ){
+        Apply_Down_Key();
+        return;
+    }
+
 
     // Otherwise, add character to string
     m_cli_prompt_text.push_back((char)input);
@@ -111,7 +92,7 @@ void A_Render_State::Process_Input( const int& input )
 /*          Set window size           */
 /**************************************/
 void A_Render_State::Set_Window_Size( const int& rows,
-                                              const int& cols )
+        const int& cols )
 {
     m_window_rows = rows;
     m_window_cols = cols;
@@ -142,14 +123,14 @@ void A_Render_State::Clear_Cursor_Text()
 /*******************************/
 void A_Render_State::Apply_Backspace()
 {
-        
+
     // Erase the current character
     if( m_cli_prompt_text.size() > 0 && m_cli_prompt_cursor_at > 0){
-        
+
         // Avoid going into negative space
         m_cli_prompt_cursor_head = std::max( 0, m_cli_prompt_cursor_head-1);
         m_cli_prompt_cursor_at   = std::max( 0, m_cli_prompt_cursor_at-1);
-        
+
         // Delete the character
         m_cli_prompt_text.erase( m_cli_prompt_cursor_at, 1 );
     }
@@ -187,7 +168,7 @@ void A_Render_State::Apply_Left_Key()
 void A_Render_State::Apply_Right_Key()
 {
     // Move the head right
-    m_cli_prompt_cursor_at = std::min( m_cli_prompt_cursor_at+1, (int)m_cli_prompt_text.size()-1);
+    m_cli_prompt_cursor_at = std::min( m_cli_prompt_cursor_at+1, (int)m_cli_prompt_text.size());
 }
 
 
