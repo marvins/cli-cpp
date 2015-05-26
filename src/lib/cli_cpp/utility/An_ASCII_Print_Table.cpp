@@ -61,10 +61,10 @@ bool An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
     int cur_row = min_row;
 
     // Make sure the current size is large enough for the print table
-    if( (cur_row+3) >= print_data.size()-1 ){
-        return false;
+    if( print_data.size() <= max_row ){
+        print_data.resize( max_row+1, "\n\r");
     }
-    
+
     //    Create the Header, Header Line, and Blank Lines 
     std::string header_line_row = "+";
     std::string header_data_row = "|";
@@ -137,6 +137,10 @@ bool An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
             current_line += "|";
         }
         
+        if( row >= print_data.size() ){
+            return true;
+        }
+        
         // Print
         print_data[row] = current_line + ANSI_NEWLINE;
 
@@ -147,9 +151,16 @@ bool An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
 
         // Increment row entry
         current_row_entry++;
+        if( current_row_entry >= print_data.size() ){
+            return true;
+        }
     }
 
+
     // Print the bottom row
+    if( max_row >= print_data.size() ){
+        return true;
+    }
     print_data[max_row] = std::string(min_col,' ') + header_line_row + ANSI_NEWLINE;
 
     // Return success
@@ -182,6 +193,37 @@ void An_ASCII_Print_Table::Add_Entry( const int& row,
     m_table_data[col][row] = data;
     m_table_colors[col][row] = color_code;
 
+}
+
+
+/******************************/
+/*       Add Blank Row        */
+/******************************/
+void An_ASCII_Print_Table::Add_Blank_Row( const int& row )
+{
+    // Check if the table is large enough
+    bool table_resized = false;
+    for( int col=0; col < (int)m_table_data.size(); col++ )
+    {
+        if( (int)m_table_data[col].size() <= row )
+        {
+            m_table_data[col].resize(   row+1, std::string(""));
+            m_table_colors[col].resize( row+1, 0);
+            table_resized = true;
+        }
+    }
+
+    if( table_resized == true ){
+        return;
+    }
+
+    // Insert blank rows
+    for( int c=0; c<(int)m_table_data.size(); c++ )
+    {
+        // Insert the blank rows
+        m_table_data[c].insert(   m_table_data[c].begin()   + row, std::string(""));
+        m_table_colors[c].insert( m_table_colors[c].begin() + row, 0 );
+    }
 }
 
 

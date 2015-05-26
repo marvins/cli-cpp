@@ -15,6 +15,7 @@
 #include "A_Render_Driver_Context_ASCII.hpp"
 #include "A_Render_Manager_Base.hpp"
 #include "A_Render_State.hpp"
+#include "ascii/An_ASCII_Help_Menu.hpp"
 #include "../cmd/A_Command_History.hpp"
 #include "../utility/An_ASCII_Print_Table.hpp"
 
@@ -149,16 +150,12 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         /// Console Buffer
         std::vector<std::string> m_console_buffer;
         
-        /// General Help Buffer
-        std::vector<std::string> m_help_general_buffer;
-
         /// Render Context
         A_Render_Driver_Context_ASCII::ptr_t m_render_driver_context;
         
-        /// Render Print Managers
-        UTILS::An_ASCII_Print_Table::ptr_t  m_command_print_table;
-        UTILS::An_ASCII_Print_Table::ptr_t  m_cli_command_print_table;
-        
+        /// ASCII Help Menu
+        ASCII::An_ASCII_Help_Menu::ptr_t m_help_menu;
+
         /// Window Size
         int m_window_rows;
         int m_window_cols;

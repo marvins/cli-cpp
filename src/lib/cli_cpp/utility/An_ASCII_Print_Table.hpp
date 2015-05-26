@@ -90,6 +90,13 @@ class An_ASCII_Print_Table
                         const std::string& data,
                         const int& color_code = 0 );
 
+
+        /**
+         * @brief Add blank entry.
+         */
+        void Add_Blank_Row( const int& row );
+
+
         // Get the string
         inline std::vector<std::string> Get_String_Data()const{
             return m_table_output_data;

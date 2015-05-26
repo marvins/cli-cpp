@@ -10,29 +10,6 @@
 
 using namespace CLI;
 
-void Check_Table_Output( const std::vector<std::string>& test_output, 
-                         const int& test_number )
-{
-    
-    ASSERT_EQ( test_output[0], "" );
-    ASSERT_EQ( test_output[1], "" );
-    ASSERT_EQ( test_output[2], "    +----------+----------+--------+\n\r" );
-    ASSERT_EQ( test_output[3], "    | Title1   | Title2   | Title3 |\n\r" );
-    ASSERT_EQ( test_output[4], "    +----------+----------+--------+\n\r" );
-
-    if( test_number == 1 ){
-        ASSERT_EQ( test_output[5], "    | Hello    |          |        |\n\r" );
-        ASSERT_EQ( test_output[6], "    |          |          |        |\n\r" );
-        ASSERT_EQ( test_output[7], "    |          | World    |        |\n\r" );
-    } else {
-        ASSERT_EQ( test_output[5], "    |          |          |        |\n\r" );
-        ASSERT_EQ( test_output[6], "    |          |          |        |\n\r" );
-        ASSERT_EQ( test_output[7], "    |          |          |        |\n\r" );
-    }
-    ASSERT_EQ( test_output[8], "    |          |          |        |\n\r" );
-    ASSERT_EQ( test_output[9], "    +----------+----------+--------+\n\r" );
-}
-
 
 /********************************************************/
 /*      Test the ASCII Print Table Configuration        */
@@ -87,6 +64,7 @@ TEST( An_ASCII_Print_Table, Construction_Test_01_Invalid )
 /*****************************************************/
 TEST( An_ASCII_Print_Table, Construction_Test_02 )
 {
+    
     // Define our expected titles
     std::vector<std::string> exp_titles;
     exp_titles.push_back("Title1");
@@ -100,7 +78,7 @@ TEST( An_ASCII_Print_Table, Construction_Test_02 )
     exp_widths.push_back(8);
 
     // Define our expected configuration
-    UTILS::An_ASCII_Print_Table_Config exp_config(false,true);
+    UTILS::An_ASCII_Print_Table_Config exp_config(false,false);
     
     // Create a Table
     UTILS::An_ASCII_Print_Table print_table( exp_titles, exp_widths, exp_config ); 
@@ -112,13 +90,51 @@ TEST( An_ASCII_Print_Table, Construction_Test_02 )
     std::vector<std::string> test_output(10);
     ASSERT_TRUE( print_table.Print_Table( test_output, 2, 9, 4 ));
     
-    Check_Table_Output( test_output, 0 );
+    ASSERT_EQ( test_output[0], "" );
+    ASSERT_EQ( test_output[1], "" );
+    ASSERT_EQ( test_output[2], "    +----------+----------+--------+\n\r" );
+    ASSERT_EQ( test_output[3], "    | Title1   | Title2   | Title3 |\n\r" );
+    ASSERT_EQ( test_output[4], "    +----------+----------+--------+\n\r" );
+    ASSERT_EQ( test_output[5], "    |          |          |        |\n\r" );
+    ASSERT_EQ( test_output[6], "    |          |          |        |\n\r" );
+    ASSERT_EQ( test_output[7], "    |          |          |        |\n\r" );
+    ASSERT_EQ( test_output[8], "    |          |          |        |\n\r" );
+    ASSERT_EQ( test_output[9], "    +----------+----------+--------+\n\r" );
 
     // Add some entries
     print_table.Add_Entry(0, 0, " Hello");
     print_table.Add_Entry(1, 1, " World");
     ASSERT_TRUE( print_table.Print_Table( test_output, 2, 9, 4 ));
-    Check_Table_Output( test_output, 1 );
+    ASSERT_EQ( test_output[0], "" );
+    ASSERT_EQ( test_output[1], "" );
+    ASSERT_EQ( test_output[2], "    +----------+----------+--------+\n\r" );
+    ASSERT_EQ( test_output[3], "    | Title1   | Title2   | Title3 |\n\r" );
+    ASSERT_EQ( test_output[4], "    +----------+----------+--------+\n\r" );
+    ASSERT_EQ( test_output[5], "    | Hello    |          |        |\n\r" );
+    ASSERT_EQ( test_output[6], "    |          | World    |        |\n\r" );
+    ASSERT_EQ( test_output[7], "    |          |          |        |\n\r" );
+    ASSERT_EQ( test_output[8], "    |          |          |        |\n\r" );
+    ASSERT_EQ( test_output[9], "    +----------+----------+--------+\n\r" );
+    
+    
+    
+    // Add a blank entry
+    print_table.Add_Entry(2, 2, " Entry");
+    ASSERT_TRUE( print_table.Print_Table( test_output, 2, 10, 4 ));
+    print_table.Add_Blank_Row( 1 );
+    ASSERT_TRUE( print_table.Print_Table( test_output, 2, 10, 4 ));
+    ASSERT_EQ( test_output[0],  "" );
+    ASSERT_EQ( test_output[1],  "" );
+    ASSERT_EQ( test_output[2],  "    +----------+----------+--------+\n\r" );
+    ASSERT_EQ( test_output[3],  "    | Title1   | Title2   | Title3 |\n\r" );
+    ASSERT_EQ( test_output[4],  "    +----------+----------+--------+\n\r" );
+    ASSERT_EQ( test_output[5],  "    | Hello    |          |        |\n\r" );
+    ASSERT_EQ( test_output[6],  "    |          |          |        |\n\r" );
+    ASSERT_EQ( test_output[7],  "    |          | World    |        |\n\r" );
+    ASSERT_EQ( test_output[8],  "    |          |          | Entry  |\n\r" );
+    ASSERT_EQ( test_output[9],  "    |          |          |        |\n\r" );
+    ASSERT_EQ( test_output[10], "    +----------+----------+--------+\n\r" );
+
 
 }
 
