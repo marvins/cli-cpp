@@ -77,7 +77,7 @@ class An_ASCII_Print_Table
         /**
          * @brief Return a formatted string for printing.
          */
-        void Print_Table( std::vector<std::string>& print_data,
+        bool Print_Table( std::vector<std::string>& print_data,
                           const int& min_row,
                           const int& max_row,
                           const int& min_col )const;
@@ -94,6 +94,16 @@ class An_ASCII_Print_Table
         inline std::vector<std::string> Get_String_Data()const{
             return m_table_output_data;
         }
+        
+        
+        /**
+         * @brief Check if the table is valid.
+         *
+         * @return True if valid, false otherwise.
+         */
+       inline bool Is_Valid()const{
+           return m_is_valid;
+       }
 
 
     private:
@@ -115,6 +125,9 @@ class An_ASCII_Print_Table
 
         /// Configuration
         An_ASCII_Print_Table_Config m_configuration;
+
+        ///Valid Flag
+        bool m_is_valid;
 
 }; // End of An_NCurses_Table Class
 

@@ -38,16 +38,21 @@ An_ASCII_Print_Table::An_ASCII_Print_Table( const std::vector<std::string>& colu
    m_column_widths(column_widths),
    m_table_data( column_titles.size() ),
    m_table_colors( column_titles.size() ),
-   m_configuration(configuration)
+   m_configuration(configuration),
+   m_is_valid(true)
 {
-
+    
+    // Check the column widths and titles
+    if( column_titles.size() != column_widths.size() ){
+        m_is_valid = false;
+    }
 }
 
 
 /*******************************/
 /*      Print the table        */
 /*******************************/
-void An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
+bool An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
                                         const int&                 min_row,
                                         const int&                 max_row,
                                         const int&                 min_col ) const
@@ -55,6 +60,10 @@ void An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
     // Define our current row
     int cur_row = min_row;
 
+    // Make sure the current size is large enough for the print table
+    if( (cur_row+3) >= print_data.size()-1 ){
+        return false;
+    }
     
     //    Create the Header, Header Line, and Blank Lines 
     std::string header_line_row = "+";
@@ -143,6 +152,8 @@ void An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
     // Print the bottom row
     print_data[max_row] = std::string(min_col,' ') + header_line_row + ANSI_NEWLINE;
 
+    // Return success
+    return true;
 }
 
 /********************************/
