@@ -64,4 +64,25 @@ target_link_libraries( cli_cpp
                        ${CURSES_LIBRARIES} 
                        pthread )
 
+#----------------------------------------#
+#-      Configure Installation Path     -#
+#----------------------------------------#
+install( TARGETS cli_cpp
+         RUNTIME DESTINATION bin
+         LIBRARY DESTINATION lib
+         ARCHIVE DESTINATION lib/static
+)
+
+install( DIRECTORY cli_cpp
+         DESTINATION include
+         FILES_MATCHING PATTERN "*.hpp"
+)
+
+install( FILES cli_cpp.hpp
+         DESTINATION include
+)
+
+install( FILES ../../cmake/Scripts/FindCLI_CPP.cmake
+         DESTINATION share/cmake/Modules
+)
 

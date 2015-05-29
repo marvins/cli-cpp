@@ -13,6 +13,7 @@
 
 // C++ Standard Libraries
 #include <cstring>
+#include <fcntl.h>
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
@@ -71,6 +72,11 @@ void A_Connection_Manager_Socket::Setup_Socket()
         return;
     }
 
+
+    // Make the socket non-blocking
+    fcntl( m_sock_fd, F_SETFL, O_NONBLOCK );
+
+
     // configure the endpoint
     struct sockaddr_in serv_addr;
     bzero((char *) &serv_addr, sizeof(serv_addr));
@@ -118,27 +124,46 @@ void A_Connection_Manager_Socket::Run_Handler()
     int n;
     std::string input;
     
-    
     // Get the length
     socklen_t clilen;
     struct sockaddr_in cli_addr;
     clilen = sizeof(cli_addr);
     
     //  Iteratively load connections
-    while( true ){
+    while( m_is_running == true )
+    {
+
+        // Wait until a valid connection
+        while( true ){
         
-        // Set the running flag
-        m_is_running = true;
+            // Accept the socket
+            m_client_fd = accept( m_sock_fd, 
+                                  (struct sockaddr*)&cli_addr,
+                                  &clilen);
+            
+            // Check if we need to keep waiting
+            if( m_client_fd < 0 && m_is_running == true )
+            {
+                usleep(1000);
+                continue;
+            }
 
-        // Accept the socket
-        m_client_fd = accept( m_sock_fd, 
-                              (struct sockaddr*)&cli_addr,
-                              &clilen);
-
-        if( m_client_fd < 0 ){
-            std::cerr << "error accepting socket" << std::endl;
-            return;
+            // Check the status
+            if( m_is_running != true || 
+                m_client_fd != EAGAIN )
+            {
+                break;
+            }
         }
+
+        // Check if we need to exit
+        if( m_is_running != true ){
+            close(m_client_fd);
+            break;
+        }
+
+        // Make the socket non-blocking
+        fcntl( m_client_fd, F_SETFL, O_NONBLOCK );
 
         // Write back
         write( m_client_fd,"\377\375\042\377\373\001",6);
@@ -149,10 +174,15 @@ void A_Connection_Manager_Socket::Run_Handler()
             this->m_render_manager->Initialize();
             this->m_render_state = this->m_render_manager->Get_Render_State();
         }
+        
+
+        // Set the connected flag
+        m_is_connected = true;
     
         // run until time to quit
-        while( true ){
-    
+        while( m_is_connected == true &&
+               m_is_running   == true )
+        {
             // Check the manager
             if( this->m_render_manager == nullptr ){
                 break;
@@ -160,15 +190,33 @@ void A_Connection_Manager_Socket::Run_Handler()
 
         
             // Check keyboard value
-            n = read( m_client_fd, buffer, 255 );
-            if( n == 0 ){
-                std::cerr << "socket closed." << std::endl;
-                break;
+            while( true ){
+                
+                // Read from socket
+                n = read( m_client_fd, buffer, 255 );
+                
+                // Check if the socket has closed
+                if( n == 0 ){
+                    break;
+                }
+
+                // Check time to quit
+                else if ( m_is_running   == false || 
+                          m_is_connected == false )
+                {
+                    break;
+                }
+
+                // Check if valid data
+                else if( n != EAGAIN && n > 0 ){
+                    break;
+                }
+                else{
+                    usleep(1000);
+                }
+
             }
-            if (n < 0){
-                std::cerr << "error reading the socket" << std::endl;
-            }
-            
+
             // Check the buffer
             input = std::string(buffer).substr(0,n);
         
@@ -228,7 +276,9 @@ void A_Connection_Manager_Socket::Run_Handler()
             }
 
             // Check if time to exit
-            if( m_is_running == false ){
+            if( m_is_running == false || 
+                m_is_connected == false )
+            {
                 break;
             }
 

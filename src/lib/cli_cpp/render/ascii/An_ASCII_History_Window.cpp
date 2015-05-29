@@ -44,7 +44,7 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     
     // Table Sizes
     const int cmd_entry_width   = 7;
-    const int status_entry_width = 20;
+    const int status_entry_width = (max_col - cmd_entry_width)/2;
     const int input_entry_width = max_col - status_entry_width - cmd_entry_width - min_col;
 
 

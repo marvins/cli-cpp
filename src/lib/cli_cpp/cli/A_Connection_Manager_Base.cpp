@@ -71,7 +71,7 @@ void A_Connection_Manager_Base::Process_Command()
 
     //  Look for CLI Shutdown
     if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_SHUTDOWN ){
-        m_is_running = false;
+        m_is_connected = false;
         std::cout << "shutdown requested" << std::endl;
     }
 
@@ -135,7 +135,9 @@ void A_Connection_Manager_Base::Start_Handler()
 void A_Connection_Manager_Base::Wait_Shutdown()
 {
     // Only join if we are running
-    if( m_is_running == true ){
+    if( m_is_running == true || 
+        m_connection_thread.joinable() == true )
+    {
         m_connection_thread.join();
     }
 }

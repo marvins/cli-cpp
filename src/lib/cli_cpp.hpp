@@ -6,7 +6,8 @@
 #ifndef __CLI_CPP_HPP__
 #define __CLI_CPP_HPP__
 
-
+// CLI Namespace
+#include "cli_cpp/cli.hpp"
 
 
 

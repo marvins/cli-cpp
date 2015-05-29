@@ -25,9 +25,9 @@ const std::string BUFFER_NEWLINE = "\n\r";
 A_Render_Manager_ASCII::A_Render_Manager_ASCII( A_Render_Driver_Context_Base::ptr_t driver_context )
  :  A_Render_Manager_Base(),
     m_class_name("A_Render_Manager_ASCII"),
+    m_history_window(nullptr),
     m_window_rows(0),
-    m_window_cols(0),
-    m_history_window(nullptr)
+    m_window_cols(0)
 {
     // Cast the driver
     m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(driver_context);
@@ -50,9 +50,9 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int& window_rows,
                                                 const int& window_cols )
  :  A_Render_Manager_Base(),
     m_class_name("A_Render_Manager_ASCII"),
+    m_history_window(nullptr),
     m_window_rows(window_rows),
-    m_window_cols(window_cols),
-    m_history_window(nullptr)
+    m_window_cols(window_cols)
 {
     // Create new render state
     m_render_state.reset(new A_Render_State( CORE::ConnectionType::SOCKET, 
@@ -192,7 +192,7 @@ void A_Render_Manager_ASCII::Print_Footer()
 /********************************/
 /*          Print the CLI       */
 /********************************/
-void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )const
+void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
 {
     // Set the buffer row
     int cli_row = m_window_rows - 2;
@@ -212,20 +212,21 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
     }
 
     // Print the text
-    if( cursor_text.size() > 0 && cli_prompt_pos < cursor_text.size() ){
+    if( (int)cursor_text.size() > 0 && cli_prompt_pos < (int)cursor_text.size() ){
         output += UTILS::ANSI_BACK_WHITE + UTILS::ANSI_BLACK + cursor_text[cli_prompt_pos] + UTILS::ANSI_RESET;
     } else {
         output += UTILS::ANSI_BACK_WHITE + UTILS::ANSI_BLACK + " " + UTILS::ANSI_RESET;
     }
 
     // Don't do this if we are at the end
-    if( cli_prompt_pos < cursor_text.size()){
+    if( cli_prompt_pos < (int)cursor_text.size()){
         output += cursor_text.substr(cli_prompt_pos+1);
     }
 
     // Check if awaiting response
     std::string WARNING_ROW;
-    if( m_waiting_command_response == true ){
+    if( this->Check_Waiting_Command_Response() == true ){
+        //m_waiting_command_response == true ){
         WARNING_ROW = "      " + UTILS::ANSI_BLACK + UTILS::ANSI_BACK_RED + "   WAITING FOR COMMAND RESPONSE   " + UTILS::ANSI_RESET;
     }
 

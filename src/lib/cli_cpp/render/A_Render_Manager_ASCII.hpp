@@ -123,7 +123,7 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
          *
          * @param[in] print_buffer Buffer to post cli contents to.
          */
-        virtual void Print_CLI( std::vector<std::string>& print_buffer ) const;
+        virtual void Print_CLI( std::vector<std::string>& print_buffer );
 
 
     private:

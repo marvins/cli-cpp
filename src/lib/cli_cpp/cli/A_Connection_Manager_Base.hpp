@@ -111,6 +111,10 @@ class A_Connection_Manager_Base{
         bool m_is_running;
 
 
+        /// Connected Flag
+        bool m_is_connected;
+
+
         /// Render Manager
         RENDER::A_Render_Manager_Base::ptr_t m_render_manager;
 

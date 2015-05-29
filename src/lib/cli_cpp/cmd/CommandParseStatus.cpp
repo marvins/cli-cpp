@@ -207,6 +207,9 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
         
         case CommandParseStatus::VALID:
         case CommandParseStatus::NO_COMMAND_FOUND:
+        case CommandParseStatus::EXCESSIVE_ARGUMENTS:
+        case CommandParseStatus::INVALID_ARGUMENTS:
+        case CommandParseStatus::UNKNOWN:
             return false;
     }
     return false;
