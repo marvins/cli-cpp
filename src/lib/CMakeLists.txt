@@ -6,7 +6,7 @@
 #
 
 #   Configure C++11
-set( CMAKE_CXX_FLAGS "-std=c++11 -Wall -ldl" )
+set( CMAKE_CXX_FLAGS "-std=c++11 -Wall -ldl -fPIC" )
 
 #---------------------------------#
 #-     Change the Output Path    -#

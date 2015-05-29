@@ -101,7 +101,6 @@ void A_Connection_Manager_Socket::Setup_Socket()
 void A_Connection_Manager_Socket::Close_Socket()
 {
     close( m_sock_fd );
-    close( m_client_fd );
 }
 
 
@@ -124,111 +123,121 @@ void A_Connection_Manager_Socket::Run_Handler()
     socklen_t clilen;
     struct sockaddr_in cli_addr;
     clilen = sizeof(cli_addr);
-
-    // Accept the socket
-    m_client_fd = accept( m_sock_fd, 
-                          (struct sockaddr*)&cli_addr,
-                          &clilen);
-
-    if( m_client_fd < 0 ){
-        std::cerr << "error accepting socket" << std::endl;
-        return;
-    }
-
-    // Write back
-    write( m_client_fd,"\377\375\042\377\373\001",6);
-    write( m_client_fd,"Welcome\n\0", 9);
-
-    // Setup NCUrses for the socket
-    if( this->m_render_manager != nullptr ){
-        this->m_render_manager->Initialize();
-        this->m_render_state = this->m_render_manager->Get_Render_State();
-    }
     
-    // run until time to quit
+    //  Iteratively load connections
     while( true ){
+        
+        // Set the running flag
+        m_is_running = true;
+
+        // Accept the socket
+        m_client_fd = accept( m_sock_fd, 
+                              (struct sockaddr*)&cli_addr,
+                              &clilen);
+
+        if( m_client_fd < 0 ){
+            std::cerr << "error accepting socket" << std::endl;
+            return;
+        }
+
+        // Write back
+        write( m_client_fd,"\377\375\042\377\373\001",6);
+        write( m_client_fd,"Welcome\n\0", 9);
+
+        // Setup Render Manager
+        if( this->m_render_manager != nullptr ){
+            this->m_render_manager->Initialize();
+            this->m_render_state = this->m_render_manager->Get_Render_State();
+        }
     
-        // Check the manager
-        if( this->m_render_manager == nullptr ){
-            break;
-        }
-
-
-        
-        // Check keyboard value
-        n = read( m_client_fd, buffer, 255 );
-        if( n == 0 ){
-            std::cerr << "socket closed." << std::endl;
-            break;
-        }
-        if (n < 0){
-            std::cerr << "error reading the socket" << std::endl;
-        }
-        
-        // Check the buffer
-        input = std::string(buffer).substr(0,n);
-        
-        // Process the text
-        if( input.size() > 1 ){
-            
-            // Check Delete Key
-            if( input == KEYBOARD_DELETE_KEY ){
-                this->m_render_state->Process_Input( KEY_DC );
+        // run until time to quit
+        while( true ){
+    
+            // Check the manager
+            if( this->m_render_manager == nullptr ){
+                break;
             }
 
-            // Check Left Key
-            else if( input == KEYBOARD_LEFT_KEY ){
-                this->m_render_state->Process_Input( KEY_LEFT );
+        
+            // Check keyboard value
+            n = read( m_client_fd, buffer, 255 );
+            if( n == 0 ){
+                std::cerr << "socket closed." << std::endl;
+                break;
             }
+            if (n < 0){
+                std::cerr << "error reading the socket" << std::endl;
+            }
+            
+            // Check the buffer
+            input = std::string(buffer).substr(0,n);
+        
+            // Process the text
+            if( input.size() > 1 ){
+            
+                // Check Delete Key
+                if( input == KEYBOARD_DELETE_KEY ){
+                    this->m_render_state->Process_Input( KEY_DC );
+                }
 
-            // Check Right Key
-            else if( input == KEYBOARD_RIGHT_KEY ){
-                this->m_render_state->Process_Input( KEY_RIGHT );
-            }
+                // Check Left Key
+                else if( input == KEYBOARD_LEFT_KEY ){
+                    this->m_render_state->Process_Input( KEY_LEFT );
+                }
+
+                // Check Right Key
+                else if( input == KEYBOARD_RIGHT_KEY ){
+                    this->m_render_state->Process_Input( KEY_RIGHT );
+                }
             
             
-            // Otherwise, there was an error
-            else{
-                std::cerr << "Warning, data is larger than expected. Size: " << input.size() << std::endl;
-                for( size_t i=0; i<input.size(); i++ ){
-                    std::cout << i << " : " << (int)input[i] << std::endl;
+                // Otherwise, there was an error
+                else{
+                    std::cerr << "Warning, data is larger than expected. Size: " << input.size() << std::endl;
+                    for( size_t i=0; i<input.size(); i++ ){
+                        std::cout << i << " : " << (int)input[i] << std::endl;
+                    }
                 }
             }
-        }
-        else{
-            
-            // cast the key
-            key = input[0];
-
-            // Check if enter
-            if( key == 27 || key == 13 || key == 10 ){
-                this->Process_Command();
-            }
-            
-            // Otherwise, add the key
             else{
-                this->m_render_state->Process_Input( key );
+            
+                // cast the key
+                key = input[0];
+
+                // Check if enter
+                if( key == 27 || key == 13 || key == 10 ){
+                    this->Process_Command();
+                }
+            
+                // Otherwise, add the key
+                else{
+                    this->m_render_state->Process_Input( key );
+                }
             }
-        }
 
         
-        // Render the screen
-        this->m_render_manager->Refresh();
+            // Render the screen
+            this->m_render_manager->Refresh();
 
-        // Get the buffer string
-        std::vector<std::string>& buffer_data = std::dynamic_pointer_cast<RENDER::A_Render_Manager_ASCII>(m_render_manager)->Get_Console_Buffer();
+            // Get the buffer string
+            std::vector<std::string>& buffer_data = std::dynamic_pointer_cast<RENDER::A_Render_Manager_ASCII>(m_render_manager)->Get_Console_Buffer();
        
-        // Write each line to the socket
-        for( size_t i=0; i<buffer_data.size(); i++ ){
-            write( m_client_fd, buffer_data[i].c_str(), buffer_data[i].size() );
-        }
+            // Write each line to the socket
+            for( size_t i=0; i<buffer_data.size(); i++ ){
+                write( m_client_fd, buffer_data[i].c_str(), buffer_data[i].size() );
+            }
 
-        // Check if time to exit
-        if( m_is_running == false ){
-            break;
-        }
+            // Check if time to exit
+            if( m_is_running == false ){
+                break;
+            }
 
+        }
+    
+        // Close the current session
+        close( m_client_fd );
     }
+
 
     // Set the running flag
     m_is_running = false;
