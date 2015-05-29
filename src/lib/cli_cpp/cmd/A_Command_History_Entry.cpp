@@ -13,7 +13,7 @@ namespace CMD{
 /**********************************/
 A_Command_History_Entry::A_Command_History_Entry( const int&                    command_id,
                                                   const std::string&            command_string,
-                                                  const CMD::A_Command_Result&  command_result )
+                                                  CMD::A_Command_Result::ptr_t  command_result )
   : m_command_id(command_id),
     m_command_string(command_string),
     m_command_result(command_result)

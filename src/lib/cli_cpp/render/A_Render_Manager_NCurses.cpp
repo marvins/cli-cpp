@@ -345,7 +345,7 @@ void A_Render_Manager_NCurses::Print_CLI()
 /*          Add History to the Command Parser Table         */
 /************************************************************/
 void  A_Render_Manager_NCurses::Add_Command_History( const std::string&            command_string,
-                                                     const CMD::A_Command_Result&  command_result )
+                                                     CMD::A_Command_Result::ptr_t  command_result )
 {
 
     // Log
@@ -355,7 +355,7 @@ void  A_Render_Manager_NCurses::Add_Command_History( const std::string&         
     m_command_counter++;
 
     // Set the color code 
-    int status_color_code = CMD::CommandParseStatusToColorCode(command_result.Get_Parse_Status());
+    int status_color_code = CMD::CommandParseStatusToColorCode(command_result->Get_Parse_Status());
 
     // Update the table
     m_history_print_table->Add_Entry( m_command_counter,
@@ -368,7 +368,7 @@ void  A_Render_Manager_NCurses::Add_Command_History( const std::string&         
     
     m_history_print_table->Add_Entry( m_command_counter, 
                                       2,
-                                      command_result.Get_Parse_Status_String(),
+                                      command_result->Get_Parse_Status_String(),
                                       status_color_code );
 
 

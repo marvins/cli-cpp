@@ -83,7 +83,7 @@ class A_Render_Manager_NCurses : public A_Render_Manager_Base
          * @param[in] command_result Parsing and evaluation result.
          */
         virtual void Add_Command_History( const std::string&            command_string,
-                                          const CMD::A_Command_Result&  command_result );
+                                          CMD::A_Command_Result::ptr_t  command_result );
 
         
         /**

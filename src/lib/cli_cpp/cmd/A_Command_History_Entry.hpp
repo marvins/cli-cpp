@@ -36,7 +36,7 @@ class A_Command_History_Entry{
          */
         A_Command_History_Entry( const int&                    command_count,
                                  const std::string&            command_string,
-                                 const CMD::A_Command_Result&  command_result );
+                                 CMD::A_Command_Result::ptr_t  command_result );
    
         
         /**
@@ -62,8 +62,8 @@ class A_Command_History_Entry{
         /**
          * @brief Get the command result
          */
-        inline CMD::A_Command_Result Get_Command_Result()const{
-            return m_command_result;
+        inline CMD::A_Command_Result Get_Command_Result(){
+            return (*m_command_result);
         }
 
 
@@ -78,7 +78,7 @@ class A_Command_History_Entry{
 
 
         /// Command Result
-        CMD::A_Command_Result m_command_result;
+        CMD::A_Command_Result::ptr_t m_command_result;
 
 }; // End of A_Command_History_Entry Class
 

@@ -8,6 +8,10 @@
 // CLI Libraries
 #include "../../utility/String_Utilities.hpp"
 
+// C++ Standard Libraries
+#include <iostream>
+
+
 namespace CLI{
 namespace RENDER{
 namespace ASCII{
@@ -40,7 +44,7 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     
     // Table Sizes
     const int cmd_entry_width   = 7;
-    const int status_entry_width = 10;
+    const int status_entry_width = 0;
     const int input_entry_width = max_col - status_entry_width - cmd_entry_width - min_col;
 
 
@@ -62,7 +66,7 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     header_data_row += "|";
 
     for( int i=0; i<status_entry_width; i++ ){ header_line_row += "-"; }
-    header_data_row += UTILS::Format_String("  Status", status_entry_width, UTILS::StringAlignment::CENTER);
+    header_data_row += UTILS::Format_String("  Status", status_entry_width, UTILS::StringAlignment::LEFT);
    
     header_line_row += "+" + BUFFER_NEWLINE;
     header_data_row += "|" + BUFFER_NEWLINE;

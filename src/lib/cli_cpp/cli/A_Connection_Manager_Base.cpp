@@ -58,13 +58,16 @@ void A_Connection_Manager_Base::Process_Command()
 
     // Check the command
     CMD::A_Command_Result result = m_command_parser->Evaluate_Command( this->m_render_state->Get_Cursor_Text() );
+        
+    // Create shared pointer
+    CMD::A_Command_Result::ptr_t result_ptr = std::make_shared<CMD::A_Command_Result>( result );
     
     // Log 
     BOOST_LOG_TRIVIAL(trace) << "File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ << ", Command Result: " << result.To_Debug_String();
 
     // Add to history
     this->m_render_manager->Add_Command_History( this->m_render_state->Get_Cursor_Text(), 
-                                                         result );
+                                                 result_ptr );
 
     //  Look for CLI Shutdown
     if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_SHUTDOWN ){
@@ -82,8 +85,6 @@ void A_Connection_Manager_Base::Process_Command()
     // Otherwise, handle command
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::VALID ){
 
-        // Create shared pointer
-        CMD::A_Command_Result::ptr_t result_ptr = std::make_shared<CMD::A_Command_Result>( result );
         
         // Add the command to the queue
         m_command_queue->Push_Command( result_ptr );
@@ -99,7 +100,6 @@ void A_Connection_Manager_Base::Process_Command()
     // Otherwise, error
     else{
         std::cout << "invalid command" << std::endl;
-        std::cout << result.To_Debug_String() << std::endl;
     }
 
     

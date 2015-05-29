@@ -34,9 +34,13 @@ class A_Command_History{
 
         
         /**
-         * @brief Get entry
+         * @brief Get entry.
+         *
+         * @param[in] entry Position of the entry to fetch.
+         *
+         * @return Reference to the command entry.
          */
-        inline A_Command_History_Entry Get_Entry( const int& entry )const{
+        inline A_Command_History_Entry& Get_Entry( const int& entry ){
             return m_command_history[entry];
         }
 
@@ -44,7 +48,7 @@ class A_Command_History{
         /**
          * @brief Get back entry.
          */
-         inline A_Command_History_Entry Get_Back()const{
+         inline A_Command_History_Entry& Get_Back(){
              return m_command_history.back();
          }
 

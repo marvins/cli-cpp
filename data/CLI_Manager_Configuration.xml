@@ -30,7 +30,7 @@
     <socket-configuration>
 
         <!-- Listening Port Number -->
-        <listening-port value="12345" />
+        <listening-port value="12344" />
 
         <!-- Window Size -->
         <window-size rows="30" cols="120" />

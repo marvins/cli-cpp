@@ -101,7 +101,7 @@ class A_Render_Manager_Base{
          * @param[in] command_result Parsing and evaluation result.
          */
         inline virtual void Add_Command_History( const std::string&            command_string,
-                                                 const CMD::A_Command_Result&  command_result )
+                                                 CMD::A_Command_Result::ptr_t  command_result )
         {
             m_command_history->Add_Entry( CMD::A_Command_History_Entry( ++m_command_counter,
                                                                         command_string,

@@ -96,8 +96,8 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         {
             m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>( driver_context );
         }
-
-
+        
+        
     protected:
         
         /**
