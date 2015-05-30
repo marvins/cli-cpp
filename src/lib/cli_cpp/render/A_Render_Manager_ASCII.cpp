@@ -151,7 +151,7 @@ void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffe
 {
     
     // Set the header
-    print_buffer[0] = UTILS::ANSI_CLEARSCREEN + "     " + m_cli_title + BUFFER_NEWLINE;
+    print_buffer[0] = UTILS::ANSI_CLEARSCREEN + UTILS::ANSI_RESETCURSOR + "     " + m_cli_title + BUFFER_NEWLINE;
 
 }
 
