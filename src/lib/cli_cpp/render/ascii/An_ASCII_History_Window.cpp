@@ -60,7 +60,7 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     header_data_row += "|";
 
     for( int i=0; i<input_entry_width; i++ ){ header_line_row += "-"; }
-    header_data_row += UTILS::Format_String("  Input / Response", input_entry_width, UTILS::StringAlignment::LEFT);
+    header_data_row += UTILS::Format_String("  Input", input_entry_width, UTILS::StringAlignment::LEFT);
     
     header_line_row += "+";
     header_data_row += "|";
@@ -83,10 +83,10 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     std::string blank_line_row  = "|" + std::string(cmd_entry_width, ' ') + "|" + std::string(input_entry_width,' ') + "|" + std::string(status_entry_width,' ') + "|" + BUFFER_NEWLINE;
     
     // Iterate over main window region
-    int row_id = 0;
+    int row_id = m_command_history->Size()-1;
     std::string row_data;
     bool skip_row = false;
-    for( int row = current_row; row <= max_row; row++, row_id++ )
+    for( int row = max_row-1; row >= current_row; row--, row_id-- )
     {
         
         // If we need to skip the row
@@ -97,7 +97,8 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
 
 
         // Check if we still have commands to print
-        else if( row_id < (int)m_command_history->Size() ){
+        else if( row_id < (int)m_command_history->Size() && row_id >= 0 )
+        {
         
             // Creatde new row string
             row_data = "|" + UTILS::Format_String( UTILS::num2str<int>( m_command_history->Get_Entry( row_id ).Get_Command_ID()),

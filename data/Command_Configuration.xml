@@ -24,6 +24,13 @@
             <name value="back" />
             <description value="Back up to main window." />
         </command>
+        
+        <!-- Clear History Command -->
+        <command mode="clear" >
+            <name value="cls" />
+            <name value="clear-history" />
+            <description value="Delete current history." />
+        </command>
 
     </parser-commands>
 

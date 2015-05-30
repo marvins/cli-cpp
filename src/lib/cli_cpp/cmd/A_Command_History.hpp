@@ -59,7 +59,12 @@ class A_Command_History{
         inline int Size()const{
             return m_command_history.size();
         }
+        
 
+        /**
+         * @brief Clear the History.
+         */
+        void Clear();
         
 
     private:

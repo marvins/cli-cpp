@@ -18,6 +18,14 @@ void A_Command_History::Add_Entry( A_Command_History_Entry const& entry )
 }
 
 
+/************************************/
+/*          Clear History           */
+/************************************/
+void A_Command_History::Clear()
+{
+    m_command_history.clear();
+}
+
 } // End of CMD Namespace
 } // End of CLI Namespace
 

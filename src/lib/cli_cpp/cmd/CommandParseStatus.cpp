@@ -48,6 +48,11 @@ std::string CommandParseStatusToString( CommandParseStatus const& status )
     if( status == CommandParseStatus::NO_COMMAND_FOUND ){
         return "NO_COMMAND_FOUND";
     }
+    
+    // CLI Clear
+    if( status == CommandParseStatus::CLI_CLEAR ){
+        return "CLI_CLEAR";
+    }
 
     // UNKNOWN
     return "UNKNOWN";
@@ -77,6 +82,11 @@ std::string CommandParseStatusToHistoryString( CommandParseStatus const& status 
 
     // Back help
     if( status == CommandParseStatus::CLI_BACK ){
+        return "Success";
+    }
+
+    // Clear
+    if( status == CommandParseStatus::CLI_CLEAR ){
         return "Success";
     }
 
@@ -125,6 +135,11 @@ int CommandParseStatusToColorCode( CommandParseStatus const& status )
         return 0;
     }
 
+    // CLI Clear
+    if( status == CommandParseStatus::CLI_CLEAR ){
+        return 0;
+    }
+
     // Invalid arguments
     if( status == CommandParseStatus::INVALID_ARGUMENTS ){
         return 1;
@@ -166,6 +181,11 @@ CommandParseStatus StringToCommandParseStatus( const std::string& status )
         return CommandParseStatus::CLI_HELP;
     }
 
+    // CLI Clear
+    if( status == "CLI_CLEAR" ){
+        return CommandParseStatus::CLI_CLEAR;
+    }
+
     // Invalid ARguments
     if( status == "INVALID_ARGUMENTS" ){
         return CommandParseStatus::INVALID_ARGUMENTS;
@@ -203,6 +223,7 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
         case CommandParseStatus::CLI_BACK:
         case CommandParseStatus::CLI_HELP:
         case CommandParseStatus::CLI_SHUTDOWN:
+        case CommandParseStatus::CLI_CLEAR:
             return true;
         
         case CommandParseStatus::VALID:

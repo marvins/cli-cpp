@@ -20,8 +20,7 @@ namespace RENDER{
 /************************************/
 A_Render_State::A_Render_State( CORE::ConnectionType const&    conn_type,
                                 CMD::A_Command_History::ptr_t  command_history )
-  : m_connection_type(conn_type),
-    m_cli_prompt_text(""),
+  : m_cli_prompt_text(""),
     m_cli_prompt_cursor_head(0),
     m_cli_prompt_cursor_tail(0),
     m_window_rows(0),
@@ -76,14 +75,18 @@ void A_Render_State::Process_Input( const int& input )
         Apply_Down_Key();
         return;
     }
+    
+    // Check for text
+    else if( Is_Text( input ) == true ){
 
+        // Otherwise, add character to string
+        m_cli_prompt_text.push_back((char)input);
 
-    // Otherwise, add character to string
-    m_cli_prompt_text.push_back((char)input);
+        // increment head
+        m_cli_prompt_cursor_head++;
+        m_cli_prompt_cursor_at++;
 
-    // increment head
-    m_cli_prompt_cursor_head++;
-    m_cli_prompt_cursor_at++;
+    }
 
 }
 
@@ -244,7 +247,57 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
 
         // Otherwise, error
     }
+
+    // If clear
+    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_CLEAR )
+    {
+        // Delete the history
+        m_command_history->Clear();
+    }
 }
+
+
+/************************/
+/*      Check Text      */
+/************************/
+bool A_Render_State::Is_Text( const int& input )const
+{
+    // Check for the alphabet
+    if( (input >= 'a' && input <= 'z') ||
+        (input >= 'A' && input <= 'Z') )
+    {
+        return true;
+    }
+
+    // Check for Numbers
+    if( input >= '0' && input <= '9' )
+    {
+        return true;
+    }
+       
+    // Check for other chars
+    if( input == ' ' || 
+        input == '.' ||
+        input == ',' ||
+        input == '_' ||
+        input == '?' )
+    {
+        return true;
+    }
+    
+    // Math Operators
+    if( input == '+' || 
+        input == '-' ||
+        input == '|' ||
+        input == '*' ||
+        input == '^' )
+    {
+        return true;
+    }
+
+    return false;
+}
+
 
 } // End of RENDER Namespace
 } // End of CLI    Namespace

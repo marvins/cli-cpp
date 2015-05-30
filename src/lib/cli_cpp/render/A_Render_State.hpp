@@ -163,14 +163,23 @@ class A_Render_State{
         void Apply_Down_Key();
 
 
-        /// Connection Type
-        CORE::ConnectionType m_connection_type;
+        /**
+         * @brief Check if input is text.
+         *
+         * @param[in] input
+         *
+         * @return True if text, false otherwise.
+        */
+        bool Is_Text( const int& input )const; 
+
 
         /// CLI Text
         std::string m_cli_prompt_text;
 
+
         /// CLI Cursor Position
         int m_cli_prompt_cursor_head;
+
 
         /// CLI Cursor Position
         int m_cli_prompt_cursor_tail;

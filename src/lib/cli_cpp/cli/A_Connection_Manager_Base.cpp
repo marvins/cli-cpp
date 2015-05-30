@@ -72,7 +72,6 @@ void A_Connection_Manager_Base::Process_Command()
     //  Look for CLI Shutdown
     if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_SHUTDOWN ){
         m_is_connected = false;
-        std::cout << "shutdown requested" << std::endl;
     }
 
     
@@ -99,7 +98,6 @@ void A_Connection_Manager_Base::Process_Command()
 
     // Otherwise, error
     else{
-        std::cout << "invalid command" << std::endl;
     }
 
     
