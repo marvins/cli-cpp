@@ -74,13 +74,13 @@ bool An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
     for( int tcol=0; tcol < (int)m_column_titles.size(); tcol++ ){
         
         // Iterate over each position in the table
-        for( int c=0; c<m_column_widths[tcol]; c++ ){
+        for( int c=0; c<(m_column_widths[tcol]-1); c++ ){
             header_line_row += '-'; 
         }
         header_data_row += UTILS::Format_String( " " + m_column_titles[tcol],
-                                                 m_column_widths[tcol],
+                                                 m_column_widths[tcol]-1,
                                                  UTILS::StringAlignment::LEFT );
-        blank_line_row += std::string( m_column_widths[tcol], ' ');
+        blank_line_row += std::string( m_column_widths[tcol]-1, ' ');
 
         // append the extra
         header_line_row += "+";
@@ -127,7 +127,7 @@ bool An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
 
             // Append column
             current_line += UTILS::Format_String( m_table_data[col][current_row_entry], 
-                                                  m_column_widths[col],
+                                                  m_column_widths[col]-1,
                                                   UTILS::StringAlignment::LEFT );
             
             // Set the color

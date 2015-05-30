@@ -41,10 +41,14 @@
     <!-- Command Configuration -->
     <command-configuration path="../data/Command_Configuration.xml" />
 
-    <!-- CLI Name -->
+    <!-- CLI Configuration -->
     <cli>
+        <!-- CLI Title String -->
         <title value="Command-Line Interface Demo" />
+        
+        <!-- Max size of the command queue (Basic history memorization). -->
         <command-queue max_size="100" />
+
     </cli>
 
 </cli-manager-configuration>

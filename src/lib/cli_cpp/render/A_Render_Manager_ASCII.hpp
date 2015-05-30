@@ -164,6 +164,10 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         int m_window_rows;
         int m_window_cols;
 
+        /// Content Limits
+        int m_min_content_row;
+        int m_min_content_col;
+
 }; // End of A_Render_Manager_ASCII Class
 
 } // End of RENDER Namespace

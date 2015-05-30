@@ -27,7 +27,9 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( A_Render_Driver_Context_Base::pt
     m_class_name("A_Render_Manager_ASCII"),
     m_history_window(nullptr),
     m_window_rows(0),
-    m_window_cols(0)
+    m_window_cols(0),
+    m_min_content_row(1),
+    m_min_content_col(2)
 {
     // Cast the driver
     m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(driver_context);
@@ -52,7 +54,9 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int& window_rows,
     m_class_name("A_Render_Manager_ASCII"),
     m_history_window(nullptr),
     m_window_rows(window_rows),
-    m_window_cols(window_cols)
+    m_window_cols(window_cols),
+    m_min_content_row(1),
+    m_min_content_col(2)
 {
     // Create new render state
     m_render_state.reset(new A_Render_State( CORE::ConnectionType::SOCKET, 
@@ -163,16 +167,14 @@ void A_Render_Manager_ASCII::Print_Main_Content()
 {
     
     // Set the min and max positions
-    int min_col = 3;
     int max_col = m_render_state->Get_Cols()-3;
-    int min_row = 3;
     int max_row = m_render_state->Get_Rows()-3;
     
     // Update the cli window
     m_history_window->Print_Table( m_console_buffer, 
-                                   min_row,
+                                   m_min_content_row,
                                    max_row,
-                                   min_col,
+                                   m_min_content_col,
                                    max_col );
 
 
@@ -234,7 +236,7 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
 
     // Copy to the buffer
     print_buffer[cli_row+0] = output;
-    print_buffer[cli_row+1] = WARNING_ROW + UTILS::ANSI_CURSORINVIS;;
+    print_buffer[cli_row+1] = WARNING_ROW + UTILS::ANSI_CURSORINVIS;
 
 }
 
@@ -259,8 +261,8 @@ void A_Render_Manager_ASCII::Build_Help_General_Buffer()
     m_help_menu = std::make_shared<ASCII::An_ASCII_Help_Menu>( m_cli_title, 
                                                                m_render_state->Get_Rows(),
                                                                m_render_state->Get_Cols(),
-                                                               3,
-                                                               3,
+                                                               m_min_content_col,
+                                                               m_min_content_row,
                                                                m_render_state->Get_Rows(),
                                                                m_cli_command_list,
                                                                m_command_list );

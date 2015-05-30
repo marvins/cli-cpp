@@ -92,14 +92,14 @@ TEST( An_ASCII_Print_Table, Construction_Test_02 )
     
     ASSERT_EQ( test_output[0], "" );
     ASSERT_EQ( test_output[1], "" );
-    ASSERT_EQ( test_output[2], "    +----------+----------+--------+\n\r" );
-    ASSERT_EQ( test_output[3], "    | Title1   | Title2   | Title3 |\n\r" );
-    ASSERT_EQ( test_output[4], "    +----------+----------+--------+\n\r" );
-    ASSERT_EQ( test_output[5], "    |          |          |        |\n\r" );
-    ASSERT_EQ( test_output[6], "    |          |          |        |\n\r" );
-    ASSERT_EQ( test_output[7], "    |          |          |        |\n\r" );
-    ASSERT_EQ( test_output[8], "    |          |          |        |\n\r" );
-    ASSERT_EQ( test_output[9], "    +----------+----------+--------+\n\r" );
+    ASSERT_EQ( test_output[2], "    +---------+---------+-------+\n\r" );
+    ASSERT_EQ( test_output[3], "    | Title1  | Title2  | Title3|\n\r" );
+    ASSERT_EQ( test_output[4], "    +---------+---------+-------+\n\r" );
+    ASSERT_EQ( test_output[5], "    |         |         |       |\n\r" );
+    ASSERT_EQ( test_output[6], "    |         |         |       |\n\r" );
+    ASSERT_EQ( test_output[7], "    |         |         |       |\n\r" );
+    ASSERT_EQ( test_output[8], "    |         |         |       |\n\r" );
+    ASSERT_EQ( test_output[9], "    +---------+---------+-------+\n\r" );
 
     // Add some entries
     print_table.Add_Entry(0, 0, " Hello");
@@ -107,14 +107,14 @@ TEST( An_ASCII_Print_Table, Construction_Test_02 )
     ASSERT_TRUE( print_table.Print_Table( test_output, 2, 9, 4 ));
     ASSERT_EQ( test_output[0], "" );
     ASSERT_EQ( test_output[1], "" );
-    ASSERT_EQ( test_output[2], "    +----------+----------+--------+\n\r" );
-    ASSERT_EQ( test_output[3], "    | Title1   | Title2   | Title3 |\n\r" );
-    ASSERT_EQ( test_output[4], "    +----------+----------+--------+\n\r" );
-    ASSERT_EQ( test_output[5], "    | Hello    |          |        |\n\r" );
-    ASSERT_EQ( test_output[6], "    |          | World    |        |\n\r" );
-    ASSERT_EQ( test_output[7], "    |          |          |        |\n\r" );
-    ASSERT_EQ( test_output[8], "    |          |          |        |\n\r" );
-    ASSERT_EQ( test_output[9], "    +----------+----------+--------+\n\r" );
+    ASSERT_EQ( test_output[2], "    +---------+---------+-------+\n\r" );
+    ASSERT_EQ( test_output[3], "    | Title1  | Title2  | Title3|\n\r" );
+    ASSERT_EQ( test_output[4], "    +---------+---------+-------+\n\r" );
+    ASSERT_EQ( test_output[5], "    | Hello   |         |       |\n\r" );
+    ASSERT_EQ( test_output[6], "    |         | World   |       |\n\r" );
+    ASSERT_EQ( test_output[7], "    |         |         |       |\n\r" );
+    ASSERT_EQ( test_output[8], "    |         |         |       |\n\r" );
+    ASSERT_EQ( test_output[9], "    +---------+---------+-------+\n\r" );
     
     
     
@@ -125,15 +125,15 @@ TEST( An_ASCII_Print_Table, Construction_Test_02 )
     ASSERT_TRUE( print_table.Print_Table( test_output, 2, 10, 4 ));
     ASSERT_EQ( test_output[0],  "" );
     ASSERT_EQ( test_output[1],  "" );
-    ASSERT_EQ( test_output[2],  "    +----------+----------+--------+\n\r" );
-    ASSERT_EQ( test_output[3],  "    | Title1   | Title2   | Title3 |\n\r" );
-    ASSERT_EQ( test_output[4],  "    +----------+----------+--------+\n\r" );
-    ASSERT_EQ( test_output[5],  "    | Hello    |          |        |\n\r" );
-    ASSERT_EQ( test_output[6],  "    |          |          |        |\n\r" );
-    ASSERT_EQ( test_output[7],  "    |          | World    |        |\n\r" );
-    ASSERT_EQ( test_output[8],  "    |          |          | Entry  |\n\r" );
-    ASSERT_EQ( test_output[9],  "    |          |          |        |\n\r" );
-    ASSERT_EQ( test_output[10], "    +----------+----------+--------+\n\r" );
+    ASSERT_EQ( test_output[2],  "    +---------+---------+-------+\n\r" );
+    ASSERT_EQ( test_output[3],  "    | Title1  | Title2  | Title3|\n\r" );
+    ASSERT_EQ( test_output[4],  "    +---------+---------+-------+\n\r" );
+    ASSERT_EQ( test_output[5],  "    | Hello   |         |       |\n\r" );
+    ASSERT_EQ( test_output[6],  "    |         |         |       |\n\r" );
+    ASSERT_EQ( test_output[7],  "    |         | World   |       |\n\r" );
+    ASSERT_EQ( test_output[8],  "    |         |         | Entry |\n\r" );
+    ASSERT_EQ( test_output[9],  "    |         |         |       |\n\r" );
+    ASSERT_EQ( test_output[10], "    +---------+---------+-------+\n\r" );
 
 
 }

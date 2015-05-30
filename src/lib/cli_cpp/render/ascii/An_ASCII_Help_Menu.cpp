@@ -5,6 +5,10 @@
 */
 #include "An_ASCII_Help_Menu.hpp"
 
+// C++ Standard Libraries
+#include <iostream>
+
+
 namespace CLI{
 namespace RENDER{
 namespace ASCII{
@@ -46,7 +50,7 @@ void An_ASCII_Help_Menu::Initialize()
     m_buffer_data.resize(m_window_rows, "\n\r");
 
     // Set the header
-    m_buffer_data[0] = UTILS::ANSI_CLEARSCREEN + "     " + m_cli_title + BUFFER_NEWLINE;
+    m_buffer_data[0] = UTILS::ANSI_CLEARSCREEN + UTILS::ANSI_RESETCURSOR + "     " + m_cli_title + BUFFER_NEWLINE;
     int current_row = m_min_row;
     
     // Table Sizes
@@ -67,7 +71,7 @@ void An_ASCII_Help_Menu::Initialize()
     m_buffer_data[current_row++] = header_line_row + BUFFER_NEWLINE;
 
     // Create the CLI Command Table
-    Initialize_CLI_Command_Table( current_row );
+    Initialize_CLI_Command_Table();
 
 
     // Create the Command Table
@@ -80,7 +84,7 @@ void An_ASCII_Help_Menu::Initialize()
         
     // Print Parse Table
     m_cli_command_print_table->Print_Table( m_buffer_data, m_min_row,     max_cli_row, m_min_col );
-    m_command_print_table->Print_Table(     m_buffer_data, max_cli_row+1, m_max_row-3,   m_min_col );
+    m_command_print_table->Print_Table(     m_buffer_data, max_cli_row+1, m_max_row-3, m_min_col );
 
 
 }
@@ -88,21 +92,23 @@ void An_ASCII_Help_Menu::Initialize()
 /*************************************************/
 /*       Initialize the CLI Command Table        */
 /*************************************************/
-void An_ASCII_Help_Menu::Initialize_CLI_Command_Table( int& current_row )
+void An_ASCII_Help_Menu::Initialize_CLI_Command_Table()
 {
 
     // Update the sizes
-    int col0_width = 10;
-    int col1_width = 20;
+    int col0_width = 15;
+    int col1_width = 25;
     int col2_width = m_window_cols - col0_width - col1_width - m_min_col;
-    
+
     // Process Parser Command List
     std::vector<std::string> titles;
     std::vector<int>  widths;
     titles.push_back("CLI Task");            widths.push_back(col0_width);
     titles.push_back("Valid Command Names"); widths.push_back(col1_width);
     titles.push_back("Description");         widths.push_back(col2_width);
-    m_cli_command_print_table = std::make_shared<UTILS::An_ASCII_Print_Table>( titles, widths, UTILS::An_ASCII_Print_Table_Config(false,false) );
+    m_cli_command_print_table = std::make_shared<UTILS::An_ASCII_Print_Table>(  titles,
+                                                                                widths, 
+                                                                                UTILS::An_ASCII_Print_Table_Config(false,false) );
     
     // Add entries
     std::string command_list;
@@ -110,7 +116,7 @@ void An_ASCII_Help_Menu::Initialize_CLI_Command_Table( int& current_row )
     for( int i=0; i<(int)m_cli_command_list.size(); i++ ){
 
         // Set the Formal Name
-        m_cli_command_print_table->Add_Entry( i, 0, m_cli_command_list[i].Get_Formal_Name() );
+        m_cli_command_print_table->Add_Entry( i, 0, " " + m_cli_command_list[i].Get_Formal_Name() );
 
         // Set argument list
         command_list = "";
@@ -122,11 +128,11 @@ void An_ASCII_Help_Menu::Initialize_CLI_Command_Table( int& current_row )
             }
         }
         
-        m_cli_command_print_table->Add_Entry( i, 1, command_list );
+        m_cli_command_print_table->Add_Entry( i, 1, " " + command_list );
         
         
         // Add Description
-        m_cli_command_print_table->Add_Entry( i, 2, m_cli_command_list[i].Get_Description() );
+        m_cli_command_print_table->Add_Entry( i, 2, " " + m_cli_command_list[i].Get_Description() );
     }
 }
 
@@ -147,13 +153,16 @@ void An_ASCII_Help_Menu::Initialize_Command_Table()
     
     std::vector<int>  widths;
     std::vector<std::string> titles;
-    titles.push_back("Command");           widths.push_back(col0_width);
-    titles.push_back("Arguments");         widths.push_back(col1_width);
-    titles.push_back("Arg-Type");          widths.push_back(col2_width);
-    titles.push_back("Arg-Req.");      widths.push_back(col3_width);
-    titles.push_back("Default");       widths.push_back(col4_width);
-    titles.push_back("Description");       widths.push_back(col5_width);
-    m_command_print_table = std::make_shared<UTILS::An_ASCII_Print_Table>( titles, widths, UTILS::An_ASCII_Print_Table_Config(false,false));
+    titles.push_back("Command");         widths.push_back(col0_width);
+    titles.push_back("Arguments");       widths.push_back(col1_width);
+    titles.push_back("Arg-Type");        widths.push_back(col2_width);
+    titles.push_back("Arg-Req.");        widths.push_back(col3_width);
+    titles.push_back("Default");         widths.push_back(col4_width);
+    titles.push_back("Description");     widths.push_back(col5_width);
+
+    m_command_print_table = std::make_shared<UTILS::An_ASCII_Print_Table>( titles, 
+                                                                           widths, 
+                                                                           UTILS::An_ASCII_Print_Table_Config(false,false));
 
     // Add entries
     std::vector<CMD::A_Command_Argument> argument_list;

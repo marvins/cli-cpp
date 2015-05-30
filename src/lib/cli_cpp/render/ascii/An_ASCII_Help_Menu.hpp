@@ -69,7 +69,7 @@ class An_ASCII_Help_Menu{
         */
         void Initialize();
 
-        void Initialize_CLI_Command_Table( int& current_row );
+        void Initialize_CLI_Command_Table();
 
         void Initialize_Command_Table();
 
