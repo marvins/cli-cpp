@@ -6,6 +6,7 @@
 #include "A_Render_Manager_ASCII.hpp"
 
 // C++ Standard Libraries
+#include <algorithm>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -78,6 +79,9 @@ void A_Render_Manager_ASCII::Initialize()
     m_render_state->Set_Window_Size( m_window_rows, 
                                      m_window_cols );
 
+    // Update the status code string
+    m_status_code_string = std::string(m_window_cols/4, ' ');
+
     // Build the console buffer
     Build_Console_Buffer();
     
@@ -137,10 +141,6 @@ void A_Render_Manager_ASCII::Refresh()
     Print_Main_Content();
 
     
-    // Draw the footer
-    Print_Footer();
-
-    
     // Draw the CLI
     Print_CLI( m_console_buffer );
 
@@ -153,9 +153,27 @@ void A_Render_Manager_ASCII::Refresh()
 /****************************************/
 void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffer )
 {
+    // Check for status
+    if( m_waiting_command_response == true ){
+        m_status_code_string = UTILS::ANSI_BACK_RED + UTILS::ANSI_BLACK + "Waiting for Command Response";
+        m_status_code_string.resize( m_window_cols/4, ' ' );
+    } else {
+        m_status_code_string = UTILS::ANSI_BACK_WHITE + std::string( m_window_cols/4, ' ');
+    }
+
+    // Find the title length
+    int title_length = std::min((int)m_cli_title.size(), m_render_state->Get_Cols()/2);
+    int title_width  = m_render_state->Get_Cols() * 5 / 8;
+    
+    // Define the first title part
+    std::string title_header = m_cli_title.substr( 0, title_length);
+    title_header.resize(title_width, ' ');
+
+    // Append the status text
+    title_header += m_status_code_string + UTILS::ANSI_RESET;
     
     // Set the header
-    print_buffer[0] = UTILS::ANSI_CLEARSCREEN + UTILS::ANSI_RESETCURSOR + "     " + m_cli_title + BUFFER_NEWLINE;
+    print_buffer[0] = UTILS::ANSI_CLEARSCREEN + UTILS::ANSI_RESETCURSOR + "     " + title_header + BUFFER_NEWLINE;
 
 }
 
@@ -176,18 +194,6 @@ void A_Render_Manager_ASCII::Print_Main_Content()
                                    max_row,
                                    m_min_content_col,
                                    max_col );
-
-
-}
-
-
-/****************************************/
-/*          Print the Footer            */
-/****************************************/
-void A_Render_Manager_ASCII::Print_Footer()
-{
-
-
 }
 
 
@@ -225,18 +231,9 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
         output += cursor_text.substr(cli_prompt_pos+1);
     }
 
-    // Check if awaiting response
-    std::string WARNING_ROW;
-    if( this->Check_Waiting_Command_Response() == true ){
-        //m_waiting_command_response == true ){
-        WARNING_ROW = "      " + UTILS::ANSI_BLACK + UTILS::ANSI_BACK_RED + "   WAITING FOR COMMAND RESPONSE   " + UTILS::ANSI_RESET;
-    }
-
-    output += "\n\r";
 
     // Copy to the buffer
-    print_buffer[cli_row+0] = output;
-    print_buffer[cli_row+1] = WARNING_ROW + UTILS::ANSI_CURSORINVIS;
+    print_buffer[cli_row+0] = output + BUFFER_NEWLINE +  UTILS::ANSI_CURSORINVIS;
 
 }
 

@@ -113,12 +113,6 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
 
 
         /**
-         * @brief Print Footer
-         */
-        virtual void Print_Footer();
-
-
-        /**
          * @brief Print CLI
          *
          * @param[in] print_buffer Buffer to post cli contents to.
@@ -164,9 +158,14 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         int m_window_rows;
         int m_window_cols;
 
-        /// Content Limits
+        /// Min Content Row
         int m_min_content_row;
+
+        /// Min Content Column
         int m_min_content_col;
+
+        /// Status Code String
+        std::string m_status_code_string;
 
 }; // End of A_Render_Manager_ASCII Class
 
