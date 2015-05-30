@@ -178,19 +178,22 @@ void A_Render_State::Apply_Right_Key()
 void A_Render_State::Apply_Down_Key()
 {
     // Skip if the cursor is at the max
-    if( m_command_history_ptr < (m_command_history->Size()-1) ){
+    if( m_command_history_ptr < (m_command_history->Size()) ){
 
         // Increment the counter
         m_command_history_ptr++;
         
         // Change the text
-        m_cli_prompt_text = m_command_history->Get_Entry( m_command_history_ptr ).Get_Command_String();
-        
+        if( m_command_history_ptr != m_command_history->Size() ){
+            m_cli_prompt_text = m_command_history->Get_Entry( m_command_history_ptr ).Get_Command_String();
+        } else {
+            m_cli_prompt_text = "";
+        }
+
         // Update the pointers
         m_cli_prompt_cursor_at = 0;
         m_cli_prompt_cursor_tail = 0;
         m_cli_prompt_cursor_head = m_cli_prompt_text.size();
-
 
 
     }

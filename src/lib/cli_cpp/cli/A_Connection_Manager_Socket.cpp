@@ -25,6 +25,8 @@
 const std::string KEYBOARD_DELETE_KEY = "\033\133\063\176";
 const std::string KEYBOARD_LEFT_KEY   = "\033\133\104";
 const std::string KEYBOARD_RIGHT_KEY  = "\033\133\103";
+const std::string KEYBOARD_UP_KEY     = "\033\133\101";
+const std::string KEYBOARD_DOWN_KEY   = "\033\133\102";
 
 namespace CLI{
 
@@ -222,30 +224,7 @@ void A_Connection_Manager_Socket::Run_Handler()
         
             // Process the text
             if( input.size() > 1 ){
-            
-                // Check Delete Key
-                if( input == KEYBOARD_DELETE_KEY ){
-                    this->m_render_state->Process_Input( KEY_DC );
-                }
-
-                // Check Left Key
-                else if( input == KEYBOARD_LEFT_KEY ){
-                    this->m_render_state->Process_Input( KEY_LEFT );
-                }
-
-                // Check Right Key
-                else if( input == KEYBOARD_RIGHT_KEY ){
-                    this->m_render_state->Process_Input( KEY_RIGHT );
-                }
-            
-            
-                // Otherwise, there was an error
-                else{
-                    std::cerr << "Warning, data is larger than expected. Size: " << input.size() << std::endl;
-                    for( size_t i=0; i<input.size(); i++ ){
-                        std::cout << i << " : " << (int)input[i] << std::endl;
-                    }
-                }
+                this->m_render_state->Process_Input( this->Process_Special_Key( input ));    
             }
             else{
             
@@ -295,6 +274,50 @@ void A_Connection_Manager_Socket::Run_Handler()
     // Close Socket
     Close_Socket();
 
+}
+
+
+/**************************************/
+/*        Process Special Keys        */
+/**************************************/
+int A_Connection_Manager_Socket::Process_Special_Key( const std::string& input_str )const
+{
+    // Check Delete Key
+    if( input_str == KEYBOARD_DELETE_KEY ){
+        return KEY_DC;
+    }
+
+    // Check Left Key
+    else if( input_str == KEYBOARD_LEFT_KEY ){
+        return KEY_LEFT;
+    }
+
+    // Check Right Key
+    else if( input_str == KEYBOARD_RIGHT_KEY ){
+        return KEY_RIGHT;    
+    }
+
+    // Check Up Key
+    else if( input_str == KEYBOARD_UP_KEY ){
+        return KEY_UP;
+    }
+
+    // Check Down Key
+    else if( input_str == KEYBOARD_DOWN_KEY ){
+        return KEY_DOWN;
+    }
+
+    // Otherwise, there was an error
+    else{
+        std::cerr << "Warning, data is larger than expected. Size: " << input_str.size() << std::endl;
+        for( size_t i=0; i<input_str.size(); i++ ){
+            std::cout << i << " : " << (int)input_str[i] << std::endl;
+        }
+    }
+
+
+    // otherwise, return failure
+    return -1;
 }
 
 

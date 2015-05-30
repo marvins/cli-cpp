@@ -63,7 +63,16 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
          * @brief Close the socket.
          */
         void Close_Socket();
+        
 
+        /**
+         * @brief Check for special keys.
+         *
+         * @param[in]  key_str String of digits from system.
+         *
+         * @return Key value.  -1 if no key present.
+        */
+        int Process_Special_Key( std::string const& key_str ) const;
         
         /// Class Name
         std::string m_class_name;

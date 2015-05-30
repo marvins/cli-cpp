@@ -16,6 +16,8 @@ namespace UTILS{
 /// ANSI Escape Codes
 const std::string ANSI_CLEARSCREEN = "\033[2J";
 const std::string ANSI_RESETCURSOR = "\033[;H";
+const std::string ANSI_CURSORINVIS = "\033[?25l";
+const std::string ANSI_CURSORVIS   = "\033[?25h";
 
 /// ANSI Newlines
 const std::string ANSI_NEWLINE = "\n\r";

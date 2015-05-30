@@ -107,7 +107,7 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
                                                     UTILS::StringAlignment::LEFT );
             row_data += "|" + UTILS::Format_String( "  " + m_command_history->Get_Entry( row_id ).Get_Command_Result().Get_Parse_Status_String(),
                                                     status_entry_width,
-                                                    UTILS::StringAlignment::CENTER );
+                                                    UTILS::StringAlignment::LEFT );
             row_data += "|";
 
             // Print

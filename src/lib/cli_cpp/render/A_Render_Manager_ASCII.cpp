@@ -234,7 +234,7 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
 
     // Copy to the buffer
     print_buffer[cli_row+0] = output;
-    print_buffer[cli_row+1] = WARNING_ROW;
+    print_buffer[cli_row+1] = WARNING_ROW + UTILS::ANSI_CURSORINVIS;;
 
 }
 
