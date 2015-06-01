@@ -13,6 +13,7 @@
 
 // CLI Libraries
 #include "../utility/ANSI_Utilities.hpp"
+#include "../utility/Log_Utilities.hpp"
 #include "../utility/String_Utilities.hpp"
 
 namespace CLI{
@@ -70,6 +71,8 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int& window_rows,
 /********************************/
 void A_Render_Manager_ASCII::Initialize()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
     // Create new render state
     m_render_state.reset(new A_Render_State( CORE::ConnectionType::SOCKET, 
@@ -90,6 +93,9 @@ void A_Render_Manager_ASCII::Initialize()
 
     // Print the history
     m_history_window = std::make_shared<ASCII::An_ASCII_History_Window>(m_command_history);
+
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
 }
 
@@ -122,13 +128,17 @@ std::vector<std::string>& A_Render_Manager_ASCII::Get_Console_Buffer()
 /********************************/
 void A_Render_Manager_ASCII::Refresh()
 {
-
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // If help is selected, then use that buffer
     if( m_render_state->Get_Help_Mode() == true ){
         
         // Print the CLI
         Print_CLI( m_help_menu->Get_Buffer_Data() );
         
+        // Log Entry
+        BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method (help branch). File: " << __FILE__ << ", Line: " << __LINE__;
         return; 
     }
 
@@ -144,6 +154,8 @@ void A_Render_Manager_ASCII::Refresh()
     // Draw the CLI
     Print_CLI( m_console_buffer );
 
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
 }
 
@@ -183,6 +195,8 @@ void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffe
 /************************************************/
 void A_Render_Manager_ASCII::Print_Main_Content()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
     // Set the min and max positions
     int max_col = m_render_state->Get_Cols()-3;
@@ -194,6 +208,9 @@ void A_Render_Manager_ASCII::Print_Main_Content()
                                    max_row,
                                    m_min_content_col,
                                    max_col );
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -202,6 +219,9 @@ void A_Render_Manager_ASCII::Print_Main_Content()
 /********************************/
 void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Set the buffer row
     int cli_row = m_window_rows - 2;
 
@@ -235,6 +255,8 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
     // Copy to the buffer
     print_buffer[cli_row+0] = output + BUFFER_NEWLINE +  UTILS::ANSI_CURSORINVIS;
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 

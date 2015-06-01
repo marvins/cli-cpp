@@ -40,6 +40,9 @@ A_Connection_Manager_Base::~A_Connection_Manager_Base()
 /**************************************/
 void A_Connection_Manager_Base::Process_Command()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Make sure the command is not blank
     if( UTILS::String_Trim( this->m_render_state->Get_Cursor_Text() ).size() <= 0 ){
         
@@ -103,6 +106,9 @@ void A_Connection_Manager_Base::Process_Command()
     
     // Clear the cursor    
     this->m_render_state->Clear_Cursor_Text();
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
 }
 

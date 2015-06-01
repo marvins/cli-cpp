@@ -9,6 +9,7 @@
 #include "A_Connection_Manager_Socket_Config.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
 #include "../thirdparty/ncurses/NCurses_Utilities.hpp"
+#include "../utility/Log_Utilities.hpp"
 
 
 // C++ Standard Libraries
@@ -118,6 +119,8 @@ void A_Connection_Manager_Socket::Close_Socket()
 void A_Connection_Manager_Socket::Run_Handler()
 {
 
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     // Misc Variables
     int key;
 
@@ -166,6 +169,12 @@ void A_Connection_Manager_Socket::Run_Handler()
 
         // Make the socket non-blocking
         fcntl( m_client_fd, F_SETFL, O_NONBLOCK );
+        
+        // Log
+        char host[NI_MAXHOST];
+        getnameinfo((struct sockaddr *)&cli_addr, sizeof(cli_addr), host, sizeof(host), NULL, 0, NI_NUMERICHOST);
+        BOOST_LOG_TRIVIAL(debug) << "Connection has been made by " << host;
+
 
         // Write back
         write( m_client_fd,"\377\375\042\377\373\001",6);
@@ -282,6 +291,9 @@ void A_Connection_Manager_Socket::Run_Handler()
 /**************************************/
 int A_Connection_Manager_Socket::Process_Special_Key( const std::string& input_str )const
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Check Delete Key
     if( input_str == KEYBOARD_DELETE_KEY ){
         return KEY_DC;

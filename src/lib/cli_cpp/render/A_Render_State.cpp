@@ -7,6 +7,7 @@
 
 // CLI Libraries
 #include "../thirdparty/ncurses/NCurses_Utilities.hpp"
+#include "../utility/Log_Utilities.hpp"
 
 // C++ Standard Libraries
 #include <iostream>
@@ -23,6 +24,7 @@ A_Render_State::A_Render_State( CORE::ConnectionType const&    conn_type,
   : m_cli_prompt_text(""),
     m_cli_prompt_cursor_head(0),
     m_cli_prompt_cursor_tail(0),
+    m_cli_prompt_cursor_at(0),
     m_window_rows(0),
     m_window_cols(0),
     m_help_mode(false),
@@ -36,8 +38,15 @@ A_Render_State::A_Render_State( CORE::ConnectionType const&    conn_type,
 /************************/
 void A_Render_State::Process_Input( const int& input )
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    BOOST_LOG_TRIVIAL(trace) << "Input Value: " << input;
+
     // SKip if < 0
-    if( input < 0 ){ return; }
+    if( input < 0 ){ 
+        BOOST_LOG_TRIVIAL(trace) << "Invalid Input Value.";
+        return; 
+    }
 
 
     // check for backspace
@@ -95,8 +104,11 @@ void A_Render_State::Process_Input( const int& input )
 /*          Set window size           */
 /**************************************/
 void A_Render_State::Set_Window_Size( const int& rows,
-        const int& cols )
+                                      const int& cols )
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     m_window_rows = rows;
     m_window_cols = cols;
 }
@@ -107,6 +119,9 @@ void A_Render_State::Set_Window_Size( const int& rows,
 /*********************************************/
 void A_Render_State::Clear_Cursor_Text()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // clear the string
     m_cli_prompt_text = "";
 
@@ -126,6 +141,9 @@ void A_Render_State::Clear_Cursor_Text()
 /*******************************/
 void A_Render_State::Apply_Backspace()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    BOOST_LOG_TRIVIAL(trace) << "CLI Prompt Text: " << m_cli_prompt_text << ", Size: " << m_cli_prompt_text.size() << ", Cursor At: " << m_cli_prompt_cursor_at;
 
     // Erase the current character
     if( m_cli_prompt_text.size() > 0 && m_cli_prompt_cursor_at > 0){
@@ -133,10 +151,16 @@ void A_Render_State::Apply_Backspace()
         // Avoid going into negative space
         m_cli_prompt_cursor_head = std::max( 0, m_cli_prompt_cursor_head-1);
         m_cli_prompt_cursor_at   = std::max( 0, m_cli_prompt_cursor_at-1);
+        BOOST_LOG_TRIVIAL(trace) << "  New CLI Cursor Head: " << m_cli_prompt_cursor_head;
+        BOOST_LOG_TRIVIAL(trace) << "  New CLI Cursor At  : " << m_cli_prompt_cursor_at;
 
         // Delete the character
         m_cli_prompt_text.erase( m_cli_prompt_cursor_at, 1 );
+        BOOST_LOG_TRIVIAL(trace) << "Erase Completed.";
     }
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 /*******************************/
@@ -144,6 +168,9 @@ void A_Render_State::Apply_Backspace()
 /*******************************/
 void A_Render_State::Apply_Delete()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Erase the current character
     if( m_cli_prompt_text.size() > 0 && m_cli_prompt_cursor_at <= ((int)m_cli_prompt_text.size()-1))
     {
@@ -160,6 +187,9 @@ void A_Render_State::Apply_Delete()
 /******************************/
 void A_Render_State::Apply_Left_Key()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Move the head left
     m_cli_prompt_cursor_at = std::max( m_cli_prompt_cursor_at-1, 0);
 
@@ -170,6 +200,9 @@ void A_Render_State::Apply_Left_Key()
 /******************************/
 void A_Render_State::Apply_Right_Key()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Move the head right
     m_cli_prompt_cursor_at = std::min( m_cli_prompt_cursor_at+1, (int)m_cli_prompt_text.size());
 }
@@ -180,6 +213,9 @@ void A_Render_State::Apply_Right_Key()
 /******************************/
 void A_Render_State::Apply_Down_Key()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Skip if the cursor is at the max
     if( m_command_history_ptr < (m_command_history->Size()) ){
 
@@ -209,6 +245,9 @@ void A_Render_State::Apply_Down_Key()
 /**********************************/
 void A_Render_State::Apply_Up_Key()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // skip if the cursor is at zero
     if( m_command_history_ptr > 0 ){
         
@@ -231,6 +270,9 @@ void A_Render_State::Apply_Up_Key()
 /********************************************/
 void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result ){
 
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // If help
     if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_HELP )
     {
@@ -262,6 +304,9 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
 /************************/
 bool A_Render_State::Is_Text( const int& input )const
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Check for the alphabet
     if( (input >= 'a' && input <= 'z') ||
         (input >= 'A' && input <= 'Z') )

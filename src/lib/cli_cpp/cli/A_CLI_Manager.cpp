@@ -10,6 +10,7 @@
 #include "A_Connection_Manager_Base.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
 #include "../render/A_Render_Manager_NCurses.hpp"
+#include "../utility/Log_Utilities.hpp"
 
 
 // C++ Standard Libraries
@@ -49,7 +50,9 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
 /**********************************************/
 void A_CLI_Manager::Connect()
 {
-    
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+
     // Configure the Render Context
     m_render_manager->Update_Render_Driver_Context( m_render_driver_context );
     
@@ -61,6 +64,8 @@ void A_CLI_Manager::Connect()
     // Kick off the communication thread
     m_connection_manager->Start_Handler();
     
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
