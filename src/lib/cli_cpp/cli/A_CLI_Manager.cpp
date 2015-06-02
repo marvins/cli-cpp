@@ -12,6 +12,7 @@
 #include "../core/A_Render_Manager_Event_Handler.hpp"
 #include "../core/Event_Manager.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
+#include "../utility/Log_Utilities.hpp"
 
 
 // C++ Standard Libraries
@@ -49,11 +50,31 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
 }
 
 
+/**********************************/
+/*           Destructor           */
+/**********************************/
+A_CLI_Manager::~A_CLI_Manager()
+{
+    // Disconnect
+    Disconnect();
+
+}
+
+
 /**********************************************/
 /*          Connect the CLI Manager           */
 /**********************************************/
 void A_CLI_Manager::Connect()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
+
+    // Do not connect if thread is already running
+    if( m_handler_thread_running == true ){
+        BOOST_LOG_TRIVIAL(warning) << "CLI-Manager Handler thread already running.";
+        return;
+    }
     
     // Kick off the handler thread
     m_handler_thread = std::thread( &A_CLI_Manager::Process_Command_Results, 
@@ -79,19 +100,40 @@ void A_CLI_Manager::Connect()
 /**********************************************/
 void A_CLI_Manager::Disconnect()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
-    // Stop the thread
-    m_connection_manager->Signal_Shutdown();
+    // Make sure the connection manager is not already de-allocated
+    if( m_connection_manager != nullptr ){
+    
+        // Stop the thread
+        m_connection_manager->Signal_Shutdown();
 
-    // Join the thread
-    m_connection_manager->Wait_Shutdown();
+        // Join the thread
+        m_connection_manager->Wait_Shutdown();
+    }
+
+    BOOST_LOG_TRIVIAL(trace) << "Halting Queue Thread. Func: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
 
     // Stop the handler thread
     if( m_handler_thread_running == true ){
+        
+        // Set the running condition to false
         m_handler_thread_running = false;
-        m_command_queue->Clear();
+
+        
+        // Clear the queue
+        if( m_command_queue != nullptr ){
+            m_command_queue->Clear();
+        }
+        
+        // Join the thread
         m_handler_thread.join();
     }
+    
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
 }
 
@@ -101,8 +143,16 @@ void A_CLI_Manager::Disconnect()
 /************************************************/
 void A_CLI_Manager::Wait_Shutdown()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    
     // Wait for the connection handler to stop
     m_connection_manager->Wait_Shutdown();
+    
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -112,12 +162,19 @@ void A_CLI_Manager::Wait_Shutdown()
 void A_CLI_Manager::Process_Command_Results()
 {
     
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    
     // Misc Variables
     CMD::A_Command_Result::ptr_t command_result;
 
+    
     // Set flag
     m_handler_thread_running = true;
 
+    
+    // Run until it is time to quit
     while( m_handler_thread_running != false ){
 
         // Pop the next command
@@ -139,6 +196,10 @@ void A_CLI_Manager::Process_Command_Results()
 
     // Set flag
     m_handler_thread_running = false;
+    
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 

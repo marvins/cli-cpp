@@ -122,6 +122,7 @@ void A_Connection_Manager_Socket::Run_Handler()
 
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Misc Variables
     int key;
 
@@ -217,7 +218,7 @@ void A_Connection_Manager_Socket::Run_Handler()
                     break;
                 }
                 else{
-                    usleep(1000);
+                    usleep(500);
                 }
 
             }
@@ -268,6 +269,8 @@ void A_Connection_Manager_Socket::Run_Handler()
     // Close Socket
     Close_Socket();
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 

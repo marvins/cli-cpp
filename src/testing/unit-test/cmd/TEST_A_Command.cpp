@@ -22,7 +22,7 @@ TEST( A_Command, Default_Constructor )
     ASSERT_EQ( command01.Get_Name(), "");
     ASSERT_EQ( command01.Get_Description(), "");
     ASSERT_EQ( command01.Response_Expected(), false );
-    ASSERT_EQ( command01.Get_Argument_List().size(), 0);
+    ASSERT_EQ( (int)command01.Get_Argument_List().size(), 0);
     
     // Test the Check Argument
     ASSERT_FALSE( command01.Check_Argument_Type(-1, "hello") );

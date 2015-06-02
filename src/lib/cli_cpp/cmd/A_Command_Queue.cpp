@@ -5,6 +5,10 @@
 */
 #include "A_Command_Queue.hpp"
 
+// CLI Libraries
+#include "../utility/Log_Utilities.hpp"
+
+
 namespace CLI{
 namespace CMD{
 
@@ -86,6 +90,9 @@ void A_Command_Queue::Push_Command( A_Command_Result::ptr_t const& command )
 /*****************************/
 A_Command_Result::ptr_t A_Command_Queue::Pop_Command()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Output
     A_Command_Result::ptr_t  command;
 
@@ -94,6 +101,7 @@ A_Command_Result::ptr_t A_Command_Queue::Pop_Command()
     
     // Return if the list is empty
     if( m_close_flag == true ){
+        BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
         return nullptr;
     }
 
@@ -112,6 +120,9 @@ A_Command_Result::ptr_t A_Command_Queue::Pop_Command()
 
     // Increment the push semaphore
     sem_post( &m_push_semaphore );
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
     // return command
     return command;
