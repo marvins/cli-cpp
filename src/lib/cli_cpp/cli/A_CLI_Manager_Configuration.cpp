@@ -28,7 +28,9 @@ A_CLI_Manager_Configuration::A_CLI_Manager_Configuration( CORE::ConnectionType c
     m_render_driver_context(nullptr),
     m_render_manager(nullptr),
     m_socket_window_rows(20),
-    m_socket_window_cols(80)
+    m_socket_window_cols(80),
+    m_redirect_stdout(false),
+    m_redirect_stderr(false)
 {
 }
 
@@ -69,7 +71,9 @@ RENDER::A_Render_Manager_Base::ptr_t  A_CLI_Manager_Configuration::Get_Render_Ma
         m_render_driver_context = RENDER::A_Render_Driver_Context_Factory::Initialize( m_conn_type,
                                                                                        m_cli_title,
                                                                                        m_socket_window_rows,
-                                                                                       m_socket_window_cols );
+                                                                                       m_socket_window_cols,
+                                                                                       m_redirect_stdout,
+                                                                                       m_redirect_stderr );
     }
 
     // Run the factory

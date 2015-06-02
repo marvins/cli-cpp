@@ -21,7 +21,9 @@ namespace RENDER{
 A_Render_Driver_Context_Base::ptr_t A_Render_Driver_Context_Factory::Initialize( const CORE::ConnectionType& conn_type,
                                                                                  const std::string&          cli_title,
                                                                                  const int&                  window_rows,
-                                                                                 const int&                  window_cols )
+                                                                                 const int&                  window_cols,
+                                                                                 const bool&                 redirect_stdout,
+                                                                                 const bool&                 redirect_stderr )
 {
     // Set the min content row
     int min_content_row = 2;
@@ -33,7 +35,9 @@ A_Render_Driver_Context_Base::ptr_t A_Render_Driver_Context_Factory::Initialize(
                                                                 window_rows,
                                                                 window_cols,
                                                                 min_content_row,
-                                                                min_content_col);
+                                                                min_content_col,
+                                                                redirect_stdout,
+                                                                redirect_stderr );
     }
 
     // Return null

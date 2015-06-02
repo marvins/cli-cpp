@@ -12,6 +12,8 @@
 // C++ Standard Libraries
 #include <memory>
 #include <string>
+#include <thread>
+#include <tuple>
 #include <vector>
 
 namespace CLI{
@@ -34,10 +36,48 @@ class A_Log_Window : public An_ASCII_Render_Window_Base
         */
         A_Log_Window( A_Render_Driver_Context_ASCII::ptr_t render_driver );
     
+        
+        /**
+         * @brief Destructor
+        */
+        ~A_Log_Window();
+        
+
+        /**
+         * @brief Refresh the window
+        */
+        void Refresh();
+
+
     private:
+
+        /**
+         * @brief Configure Standard output and standard error
+         */
+        void Configure_Pipes();
+
+        /**
+         * @brief Pipe Thread Runner
+        */
+        static void Pipe_Thread_Runner( const int&  fd, 
+                                        bool& shutdown_flag, 
+                                        std::vector<std::tuple<int,std::string>>& buffer_data,
+                                        A_Log_Window&  log_window );
+
         
         /// Class Name
         std::string m_class_name;
+
+        /// Pipe Thread
+        std::thread m_stdout_pipe_thread;
+        std::thread m_stderr_pipe_thread;
+
+        /// Run Flags
+        bool m_stdout_pipe_thread_shutdown;
+        bool m_stderr_pipe_thread_shutdown;
+
+        /// Buffers
+        std::vector<std::tuple<int,std::string>> m_log_data;
 
 }; // End of A_Log_Window Class
 

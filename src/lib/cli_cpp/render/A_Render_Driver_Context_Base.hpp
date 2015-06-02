@@ -30,7 +30,9 @@ class A_Render_Driver_Context_Base{
         /**
          * @brief Constructor
         */
-        A_Render_Driver_Context_Base( const std::string& cli_title );
+        A_Render_Driver_Context_Base( const std::string& cli_title,
+                                      const bool&        redirect_stdout,
+                                      const bool&        redirect_stderr );
         
 
         /**
@@ -60,10 +62,30 @@ class A_Render_Driver_Context_Base{
          */
         bool Check_Waiting_Command_Response();
 
+        /**
+         * @brief Get Standard Output.
+         * 
+         * @return Standard Output Redirect Flag. 
+         */
+        inline bool Get_Redirect_Stdout_Flag()const{
+            return m_redirect_stdout;
+        }
+
+        inline bool Get_Redirect_Stderr_Flag()const{
+            return m_redirect_stderr;
+        }
+
+
     protected:
         
         /// CLI Title
         std::string m_cli_title;
+
+        /// Redirect Standard Output
+        bool m_redirect_stdout;
+
+
+        bool m_redirect_stderr;
 
     private:
 

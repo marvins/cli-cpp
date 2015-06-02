@@ -55,7 +55,7 @@ TEST( A_Command, Parameterized_Constructor_No_Arguments )
     ASSERT_EQ( command01.Get_Name(), command_name);
     ASSERT_EQ( command01.Get_Description(), command_desc);
     ASSERT_EQ( command01.Response_Expected(), response_expected );
-    ASSERT_EQ( command01.Get_Argument_List().size(), 0);
+    ASSERT_EQ( (int)command01.Get_Argument_List().size(), 0);
     
     // Test the Check Argument
     ASSERT_FALSE( command01.Check_Argument_Type(-1, "hello") );
@@ -104,7 +104,7 @@ TEST( A_Command, Parameterized_Constructor_With_Arguments )
     ASSERT_EQ( command01.Get_Name(), command_name);
     ASSERT_EQ( command01.Get_Description(), command_desc);
     ASSERT_EQ( command01.Response_Expected(), response_expected );
-    ASSERT_EQ( command01.Get_Argument_List().size(), 2);
+    ASSERT_EQ( (int)command01.Get_Argument_List().size(), 2);
     
     ASSERT_EQ( command01.Get_Command_Argument(0), command_arguments[0] );
     ASSERT_EQ( command01.Get_Command_Argument(1), command_arguments[1] );

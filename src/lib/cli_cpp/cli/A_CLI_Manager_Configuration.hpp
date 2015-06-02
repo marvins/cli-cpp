@@ -179,6 +179,20 @@ class A_CLI_Manager_Configuration{
           * @return True if valid, false otherwise.
           */
          bool Is_Valid()const;
+        
+
+        /**
+         * @brief Set the Log Window Redirect Flags.
+         *
+         * @param[in] redirect_stdout Flag if we want to redirect stdout.
+         * @param[in] redirect_stderr Flag if we want to redirect stderr.
+         */
+        inline void Set_Log_Window_Redirect_Flags( const bool& redirect_stdout,
+                                                   const bool& redirect_stderr )
+        {
+            m_redirect_stdout = redirect_stdout;
+            m_redirect_stderr = redirect_stderr;
+        }
 
 
     private:
@@ -213,6 +227,13 @@ class A_CLI_Manager_Configuration{
 
         /// Socket window cols
         int m_socket_window_cols;
+
+
+        /// Redirect stdout
+        bool m_redirect_stdout;
+
+        /// Redirect stderr
+        bool m_redirect_stderr;
 
 
 }; // End of A_CLI_Manager_Configuration Class

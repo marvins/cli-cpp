@@ -36,12 +36,18 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
          *
          * @param[in] window_rows Number of window rows.
          * @param[in] window_cols Number of window columns.
+         * @param[in] min_content_row Minimum row at which content can appear.
+         * @param[in] min_content_col Minimum column at which content can appear.
+         * @param[in] redirect_stdout Flag if we want to redirect standard output.
+         * @param[in] redirect_stderr Flag if we want ot redirect standard error output.
         */
         A_Render_Driver_Context_ASCII( const std::string&  cli_title,
                                        const int&          window_rows,   
                                        const int&          window_cols,
                                        const int&          min_content_row,
-                                       const int&          min_content_col);
+                                       const int&          min_content_col,
+                                       const bool&         redirect_stdout,
+                                       const bool&         redirect_stderr );
 
     
         /**

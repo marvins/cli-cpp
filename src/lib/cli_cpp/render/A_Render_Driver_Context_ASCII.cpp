@@ -12,11 +12,15 @@ namespace RENDER{
 /*      Constructor      */
 /*************************/
 A_Render_Driver_Context_ASCII::A_Render_Driver_Context_ASCII( const std::string& cli_title,
-                                                              const int& window_rows,
-                                                              const int& window_cols,
-                                                              const int& min_content_row,
-                                                              const int& min_content_col)
-  : A_Render_Driver_Context_Base(cli_title),
+                                                              const int&   window_rows,
+                                                              const int&   window_cols,
+                                                              const int&   min_content_row,
+                                                              const int&   min_content_col,
+                                                              const bool&  redirect_stdout,
+                                                              const bool&  redirect_stderr )
+  : A_Render_Driver_Context_Base( cli_title, 
+                                  redirect_stdout,
+                                  redirect_stderr ),
     m_class_name("A_Render_Driver_Context_ASCII"),
     m_window_rows(window_rows),
     m_window_cols(window_cols),

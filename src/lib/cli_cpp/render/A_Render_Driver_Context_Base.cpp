@@ -18,9 +18,13 @@ namespace RENDER{
 /********************************/
 /*          Constructor         */
 /********************************/
-A_Render_Driver_Context_Base::A_Render_Driver_Context_Base( const std::string& cli_title )
+A_Render_Driver_Context_Base::A_Render_Driver_Context_Base( const std::string& cli_title,
+                                                            const bool&        redirect_stdout,
+                                                            const bool&        redirect_stderr )
   : m_cli_title(cli_title),
     m_class_name("A_Render_Driver_Context_Base"),
+    m_redirect_stdout(redirect_stdout),
+    m_redirect_stderr(redirect_stderr),
     m_waiting_command_response(false)
 {
 }

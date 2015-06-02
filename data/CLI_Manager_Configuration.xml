@@ -9,7 +9,7 @@
     -->
     <logging enabled="true" 
              log_path="cli.log"
-             log_level="debug" />
+             log_level="trace" />
 
     <!-- Type of Connection 
           
@@ -41,6 +41,10 @@
         
         <!-- Max size of the command queue (Basic history memorization). -->
         <command-queue max_size="100" />
+        
+        <!-- Flag if we want to redirect stdout and stderr to log. -->
+        <redirect stdout="true"
+                  stderr="true" />
 
     </cli>
 

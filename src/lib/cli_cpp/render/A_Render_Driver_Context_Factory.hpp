@@ -32,13 +32,17 @@ class A_Render_Driver_Context_Factory
          * @param[in] cli_title Command-Line Interface Title.
          * @param[in] window_rows Window rows.
          * @param[in] window_cols Window columns.
+         * @param[in] redirect_stdout Flag if we want to redirect stdout.
+         * @param[in] redirect_stderr Flag if we want to redirect stderr.
          *
          * @return Render context.
         */
         static A_Render_Driver_Context_Base::ptr_t Initialize( const CORE::ConnectionType& conn_type,
                                                                const std::string&          cli_title,
                                                                const int&                  window_rows,
-                                                               const int&                  window_cols );
+                                                               const int&                  window_cols,
+                                                               const bool&                 redirect_stdout,
+                                                               const bool&                 redirect_stderr );
 
 }; // End of A_Render_Driver_Context_Factory Class
 

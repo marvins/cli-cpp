@@ -48,6 +48,8 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     const std::string CLI_CONFIG_QUERY        = "cli";
     const std::string CLI_TITLE_QUERY         = "title";
     const std::string CLI_COMMAND_QUEUE_QUERY = "command-queue"; 
+    const std::string CLI_REDIRECT_QUERY      = "redirect";
+
 
     // Temp Variables
     std::string temp_str;
@@ -151,6 +153,13 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
         return;
     }
     m_current_configuration.Set_Command_Queue_Max_Size( temp_int );
+    
+    // Get the redirect variables
+    bool redirect_stdout = cli_node.child(CLI_REDIRECT_QUERY.c_str()).attribute("stdout").as_bool(false);
+    bool redirect_stderr = cli_node.child(CLI_REDIRECT_QUERY.c_str()).attribute("stderr").as_bool(false);
+
+    m_current_configuration.Set_Log_Window_Redirect_Flags( redirect_stdout,
+                                                           redirect_stderr );
 
     // Set valid
     m_is_valid = true;
