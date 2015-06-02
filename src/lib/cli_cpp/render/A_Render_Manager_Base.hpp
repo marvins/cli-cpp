@@ -43,7 +43,7 @@ class A_Render_Manager_Base
         /**
          * @brief Constructor
          */
-        A_Render_Manager_Base( CMD::A_Command_Parser const& command_parser );
+        A_Render_Manager_Base( CMD::A_Command_Parser::ptr_t command_parser );
         
 
         /**
@@ -76,17 +76,6 @@ class A_Render_Manager_Base
         }
 
         
-        /**
-         * @brief Set the Title
-         *
-         * @param[in] cli_title
-        */
-        inline virtual void Set_CLI_Title( const std::string& cli_title )
-        {
-            m_cli_title = cli_title;
-        }
-
-
         /**
          * @brief Append Command To History.
          *
@@ -136,9 +125,6 @@ class A_Render_Manager_Base
 
     protected:
         
-        /// CLI Title
-        std::string m_cli_title;
-        
         /// Command History
         CMD::A_Command_History::ptr_t m_command_history;
 
@@ -154,7 +140,7 @@ class A_Render_Manager_Base
         A_Render_State::ptr_t m_render_state;
         
         /// Command Parser
-        CMD::A_Command_Parser m_command_parser;
+        CMD::A_Command_Parser::ptr_t m_command_parser;
 
 
     private:

@@ -8,6 +8,10 @@
 // CLI Libraries
 #include "../utility/Log_Utilities.hpp"
 
+// C++ Libraries
+#include <iostream>
+
+
 namespace CLI{
 namespace RENDER{
 
@@ -15,11 +19,10 @@ namespace RENDER{
 /*          Constructor         */
 /********************************/
 A_Render_Driver_Context_Base::A_Render_Driver_Context_Base( const std::string& cli_title )
-  : m_cli_title(m_cli_title),
+  : m_cli_title(cli_title),
     m_class_name("A_Render_Driver_Context_Base"),
     m_waiting_command_response(false)
 {
-
 }
 
 

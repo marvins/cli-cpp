@@ -8,6 +8,10 @@
 // CLI Libraries
 #include "A_Render_Manager_ASCII.hpp"
 
+// C++ Standard Libraries
+#include <iostream>
+
+
 namespace CLI{
 namespace RENDER{
 
@@ -16,12 +20,12 @@ namespace RENDER{
 /****************************/
 A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Initialize( CORE::ConnectionType const&             connection_type,
                                                                    const std::string&                      cli_title,
-                                                                   CMD::A_Command_Parser const&            command_parser,
+                                                                   CMD::A_Command_Parser::ptr_t            command_parser,
                                                                    A_Render_Driver_Context_Base::ptr_t     render_driver )
 {
     // Create the pointer
     RENDER::A_Render_Manager_Base::ptr_t render_manager = nullptr;
-
+    
     // Create the ASCII Render
     if( connection_type == CORE::ConnectionType::SOCKET ){
         render_manager = std::make_shared<RENDER::A_Render_Manager_ASCII>( render_driver, command_parser );
@@ -32,10 +36,6 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Initialize( CORE::Connect
     else{
         return nullptr;
     }
-
-
-    // Set the title
-    render_manager->Set_CLI_Title( cli_title );
 
     // Return the manager
     return render_manager;

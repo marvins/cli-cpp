@@ -21,9 +21,8 @@ namespace RENDER{
 /****************************/
 /*      Constructor         */
 /****************************/
-A_Render_Manager_Base::A_Render_Manager_Base( CMD::A_Command_Parser const& command_parser )
-  : m_cli_title(""),
-    m_command_history(std::make_shared<CMD::A_Command_History>()),
+A_Render_Manager_Base::A_Render_Manager_Base( CMD::A_Command_Parser::ptr_t command_parser )
+ :  m_command_history(std::make_shared<CMD::A_Command_History>()),
     m_command_queue(nullptr),
     m_command_counter(0),
     m_render_state(nullptr),
@@ -58,7 +57,7 @@ void A_Render_Manager_Base::Process_Command()
     }
 
     // Check the command
-    CMD::A_Command_Result result = m_command_parser.Evaluate_Command( m_render_state->Get_Cursor_Text() );
+    CMD::A_Command_Result result = m_command_parser->Evaluate_Command( m_render_state->Get_Cursor_Text() );
         
     // Create shared pointer
     CMD::A_Command_Result::ptr_t result_ptr = std::make_shared<CMD::A_Command_Result>( result );

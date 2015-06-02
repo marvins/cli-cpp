@@ -40,7 +40,7 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
          * @brief Constructor
          */
         A_Render_Manager_ASCII( A_Render_Driver_Context_Base::ptr_t context,
-                                CMD::A_Command_Parser const&        command_parser );
+                                CMD::A_Command_Parser::ptr_t        command_parser );
         
 
         /**

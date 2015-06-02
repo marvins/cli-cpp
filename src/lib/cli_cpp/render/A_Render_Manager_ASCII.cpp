@@ -28,14 +28,14 @@ const std::string BUFFER_NEWLINE = "\n\r";
 /*      Constructor         */
 /****************************/
 A_Render_Manager_ASCII::A_Render_Manager_ASCII( A_Render_Driver_Context_Base::ptr_t driver_context,
-                                                CMD::A_Command_Parser const&        command_parser )
+                                                CMD::A_Command_Parser::ptr_t        command_parser )
  :  A_Render_Manager_Base( command_parser ),
     m_class_name("A_Render_Manager_ASCII"),
     m_current_window(0)
 {
     // Cast the driver
     m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(driver_context);
-    
+
     // Create new render state
     m_render_state.reset(new A_Render_State( CORE::ConnectionType::SOCKET, 
                                              m_command_history));
@@ -62,8 +62,8 @@ void A_Render_Manager_ASCII::Initialize()
     
     // Add the help window
     m_window_list.push_back(std::make_shared<A_General_Help_Window>( m_render_driver_context,
-                                                                     m_command_parser.Get_CLI_Command_List(),
-                                                                     m_command_parser.Get_Command_List() ));
+                                                                     m_command_parser->Get_CLI_Command_List(),
+                                                                     m_command_parser->Get_Command_List() ));
 
     // Add the log window
     m_window_list.push_back(std::make_shared<A_Log_Window>( m_render_driver_context ));

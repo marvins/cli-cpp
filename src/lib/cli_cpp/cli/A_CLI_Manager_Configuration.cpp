@@ -76,7 +76,7 @@ RENDER::A_Render_Manager_Base::ptr_t  A_CLI_Manager_Configuration::Get_Render_Ma
     if( m_render_manager == nullptr ){
         m_render_manager = RENDER::A_Render_Manager_Factory::Initialize( m_conn_type,
                                                                          m_cli_title,
-                                                                         *m_command_parser,
+                                                                         m_command_parser,
                                                                          m_render_driver_context );
         
         // Initialize

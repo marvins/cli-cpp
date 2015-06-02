@@ -8,6 +8,9 @@
 // CLI Libraries
 #include "A_Render_Driver_Context_ASCII.hpp"
 
+// C++ Standard Libraries
+#include <iostream>
+
 namespace CLI{
 namespace RENDER{
 
@@ -23,7 +26,7 @@ A_Render_Driver_Context_Base::ptr_t A_Render_Driver_Context_Factory::Initialize(
     // Set the min content row
     int min_content_row = 2;
     int min_content_col = 1;
-
+    
     // Test the ASCII Type
     if( conn_type == CORE::ConnectionType::SOCKET ){
         return std::make_shared<A_Render_Driver_Context_ASCII>( cli_title,

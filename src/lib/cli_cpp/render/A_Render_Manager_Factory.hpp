@@ -27,7 +27,7 @@ class A_Render_Manager_Factory
         */
         static A_Render_Manager_Base::ptr_t  Initialize( CORE::ConnectionType const&             conn_type,
                                                          const std::string&                      cli_title,
-                                                         CMD::A_Command_Parser const&            command_parser,
+                                                         CMD::A_Command_Parser::ptr_t            command_parser,
                                                          A_Render_Driver_Context_Base::ptr_t     render_context );
 
 
