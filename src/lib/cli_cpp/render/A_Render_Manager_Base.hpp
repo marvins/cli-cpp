@@ -126,6 +126,12 @@ class A_Render_Manager_Base
          * @brief Process the current command text.
         */
         virtual void Process_Command();
+        
+        
+        /**
+         * @brief Set the Current Window
+        */
+        inline virtual void Set_Current_Window( const int& window_id ) = 0;
 
 
     protected:

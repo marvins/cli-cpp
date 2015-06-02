@@ -9,7 +9,7 @@
 #include "A_Connection_Manager_Socket_Config.hpp"
 #include "../core/Event_Manager.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
-#include "../thirdparty/ncurses/NCurses_Utilities.hpp"
+#include "../utility/Log_Utilities.hpp"
 
 
 // C++ Standard Libraries
@@ -220,10 +220,14 @@ void A_Connection_Manager_Socket::Run_Handler()
             // Process the text
             if( input.size() > 1 ){
                 key = this->Process_Special_Key( input );    
+            } else {
+                key = input[0];
             }
 
             // Process the command
+            BOOST_LOG_TRIVIAL(trace) << "Calling Event_Manager::Process_Event with Key = " << key;
             CORE::Event_Manager::Process_Event( key );
+            BOOST_LOG_TRIVIAL(trace) << "Event_Manager::Process_Event returned.";
         
             // Render the screen
             this->m_render_manager->Refresh();
@@ -266,27 +270,27 @@ int A_Connection_Manager_Socket::Process_Special_Key( const std::string& input_s
 {
     // Check Delete Key
     if( input_str == KEYBOARD_DELETE_KEY ){
-        return KEY_DC;
+        return (int)CORE::CLI_Event_Type::KEYBOARD_DELETE_KEY;
     }
 
     // Check Left Key
     else if( input_str == KEYBOARD_LEFT_KEY ){
-        return KEY_LEFT;
+        return (int)CORE::CLI_Event_Type::KEYBOARD_LEFT_ARROW;
     }
 
     // Check Right Key
     else if( input_str == KEYBOARD_RIGHT_KEY ){
-        return KEY_RIGHT;    
+        return (int)CORE::CLI_Event_Type::KEYBOARD_RIGHT_ARROW;
     }
 
     // Check Up Key
     else if( input_str == KEYBOARD_UP_KEY ){
-        return KEY_UP;
+        return (int)CORE::CLI_Event_Type::KEYBOARD_UP_ARROW;
     }
 
     // Check Down Key
     else if( input_str == KEYBOARD_DOWN_KEY ){
-        return KEY_DOWN;
+        return (int)CORE::CLI_Event_Type::KEYBOARD_DOWN_ARROW;
     }
 
     // Otherwise, there was an error

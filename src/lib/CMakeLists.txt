@@ -31,13 +31,6 @@ include_directories( ${Boost_INCLUDE_DIRS})
 
 
 
-#--------------------------------------#
-#-       Find NCurses Libraries       -#
-#--------------------------------------#
-find_package( Curses REQUIRED )
-
-include_directories(${CURSES_INCLUDE_DIR})
-
 #-------------------------------------#
 #-     Import the CLI Libraries      -#
 #-------------------------------------#
@@ -61,7 +54,6 @@ add_library( cli_cpp SHARED
 #------------------------------------#
 target_link_libraries( cli_cpp 
                        ${Boost_LIBRARIES}
-                       ${CURSES_LIBRARIES} 
                        pthread )
 
 #----------------------------------------#

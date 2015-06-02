@@ -80,11 +80,6 @@ class Event_Manager{
         /// List of event handlers
         std::vector<A_CLI_Event_Handler_Base::ptr_t> m_event_handlers;
 
-
-        /// Running Flag
-        bool m_is_running;
-
-
 }; // End of Event_Manager Class
 
 } // End of CORE Namespace

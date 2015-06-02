@@ -103,6 +103,12 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
          */
         virtual bool Check_Waiting_Command_Response();
 
+        /**
+         * @brief Set the Current Window
+         */
+        inline virtual void Set_Current_Window( const int& window_id ){
+            m_current_window = window_id;
+        }
     
     protected:
         

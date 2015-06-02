@@ -16,7 +16,8 @@ namespace RENDER{
 /********************************/
 A_Render_Driver_Context_Base::A_Render_Driver_Context_Base( const std::string& cli_title )
   : m_cli_title(m_cli_title),
-    m_class_name("A_Render_Driver_Context_Base")
+    m_class_name("A_Render_Driver_Context_Base"),
+    m_waiting_command_response(false)
 {
 
 }

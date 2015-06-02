@@ -16,7 +16,6 @@ set( LIB_CLI_THIRDPARTY_MODULE_SOURCES
 #-      CLI Module Headers     -#
 #-------------------------------#
 set( LIB_CLI_THIRDPARTY_MODULE_HEADERS
-    ncurses/NCurses_Utilities.hpp
     pugixml.hpp
     pugixml/src/pugixml.hpp
     pugixml/src/pugiconfig.hpp

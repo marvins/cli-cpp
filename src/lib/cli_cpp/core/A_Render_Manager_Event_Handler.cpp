@@ -5,6 +5,9 @@
 */
 #include "A_Render_Manager_Event_Handler.hpp"
 
+// CLI Libraries
+#include "CLI_Event_Type.hpp"
+
 // C++ Standard Libraries
 #include <iostream>
 
@@ -29,8 +32,27 @@ A_Render_Manager_Event_Handler::A_Render_Manager_Event_Handler( RENDER::A_Render
 /****************************/
 void A_Render_Manager_Event_Handler::Process_Event( int const& event )
 {
-    // Send to the cli manager
-    m_render_manager->Process_Keyboard_Input( event );
+    // Skip if a CLI Shutdown Command
+    if( event == (int)CORE::CLI_Event_Type::UNKNOWN ||
+        event == (int)CORE::CLI_Event_Type::CLI_SHUTDOWN )
+    {
+        return;
+    }
+
+    // If we have a command to show the CLI Help, then show that
+    else if( event == (int)CORE::CLI_Event_Type::CLI_HELP ){
+        m_render_manager->Set_Current_Window( 1 );
+    }
+
+    // If we have a command for CLI_BACK, then set the current window to the main
+    else if( event == (int)CORE::CLI_Event_Type::CLI_BACK ){
+        m_render_manager->Set_Current_Window(0);
+    }
+
+    // Otherwise, Process the Keyboard Input
+    else{
+        m_render_manager->Process_Keyboard_Input( event );
+    }
 
 }
 

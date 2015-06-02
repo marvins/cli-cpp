@@ -11,7 +11,6 @@
 
 // CLI Libraries
 #include "../core/Event_Manager.hpp"
-#include "../thirdparty/ncurses/NCurses_Utilities.hpp"
 #include "../utility/ANSI_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
 #include "../utility/String_Utilities.hpp"
@@ -23,8 +22,11 @@ namespace RENDER{
 /*      Constructor         */
 /****************************/
 A_Render_Manager_Base::A_Render_Manager_Base( CMD::A_Command_Parser const& command_parser )
-  : m_command_history(std::make_shared<CMD::A_Command_History>()),
+  : m_cli_title(""),
+    m_command_history(std::make_shared<CMD::A_Command_History>()),
+    m_command_queue(nullptr),
     m_command_counter(0),
+    m_render_state(nullptr),
     m_command_parser(command_parser),
     m_class_name("A_Render_Manager_Base")
 {
@@ -36,6 +38,8 @@ A_Render_Manager_Base::A_Render_Manager_Base( CMD::A_Command_Parser const& comma
 /****************************************/
 void A_Render_Manager_Base::Process_Command()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
     // Make sure the command is not blank
     if( UTILS::String_Trim( m_render_state->Get_Cursor_Text() ).size() <= 0 ){
@@ -70,7 +74,6 @@ void A_Render_Manager_Base::Process_Command()
     if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_SHUTDOWN ){
         CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_SHUTDOWN );
     }
-
     
     // Look for other CLI Command
     else if( CMD::Is_Valid_CLI_Command( result.Get_Parse_Status() ) == true ){
@@ -101,6 +104,8 @@ void A_Render_Manager_Base::Process_Command()
     // Clear the cursor    
     m_render_state->Clear_Cursor_Text();
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 /************************************/
@@ -108,9 +113,11 @@ void A_Render_Manager_Base::Process_Command()
 /************************************/
 void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Check the key value if enter
-    if( key == KEY_ENTER ){
-        std::cout << "Process Command" << std::endl;
+    if( key == (int)CORE::CLI_Event_Type::KEYBOARD_ENTER ){
         Process_Command();
     }
     
@@ -122,6 +129,8 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
     // Process Keyboard Input
     this->m_render_state->Process_Input( key );
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
