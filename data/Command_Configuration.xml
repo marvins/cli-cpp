@@ -9,7 +9,7 @@
         <!-- Shutdown Command -->
         <command mode="shutdown">
             <name value="bye" />
-            <description value="Command to exit the CLI." />
+            <description value="Command to exit the CLI.  The application will keep running." />
         </command>
         
         <!-- Help Command -->

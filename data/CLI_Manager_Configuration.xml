@@ -34,7 +34,7 @@
     <!-- Command Configuration -->
     <command-configuration path="../data/Command_Configuration.xml" />
 
-    <!-- CLI Configuration -->
+    <!-- CLI Name -->
     <cli>
         <!-- CLI Title String -->
         <title value="Command-Line Interface Demo" />
