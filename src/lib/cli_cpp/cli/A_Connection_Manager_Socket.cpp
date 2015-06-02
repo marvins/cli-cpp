@@ -7,6 +7,7 @@
 
 // CLI Libraries
 #include "A_Connection_Manager_Socket_Config.hpp"
+#include "../core/Event_Manager.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
 #include "../thirdparty/ncurses/NCurses_Utilities.hpp"
 
@@ -34,8 +35,9 @@ namespace CLI{
 /*************************/
 /*      Constructor      */
 /*************************/
-A_Connection_Manager_Socket::A_Connection_Manager_Socket( A_Connection_Manager_Base_Config::ptr_t configuration )
-  : A_Connection_Manager_Base(),
+A_Connection_Manager_Socket::A_Connection_Manager_Socket( A_Connection_Manager_Base_Config::ptr_t configuration,
+                                                          RENDER::A_Render_Manager_Base::ptr_t    render_manager )
+  : A_Connection_Manager_Base(render_manager),
     m_class_name("A_Connection_Manager_Socket")
 {
     // Cast the configuration
@@ -171,13 +173,6 @@ void A_Connection_Manager_Socket::Run_Handler()
         write( m_client_fd,"\377\375\042\377\373\001",6);
         write( m_client_fd,"Welcome\n\0", 9);
 
-        // Setup Render Manager
-        if( this->m_render_manager != nullptr ){
-            this->m_render_manager->Initialize();
-            this->m_render_state = this->m_render_manager->Get_Render_State();
-        }
-        
-
         // Set the connected flag
         m_is_connected = true;
     
@@ -224,24 +219,11 @@ void A_Connection_Manager_Socket::Run_Handler()
         
             // Process the text
             if( input.size() > 1 ){
-                this->m_render_state->Process_Input( this->Process_Special_Key( input ));    
-            }
-            else{
-            
-                // cast the key
-                key = input[0];
-
-                // Check if enter
-                if( key == 27 || key == 13 || key == 10 ){
-                    this->Process_Command();
-                }
-            
-                // Otherwise, add the key
-                else{
-                    this->m_render_state->Process_Input( key );
-                }
+                key = this->Process_Special_Key( input );    
             }
 
+            // Process the command
+            CORE::Event_Manager::Process_Event( key );
         
             // Render the screen
             this->m_render_manager->Refresh();

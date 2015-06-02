@@ -57,7 +57,7 @@ void Initialize_Logger( const std::string& severity_string,
     logging::core::get()->set_filter(severity >= default_level);
 
     // Set the log path
-    logging::add_file_log( log_path );
+    //logging::add_file_log( log_path );
 
     //logging::add_common_attributes();
 

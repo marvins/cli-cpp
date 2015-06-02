@@ -9,33 +9,4 @@
 // NCurses Libraries
 #include <ncurses.h>
 
-// C++ Standard Libraries
-#include <memory>
-#include <string>
-
-namespace CLI{
-namespace NCURSES{
-
-
-/**
- * @brief Create NCurses Window
- */
-void Initialize();
-
-
-/**
- * @brief Finalize NCurses Windows
- */
-void Finalize();
-
-
-/**
- * @brief Abort
- */
-void Abort();
-
-
-} // End of NCURSES Namspace
-} // End of CLI     Namespace
-
 #endif

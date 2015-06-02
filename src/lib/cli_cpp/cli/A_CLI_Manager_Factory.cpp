@@ -46,7 +46,6 @@ A_CLI_Manager::ptr_t A_CLI_Manager_Factory::Initialize( const std::string& confi
     if( manager_config.Is_Valid() == false ){
         return nullptr;
     }
-
     
     // Create the manager
     return std::make_shared<A_CLI_Manager>( manager_config );

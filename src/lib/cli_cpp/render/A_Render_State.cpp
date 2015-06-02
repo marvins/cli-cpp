@@ -23,6 +23,7 @@ A_Render_State::A_Render_State( CORE::ConnectionType const&    conn_type,
   : m_cli_prompt_text(""),
     m_cli_prompt_cursor_head(0),
     m_cli_prompt_cursor_tail(0),
+    m_cli_prompt_cursor_at(0),
     m_window_rows(0),
     m_window_cols(0),
     m_help_mode(false),
@@ -87,7 +88,6 @@ void A_Render_State::Process_Input( const int& input )
         m_cli_prompt_cursor_at++;
 
     }
-
 }
 
 

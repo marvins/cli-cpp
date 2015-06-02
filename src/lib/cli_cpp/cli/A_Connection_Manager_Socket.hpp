@@ -34,7 +34,8 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
         /**
          * @brief Constructor
         */
-        A_Connection_Manager_Socket( A_Connection_Manager_Base_Config::ptr_t configuration );
+        A_Connection_Manager_Socket( A_Connection_Manager_Base_Config::ptr_t configuration,
+                                     RENDER::A_Render_Manager_Base::ptr_t    render_manager );
 
 
         /**

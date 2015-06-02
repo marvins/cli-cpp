@@ -20,11 +20,6 @@ ConnectionType  StringToConnectionType( const std::string& cli_type )
         return ConnectionType::BASE;
     }
 
-    // Local
-    if( cli_type == "LOCAL" ){
-        return ConnectionType::LOCAL;
-    }
-
     // Socket
     if( cli_type == "SOCKET" ){
         return ConnectionType::SOCKET;
@@ -41,7 +36,6 @@ ConnectionType  StringToConnectionType( const std::string& cli_type )
 std::string ConnectionTypeToString( const ConnectionType& cli_type )
 {
     if( cli_type == ConnectionType::BASE  ){ return "BASE"; }
-    if( cli_type == ConnectionType::LOCAL ){ return "LOCAL"; }
     if( cli_type == ConnectionType::SOCKET ){ return "SOCKET"; }
     return "UNKONWN";
 }

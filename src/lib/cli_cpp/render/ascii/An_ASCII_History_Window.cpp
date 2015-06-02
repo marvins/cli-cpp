@@ -14,7 +14,6 @@
 
 namespace CLI{
 namespace RENDER{
-namespace ASCII{
 
 
 /**************************************/
@@ -131,8 +130,6 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     return true;
 }
 
-
-} // End of ASCII  Namespace
 } // End of RENDER Namespace
 } // End of CLI    Namespace
 

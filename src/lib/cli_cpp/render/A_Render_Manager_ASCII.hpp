@@ -10,13 +10,13 @@
 #include <deque>
 #include <memory>
 #include <string>
+#include <vector>
 
 // CLI Libraries
 #include "A_Render_Driver_Context_ASCII.hpp"
 #include "A_Render_Manager_Base.hpp"
 #include "A_Render_State.hpp"
-#include "ascii/An_ASCII_Help_Menu.hpp"
-#include "ascii/An_ASCII_History_Window.hpp"
+#include "ascii/An_ASCII_Render_Window_Base.hpp"
 #include "../cmd/A_Command_History.hpp"
 #include "../utility/An_ASCII_Print_Table.hpp"
 
@@ -39,18 +39,10 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         /**
          * @brief Constructor
          */
-        A_Render_Manager_ASCII( A_Render_Driver_Context_Base::ptr_t context );
+        A_Render_Manager_ASCII( A_Render_Driver_Context_Base::ptr_t context,
+                                CMD::A_Command_Parser const&        command_parser );
         
 
-        /**
-         * @brief Constructor given width and size
-         *
-         * @param[in] window_rows Number of window rows.
-         * @param[in] window_cols Number of window columns.
-         */
-        A_Render_Manager_ASCII( const int& window_rows,
-                                const int& window_cols );
-        
         /**
          * @brief Initialize
         */
@@ -98,20 +90,22 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         }
         
         
+        /**
+         * @brief Command the system to wait on the input command response.
+         */
+        virtual void Set_Waiting_Command_Response( const CMD::A_Command_Result::ptr_t response );
+
+
+        /**
+         * @brief Get the waiting status
+         *
+         * @return True if waiting on command result response.
+         */
+        virtual bool Check_Waiting_Command_Response();
+
+    
     protected:
         
-        /**
-         * @brief Print the header
-         */
-        virtual void Print_Header( std::vector<std::string>& print_buffer );
-        
-
-        /**
-         * @brief Print Main Context.
-         */
-        virtual void Print_Main_Content();
-
-
         /**
          * @brief Print CLI
          *
@@ -122,50 +116,20 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
 
     private:
 
-        /**
-         * @brief Build the console buffer.
-         */
-        void Build_Console_Buffer();
-
-
-        /**
-         * @brief Build the help main buffer
-         */
-        void Build_Help_General_Buffer();
-
-
         /// Class Name
         std::string m_class_name;
 
-
-        /// Render State
-        A_Render_State::ptr_t m_render_state;
-
-
-        /// Console Buffer
-        std::vector<std::string> m_console_buffer;
         
         /// Render Context
         A_Render_Driver_Context_ASCII::ptr_t m_render_driver_context;
         
-        /// ASCII History Window
-        ASCII::An_ASCII_History_Window::ptr_t m_history_window;
 
-        /// ASCII Help Menu
-        ASCII::An_ASCII_Help_Menu::ptr_t m_help_menu;
+        /// List of Render Windows
+        std::vector<An_ASCII_Render_Window_Base::ptr_t> m_window_list;
 
-        /// Window Size
-        int m_window_rows;
-        int m_window_cols;
 
-        /// Min Content Row
-        int m_min_content_row;
-
-        /// Min Content Column
-        int m_min_content_col;
-
-        /// Status Code String
-        std::string m_status_code_string;
+        /// Current Window Index
+        int m_current_window;
 
 }; // End of A_Render_Manager_ASCII Class
 

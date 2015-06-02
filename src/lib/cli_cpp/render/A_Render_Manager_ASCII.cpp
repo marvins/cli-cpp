@@ -12,7 +12,11 @@
 #include <sstream>
 
 // CLI Libraries
+#include "ascii/A_General_Help_Window.hpp"
+#include "ascii/A_Log_Window.hpp"
+#include "ascii/A_Main_Window.hpp"
 #include "../utility/ANSI_Utilities.hpp"
+#include "../utility/Log_Utilities.hpp"
 #include "../utility/String_Utilities.hpp"
 
 namespace CLI{
@@ -23,46 +27,21 @@ const std::string BUFFER_NEWLINE = "\n\r";
 /****************************/
 /*      Constructor         */
 /****************************/
-A_Render_Manager_ASCII::A_Render_Manager_ASCII( A_Render_Driver_Context_Base::ptr_t driver_context )
- :  A_Render_Manager_Base(),
+A_Render_Manager_ASCII::A_Render_Manager_ASCII( A_Render_Driver_Context_Base::ptr_t driver_context,
+                                                CMD::A_Command_Parser const&        command_parser )
+ :  A_Render_Manager_Base( command_parser ),
     m_class_name("A_Render_Manager_ASCII"),
-    m_history_window(nullptr),
-    m_window_rows(0),
-    m_window_cols(0),
-    m_min_content_row(1),
-    m_min_content_col(2)
+    m_current_window(0)
 {
     // Cast the driver
     m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(driver_context);
     
-    // Set the rows and columns
-    m_window_rows = m_render_driver_context->Get_Window_Rows();
-    m_window_cols = m_render_driver_context->Get_Window_Cols();
-
-
     // Create new render state
     m_render_state.reset(new A_Render_State( CORE::ConnectionType::SOCKET, 
                                              m_command_history));
 }
 
 
-/****************************/
-/*      Constructor         */
-/****************************/
-A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int& window_rows,
-                                                const int& window_cols )
- :  A_Render_Manager_Base(),
-    m_class_name("A_Render_Manager_ASCII"),
-    m_history_window(nullptr),
-    m_window_rows(window_rows),
-    m_window_cols(window_cols),
-    m_min_content_row(1),
-    m_min_content_col(2)
-{
-    // Create new render state
-    m_render_state.reset(new A_Render_State( CORE::ConnectionType::SOCKET, 
-                                             m_command_history));
-}
 
 
 /********************************/
@@ -70,26 +49,27 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int& window_rows,
 /********************************/
 void A_Render_Manager_ASCII::Initialize()
 {
-
-    // Create new render state
-    m_render_state.reset(new A_Render_State( CORE::ConnectionType::SOCKET, 
-                                             m_command_history ));
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
     // Set the size
-    m_render_state->Set_Window_Size( m_window_rows, 
-                                     m_window_cols );
+    m_render_state->Set_Window_Size( m_render_driver_context->Get_Window_Rows(), 
+                                     m_render_driver_context->Get_Window_Cols() );
 
-    // Update the status code string
-    m_status_code_string = std::string(m_window_cols/4, ' ');
-
-    // Build the console buffer
-    Build_Console_Buffer();
+    // Add the main window
+    m_window_list.push_back(std::make_shared<A_Main_Window>( m_render_driver_context,
+                                                             m_command_history ));
     
-    // Build the Help Buffer
-    Build_Help_General_Buffer();
+    // Add the help window
+    m_window_list.push_back(std::make_shared<A_General_Help_Window>( m_render_driver_context,
+                                                                     m_command_parser.Get_CLI_Command_List(),
+                                                                     m_command_parser.Get_Command_List() ));
 
-    // Print the history
-    m_history_window = std::make_shared<ASCII::An_ASCII_History_Window>(m_command_history);
+    // Add the log window
+    m_window_list.push_back(std::make_shared<A_Log_Window>( m_render_driver_context ));
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
 }
 
@@ -106,14 +86,8 @@ void A_Render_Manager_ASCII::Finalize()
 /****************************/
 std::vector<std::string>& A_Render_Manager_ASCII::Get_Console_Buffer()
 {
-
-    // Check if help requested
-    if( m_render_state->Get_Help_Mode() == true ){
-        return m_help_menu->Get_Buffer_Data();
-    }
-
-    // Otherwise, return the main buffer
-    return m_console_buffer;
+    // Return the current window
+    return m_window_list[m_current_window]->Get_Buffer_Data();
 }
 
 
@@ -122,78 +96,9 @@ std::vector<std::string>& A_Render_Manager_ASCII::Get_Console_Buffer()
 /********************************/
 void A_Render_Manager_ASCII::Refresh()
 {
-
-    // If help is selected, then use that buffer
-    if( m_render_state->Get_Help_Mode() == true ){
-        
-        // Print the CLI
-        Print_CLI( m_help_menu->Get_Buffer_Data() );
-        
-        return; 
-    }
-
-
-    // Draw the header
-    Print_Header( m_console_buffer );
-
+    // Print the CLI Onto the Current Buffer Data
+    Print_CLI(m_window_list[m_current_window]->Get_Buffer_Data());
     
-    // Draw the main context
-    Print_Main_Content();
-
-    
-    // Draw the CLI
-    Print_CLI( m_console_buffer );
-
-
-}
-
-
-/****************************************/
-/*          Print the header            */
-/****************************************/
-void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffer )
-{
-    // Check for status
-    if( m_waiting_command_response == true ){
-        m_status_code_string = UTILS::ANSI_BACK_RED + UTILS::ANSI_BLACK + "Waiting for Command Response";
-        m_status_code_string.resize( m_window_cols/4, ' ' );
-    } else {
-        m_status_code_string = UTILS::ANSI_BACK_WHITE + std::string( m_window_cols/4, ' ');
-    }
-
-    // Find the title length
-    int title_length = std::min((int)m_cli_title.size(), m_render_state->Get_Cols()/2);
-    int title_width  = m_render_state->Get_Cols() * 5 / 8;
-    
-    // Define the first title part
-    std::string title_header = m_cli_title.substr( 0, title_length);
-    title_header.resize(title_width, ' ');
-
-    // Append the status text
-    title_header += m_status_code_string + UTILS::ANSI_RESET;
-    
-    // Set the header
-    print_buffer[0] = UTILS::ANSI_CLEARSCREEN + UTILS::ANSI_RESETCURSOR + "     " + title_header + BUFFER_NEWLINE;
-
-}
-
-
-/************************************************/
-/*          Print the Main Context              */
-/************************************************/
-void A_Render_Manager_ASCII::Print_Main_Content()
-{
-    
-    // Set the min and max positions
-    int max_col = m_render_state->Get_Cols()-3;
-    int max_row = m_render_state->Get_Rows()-3;
-    
-    // Update the cli window
-    m_history_window->Print_Table( m_console_buffer, 
-                                   m_min_content_row,
-                                   max_row,
-                                   m_min_content_col,
-                                   max_col );
 }
 
 
@@ -203,7 +108,7 @@ void A_Render_Manager_ASCII::Print_Main_Content()
 void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
 {
     // Set the buffer row
-    int cli_row = m_window_rows - 2;
+    int cli_row = m_render_state->Get_Rows() - 2;
 
     
     // Get the cursor text
@@ -237,33 +142,23 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
 
 }
 
-
-/****************************************/
-/*      Build the Console Buffer        */
-/****************************************/
-void A_Render_Manager_ASCII::Build_Console_Buffer()
+/****************************************************/
+/*      Set the Command Waiting Response Values     */
+/****************************************************/
+void A_Render_Manager_ASCII::Set_Waiting_Command_Response( const CMD::A_Command_Result::ptr_t response )
 {
-    // Allocate buffer
-    m_console_buffer.resize(m_window_rows, "\n\r");
-    m_console_buffer[0].insert(0, UTILS::ANSI_CLEARSCREEN);
+    m_render_driver_context->Set_Waiting_Command_Response( response );
 }
 
 
-/*****************************************/
-/*      Build the General Help Buffer    */
-/*****************************************/
-void A_Render_Manager_ASCII::Build_Help_General_Buffer()
-{
-    // Create the ASCII Help Menu
-    m_help_menu = std::make_shared<ASCII::An_ASCII_Help_Menu>( m_cli_title, 
-                                                               m_render_state->Get_Rows(),
-                                                               m_render_state->Get_Cols(),
-                                                               m_min_content_col,
-                                                               m_min_content_row,
-                                                               m_render_state->Get_Rows(),
-                                                               m_cli_command_list,
-                                                               m_command_list );
+/**************************************************/
+/*      Check the waiting response flag value     */
+/**************************************************/
+bool A_Render_Manager_ASCII::Check_Waiting_Command_Response(){
+    return m_render_driver_context->Check_Waiting_Command_Response();
 }
+        
+
 
 
 } // End of RENDER Namespace

@@ -8,8 +8,9 @@
 
 // CLI Libraries
 #include "A_Connection_Manager_Base.hpp"
+#include "../core/A_Render_Manager_Event_Handler.hpp"
+#include "../core/Event_Manager.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
-#include "../render/A_Render_Manager_NCurses.hpp"
 
 
 // C++ Standard Libraries
@@ -32,12 +33,14 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
     // Call the factory
     m_render_manager = m_configuration.Get_Render_Manager(); 
 
+    // Add to the event manager
+    CORE::Event_Manager::Register_CLI_Event_Handler( std::make_shared<CORE::A_Render_Manager_Event_Handler>( m_render_manager ));
+
     // Set the Queue
     m_command_queue = std::make_shared<CMD::A_Command_Queue>( m_configuration.Get_Command_Queue_Max_Size() );
     
     // Grab the connection handler
     m_connection_manager = m_configuration.Get_Connection_Manager();
-    m_connection_manager->Update_Render_Manager( m_configuration.Get_Render_Manager() );
     m_connection_manager->Update_Command_Parser( m_configuration.Get_Command_Parser());
     m_connection_manager->Update_Command_Queue( m_command_queue );
 
@@ -50,13 +53,15 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
 void A_CLI_Manager::Connect()
 {
     
-    // Configure the Render Context
-    m_render_manager->Update_Render_Driver_Context( m_render_driver_context );
-    
     // Kick off the handler thread
     m_handler_thread = std::thread( &A_CLI_Manager::Process_Command_Results, 
                                     this );
 
+    
+    // For giggles, make sure the connection manager is not null
+    if( m_connection_manager == nullptr ){
+        throw std::runtime_error("Connection Manager was null.");
+     }
 
     // Kick off the communication thread
     m_connection_manager->Start_Handler();

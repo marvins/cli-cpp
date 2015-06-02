@@ -17,6 +17,8 @@
 #include "../cmd/A_CLI_Command.hpp"
 #include "../cmd/A_Command_History.hpp"
 #include "../cmd/A_Command_Result.hpp"
+#include "../cmd/A_Command_Parser.hpp"
+#include "../cmd/A_Command_Queue.hpp"
 
 
 namespace CLI{
@@ -24,9 +26,12 @@ namespace RENDER{
 
 
 /**
- * @class A_Render_Manager_Base
+ * @class A_Render_Manager_Base.
+ *
+ * @brief Contains the basic elements required to render CLI windows.
  */
-class A_Render_Manager_Base{
+class A_Render_Manager_Base
+{
 
     public:
 
@@ -38,7 +43,7 @@ class A_Render_Manager_Base{
         /**
          * @brief Constructor
          */
-        A_Render_Manager_Base();
+        A_Render_Manager_Base( CMD::A_Command_Parser const& command_parser );
         
 
         /**
@@ -60,27 +65,15 @@ class A_Render_Manager_Base{
         
 
         /**
-         * @brief Get the render state
-         */
-        virtual A_Render_State::ptr_t Get_Render_State()const = 0;
-
-
-        /**
-         * @brief Wait on keyboard input.
-         *
-         * @return Character pressed.
-         */
-        inline virtual int Wait_Keyboard_Input(){ 
-            return -1; 
-        }
-        
-        
-        /**
          * @brief Update the rendering driver context.
          *
          * @param[in] driver_context Rendering driver to register.
          */
         virtual void Update_Render_Driver_Context( A_Render_Driver_Context_Base::ptr_t driver_context ) = 0;
+
+        inline virtual void Update_Command_Queue( CMD::A_Command_Queue::ptr_t command_queue ){
+            m_command_queue = command_queue;
+        }
 
         
         /**
@@ -110,25 +103,9 @@ class A_Render_Manager_Base{
 
 
         /**
-         * @brief Update the Command List.
-         *
-         * @param[in] command_list List of commands supported.
-         */
-        void Update_Command_List( const std::vector<CMD::A_Command>& command_list );
-
-
-        /**
-         * @brief Update the CLI Command List.
-         *
-         * @param[in] command_list List of cli commands supported.
-         */
-        void Update_CLI_Command_List( const std::vector<CMD::A_CLI_Command>& command_list );
-        
-
-        /**
          * @brief Command the system to wait on the input command response.
          */
-        void Set_Waiting_Command_Response( const CMD::A_Command_Result::ptr_t response );
+        virtual void Set_Waiting_Command_Response( const CMD::A_Command_Result::ptr_t response ) = 0;
 
 
         /**
@@ -136,7 +113,19 @@ class A_Render_Manager_Base{
          *
          * @return True if waiting on command result response.
          */
-        bool Check_Waiting_Command_Response();
+        virtual bool Check_Waiting_Command_Response() = 0;
+        
+
+        /**
+         * @brief Process Keyboard Input
+         */
+        virtual void Process_Keyboard_Input( const int& key );
+        
+
+        /**
+         * @brief Process the current command text.
+        */
+        virtual void Process_Command();
 
 
     protected:
@@ -147,23 +136,20 @@ class A_Render_Manager_Base{
         /// Command History
         CMD::A_Command_History::ptr_t m_command_history;
 
+
+        /// Command Queue
+        CMD::A_Command_Queue::ptr_t m_command_queue;
+
+
         /// Command Counter
         int m_command_counter;
         
         /// Render State
         A_Render_State::ptr_t m_render_state;
+        
+        /// Command Parser
+        CMD::A_Command_Parser m_command_parser;
 
-        /// Command List
-        std::vector<CMD::A_Command> m_command_list;
-
-        /// CLI Command List
-        std::vector<CMD::A_CLI_Command> m_cli_command_list;
-
-        /// Waiting Response
-        bool m_waiting_command_response;
-
-        /// Waiting command
-        CMD::A_Command_Result::ptr_t m_waiting_command_response_value;
 
     private:
 

@@ -6,7 +6,6 @@
 #include "A_CLI_Manager_Configuration.hpp"
 
 // CLI Libraries
-#include "A_Connection_Manager_Local.hpp"
 #include "A_Connection_Manager_Socket.hpp"
 #include "../render/A_Render_Driver_Context_Factory.hpp"
 #include "../render/A_Render_Manager_Factory.hpp"
@@ -36,23 +35,22 @@ A_CLI_Manager_Configuration::A_CLI_Manager_Configuration( CORE::ConnectionType c
 /***************************************************/
 /*          Get the Connection Handler             */
 /***************************************************/
-A_Connection_Manager_Base::ptr_t  A_CLI_Manager_Configuration::Get_Connection_Manager()const{
+A_Connection_Manager_Base::ptr_t  A_CLI_Manager_Configuration::Get_Connection_Manager(){
 
     // Make sure the configuration is not null
     if( m_connection_manager_configuration == nullptr ){
         return nullptr;
     }
-
-    // If we are Local, create the handelr
-    if( m_conn_type == CORE::ConnectionType::LOCAL )
-    {
-        return std::make_shared<A_Connection_Manager_Local>( m_connection_manager_configuration );
-    }
+        
+    
+    // Get the render manager
+    RENDER::A_Render_Manager_Base::ptr_t render_manager = this->Get_Render_Manager();
 
     // If we are socket, create the handler
-    else if( m_conn_type == CORE::ConnectionType::SOCKET )
+    if( m_conn_type == CORE::ConnectionType::SOCKET )
     {
-        return std::make_shared<A_Connection_Manager_Socket>( m_connection_manager_configuration );
+        return std::make_shared<A_Connection_Manager_Socket>( m_connection_manager_configuration, 
+                                                              render_manager );
     }
 
     // otherwise, return null
@@ -68,7 +66,8 @@ RENDER::A_Render_Manager_Base::ptr_t  A_CLI_Manager_Configuration::Get_Render_Ma
 {
     // Create the render driver context
     if( m_render_driver_context == nullptr ){
-        m_render_driver_context = RENDER::A_Render_Driver_Context_Factory::Initialize( m_conn_type, 
+        m_render_driver_context = RENDER::A_Render_Driver_Context_Factory::Initialize( m_conn_type,
+                                                                                       m_cli_title,
                                                                                        m_socket_window_rows,
                                                                                        m_socket_window_cols );
     }
@@ -77,9 +76,12 @@ RENDER::A_Render_Manager_Base::ptr_t  A_CLI_Manager_Configuration::Get_Render_Ma
     if( m_render_manager == nullptr ){
         m_render_manager = RENDER::A_Render_Manager_Factory::Initialize( m_conn_type,
                                                                          m_cli_title,
-                                                                         m_command_parser->Get_Command_List(),
-                                                                         m_command_parser->Get_CLI_Command_List(),
+                                                                         *m_command_parser,
                                                                          m_render_driver_context );
+        
+        // Initialize
+        m_render_manager->Initialize();
+    
     }
 
     return m_render_manager;
