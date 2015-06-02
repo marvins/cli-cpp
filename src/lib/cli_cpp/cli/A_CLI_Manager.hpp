@@ -34,9 +34,15 @@ class A_CLI_Manager{
         /**
          * @brief Constructor
          *
-         * @param[in] configuration
+         * @param[in] configuration CLI Manager Configuration parameters.
          */
         A_CLI_Manager( const A_CLI_Manager_Configuration& configuration );
+
+
+        /**
+         * @brief Destructor
+        */
+        ~A_CLI_Manager();
 
         
         /**
