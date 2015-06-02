@@ -11,6 +11,7 @@
 // CLI Libraries
 #include "../core/CLI_Event_Type.hpp"
 #include "../core/Event_Manager.hpp"
+#include "../utility/Log_Utilities.hpp"
 
 namespace CLI{
 namespace RENDER{
