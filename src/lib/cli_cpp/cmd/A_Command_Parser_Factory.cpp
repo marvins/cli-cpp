@@ -76,6 +76,10 @@ A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string
             parser_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_CLEAR );
             parser_command.Set_Formal_Name("Clear");
         }
+        else if( mode_str == "log" ){
+            parser_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_LOG );
+            parser_command.Set_Formal_Name("Log");
+        }
         else{
             std::cerr << "error: Unknown parser command mode (" << mode_str << ")" << std::endl;
             return nullptr;

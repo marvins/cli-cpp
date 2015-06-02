@@ -24,11 +24,28 @@ A_Log_Window::A_Log_Window( A_Render_Driver_Context_ASCII::ptr_t render_driver)
   : An_ASCII_Render_Window_Base(render_driver),
     m_class_name("A_Log_Window"),
     m_stdout_pipe_thread_shutdown(false),
-    m_stderr_pipe_thread_shutdown(false)
+    m_stderr_pipe_thread_shutdown(false),
+    m_previous_log_data_size(0)
 {
     // Configure the pipes
     Configure_Pipes();
     
+    // Set the header
+    m_buffer_data[0] = UTILS::ANSI_CLEARSCREEN + UTILS::ANSI_RESETCURSOR + "     " + m_render_driver->Get_CLI_Title() + UTILS::ANSI_NEWLINE;
+    
+    // Titles
+    std::vector<std::string> titles;
+    titles.push_back("Pipe");
+    titles.push_back("Message");
+    
+    std::vector<int> widths;
+    widths.push_back(9);
+    widths.push_back( m_render_driver->Get_Window_Cols() - m_render_driver->Get_Min_Content_Col() - 9);
+
+    // Build the print table
+    m_print_table = std::make_shared<UTILS::An_ASCII_Print_Table>(  titles,
+                                                                    widths, 
+                                                                    UTILS::An_ASCII_Print_Table_Config(false,false) );
 }
 
 
@@ -64,20 +81,36 @@ void A_Log_Window::Refresh()
 {
     // Define row info
     const int min_row = m_render_driver->Get_Min_Content_Row();
-    const int max_row = m_render_driver->Get_Window_Rows();
+    const int max_row = m_render_driver->Get_Window_Rows() - 4;
+    const int min_col = m_render_driver->Get_Min_Content_Col();
 
-    // Shift Data
-    for( int row = min_row; row < (max_row-1); row++ )
-    {
-        m_buffer_data[row] = m_buffer_data[row+1];
+    // iterate over new items
+    for( int i=m_previous_log_data_size; i<(int)m_log_data.size(); i++ ){
+
+        // Entry
+        std::string pipe_name = "stdout";
+        if( std::get<0>( m_log_data[i] ) == -1 ){
+            pipe_name = "";
+        } else if( std::get<0>( m_log_data[i] ) != STDOUT_FILENO ){
+            pipe_name = "stderr";
+        }
+    
+        // Create new string
+        std::string new_data = UTILS::String_Trim(std::get<1>(m_log_data[i]));
+
+        //Add new content
+        m_print_table->Add_Entry( i, 0, pipe_name );
+        m_print_table->Add_Entry( i, 1, new_data );
+        
+        // Print the table
+        m_print_table->Print_Table( m_buffer_data, 
+                                    min_row,     
+                                    max_row, 
+                                    min_col );
     }
 
-    //Add new content
-    if( std::get<0>(m_log_data.back()) == 0 ){
-        m_buffer_data[max_row-1] = std::get<1>(m_log_data) + UTILS::ANSI_NEWLINE;
-    } else {    
-        m_buffer_data[max_row-1] = UTILS::ANSI_RED + std::get<1>(m_log_data) + UTILS::ANSI_RESET + UTILS::ANSI_NEWLINE;
-    }
+    // Update the previous size
+    m_previous_log_data_size = m_log_data.size();
 }
 
 
@@ -91,7 +124,7 @@ void A_Log_Window::Configure_Pipes()
                                             STDOUT_FILENO, 
                                             std::ref(m_stdout_pipe_thread_shutdown),
                                             std::ref(m_log_data),
-                                            std::ref(this));
+                                            std::ref(*this));
     }
 
 }
@@ -130,6 +163,7 @@ void A_Log_Window::Pipe_Thread_Runner( const int& fd,
     const int MAX_LEN = 500;
     char buffer[MAX_LEN+1] = {0};
     int bytes_read;
+    std::vector<std::string> split_string_list;
 
     // Iterate until closed
     while( shutdown_flag != true ){
@@ -137,8 +171,18 @@ void A_Log_Window::Pipe_Thread_Runner( const int& fd,
         // Read from the buffer
         bytes_read = read( out_pipe[0], buffer, MAX_LEN );
 
+        // Split the list
+        split_string_list = UTILS::String_Split( std::string(buffer).substr(0,bytes_read),
+                                                 "\n");
+
         // Add to stdout
-        buffer_data.push_back( std::string(buffer).substr(0,bytes_read) );
+        for( int i=0; i<(int)split_string_list.size(); i++ ){ 
+            if( i == 0 ){
+                buffer_data.push_back( std::make_tuple(fd, split_string_list[i]));
+            } else {
+                buffer_data.push_back( std::make_tuple(-1, split_string_list[i]));
+            }
+        }
 
         // refresh the log window
         log_window.Refresh();

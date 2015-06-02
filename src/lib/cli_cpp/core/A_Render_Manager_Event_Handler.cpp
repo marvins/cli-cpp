@@ -49,6 +49,11 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& event )
         m_render_manager->Set_Current_Window(0);
     }
 
+    // If we have a command for CLI_LOG, then set the current window to the log
+    else if( event == (int)CORE::CLI_Event_Type::CLI_LOG ){
+        m_render_manager->Set_Current_Window(2);
+    }
+
     // Otherwise, Process the Keyboard Input
     else{
         m_render_manager->Process_Keyboard_Input( event );

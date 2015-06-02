@@ -10,6 +10,7 @@
 #include <cinttypes>
 #include <sstream>
 #include <string>
+#include <vector>
 
 namespace CLI{
 namespace UTILS{
@@ -136,6 +137,17 @@ std::string Format_String( const std::string&     data,
                            const StringAlignment& alignment = StringAlignment::CENTER,
                            const char&            fill_char = ' ' );
 
+
+/**
+ * @brief Split the string into multiple elements.
+ *
+ * @param[in] data Data to split.
+ * @param[in] pattern Pattern to split with.
+ *
+ * @return List of strings.
+ */
+ std::vector<std::string> String_Split( const std::string& data,
+                                        const std::string& pattern );
 
 } // End of UTILS Namespace
 } // End of CLI   Namespace

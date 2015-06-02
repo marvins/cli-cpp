@@ -170,6 +170,22 @@ std::string Format_String( const std::string&      data,
 }
 
 
+/***********************************************/
+/*               Split the string              */
+/***********************************************/
+std::vector<std::string> String_Split( const std::string& data, 
+                                       const std::string& pattern )
+{
+    // Create output
+    std::vector<std::string> output;
+
+    // Perform split
+    boost::split( output, data, boost::is_any_of(pattern));
+    
+    // return value
+    return output;
+}
+
 
 
 } // End of UTILS Namespace

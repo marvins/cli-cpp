@@ -281,6 +281,11 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
         CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_BACK );
     }
 
+    // If Log
+    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_LOG ){
+        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_LOG );
+    }
+
     // If clear
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_CLEAR )
     {

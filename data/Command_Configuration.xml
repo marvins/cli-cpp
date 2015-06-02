@@ -32,6 +32,13 @@
             <description value="Delete current history." />
         </command>
 
+        <!-- Show output information command -->
+        <command mode="log" >
+            <name value="log" />
+            <description value="Show current program output and logging." />
+        </command>
+
+
     </parser-commands>
 
     <!-- List of Commands -->

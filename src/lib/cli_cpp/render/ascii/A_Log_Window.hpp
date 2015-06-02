@@ -8,6 +8,8 @@
 
 // CLI Libraries
 #include "An_ASCII_Render_Window_Base.hpp"
+#include "../../utility/An_ASCII_Print_Table.hpp"
+
 
 // C++ Standard Libraries
 #include <memory>
@@ -78,6 +80,10 @@ class A_Log_Window : public An_ASCII_Render_Window_Base
 
         /// Buffers
         std::vector<std::tuple<int,std::string>> m_log_data;
+        int m_previous_log_data_size;
+
+        /// ASCII Print Window
+        UTILS::An_ASCII_Print_Table::ptr_t m_print_table;
 
 }; // End of A_Log_Window Class
 

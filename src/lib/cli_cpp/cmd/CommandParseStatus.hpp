@@ -27,6 +27,7 @@ enum class CommandParseStatus : uint8_t {
     EXCESSIVE_ARGUMENTS = 6 /**< Too many arguments compared to matching command.*/,
     CLI_BACK            = 7 /**< Back command entered.*/,
     CLI_CLEAR           = 8 /**< Clear History Command Entered.*/,
+    CLI_LOG             = 9 /**< Show the log information.*/,
 }; // End of CommandParseStatus Enumeration
 
 /**
