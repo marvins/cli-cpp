@@ -102,22 +102,6 @@ class A_Render_State{
 
         
         /**
-         * @brief Set the help mode
-         */
-        inline void Set_Help_Mode( const bool& help_mode ){
-            m_help_mode = help_mode;
-        }
-
-
-        /**
-         * @brief Get the help mode
-         */
-        inline bool Get_Help_Mode()const{
-            return m_help_mode;
-        }
-
-
-        /**
          * @brief Process CLI Command
          *
          * @param[in] command Command to process.
@@ -190,9 +174,6 @@ class A_Render_State{
 
         /// Window Cols
         int m_window_cols;
-
-        /// Help Mode
-        bool m_help_mode;
 
         /// Reference to Command History
         CMD::A_Command_History::ptr_t m_command_history;

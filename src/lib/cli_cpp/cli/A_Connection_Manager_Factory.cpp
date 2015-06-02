@@ -6,7 +6,6 @@
 #include "A_Connection_Manager_Factory.hpp"
 
 // CLI Libraries
-#include "A_Connection_Manager_Local.hpp"
 #include "A_Connection_Manager_Socket.hpp"
 
 namespace CLI{
@@ -15,7 +14,8 @@ namespace CLI{
 /********************************************/
 /*      Initialize Connection Manager       */
 /********************************************/
-A_Connection_Manager_Base::ptr_t A_Connection_Manager_Factory::Initialize( A_Connection_Manager_Base_Config::ptr_t configuration )
+A_Connection_Manager_Base::ptr_t A_Connection_Manager_Factory::Initialize( A_Connection_Manager_Base_Config::ptr_t configuration,
+                                                                           RENDER::A_Render_Manager_Base::ptr_t    render_manager )
 {
     // Check the type
     if( configuration == nullptr ){
@@ -29,19 +29,9 @@ A_Connection_Manager_Base::ptr_t A_Connection_Manager_Factory::Initialize( A_Con
         A_Connection_Manager_Socket_Config::ptr_t socket_config = std::dynamic_pointer_cast<A_Connection_Manager_Socket_Config>( configuration );
 
         // Return socket
-        return std::make_shared<A_Connection_Manager_Socket>( socket_config );
+        return std::make_shared<A_Connection_Manager_Socket>( socket_config, render_manager );
     }
     
-    // Check if local
-    if( configuration->Get_ConnectionType() == CORE::ConnectionType::LOCAL ){
-        
-        // Cast the configuration
-        A_Connection_Manager_Local_Config::ptr_t local_config = std::dynamic_pointer_cast<A_Connection_Manager_Local_Config>( configuration );
-
-        // Return socket
-        return std::make_shared<A_Connection_Manager_Local>( local_config );
-    }
-
     // return manager
     return nullptr;
 }

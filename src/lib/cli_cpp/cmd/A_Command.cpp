@@ -18,8 +18,8 @@ A_Command::A_Command()
  :  m_class_name("A_Command"),
     m_command_name(""),
     m_command_description(""),
-    m_command_argument_list(0),
-    m_expect_response(false)
+    m_expect_response(false),
+    m_command_argument_list(0)
 {
 }
 
@@ -33,8 +33,8 @@ A_Command::A_Command( const std::string&         command_name,
   : m_class_name("A_Command"),
     m_command_name(command_name),
     m_command_description(command_description),
-    m_command_argument_list(0),
-    m_expect_response(command_expect_response)
+    m_expect_response(command_expect_response),
+    m_command_argument_list(0)
 {
 }
 

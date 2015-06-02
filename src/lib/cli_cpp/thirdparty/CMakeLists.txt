@@ -8,8 +8,6 @@
 #-      ThirdParty Module Sources     -#
 #--------------------------------------#
 set( LIB_CLI_THIRDPARTY_MODULE_SOURCES
-    ncurses/An_NCurses_Table.cpp
-    ncurses/NCurses_Utilities.cpp
     pugixml/src/pugixml.cpp
 )
 
@@ -18,8 +16,6 @@ set( LIB_CLI_THIRDPARTY_MODULE_SOURCES
 #-      CLI Module Headers     -#
 #-------------------------------#
 set( LIB_CLI_THIRDPARTY_MODULE_HEADERS
-    ncurses/An_NCurses_Table.hpp
-    ncurses/NCurses_Utilities.hpp
     pugixml.hpp
     pugixml/src/pugixml.hpp
     pugixml/src/pugiconfig.hpp

@@ -9,21 +9,14 @@
     -->
     <logging enabled="true" 
              log_path="cli.log"
-             log_level="debug" />
+             log_level="trace" />
 
     <!-- Type of Connection 
           
           Supported Options:
-          - LOCAL  : Connect via stdin
           - SOCKET : Connect via network
     -->
     <connection-type value="SOCKET" />
-
-
-    <!-- Local CLI Configuration -->
-    <local-configuration>
-
-    </local-configuration>
 
 
     <!-- Socket CLI Configuration -->

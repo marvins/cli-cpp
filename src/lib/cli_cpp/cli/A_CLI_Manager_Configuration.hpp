@@ -62,7 +62,7 @@ class A_CLI_Manager_Configuration{
          *
          * @return Connection Manager Configuration.
          */
-        A_Connection_Manager_Base::ptr_t  Get_Connection_Manager()const;
+        A_Connection_Manager_Base::ptr_t  Get_Connection_Manager();
 
         
         /**

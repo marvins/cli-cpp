@@ -59,6 +59,15 @@
             </arguments>
         </command>
 
+        <!-- Shutdown the system -->
+        <command>
+            <name value="system-shutdown" />
+            <description value="Kill the entire program." />
+            <expect_response value="true" />
+            <arguments>
+            </arguments>
+        </command>
+
     </commands>
 
 </command-configuration>

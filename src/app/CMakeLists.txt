@@ -23,6 +23,8 @@ set( CLI_APP_SOURCES
      main.cpp
      cli/A_Netstat_Command_Response_Handler.cpp
      cli/A_Ping_Command_Response_Handler.cpp
+     cli/A_System_Command_Response_Handler.cpp
+     core/State_Manager.cpp
      utils/System_Utilities.cpp
 )
 
@@ -32,6 +34,8 @@ set( CLI_APP_SOURCES
 set( CLI_APP_HEADERS
      cli/A_Netstat_Command_Response_Handler.hpp
      cli/A_Ping_Command_Response_Handler.hpp
+     cli/A_System_Command_Response_Handler.hpp
+     core/State_Manager.hpp
      utils/System_Utilities.hpp
 )
 

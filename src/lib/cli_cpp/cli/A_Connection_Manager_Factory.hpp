@@ -9,6 +9,7 @@
 // CLI Libraries
 #include "A_Connection_Manager_Base.hpp"
 #include "A_Connection_Manager_Base_Config.hpp"
+#include "../render/A_Render_Manager_Base.hpp"
 
 namespace CLI{
 
@@ -25,7 +26,8 @@ class A_Connection_Manager_Factory
          *
          * @return Connection manager.  Null if there was a problem.
         */
-        static A_Connection_Manager_Base::ptr_t Initialize( A_Connection_Manager_Base_Config::ptr_t configuration );
+        static A_Connection_Manager_Base::ptr_t Initialize( A_Connection_Manager_Base_Config::ptr_t configuration,
+                                                            RENDER::A_Render_Manager_Base::ptr_t    render_manager );
 
 
 }; // End of A_Connection_Manager_Factory Class

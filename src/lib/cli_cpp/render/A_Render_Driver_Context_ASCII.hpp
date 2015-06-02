@@ -37,8 +37,11 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
          * @param[in] window_rows Number of window rows.
          * @param[in] window_cols Number of window columns.
         */
-        A_Render_Driver_Context_ASCII( const int& window_rows,   
-                                       const int& window_cols );
+        A_Render_Driver_Context_ASCII( const std::string&  cli_title,
+                                       const int&          window_rows,   
+                                       const int&          window_cols,
+                                       const int&          min_content_row,
+                                       const int&          min_content_col);
 
     
         /**
@@ -60,6 +63,23 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
             return m_window_cols;
         }
 
+
+        /**
+         * @brief Get the min content row.
+         */
+        inline int Get_Min_Content_Row()const{
+            return m_min_content_row;
+        }
+
+
+        /**
+         * @brief Get the min content column.
+        */
+        inline int Get_Min_Content_Col()const{
+            return m_min_content_col;
+        }
+
+
     private:
         
         /// Class Name 
@@ -70,7 +90,12 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
 
         /// Window Cols
         int m_window_cols;
+        
+        /// Min Content Row
+        int m_min_content_row;
 
+        /// Min Content Column
+        int m_min_content_col;
 
 }; // End of A_Render_Driver_Context_NCurses
 

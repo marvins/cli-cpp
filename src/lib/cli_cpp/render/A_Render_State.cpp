@@ -5,13 +5,12 @@
  */
 #include "A_Render_State.hpp"
 
-// CLI Libraries
-#include "../thirdparty/ncurses/NCurses_Utilities.hpp"
-#include "../utility/Log_Utilities.hpp"
-
 // C++ Standard Libraries
 #include <iostream>
 
+// CLI Libraries
+#include "../core/CLI_Event_Type.hpp"
+#include "../core/Event_Manager.hpp"
 
 namespace CLI{
 namespace RENDER{
@@ -27,7 +26,6 @@ A_Render_State::A_Render_State( CORE::ConnectionType const&    conn_type,
     m_cli_prompt_cursor_at(0),
     m_window_rows(0),
     m_window_cols(0),
-    m_help_mode(false),
     m_command_history(command_history)
 {
 }
@@ -50,37 +48,37 @@ void A_Render_State::Process_Input( const int& input )
 
 
     // check for backspace
-    if( input == KEY_BACKSPACE || input == 127 ){
+    if( input == (int)CORE::CLI_Event_Type::KEYBOARD_BACKSPACE || input == 127 ){
         Apply_Backspace();
         return;
     }
 
     // check for delete
-    else if( input == KEY_DC ){
+    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_DELETE_KEY ){
         Apply_Delete();
         return;
     }
 
     // Check for left-key
-    else if( input == KEY_LEFT ){
+    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_LEFT_ARROW ){
         Apply_Left_Key();
         return;
     }
 
     // Check for right-key
-    else if( input == KEY_RIGHT ){
+    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_RIGHT_ARROW ){
         Apply_Right_Key();
         return;
     }
 
     // Check for up-key
-    else if( input == KEY_UP ){
+    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_UP_ARROW ){
         Apply_Up_Key();
         return;
     }
 
     // Check for down-key
-    else if( input == KEY_DOWN ){
+    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_DOWN_ARROW ){
         Apply_Down_Key();
         return;
     }
@@ -96,7 +94,6 @@ void A_Render_State::Process_Input( const int& input )
         m_cli_prompt_cursor_at++;
 
     }
-
 }
 
 
@@ -274,26 +271,18 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
     // If help
-    if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_HELP )
-    {
-        Set_Help_Mode(true);
+    if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_HELP ){
+        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_HELP );
     }
 
     // If back
-    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_BACK )
-    {
-        // If in help mode
-        if( Get_Help_Mode() == true ){
-            Set_Help_Mode(false);
-        }
-
-        // Otherwise, error
+    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_BACK ){
+        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_BACK );
     }
 
     // If clear
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_CLEAR )
     {
-        // Delete the history
         m_command_history->Clear();
     }
 }

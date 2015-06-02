@@ -7,8 +7,8 @@
 
 // CLI Libraries
 #include "A_Connection_Manager_Socket_Config.hpp"
+#include "../core/Event_Manager.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
-#include "../thirdparty/ncurses/NCurses_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
 
 
@@ -35,8 +35,9 @@ namespace CLI{
 /*************************/
 /*      Constructor      */
 /*************************/
-A_Connection_Manager_Socket::A_Connection_Manager_Socket( A_Connection_Manager_Base_Config::ptr_t configuration )
-  : A_Connection_Manager_Base(),
+A_Connection_Manager_Socket::A_Connection_Manager_Socket( A_Connection_Manager_Base_Config::ptr_t configuration,
+                                                          RENDER::A_Render_Manager_Base::ptr_t    render_manager )
+  : A_Connection_Manager_Base(render_manager),
     m_class_name("A_Connection_Manager_Socket")
 {
     // Cast the configuration
@@ -180,13 +181,6 @@ void A_Connection_Manager_Socket::Run_Handler()
         write( m_client_fd,"\377\375\042\377\373\001",6);
         write( m_client_fd,"Welcome\n\0", 9);
 
-        // Setup Render Manager
-        if( this->m_render_manager != nullptr ){
-            this->m_render_manager->Initialize();
-            this->m_render_state = this->m_render_manager->Get_Render_State();
-        }
-        
-
         // Set the connected flag
         m_is_connected = true;
     
@@ -233,24 +227,15 @@ void A_Connection_Manager_Socket::Run_Handler()
         
             // Process the text
             if( input.size() > 1 ){
-                this->m_render_state->Process_Input( this->Process_Special_Key( input ));    
-            }
-            else{
-            
-                // cast the key
+                key = this->Process_Special_Key( input );    
+            } else {
                 key = input[0];
-
-                // Check if enter
-                if( key == 27 || key == 13 || key == 10 ){
-                    this->Process_Command();
-                }
-            
-                // Otherwise, add the key
-                else{
-                    this->m_render_state->Process_Input( key );
-                }
             }
 
+            // Process the command
+            BOOST_LOG_TRIVIAL(trace) << "Calling Event_Manager::Process_Event with Key = " << key;
+            CORE::Event_Manager::Process_Event( key );
+            BOOST_LOG_TRIVIAL(trace) << "Event_Manager::Process_Event returned.";
         
             // Render the screen
             this->m_render_manager->Refresh();
@@ -296,27 +281,27 @@ int A_Connection_Manager_Socket::Process_Special_Key( const std::string& input_s
     
     // Check Delete Key
     if( input_str == KEYBOARD_DELETE_KEY ){
-        return KEY_DC;
+        return (int)CORE::CLI_Event_Type::KEYBOARD_DELETE_KEY;
     }
 
     // Check Left Key
     else if( input_str == KEYBOARD_LEFT_KEY ){
-        return KEY_LEFT;
+        return (int)CORE::CLI_Event_Type::KEYBOARD_LEFT_ARROW;
     }
 
     // Check Right Key
     else if( input_str == KEYBOARD_RIGHT_KEY ){
-        return KEY_RIGHT;    
+        return (int)CORE::CLI_Event_Type::KEYBOARD_RIGHT_ARROW;
     }
 
     // Check Up Key
     else if( input_str == KEYBOARD_UP_KEY ){
-        return KEY_UP;
+        return (int)CORE::CLI_Event_Type::KEYBOARD_UP_ARROW;
     }
 
     // Check Down Key
     else if( input_str == KEYBOARD_DOWN_KEY ){
-        return KEY_DOWN;
+        return (int)CORE::CLI_Event_Type::KEYBOARD_DOWN_ARROW;
     }
 
     // Otherwise, there was an error

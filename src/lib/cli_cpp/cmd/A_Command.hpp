@@ -135,20 +135,25 @@ class A_Command{
 
 
     private:
+        
         /// Class Name
         std::string m_class_name;
 
+        
         /// Command Name
         std::string m_command_name;
 
+        
         /// Command Description
         std::string m_command_description;
 
-        /// Command Argument List
-        std::vector<A_Command_Argument> m_command_argument_list;
         
         /// Expect Response Flag
         bool m_expect_response;
+
+        
+        /// Command Argument List
+        std::vector<A_Command_Argument> m_command_argument_list;
 
 }; // End of A_Command 
 

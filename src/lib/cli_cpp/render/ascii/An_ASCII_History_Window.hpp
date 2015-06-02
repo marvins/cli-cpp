@@ -14,7 +14,6 @@
 
 namespace CLI{
 namespace RENDER{
-namespace ASCII{
 
 /**
  * @class An_ASCII_History_Window
@@ -59,7 +58,6 @@ class An_ASCII_History_Window
 
 }; // End of An_ASCII_History_Window Class
 
-} // End of ASCII  Namespace
 } // End of RENDER Namespace
 } // End of CLI    Namespace
 
