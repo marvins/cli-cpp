@@ -44,7 +44,7 @@ void A_Main_Window::Print_Header()
         status_code_string = UTILS::ANSI_BACK_RED + UTILS::ANSI_BLACK + "Waiting for Command Response";
         status_code_string.resize( m_render_driver->Get_Window_Cols()/4, ' ' );
     } else {
-        status_code_string = UTILS::ANSI_BACK_WHITE + std::string( m_render_driver->Get_Window_Cols()/4, ' ');
+        status_code_string = UTILS::ANSI_BACK_WHITE + UTILS::ANSI_BLACK + UTILS::Format_String( "Ready", m_render_driver->Get_Window_Cols()/4);
     }
 
     // Find the title length

@@ -61,7 +61,7 @@ bool An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
     int cur_row = min_row;
 
     // Make sure the current size is large enough for the print table
-    if( print_data.size() <= max_row ){
+    if( (int)print_data.size() <= max_row ){
         print_data.resize( max_row+1, "\n\r");
     }
 
@@ -137,7 +137,7 @@ bool An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
             current_line += "|";
         }
         
-        if( row >= print_data.size() ){
+        if( row >= (int)print_data.size() ){
             return true;
         }
         
@@ -151,14 +151,14 @@ bool An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
 
         // Increment row entry
         current_row_entry++;
-        if( current_row_entry >= print_data.size() ){
+        if( current_row_entry >= (int)print_data.size() ){
             return true;
         }
     }
 
 
     // Print the bottom row
-    if( max_row >= print_data.size() ){
+    if( max_row >= (int)print_data.size() ){
         return true;
     }
     print_data[max_row] = std::string(min_col,' ') + header_line_row + ANSI_NEWLINE;

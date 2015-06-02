@@ -213,7 +213,7 @@ void A_Connection_Manager_Socket::Run_Handler()
                     break;
                 }
                 else{
-                    usleep(1000);
+                    usleep(500);
                 }
 
             }
