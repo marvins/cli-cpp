@@ -9,7 +9,6 @@
 // C++ Standard Libraries
 #include <memory>
 #include <string>
-#include <thread>
 #include <vector>
 
 
@@ -27,6 +26,13 @@ namespace CORE{
 class Event_Manager{
 
     public:
+        
+        
+        /**
+         * @brief Destructor
+        */
+        ~Event_Manager();
+
 
         /**
          * @brief Initialize the Event Manager
@@ -35,13 +41,17 @@ class Event_Manager{
 
 
         /**
-         * @brief Register CLI Event Handler
+         * @brief Register CLI Event Handler.
+         *
+         * @param[in] handler Event handler to process commands.
          */
         static void Register_CLI_Event_Handler( A_CLI_Event_Handler_Base::ptr_t handler );
         
 
         /**
          * @brief Process_Event
+         *
+         * @param[in] event Event ID.  For keyboard entries, this is the ascii value, for CLI Commands, this is < -2. Check CLI_Event_Type class for more info.
         */
         static void Process_Event( const int& event );
 
@@ -56,7 +66,7 @@ class Event_Manager{
          */
         Event_Manager();
 
-
+        
         /**
          * @brief Start Thread
          */
@@ -73,10 +83,6 @@ class Event_Manager{
         std::string m_class_name;
 
 
-        /// Event Manager Thread
-        std::thread m_event_handler_thread;
-        
-        
         /// List of event handlers
         std::vector<A_CLI_Event_Handler_Base::ptr_t> m_event_handlers;
 

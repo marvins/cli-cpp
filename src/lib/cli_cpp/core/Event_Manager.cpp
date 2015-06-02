@@ -21,9 +21,17 @@ static std::shared_ptr<Event_Manager> instance = nullptr;
 Event_Manager::Event_Manager()
   : m_class_name("Event_Manager")
 {
-    // Start the runner
-    m_event_handler_thread = std::thread( &Event_Manager::Run, this );
 }
+
+
+/**************************/
+/*       Destructor       */
+/**************************/
+Event_Manager::~Event_Manager()
+{
+
+}
+
 
 /********************************/
 /*          Initialize          */

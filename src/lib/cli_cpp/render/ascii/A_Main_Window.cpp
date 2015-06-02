@@ -35,7 +35,6 @@ void A_Main_Window::Print_Header()
 {
     // Get the CLI Title
     std::string cli_title = m_render_driver->Get_CLI_Title();
-    std::cout << "CLI Title: " << cli_title << std::endl;
     
     // Status Code String
     std::string status_code_string;

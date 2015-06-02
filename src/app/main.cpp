@@ -14,6 +14,8 @@
 
 // Demo Libraries
 #include "cli/A_Ping_Command_Response_Handler.hpp"
+#include "cli/A_System_Command_Response_Handler.hpp"
+#include "core/State_Manager.hpp"
 
 // CLI Libraries
 #include <cli_cpp/cli/A_CLI_Manager_Factory.hpp>
@@ -37,6 +39,9 @@ int main( int argc, char* argv[] )
         // Define the configuration file path
         std::string config_pathname = argv[1];
 
+        // Create a State Manager
+        State_Manager state_manager;
+
         // Create the CLI Manager
         CLI::A_CLI_Manager::ptr_t manager = CLI::A_CLI_Manager_Factory::Initialize( config_pathname );
 
@@ -50,11 +55,15 @@ int main( int argc, char* argv[] )
         A_Ping_Command_Response_Handler::ptr_t  ping_handler = std::make_shared<A_Ping_Command_Response_Handler>();
         manager->Register_Command_Response_Handler( ping_handler );
 
+        // Register a System Response Handler
+        A_System_Command_Response_Handler::ptr_t system_handler = std::make_shared<A_System_Command_Response_Handler>(state_manager);
+        manager->Register_Command_Response_Handler( system_handler );
+
         // Initialize the CLI Manager
         manager->Connect();
 
         // Check the type of run and wait if necessary
-        manager->Wait_Shutdown();
+        state_manager.Wait_On_System_Shutdown();
 
         // Disconnect the CLI Manager
         manager->Disconnect();
