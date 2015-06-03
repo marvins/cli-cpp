@@ -28,6 +28,9 @@ const std::string KEYBOARD_LEFT_KEY   = "\033\133\104";
 const std::string KEYBOARD_RIGHT_KEY  = "\033\133\103";
 const std::string KEYBOARD_UP_KEY     = "\033\133\101";
 const std::string KEYBOARD_DOWN_KEY   = "\033\133\102";
+const std::string KEYBOARD_F1_KEY     = "\033\119\120";
+const std::string KEYBOARD_F2_KEY     = "\033\119\121";
+const std::string KEYBOARD_F3_KEY     = "\033\119\122";
 
 namespace CLI{
 
@@ -305,6 +308,21 @@ int A_Connection_Manager_Socket::Process_Special_Key( const std::string& input_s
     // Check Down Key
     else if( input_str == KEYBOARD_DOWN_KEY ){
         return (int)CORE::CLI_Event_Type::KEYBOARD_DOWN_ARROW;
+    }
+    
+    // Check F1 Key
+    else if( input_str == KEYBOARD_F1_KEY ){
+        return (int)CORE::CLI_Event_Type::KEYBOARD_F1;
+    }
+
+    // Check F2 Key
+    else if( input_str == KEYBOARD_F2_KEY ){
+        return (int)CORE::CLI_Event_Type::KEYBOARD_F2;
+    }
+
+    // Check F3 Key
+    else if( input_str == KEYBOARD_F3_KEY ){
+        return (int)CORE::CLI_Event_Type::KEYBOARD_F3;
     }
 
     // Otherwise, there was an error

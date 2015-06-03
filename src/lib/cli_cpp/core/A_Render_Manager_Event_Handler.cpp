@@ -40,17 +40,20 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& event )
     }
 
     // If we have a command to show the CLI Help, then show that
-    else if( event == (int)CORE::CLI_Event_Type::CLI_HELP ){
+    else if( event == (int)CORE::CLI_Event_Type::CLI_HELP ||
+             event == (int)CORE::CLI_Event_Type::KEYBOARD_F2 ){
         m_render_manager->Set_Current_Window( 1 );
     }
 
     // If we have a command for CLI_BACK, then set the current window to the main
-    else if( event == (int)CORE::CLI_Event_Type::CLI_BACK ){
+    else if( event == (int)CORE::CLI_Event_Type::CLI_BACK ||
+             event == (int)CORE::CLI_Event_Type::KEYBOARD_F1 ){
         m_render_manager->Set_Current_Window(0);
     }
 
     // If we have a command for CLI_LOG, then set the current window to the log
-    else if( event == (int)CORE::CLI_Event_Type::CLI_LOG ){
+    else if( event == (int)CORE::CLI_Event_Type::CLI_LOG ||
+             event == (int)CORE::CLI_Event_Type::KEYBOARD_F3 ){
         m_render_manager->Set_Current_Window(2);
     }
 

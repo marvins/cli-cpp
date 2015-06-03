@@ -79,10 +79,16 @@ A_Log_Window::~A_Log_Window()
 /*****************************/
 void A_Log_Window::Refresh()
 {
+    // Get the print window rows
+    const int prows = m_print_table->Rows();
+
     // Define row info
-    const int min_row = m_render_driver->Get_Min_Content_Row();
+    const int min_row = m_render_driver->Get_Min_Content_Row() ;
     const int max_row = m_render_driver->Get_Window_Rows() - 4;
     const int min_col = m_render_driver->Get_Min_Content_Col();
+    const int table_height = max_row - min_row;
+    const int srow = std::max( 0, prows - table_height - 1);
+
 
     // iterate over new items
     for( int i=m_previous_log_data_size; i<(int)m_log_data.size(); i++ ){
@@ -106,7 +112,8 @@ void A_Log_Window::Refresh()
         m_print_table->Print_Table( m_buffer_data, 
                                     min_row,     
                                     max_row, 
-                                    min_col );
+                                    min_col,
+                                    srow );
     }
 
     // Update the previous size
@@ -172,15 +179,18 @@ void A_Log_Window::Pipe_Thread_Runner( const int& fd,
         bytes_read = read( out_pipe[0], buffer, MAX_LEN );
 
         // Split the list
-        split_string_list = UTILS::String_Split( std::string(buffer).substr(0,bytes_read),
+        split_string_list = UTILS::String_Split( UTILS::String_Trim(std::string(buffer).substr(0,bytes_read)),
                                                  "\n");
 
         // Add to stdout
         for( int i=0; i<(int)split_string_list.size(); i++ ){ 
+
+            // Check the stripped string
+            std::string stripped = UTILS::String_Trim( split_string_list[i], " \n\0");
             if( i == 0 ){
-                buffer_data.push_back( std::make_tuple(fd, split_string_list[i]));
+                buffer_data.push_back( std::make_tuple(fd, stripped ));
             } else {
-                buffer_data.push_back( std::make_tuple(-1, split_string_list[i]));
+                buffer_data.push_back( std::make_tuple(-1, stripped ));
             }
         }
 

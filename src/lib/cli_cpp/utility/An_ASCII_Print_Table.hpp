@@ -80,7 +80,8 @@ class An_ASCII_Print_Table
         bool Print_Table( std::vector<std::string>& print_data,
                           const int& min_row,
                           const int& max_row,
-                          const int& min_col )const;
+                          const int& min_col,
+                          const int& start_row = 0 )const;
 
         /**
          * @brief Add Entry
@@ -116,6 +117,21 @@ class An_ASCII_Print_Table
        inline bool Is_Valid()const{
            return m_is_valid;
        }
+        
+
+        /**
+         * @brief Get the number of rows.
+         */
+        inline int Rows()const{
+            return m_table_data[0].size();
+        }
+
+        /**
+         * @brief Get the number of columns.
+        */
+        inline int Cols()const{
+            return m_table_data.size();
+        }
 
 
     private:

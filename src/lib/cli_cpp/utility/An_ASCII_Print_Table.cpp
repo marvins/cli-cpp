@@ -55,7 +55,8 @@ An_ASCII_Print_Table::An_ASCII_Print_Table( const std::vector<std::string>& colu
 bool An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
                                         const int&                 min_row,
                                         const int&                 max_row,
-                                        const int&                 min_col ) const
+                                        const int&                 min_col,
+                                        const int&                 start_row ) const
 {
     // Define our current row
     int cur_row = min_row;
@@ -96,7 +97,7 @@ bool An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
     
     // misc variables
     bool skip_row = false;
-    int current_row_entry = 0;
+    int current_row_entry = start_row;
     std::string current_line;
     
     // Print the actual table data

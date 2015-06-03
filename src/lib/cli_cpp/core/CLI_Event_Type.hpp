@@ -90,6 +90,11 @@ enum class CLI_Event_Type : int32_t{
     KEYBOARD_RIGHT_ARROW = 502,
     KEYBOARD_UP_ARROW    = 503,
     KEYBOARD_DOWN_ARROW  = 504,
+    KEYBOARD_F1          = 505,
+    KEYBOARD_F2          = 506,
+    KEYBOARD_F3          = 507,
+    KEYBOARD_F4          = 508,
+    KEYBOARD_F5          = 508,
 }; // End of event type enum
 
 } // End of CORE Namespace
