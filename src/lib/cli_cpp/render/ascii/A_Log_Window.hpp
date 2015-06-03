@@ -13,6 +13,7 @@
 
 // C++ Standard Libraries
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <tuple>
@@ -84,6 +85,9 @@ class A_Log_Window : public An_ASCII_Render_Window_Base
 
         /// ASCII Print Window
         UTILS::An_ASCII_Print_Table::ptr_t m_print_table;
+    
+        /// Mutex
+        std::mutex m_mutex;
 
 }; // End of A_Log_Window Class
 

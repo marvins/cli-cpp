@@ -13,9 +13,11 @@
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
+#include <mutex>
 
 namespace CLI{
 namespace RENDER{
+
 
 /**********************************/
 /*          Constructor           */
@@ -62,6 +64,9 @@ A_Log_Window::~A_Log_Window()
     if( m_render_driver->Get_Redirect_Stdout_Flag() == true ){
         std::cout << "End of Logging" << std::endl;
     }
+    if( m_render_driver->Get_Redirect_Stderr_Flag() == true ){
+        std::cerr << "End of Logging" << std::endl;
+    }
 
     // Join any running threads
     if( m_stdout_pipe_thread.joinable() ){
@@ -79,15 +84,17 @@ A_Log_Window::~A_Log_Window()
 /*****************************/
 void A_Log_Window::Refresh()
 {
+    m_mutex.lock();
+
     // Get the print window rows
     const int prows = m_print_table->Rows();
 
     // Define row info
-    const int min_row = m_render_driver->Get_Min_Content_Row() ;
-    const int max_row = m_render_driver->Get_Window_Rows() - 4;
-    const int min_col = m_render_driver->Get_Min_Content_Col();
+    const int min_row      = m_render_driver->Get_Min_Content_Row() ;
+    const int max_row      = m_render_driver->Get_Window_Rows() - 4;
+    const int min_col      = m_render_driver->Get_Min_Content_Col();
     const int table_height = max_row - min_row;
-    const int srow = std::max( 0, prows - table_height - 1);
+    const int srow         = std::max( 0, prows - table_height - 1);
 
 
     // iterate over new items
@@ -118,6 +125,9 @@ void A_Log_Window::Refresh()
 
     // Update the previous size
     m_previous_log_data_size = m_log_data.size();
+
+    m_mutex.unlock();
+
 }
 
 
@@ -130,6 +140,14 @@ void A_Log_Window::Configure_Pipes()
         m_stdout_pipe_thread = std::thread( &A_Log_Window::Pipe_Thread_Runner, 
                                             STDOUT_FILENO, 
                                             std::ref(m_stdout_pipe_thread_shutdown),
+                                            std::ref(m_log_data),
+                                            std::ref(*this));
+    }
+    
+    if( this->m_render_driver->Get_Redirect_Stderr_Flag() == true ){
+        m_stderr_pipe_thread = std::thread( &A_Log_Window::Pipe_Thread_Runner, 
+                                            STDERR_FILENO, 
+                                            std::ref(m_stderr_pipe_thread_shutdown),
                                             std::ref(m_log_data),
                                             std::ref(*this));
     }
