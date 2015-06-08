@@ -126,6 +126,16 @@ class A_Command_Result{
         inline bool Check_System_Response()const{
             return m_system_response_set;
         }
+
+
+        /**
+         * @brief Get argument value count.
+         *
+         * @return number of arguments
+        */
+        inline int Get_Argument_Value_Count()const{
+            return m_argument_values.size();
+        }
         
 
         /**
