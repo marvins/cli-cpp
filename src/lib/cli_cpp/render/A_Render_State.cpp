@@ -20,14 +20,17 @@ namespace RENDER{
 /*          Constructor             */
 /************************************/
 A_Render_State::A_Render_State( CORE::ConnectionType const&    conn_type,
-                                CMD::A_Command_History::ptr_t  command_history )
+                                CMD::A_Command_History::ptr_t  command_history,
+                                CMD::A_Command_Parser::ptr_t   command_parser )
   : m_cli_prompt_text(""),
     m_cli_prompt_cursor_head(0),
     m_cli_prompt_cursor_tail(0),
     m_cli_prompt_cursor_at(0),
     m_window_rows(0),
     m_window_cols(0),
-    m_command_history(command_history)
+    m_command_history(command_history),
+    m_command_parser(command_parser),
+    m_command_history_ptr(-1)
 {
 }
 
@@ -81,6 +84,12 @@ void A_Render_State::Process_Input( const int& input )
     // Check for down-key
     else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_DOWN_ARROW ){
         Apply_Down_Key();
+        return;
+    }
+
+    // Check for Tab Key
+    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_TAB_KEY ){
+        Apply_Tab_Key();
         return;
     }
     
@@ -259,6 +268,35 @@ void A_Render_State::Apply_Up_Key()
         m_cli_prompt_cursor_at = 0;
         m_cli_prompt_cursor_tail = 0;
         m_cli_prompt_cursor_head = m_cli_prompt_text.size();
+    }
+}
+
+
+/***********************************/
+/*          Apply Tab Key          */
+/***********************************/
+void A_Render_State::Apply_Tab_Key()
+{
+    // Make sure the command parser is not null
+    if( m_command_parser == nullptr ){
+        BOOST_LOG_TRIVIAL(fatal) << "Command parser is null. Expect a seg fault. File: " << __FILE__ << ", Line: " << __LINE__;
+    }
+
+    // Query the command parser
+    std::vector<std::string> autocomplete_match_list;
+
+    m_command_parser->Update_Autocomplete_String( m_cli_prompt_text,
+                                                  autocomplete_match_list );
+
+    // If the size is 1, then just update to that.
+    if( autocomplete_match_list.size() == 1 ){
+        
+        // Set the text
+        m_cli_prompt_text = autocomplete_match_list[0];
+        m_cli_prompt_cursor_at = m_cli_prompt_text.size();
+        m_cli_prompt_cursor_head = m_cli_prompt_text.size();
+        m_cli_prompt_cursor_tail = 0;
+
     }
 }
 

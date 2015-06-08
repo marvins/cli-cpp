@@ -71,6 +71,44 @@ bool A_CLI_Command::Is_Match( const std::string& name )const
     return false;
 }
 
+
+/*******************************************/
+/*       Check Name Substring Match        */
+/*******************************************/
+bool A_CLI_Command::Is_Name_Substring( const std::string& input_string,
+                                       std::string&       match_result )const
+{
+    
+    // Iterate over the name list
+    for( size_t i=0; i<m_names.size(); i++ )
+    {
+
+        // Check the length
+        if( m_names[i].size() < input_string.size() ){
+            continue;
+        }
+        else if( m_names[i].size() == input_string.size() ){
+            if( m_names[i] == input_string ){
+                match_result = m_names[i];
+                return true;
+            }
+            else{
+                continue;
+            }
+        }
+        else{
+            if( m_names[i].substr(0, input_string.size()) == input_string ){
+                match_result = m_names[i];
+                return true;
+            }
+        }
+    }
+
+    // Otherwise, return false
+    return false;
+}
+
+
 /********************************/
 /*      Equivalent Operator     */
 /********************************/

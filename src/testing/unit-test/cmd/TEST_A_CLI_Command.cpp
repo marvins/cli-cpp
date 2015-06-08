@@ -177,5 +177,13 @@ TEST( A_CLI_Command, Parameterized_Constructor_Full )
     ASSERT_EQ( cli_command04.Get_Command_Name_List()[0], "Hello");
     ASSERT_EQ( cli_command04.Get_Command_Name_List()[1], "test" );
 
+    // Test the IsName Substr function
+    std::string act_match_result;
+    cli_command04.Add_Name("HELLO");
+    ASSERT_TRUE( cli_command04.Is_Name_Substring("H", act_match_result) );
+    ASSERT_EQ( act_match_result, "Hello");
+    ASSERT_TRUE( cli_command04.Is_Name_Substring("HE", act_match_result) );
+    ASSERT_EQ( act_match_result, "HELLO");
+
 }
 

@@ -7,6 +7,7 @@
 
 // CLI Libraries
 #include "A_Render_Manager_ASCII.hpp"
+#include "../utility/Log_Utilities.hpp"
 
 // C++ Standard Libraries
 #include <iostream>
@@ -25,10 +26,16 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Initialize( CORE::Connect
 {
     // Create the pointer
     RENDER::A_Render_Manager_Base::ptr_t render_manager = nullptr;
-    
+ 
+    // Check the parser
+    if( command_parser == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "Command-Parser is currently null. File: " << __FILE__ << ", Line: " << __LINE__ << ".";
+    }
+
     // Create the ASCII Render
     if( connection_type == CORE::ConnectionType::SOCKET ){
-        render_manager = std::make_shared<RENDER::A_Render_Manager_ASCII>( render_driver, command_parser );
+        render_manager = std::make_shared<RENDER::A_Render_Manager_ASCII>( render_driver, 
+                                                                           command_parser );
 
     }
 

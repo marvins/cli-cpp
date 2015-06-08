@@ -147,7 +147,7 @@ std::string Format_String( const std::string&     data,
  * @return List of strings.
  */
  std::vector<std::string> String_Split( const std::string& data,
-                                        const std::string& pattern );
+                                        const std::string& pattern = " ");
 
 } // End of UTILS Namespace
 } // End of CLI   Namespace

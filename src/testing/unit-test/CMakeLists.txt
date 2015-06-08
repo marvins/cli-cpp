@@ -68,6 +68,7 @@ set( CLI_CPP_TEST_SOURCES
      cmd/TEST_A_CLI_Command.cpp
      cmd/TEST_A_Command.cpp
      cmd/TEST_A_Command_Argument.cpp
+     cmd/TEST_A_Command_Parser.cpp
      utility/TEST_An_ASCII_Print_Table.cpp
      utility/TEST_String_Utilities.cpp
 )

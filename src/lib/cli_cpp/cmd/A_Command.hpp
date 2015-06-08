@@ -129,6 +129,16 @@ class A_Command{
         
 
         /**
+         * @brief Check if name is a subset.
+         *
+         * @param[in] command_name Command name to test.
+         *
+         * @return True if subset, false otherwise.
+        */
+        bool Is_Name_Substring( const std::string& command_name )const;
+
+
+        /**
          * @brief Print as a debug string.
          */
         std::string To_Debug_String()const;

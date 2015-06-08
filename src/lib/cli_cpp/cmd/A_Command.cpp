@@ -67,6 +67,26 @@ bool A_Command::Is_Name_Match( const std::string& command_name )const
 }
 
 
+/************************************************/
+/*        Check if Name Substring Match         */
+/************************************************/
+bool A_Command::Is_Name_Substring( const std::string& command_name )const
+{
+    // Check if command name is less than or equal
+    if( command_name.size() > m_command_name.size() ){
+        return false;
+    }
+
+    // Check if the sizes are equal
+    if( command_name.size() == m_command_name.size() ){
+        return Is_Name_Match( command_name );
+    }
+
+    // Otherwise, check the substring
+    return (m_command_name.substr(0, command_name.size()) == command_name );
+}
+
+
 /************************************/
 /*         Check Arguments          */
 /************************************/

@@ -98,6 +98,55 @@ std::vector<std::string>  A_Command_Parser::Parse_String( const std::string& tes
 }
 
 
+/***************************************************/
+/*          Update the Autocomplete string         */
+/***************************************************/
+void A_Command_Parser::Update_Autocomplete_String( const std::string&          input_string,
+                                                   std::vector<std::string>&   match_list )const
+{
+    
+    // Split up the input string
+    std::vector<std::string> components = UTILS::String_Split( input_string );
+    std::string matching_value;
+
+    // Clear the match list
+    match_list.clear();
+
+    // use the last element
+    int idx = components.size()-1;
+
+    // Check the command name
+    if( idx == 0 ){
+        
+        // Iterate over commands
+        for( size_t i=0; i<m_command_list.size(); i++ ){
+            
+            // Check the names
+            if( m_command_list[i].Is_Name_Substring( components.back() ) == true ){
+                match_list.push_back( m_command_list[i].Get_Name() );
+            }
+        }
+
+        // Iterate over CLI Commands
+        for( size_t i=0; i<m_cli_command_list.size(); i++ )
+        {
+            // Check the names
+            if( m_cli_command_list[i].Is_Name_Substring( components.back(), matching_value ) == true )
+            {
+                match_list.push_back( matching_value );
+            }
+        }
+    }
+
+    // Otherwise, check the arguments
+    else{
+
+
+    }
+
+
+}
+
 } // End of CMD Namespace
 } // End of CLI Namespace
 

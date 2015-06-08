@@ -73,6 +73,13 @@ class A_CLI_Command{
          * @param[in] name Name to compare against.
          */
         bool Is_Match( const std::string& name )const;
+        
+
+        /**
+         * @brief Check if name matches the substring
+         */
+        bool Is_Name_Substring( const std::string&  input_string,
+                                std::string&        match_result )const;
 
         
         /**

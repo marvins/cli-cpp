@@ -38,7 +38,8 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( A_Render_Driver_Context_Base::pt
 
     // Create new render state
     m_render_state.reset(new A_Render_State( CORE::ConnectionType::SOCKET, 
-                                             m_command_history));
+                                             m_command_history,
+                                             m_command_parser ));
 }
 
 

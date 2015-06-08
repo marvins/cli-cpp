@@ -135,3 +135,42 @@ TEST( A_Command, Parameterized_Constructor_With_Arguments )
 
 }
 
+
+/*******************************************/
+/*       Test the Is Name Substring        */
+/*******************************************/
+TEST( A_Command, Is_Name_Substring ){
+
+    // Define the expected values
+    const std::string command_name = "pingSystem";
+    const std::string command_desc = "test_ping";
+    const bool response_expected = false;
+    std::vector<CMD::A_Command_Argument> command_arguments;
+
+    // Create the command arguments
+    command_arguments.push_back( CMD::A_Command_Argument("system_name",
+                                                         CMD::CommandArgumentType::STRING,
+                                                         "Hostname of system",
+                                                         true,
+                                                         "localhost"));
+    command_arguments.push_back( CMD::A_Command_Argument("max-attempts",
+                                                         CMD::CommandArgumentType::INTEGER,
+                                                         "max number of tries.",
+                                                         false,
+                                                         "2"));
+
+    // Use the Constructor
+    CMD::A_Command command01( command_name,
+                              command_desc,
+                              response_expected,
+                              command_arguments );
+
+    // Check the substring match
+    ASSERT_TRUE( command01.Is_Name_Substring( "p" ) );
+    ASSERT_TRUE( command01.Is_Name_Substring( "ping" ) );
+    ASSERT_FALSE( command01.Is_Name_Substring( "Ping" ) );
+
+
+}
+
+

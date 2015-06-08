@@ -14,6 +14,7 @@
 // CLI Libraries
 #include "../core/ConnectionType.hpp"
 #include "../cmd/A_Command_History.hpp"
+#include "../cmd/A_Command_Parser.hpp"
 #include "../cmd/A_Command_Result.hpp"
 
 namespace CLI{
@@ -36,9 +37,11 @@ class A_Render_State{
          * 
          * @param[in] conn_type Connection type.
          * @param[in] command_history History of commands.
+         * @param[in] command_parser Parser for auto-complete.
          */
         A_Render_State( CORE::ConnectionType const&    conn_type,
-                        CMD::A_Command_History::ptr_t  command_history );
+                        CMD::A_Command_History::ptr_t  command_history,
+                        CMD::A_Command_Parser::ptr_t   command_parser );
 
         
         /**
@@ -146,6 +149,12 @@ class A_Render_State{
          */
         void Apply_Down_Key();
 
+        
+        /**
+         * @brief Apply the Tab Key
+        */
+        void Apply_Tab_Key();
+
 
         /**
          * @brief Check if input is text.
@@ -177,6 +186,9 @@ class A_Render_State{
 
         /// Reference to Command History
         CMD::A_Command_History::ptr_t m_command_history;
+
+        /// Reference to Command Parser
+        CMD::A_Command_Parser::ptr_t m_command_parser;
 
         /// Current History Index
         int m_command_history_ptr;

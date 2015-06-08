@@ -72,6 +72,15 @@ class A_Command_Parser {
         inline std::vector<A_CLI_Command> Get_CLI_Command_List()const{
             return m_cli_command_list;
         }
+        
+
+        /**
+         * @brief Query Autocomplete
+         *
+         * @param[in] input_string Input string to check.
+         */
+        void Update_Autocomplete_String( const std::string&        input_string,
+                                         std::vector<std::string>& match_list )const;
 
     
     private:

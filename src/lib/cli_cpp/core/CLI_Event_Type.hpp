@@ -84,6 +84,7 @@ enum class CLI_Event_Type : int32_t{
     KEYBOARD_8           = '8',
     KEYBOARD_9           = '9',
     KEYBOARD_0           = '0',
+    KEYBOARD_TAB_KEY     =   9,
     KEYBOARD_BACKSPACE   = 127,
     KEYBOARD_DELETE_KEY  = 500,
     KEYBOARD_LEFT_ARROW  = 501,
