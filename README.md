@@ -18,7 +18,6 @@ tested this on Linux (Ubuntu/Fedora) and MacOS X with MacPorts
 
 ### Dependencies ###
  - Boost
- - NCurses
  - pthreads (`std::thread`)
  
 
