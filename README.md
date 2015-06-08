@@ -61,3 +61,14 @@ command and not yet arguments.
 
 ![CLI Main Window](docs/images/CLI-Main.png "CLI Main Window")
 
+### CLI Help Menu (?, help)###
+
+![CLI Help Window](docs/images/CLI-Help.png "CLI Help Window")
+
+### CLI Ping Command ###
+
+![CLI Ping Command](docs/images/Ping-Demo.png "CLI Ping Command Waiting")
+
+### CLI Ping Command Complete ###
+![CLI Ping Command](docs/images/CLI_PING_COMPLETE.png "CLI Ping Command Complete")
+
