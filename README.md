@@ -32,3 +32,28 @@ CLI-CPP is constructed using the CMake build system.  Just do the following.
     make 
     popd
 
+
+###  Test Application ###
+
+CLI-CPP comes with a basic test application to demonstrate core capabilities.  To run...
+
+    cd release
+    ./bin/cli-network-tester ../data/CLI_Manager_Configuration.xml
+
+    # On a separate terminal, 
+    telnet localhost 12344
+
+
+For the demo, the supported commands are shown below.  Note that tab-complete currently only works for the 
+command and not yet arguments.
+
+1.  ?, help
+  -  Print Help
+2. bye
+  -  Log out of the terminal
+3. system-shutdown
+  - Shut down application.
+4. ping <host-required> <num-tries optional>
+  - ping a network address.
+
+
