@@ -196,6 +196,17 @@ void A_Log_Window::Pipe_Thread_Runner( const int& fd,
         // Read from the buffer
         bytes_read = read( out_pipe[0], buffer, MAX_LEN );
 
+        // Skip if no data read
+        if( bytes_read == 0 ){
+            BOOST_LOG_TRIVIAL(info) << "End of connection. File: " << __FILE__ << ", Line: " << __LINE__;
+            continue;
+        }
+        
+        // Check shutdown flag
+        if( shutdown_flag == true ){
+            break;
+        }
+        
         // Split the list
         split_string_list = UTILS::String_Split( UTILS::String_Trim(std::string(buffer).substr(0,bytes_read)),
                                                  "\n");

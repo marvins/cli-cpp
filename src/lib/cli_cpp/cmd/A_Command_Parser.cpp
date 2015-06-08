@@ -107,14 +107,20 @@ void A_Command_Parser::Update_Autocomplete_String( const std::string&          i
     
     // Split up the input string
     std::vector<std::string> components = UTILS::String_Split( input_string );
-    std::string matching_value;
+    for( int i=0; i<(int)components.size(); i++ ){
+        components[i] = UTILS::String_Trim(components[i]);
+    }
+    
 
     // Clear the match list
     match_list.clear();
+    std::string matching_value;
 
+    
     // use the last element
     int idx = components.size()-1;
 
+    
     // Check the command name
     if( idx == 0 ){
         

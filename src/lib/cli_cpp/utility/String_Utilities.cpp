@@ -8,6 +8,10 @@
 // Boost Libraries
 #include <boost/algorithm/string.hpp>
 
+// CLI Libraries
+#include "Log_Utilities.hpp"
+
+
 namespace CLI{
 namespace UTILS{
 
@@ -50,6 +54,15 @@ std::string String_Trim( const std::string&  data,
                          const std::string&  patterns,
                          const StringDirection& strip_direction )
 {
+    // Skip empty strings
+    if( data.size() <= 0 ){
+        return data;
+    }
+    if( patterns.size() <= 0 ){
+        BOOST_LOG_TRIVIAL(error) << "Pattern input is currently empty. File: " <<__FILE__ << ", Line: " << __LINE__;
+        return data;
+    }
+
     // Set our output
     std::string output = data;
 
@@ -177,13 +190,19 @@ std::vector<std::string> String_Split( const std::string& data,
                                        const std::string& pattern )
 {
     // Create output
-    std::vector<std::string> output;
+    std::vector<std::string> output, result;
 
     // Perform split
     boost::split( output, data, boost::is_any_of(pattern));
-    
+
+    for( int i=0; i<(int)output.size(); i++ ){
+        if( String_Trim(output[i]).size() > 0 ){
+            result.push_back(String_Trim(output[i]));
+        }
+    }
+
     // return value
-    return output;
+    return result;
 }
 
 

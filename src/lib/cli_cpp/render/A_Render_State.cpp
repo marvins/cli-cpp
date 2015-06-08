@@ -30,7 +30,7 @@ A_Render_State::A_Render_State( CORE::ConnectionType const&    conn_type,
     m_window_cols(0),
     m_command_history(command_history),
     m_command_parser(command_parser),
-    m_command_history_ptr(-1)
+    m_command_history_ptr(m_command_history->Size())
 {
 }
 

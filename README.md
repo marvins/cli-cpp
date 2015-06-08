@@ -57,3 +57,7 @@ command and not yet arguments.
   - ping a network address.
 
 
+### CLI Main Window ###
+
+![CLI Main Window)(docs/images/CLI-Main.png, "CLI Main Window")
+
