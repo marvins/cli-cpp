@@ -59,5 +59,5 @@ command and not yet arguments.
 
 ### CLI Main Window ###
 
-![CLI Main Window](docs/images/CLI-Main.png, "CLI Main Window")
+![CLI Main Window](docs/images/CLI-Main.png "CLI Main Window")
 
