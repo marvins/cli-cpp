@@ -45,19 +45,18 @@ void Event_Manager::Initialize()
 
 }
 
-/**************************************/
-/*          Run the Handler           */
-/**************************************/
-void Event_Manager::Run()
-{
-    // Start Main Loop
-    /*while( m_is_running == true )
-    {
-    
-        
-    }*/
-}
 
+/********************************/
+/*          Initialize          */
+/********************************/
+void Event_Manager::Finalize()
+{
+    // Check the singleton instance
+    if( instance != nullptr ){
+        instance = nullptr;
+    }
+
+}
 
 /**********************************************/
 /*          Get Instance Of Handler           */

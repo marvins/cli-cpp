@@ -87,6 +87,24 @@ bool A_Command::Is_Name_Substring( const std::string& command_name )const
 }
 
 
+/********************************************/
+/*      Check if Argument is a Match        */
+/********************************************/
+bool A_Command::Is_Argument_Substring( const int&         argument_index,
+                                       const std::string& argument_name,
+                                       std::string&  match_name )const
+{
+    // Don't go over bounds
+    if( argument_index >= m_command_argument_list.size() ){
+        return false;
+    }
+
+    // Pass to argument
+    return m_command_argument_list[argument_index].Is_Argument_Substring( argument_name,
+                                                                          match_name );
+
+}
+
 /************************************/
 /*         Check Arguments          */
 /************************************/

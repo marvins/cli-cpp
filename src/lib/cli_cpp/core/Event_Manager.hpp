@@ -41,6 +41,12 @@ class Event_Manager{
 
 
         /**
+         * @brief Finalize the Event Manager
+        */
+        static void Finalize();
+
+
+        /**
          * @brief Register CLI Event Handler.
          *
          * @param[in] handler Event handler to process commands.
@@ -65,13 +71,6 @@ class Event_Manager{
          * @brief Constructor
          */
         Event_Manager();
-
-        
-        /**
-         * @brief Start Thread
-         */
-        void Run();
-
 
         /**
          * @brief Get Instance

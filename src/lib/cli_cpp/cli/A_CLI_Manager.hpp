@@ -22,6 +22,8 @@ namespace CLI{
 
 /**
  * @class A_CLI_Manager
+ *
+ * @brief Primary CLI management interface.
  */
 class A_CLI_Manager{
 

@@ -44,7 +44,7 @@
         
         <!-- Flag if we want to redirect stdout and stderr to log. -->
         <redirect stdout="false"
-                  stderr="true" />
+                  stderr="false" />
 
     </cli>
 

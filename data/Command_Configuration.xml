@@ -4,7 +4,7 @@
     <regex-split-pattern value=" "/>
 
     <!-- Parser-Specific Commands -->
-    <parser-commands>
+    <cli-commands>
 
         <!-- Shutdown Command -->
         <command mode="shutdown">
@@ -39,7 +39,7 @@
         </command>
 
 
-    </parser-commands>
+    </cli-commands>
 
     <!-- List of Commands -->
     <commands>
@@ -62,7 +62,14 @@
             <expect_response value="true" />
             <arguments>
                 <argument name="port"  type="INTEGER" description="Port number to scan."  required="true" />
-                <argument name="proto" type="STRING"  description="Protocol (udp/tcp)."   required="false"  default="tcp" />  
+                <argument name="proto" type="STRING"  description="Protocol (udp/tcp)."   required="false"  default="tcp">
+                    <auto-complete>
+                        <option value="udp" />
+                        <option value="UDP" />
+                        <option value="tcp" />
+                        <option value="TCP" />
+                    </auto-complete>
+                </argument>
             </arguments>
         </command>
 

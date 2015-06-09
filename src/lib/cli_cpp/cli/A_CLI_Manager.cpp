@@ -103,6 +103,9 @@ void A_CLI_Manager::Disconnect()
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
+    // Disable the Event Manager
+    CORE::Event_Manager::Finalize();
+
     // Make sure the connection manager is not already de-allocated
     if( m_connection_manager != nullptr ){
     

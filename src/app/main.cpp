@@ -13,6 +13,7 @@
 #include <unistd.h>
 
 // Demo Libraries
+#include "cli/A_Netstat_Command_Response_Handler.hpp"
 #include "cli/A_Ping_Command_Response_Handler.hpp"
 #include "cli/A_System_Command_Response_Handler.hpp"
 #include "core/State_Manager.hpp"
@@ -54,6 +55,10 @@ int main( int argc, char* argv[] )
         // Register a Ping Command-Response Handler
         A_Ping_Command_Response_Handler::ptr_t  ping_handler = std::make_shared<A_Ping_Command_Response_Handler>();
         manager->Register_Command_Response_Handler( ping_handler );
+
+        // Register a Netstat Command-Response Handler
+        A_Netstat_Command_Response_Handler::ptr_t netstat_handler = std::make_shared<A_Netstat_Command_Response_Handler>();
+        manager->Register_Command_Response_Handler( netstat_handler );
 
         // Register a System Response Handler
         A_System_Command_Response_Handler::ptr_t system_handler = std::make_shared<A_System_Command_Response_Handler>(state_manager);

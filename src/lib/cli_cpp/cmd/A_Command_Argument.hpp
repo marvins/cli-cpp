@@ -9,6 +9,11 @@
 // CLI Libraries
 #include "CommandArgumentType.hpp"
 
+// C++ Standard Libraries
+#include <string>
+#include <vector>
+
+
 namespace CLI{
 namespace CMD{
 
@@ -39,6 +44,25 @@ class A_Command_Argument{
                             const std::string&          arg_description,
                             const bool&                 arg_required = true,
                             const std::string&          arg_default_value = "" );
+        
+        
+        /**
+         * @brief Constructor
+         * 
+         * @param[in] arg_name Argument name.
+         * @param[in] arg_type Argument type.
+         * @param[in] arg_description Description of the argument's purpose or function.
+         * @param[in] arg_required Flag if the argument is required on input.
+         * @param[in] arg_default_value Default value if the argument is not provided.
+         * @param[in] arg_autocomplete_terms  Argument autocomplete terms.
+        */
+        A_Command_Argument( const std::string&              arg_name,
+                            const CommandArgumentType&      arg_type,
+                            const std::string&              arg_description,
+                            const bool&                     arg_required,
+                            const std::string&              arg_default_value,
+                            std::vector<std::string>const&  arg_autocomplete_terms );
+
 
         /**
          * @brief Get the argument name.
@@ -79,6 +103,17 @@ class A_Command_Argument{
             return m_default_value;
         }
         
+        /**
+         * @brief Check if the input argument is a substring of an autocomplete element.
+         *
+         * @param[in] argument_name Argument to query.
+         * @param[out] match_name Match if one exists.
+         * 
+         * @return True if found, false otherwise.
+        */
+        bool Is_Argument_Substring( const std::string& argument_name,
+                                    std::string&       match_name )const;
+
 
         /**
          * @brief Check if the test string is a valid type for the argument.
@@ -130,6 +165,9 @@ class A_Command_Argument{
 
         /// Required
         bool m_required;
+
+        /// Argument Autocomplete Terms
+        std::vector<std::string> m_autocomplete_terms;
 
 }; // End of A_Command_Argument Class
 

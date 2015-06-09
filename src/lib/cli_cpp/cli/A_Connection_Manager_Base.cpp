@@ -32,6 +32,10 @@ A_Connection_Manager_Base::A_Connection_Manager_Base( RENDER::A_Render_Manager_B
 /*************************/
 A_Connection_Manager_Base::~A_Connection_Manager_Base()
 {
+    
+    // Finalize
+    m_render_manager->Finalize();
+
 }
 
 
@@ -89,8 +93,6 @@ void A_Connection_Manager_Base::Signal_Shutdown()
     // set the flag
     m_is_running = false;
     
-    // Finalize
-    m_render_manager->Finalize();
     
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;

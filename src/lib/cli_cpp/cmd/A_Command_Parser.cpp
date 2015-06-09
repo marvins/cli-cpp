@@ -147,6 +147,32 @@ void A_Command_Parser::Update_Autocomplete_String( const std::string&          i
     // Otherwise, check the arguments
     else{
 
+        // Concat all other arguments to the test string
+        std::string test_output = components[0];
+        for( size_t i=1; i<components.size()-1; i++ ){
+            test_output += " " + components[i];
+        }
+        
+        // The argument in question
+        int arg_idx = idx-1;
+
+        // Pass the component to each command
+        for( size_t i=0; i<m_command_list.size(); i++ ){
+            
+            // Check if there is a match
+            if( m_command_list[i].Is_Argument_Substring( arg_idx, 
+                                                         components.back(), 
+                                                         matching_value ) == true )
+            {
+                match_list.push_back( test_output + " " + matching_value );
+            }
+        }
+
+        // pass the component to each cli command
+        for( size_t i=0; i<m_cli_command_list.size(); i++ ){
+
+        }
+        
 
     }
 

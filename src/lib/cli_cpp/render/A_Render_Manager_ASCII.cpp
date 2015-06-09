@@ -82,6 +82,14 @@ void A_Render_Manager_ASCII::Initialize()
 /********************************/
 void A_Render_Manager_ASCII::Finalize()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    // Clear out the windows
+    m_window_list.clear();
+
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 

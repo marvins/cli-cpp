@@ -22,9 +22,9 @@ A_Render_Driver_Context_Base::A_Render_Driver_Context_Base( const std::string& c
                                                             const bool&        redirect_stdout,
                                                             const bool&        redirect_stderr )
   : m_cli_title(cli_title),
-    m_class_name("A_Render_Driver_Context_Base"),
     m_redirect_stdout(redirect_stdout),
     m_redirect_stderr(redirect_stderr),
+    m_class_name("A_Render_Driver_Context_Base"),
     m_waiting_command_response(false)
 {
 }

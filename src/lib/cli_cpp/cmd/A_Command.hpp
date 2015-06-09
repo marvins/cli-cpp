@@ -136,6 +136,20 @@ class A_Command{
          * @return True if subset, false otherwise.
         */
         bool Is_Name_Substring( const std::string& command_name )const;
+        
+
+        /**
+         * @brief Check if the argument is a subset or matches the autocomplete set.
+         *
+         * @param[in] argument_index Specific argument to query.
+         * @param[in] argument_name Argument name to test.
+         * @param[out] match_name Match if one exists.
+         * 
+         * @return True if subset, false otherwise.
+        */
+        bool Is_Argument_Substring( const int& argument_index,
+                                    const std::string& argument_name,
+                                    std::string&       match_name )const;
 
 
         /**
