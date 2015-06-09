@@ -31,6 +31,10 @@ CLI-CPP is constructed using the CMake build system.  Just do the following.
     make 
     popd
 
+Note that it will probably fail the first time due to pugixml missing.  To initialize from the base
+directory...
+
+    git submodule update --init src/lib/cli_cpp/thirdparty/pugixml
 
 ###  Test Application ###
 
