@@ -131,6 +131,8 @@ void A_CLI_Manager::Disconnect()
         m_handler_thread.join();
     }
     
+    // Remove all command handlers
+    m_command_handlers.clear();
     
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
