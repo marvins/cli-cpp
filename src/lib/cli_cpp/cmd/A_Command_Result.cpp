@@ -61,7 +61,8 @@ std::string A_Command_Result::Get_Parse_Status_String()const
 
     // Check if we are waiting on a response
     if( m_command.Response_Expected() == true &&
-        Check_System_Response() == false )
+        Check_System_Response() == false &&
+        m_parse_status == CommandParseStatus::VALID )
     {
         return "Waiting on system response.";
     }
@@ -92,6 +93,29 @@ void A_Command_Result::Set_System_Response( const std::string& system_response )
 A_Command_Result  A_Command_Result::Process_Arguments( const A_Command& command,    
                                                                const std::vector<std::string>&  arguments )
 {
+    // Log 
+    BOOST_LOG_TRIVIAL(trace) << "Start of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
+    
+    // Check for no arguments
+    if( arguments.size() <= 0 ){
+        
+        // If we have no arguments passed in, yet the first argument
+        // in the comparison command has a required argument, then throw an error.
+        if( command.Get_Argument_List().size() > 0 &&
+            command.Get_Command_Argument(0).Is_Required() == true )
+        {
+            return A_Command_Result( CommandParseStatus::INVALID_ARGUMENTS,
+                                     command,
+                                     arguments );
+        }
+
+        // Otherwise, we are fine.
+        else{
+            return A_Command_Result( CommandParseStatus::VALID,
+                                     command,
+                                     arguments );
+        }
+    }
     
     // Check for enough arguments
     for( int i=(int)arguments.size(); i<(int)command.Get_Argument_List().size(); i++ ){
@@ -99,8 +123,8 @@ A_Command_Result  A_Command_Result::Process_Arguments( const A_Command& command,
         // Validate missing argument is not required
         if( command.Get_Command_Argument(i).Is_Required() == true ){
             return A_Command_Result( CommandParseStatus::INVALID_ARGUMENTS,
-                                         command,
-                                         arguments );
+                                     command,
+                                     arguments );
         }
     }
 
@@ -110,8 +134,8 @@ A_Command_Result  A_Command_Result::Process_Arguments( const A_Command& command,
         // Check the types
         if( command.Check_Argument_Type( arg, arguments[arg] ) == false ){
             return A_Command_Result( CommandParseStatus::INVALID_ARGUMENTS,
-                                         command,
-                                         arguments );
+                                     command,
+                                     arguments );
         }
     }
 
@@ -119,14 +143,14 @@ A_Command_Result  A_Command_Result::Process_Arguments( const A_Command& command,
     // Check the excess arguments
     if( arguments.size() > command.Get_Argument_List().size() ){
         return A_Command_Result( CommandParseStatus::EXCESSIVE_ARGUMENTS,
-                                     command,
-                                     arguments );
+                                 command,
+                                 arguments );
     }
     
     // Return success
     return A_Command_Result( CommandParseStatus::VALID,
-                                 command,
-                                 arguments );
+                             command,
+                             arguments );
 
 
 }
@@ -149,6 +173,7 @@ std::string A_Command_Result::To_Debug_String( const int& offset )const
     sin << gap << "    Command Name: " << m_command.Get_Name() << "\n";
     sin << gap << "    Command Desc: " << m_command.Get_Description() << "\n";
     sin << gap << "    Command Resp: " << std::boolalpha << m_command.Response_Expected() << "\n";
+    sin << gap << "    Parse Status: " << CommandParseStatusToString( m_parse_status ) << std::endl;
     sin << gap << "    Command Args:\n"; 
     for( size_t i=0; i<m_command.Get_Argument_List().size(); i++ ){
         sin << gap << "       Argument " << i << " : Name   : " << m_command.Get_Argument_List()[i].Get_Name() << "\n";

@@ -9,7 +9,12 @@
 #include <boost/algorithm/string.hpp>
 
 // CLI Libraries
+#include "../utility/Log_Utilities.hpp"
 #include "../utility/String_Utilities.hpp"
+
+// C++ Standard Libraries
+#include <iostream>
+
 
 namespace CLI{
 namespace CMD{
@@ -33,6 +38,9 @@ A_Command_Parser::A_Command_Parser( const std::string&                 regex_spl
 /***************************************/
 A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string& test_str )const
 {
+    // Log 
+    BOOST_LOG_TRIVIAL(trace) << "Start of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
+    
     // Split the string
     std::vector<std::string> components = Parse_String( test_str );
 
@@ -69,6 +77,9 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string& test_st
         }
     }
 
+    
+    // Log 
+    BOOST_LOG_TRIVIAL(trace) << "End of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
 
     // return the result
     return A_Command_Result( CommandParseStatus::NO_COMMAND_FOUND,

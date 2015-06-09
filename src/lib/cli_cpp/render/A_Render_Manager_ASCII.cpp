@@ -164,7 +164,13 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
 /****************************************************/
 void A_Render_Manager_ASCII::Set_Waiting_Command_Response( const CMD::A_Command_Result::ptr_t response )
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     m_render_driver_context->Set_Waiting_Command_Response( response );
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -172,6 +178,10 @@ void A_Render_Manager_ASCII::Set_Waiting_Command_Response( const CMD::A_Command_
 /*      Check the waiting response flag value     */
 /**************************************************/
 bool A_Render_Manager_ASCII::Check_Waiting_Command_Response(){
+    
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     return m_render_driver_context->Check_Waiting_Command_Response();
 }
         

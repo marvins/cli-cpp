@@ -56,9 +56,11 @@ void A_Render_Manager_Base::Process_Command()
         return;
     }
 
+
     // Check the command
     CMD::A_Command_Result result = m_command_parser->Evaluate_Command( m_render_state->Get_Cursor_Text() );
         
+    
     // Create shared pointer
     CMD::A_Command_Result::ptr_t result_ptr = std::make_shared<CMD::A_Command_Result>( result );
     
@@ -83,7 +85,6 @@ void A_Render_Manager_Base::Process_Command()
     // Otherwise, handle command
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::VALID ){
 
-        
         // Add the command to the queue
         m_command_queue->Push_Command( result_ptr );
     
@@ -118,6 +119,7 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
     // Check the key value if enter
     if( key == (int)CORE::CLI_Event_Type::KEYBOARD_ENTER ){
         Process_Command();
+        return;
     }
     
     // Check that the render state is not null
