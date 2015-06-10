@@ -47,8 +47,8 @@ CLI-CPP comes with a basic test application to demonstrate core capabilities.  T
     telnet localhost 12344
 
 
-For the demo, the supported commands are shown below.  Note that tab-complete currently only works for the 
-command and not yet arguments.
+For the demo, the supported commands are shown below.  Tab-complete works for both commands and arguments.  Check the configuration 
+file for arguments with tab-complete support.
 
 1.  ?, help
   -  Print Help
@@ -58,6 +58,8 @@ command and not yet arguments.
   - Shut down application.
 4. ping <host-required> <num-tries optional>
   - ping a network address.
+5. netstat <port-required> <protocol optional>
+  - check if a port is open.
 
 
 ### CLI Main Window ###
