@@ -15,6 +15,27 @@ namespace CLI{
 namespace CMD{
 
 
+/****************************************************/
+/*        Return the Matching Left Substring        */
+/****************************************************/
+std::string Matching_Substring( const std::string& str1,
+                                const std::string& str2 )
+{
+    // Output
+    std::string output;
+
+    // Iterate over string
+    for( size_t i=0; i<str1.size() && i<str2.size(); i++ ){
+        if( str1[i] == str2[i] ){
+            output.push_back(str1[i]);
+        }
+        else{
+            return output;
+        }
+    }
+    return output;
+}
+
 /**********************************/
 /*          Constructor           */
 /**********************************/
@@ -132,6 +153,9 @@ bool A_Command_Argument::operator == ( A_Command_Argument const& other )const
 bool A_Command_Argument::Is_Argument_Substring( const std::string& argument_name,
                                                 std::string& match_name )const
 {
+    // List of potential matches
+    std::vector<std::string> match_list;
+
     // Iterate over autocomplete terms
     for( size_t i=0; i<m_autocomplete_terms.size(); i++ )
     {
@@ -142,20 +166,30 @@ bool A_Command_Argument::Is_Argument_Substring( const std::string& argument_name
 
         // Check if equal
         if( argument_name == m_autocomplete_terms[i] ){
-            match_name = m_autocomplete_terms[i];
-            return true;
+            match_list.push_back(m_autocomplete_terms[i]); 
+            continue;
         }
 
         // Check substring
         if( m_autocomplete_terms[i].substr(0, argument_name.size()) == argument_name )
         {
-            match_name = m_autocomplete_terms[i];
-            return true;
+            match_list.push_back(m_autocomplete_terms[i]); 
+            continue;
         }
     }
 
-    match_name = "";
-    return false;
+    // Check if we found any matches
+    if( match_list.size() <= 0 ){
+        match_name = "";
+        return false;
+    }
+
+    // Find the minimum spanning substring
+    match_name = match_list[0];
+    for( size_t i=1; i<match_list.size(); i++ ){
+        match_name = Matching_Substring( match_name, match_list[i]);
+    }
+    return true;
 }
 
 
