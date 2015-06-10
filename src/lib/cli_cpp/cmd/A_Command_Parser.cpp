@@ -148,7 +148,8 @@ void A_Command_Parser::Update_Autocomplete_String( const std::string&          i
         for( size_t i=0; i<m_cli_command_list.size(); i++ )
         {
             // Check the names
-            if( m_cli_command_list[i].Is_Name_Substring( components.back(), matching_value ) == true )
+            if( m_cli_command_list[i].Is_Name_Substring( components.back(), 
+                                                         matching_value ) == true )
             {
                 match_list.push_back( matching_value );
             }
