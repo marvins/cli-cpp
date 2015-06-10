@@ -8,9 +8,13 @@
 
 // C++ Standard Libraries
 #include <memory>
+#include <vector>
+
 
 // CLI Libraries
 #include "../../cmd/A_Command_History.hpp"
+#include "../../utility/String_Utilities.hpp"
+
 
 namespace CLI{
 namespace RENDER{
@@ -54,6 +58,12 @@ class An_ASCII_History_Window
 
         /// Command History
         CMD::A_Command_History::ptr_t m_command_history;
+
+        /// Table Headers
+        std::vector<std::string> m_table_headers;
+ 
+        /// Table Alignments
+        std::vector<UTILS::StringAlignment> m_table_alignments;
 
 
 }; // End of An_ASCII_History_Window Class

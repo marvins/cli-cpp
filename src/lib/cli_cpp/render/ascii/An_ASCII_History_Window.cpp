@@ -21,8 +21,21 @@ namespace RENDER{
 /**************************************/
 An_ASCII_History_Window::An_ASCII_History_Window( CMD::A_Command_History::ptr_t command_history )
   : m_class_name("An_ASCII_History_Window"),
-    m_command_history(command_history)
+    m_command_history(command_history),
+    m_table_headers(3),
+    m_table_alignments(3)
 {
+    
+    // Table Headers
+    m_table_headers[0] = "CMD";
+    m_table_headers[1] = " Input";
+    m_table_headers[2] = " Status";
+
+    // Table Alignments
+    m_table_alignments[0] = UTILS::StringAlignment::CENTER;
+    m_table_alignments[1] = UTILS::StringAlignment::LEFT;
+    m_table_alignments[2] = UTILS::StringAlignment::LEFT;
+
 }
 
 
@@ -38,23 +51,13 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     // Define our offset amount
     std::string BUFFER_OFFSET( min_col, ' ');
 
+
     // Define our newline buffer
     const std::string BUFFER_NEWLINE = "\n\r";
     
-    // Table Headers
-    std::vector<std::string> table_headers(3);
-    table_headers[0] = "CMD";
-    table_headers[1] = " Input";
-    table_headers[2] = " Status";
-
-    // Table Alignments
-    std::vector<UTILS::StringAlignment> table_alignments(3);
-    table_alignments[0] = UTILS::StringAlignment::CENTER;
-    table_alignments[1] = UTILS::StringAlignment::LEFT;
-    table_alignments[2] = UTILS::StringAlignment::LEFT;
 
     // Table Sizes
-    std::vector<int> table_widths(3,0);
+    std::vector<int> table_widths(3);
     table_widths[0] = 7;
     table_widths[1] = (max_col - table_widths[0])/2;
     table_widths[2] = max_col - table_widths[1] - table_widths[0] - min_col;
@@ -62,17 +65,16 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     // Misc strings
     std::vector<std::string> print_buffers(3);
     std::vector<bool> print_flags(3);
-    bool exit_print_loop;
     int max_temp_row;
-
-
+    
+    
     // Create Header lines
     std::string header_line_row = "+";
     std::string header_data_row = "|";
     
     for( size_t a=0; a<table_widths.size(); a++ ){
           header_line_row += UTILS::String_Fill("-", '-', table_widths[a]-1) + "+";
-          header_data_row += UTILS::Format_String( table_headers[a], table_widths[a], table_alignments[a]) + "|";
+          header_data_row += UTILS::Format_String( m_table_headers[a], table_widths[a], m_table_alignments[a]) + "|";
     } 
     header_line_row += BUFFER_NEWLINE;
     header_data_row += BUFFER_NEWLINE;
@@ -126,7 +128,6 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
             for( int fid=0; fid<print_flags.size(); fid++ ){
                 print_flags[fid] = true;
             }
-            exit_print_loop = false;
 
             // Iterate while there is still data to print
             for( int mr=max_temp_row; mr>= 0; mr-- ){
@@ -139,7 +140,7 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
                 {
                     
                     if( print_flags[a] == true ){
-                        row_data += UTILS::Format_String( print_buffers[a], table_widths[a], table_alignments[a]) + "|";
+                        row_data += UTILS::Format_String( print_buffers[a], table_widths[a], m_table_alignments[a]) + "|";
                     }
                     else{
                         row_data += UTILS::String_Fill(" ", ' ', table_widths[a]-1) + "|";
