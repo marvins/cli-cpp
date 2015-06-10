@@ -41,34 +41,42 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     // Define our newline buffer
     const std::string BUFFER_NEWLINE = "\n\r";
     
+    // Table Headers
+    std::vector<std::string> table_headers(3);
+    table_headers[0] = "CMD";
+    table_headers[1] = " Input";
+    table_headers[2] = " Status";
+
+    // Table Alignments
+    std::vector<UTILS::StringAlignment> table_alignments(3);
+    table_alignments[0] = UTILS::StringAlignment::CENTER;
+    table_alignments[1] = UTILS::StringAlignment::LEFT;
+    table_alignments[2] = UTILS::StringAlignment::LEFT;
+
     // Table Sizes
-    const int cmd_entry_width   = 7;
-    const int status_entry_width = (max_col - cmd_entry_width)/2;
-    const int input_entry_width = max_col - status_entry_width - cmd_entry_width - min_col;
+    std::vector<int> table_widths(3,0);
+    table_widths[0] = 7;
+    table_widths[1] = (max_col - table_widths[0])/2;
+    table_widths[2] = max_col - table_widths[1] - table_widths[0] - min_col;
+
+    // Misc strings
+    std::vector<std::string> print_buffers(3);
+    std::vector<bool> print_flags(3);
+    bool exit_print_loop;
+    int max_temp_row;
 
 
     // Create Header lines
     std::string header_line_row = "+";
     std::string header_data_row = "|";
     
-    
-    for( int i=0; i<cmd_entry_width; i++ ){ header_line_row += "-"; }
-    header_data_row += UTILS::Format_String("CMD", cmd_entry_width);
-    
-    header_line_row += "+";
-    header_data_row += "|";
+    for( size_t a=0; a<table_widths.size(); a++ ){
+          header_line_row += UTILS::String_Fill("-", '-', table_widths[a]-1) + "+";
+          header_data_row += UTILS::Format_String( table_headers[a], table_widths[a], table_alignments[a]) + "|";
+    } 
+    header_line_row += BUFFER_NEWLINE;
+    header_data_row += BUFFER_NEWLINE;
 
-    for( int i=0; i<input_entry_width; i++ ){ header_line_row += "-"; }
-    header_data_row += UTILS::Format_String("  Input", input_entry_width, UTILS::StringAlignment::LEFT);
-    
-    header_line_row += "+";
-    header_data_row += "|";
-
-    for( int i=0; i<status_entry_width; i++ ){ header_line_row += "-"; }
-    header_data_row += UTILS::Format_String("  Status", status_entry_width, UTILS::StringAlignment::LEFT);
-   
-    header_line_row += "+" + BUFFER_NEWLINE;
-    header_data_row += "|" + BUFFER_NEWLINE;
 
     // Set the current row
     int current_row = min_row;
@@ -79,8 +87,13 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     buffer_data[current_row++] = BUFFER_OFFSET + header_line_row;
 
     // Build a blank table entry line
-    std::string blank_line_row  = "|" + std::string(cmd_entry_width, ' ') + "|" + std::string(input_entry_width,' ') + "|" + std::string(status_entry_width,' ') + "|" + BUFFER_NEWLINE;
-    
+    std::string blank_line_row;
+    for( size_t i=0; i<table_widths.size(); i++ ){
+        blank_line_row += "|" + std::string(table_widths[i],' ');
+    }
+    blank_line_row += "|" + BUFFER_NEWLINE;
+   
+
     // Iterate over main window region
     int row_id = m_command_history->Size()-1;
     std::string row_data;
@@ -98,20 +111,56 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
         // Check if we still have commands to print
         else if( row_id < (int)m_command_history->Size() && row_id >= 0 )
         {
-        
-            // Creatde new row string
-            row_data = "|" + UTILS::Format_String( UTILS::num2str<int>( m_command_history->Get_Entry( row_id ).Get_Command_ID()),
-                                                   cmd_entry_width );
-            row_data += "|" + UTILS::Format_String( "  " + m_command_history->Get_Entry( row_id ).Get_Command_String(),
-                                                    input_entry_width,
-                                                    UTILS::StringAlignment::LEFT );
-            row_data += "|" + UTILS::Format_String( "  " + m_command_history->Get_Entry( row_id ).Get_Command_Result().Get_Parse_Status_String(),
-                                                    status_entry_width,
-                                                    UTILS::StringAlignment::LEFT );
-            row_data += "|";
 
-            // Print
-            buffer_data[row] = BUFFER_OFFSET + row_data + BUFFER_NEWLINE;
+            // Get the print data
+            print_buffers[0] = UTILS::num2str<int>(m_command_history->Get_Entry(row_id).Get_Command_ID());
+            print_buffers[1] = " " + m_command_history->Get_Entry( row_id ).Get_Command_String();
+            print_buffers[2] = " " + m_command_history->Get_Entry( row_id ).Get_Command_Result().Get_Parse_Status_String();
+            
+            // Compute max number of rows
+            max_temp_row = 0;
+            for( size_t a=0; a<print_buffers.size(); a++ )
+                max_temp_row = std::max( (int)(print_buffers[a].size() / table_widths[a]), max_temp_row );
+
+            // Reset all print flags
+            for( int fid=0; fid<print_flags.size(); fid++ ){
+                print_flags[fid] = true;
+            }
+            exit_print_loop = false;
+
+            // Iterate while there is still data to print
+            for( int mr=max_temp_row; mr>= 0; mr-- ){
+
+                // Clear the Data
+                row_data = "|";
+
+                // iterate over each print buffer
+                for( size_t a=0; a<print_buffers.size(); a++ )
+                {
+                    
+                    if( print_flags[a] == true ){
+                        row_data += UTILS::Format_String( print_buffers[a], table_widths[a], table_alignments[a]) + "|";
+                    }
+                    else{
+                        row_data += UTILS::String_Fill(" ", ' ', table_widths[a]-1) + "|";
+                    }
+                }
+                
+                // Print
+                buffer_data[row-mr] = BUFFER_OFFSET + row_data + BUFFER_NEWLINE;
+            
+                // Update the buffers
+                for( size_t a=0; a<print_buffers.size(); a++ ){
+                    if( print_buffers[a].size() > table_widths[a] ){
+                        print_buffers[a] = " " + print_buffers[a].substr(table_widths[a]);
+                    }else{
+                        print_flags[a] = false;
+                    }
+                }
+            }
+            row -= max_temp_row;
+            
+        
         }
 
 
