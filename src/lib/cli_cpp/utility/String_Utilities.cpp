@@ -206,6 +206,31 @@ std::vector<std::string> String_Split( const std::string& data,
 }
 
 
+/***************************************/
+/*       Format a Command String       */
+/***************************************/
+std::string Format_Command_String( const std::string& input_data )
+{
+
+    // Split into components
+    std::vector<std::string> components = String_Split( input_data, " ");
+
+    // Skip if there is just junk
+    if( input_data.size() <= 0 ){
+        return "";
+    }
+
+    // Merge back
+    std::string output = "";
+
+    for( size_t i=0; i<components.size(); i++ ){
+        output += " " + components[i];
+    }
+
+    // Return output
+    return output;
+}
+
 
 } // End of UTILS Namespace
 } // End of CLI   Namespace

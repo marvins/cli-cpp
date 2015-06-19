@@ -22,12 +22,14 @@ namespace CMD{
 /*****************************/
 /*       Constructor         */
 /*****************************/
-A_Command_Parser::A_Command_Parser( const std::string&                 regex_split_pattern,
-                                    const std::vector<A_CLI_Command>&  cli_command_list,
-                                    const std::vector<A_Command>&      command_list )
+A_Command_Parser::A_Command_Parser( const std::string&                   regex_split_pattern,
+                                    const std::vector<A_CLI_Command>&    cli_command_list,
+                                    const std::vector<A_Command>&        command_list,
+                                    const std::vector<A_Command_Alias>&  alias_list )
   : m_class_name("A_Command_Parser"),
     m_command_list(command_list),
     m_cli_command_list(cli_command_list),
+    m_alias_list(alias_list),
     m_regex_split_pattern(regex_split_pattern)
 {
 }
@@ -36,7 +38,8 @@ A_Command_Parser::A_Command_Parser( const std::string&                 regex_spl
 /***************************************/
 /*          Evaluate Command           */
 /***************************************/
-A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string& test_str )const
+A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string&  test_str,
+                                                      const bool&         ignore_alias )const
 {
     // Log 
     BOOST_LOG_TRIVIAL(trace) << "Start of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
@@ -46,7 +49,8 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string& test_st
 
     // Get the first element
     std::string command_name = components[0];
-    
+    std::string formatted_output;
+
     // Remove the first element
     if( components.size() > 1 ){
         components.erase(components.begin());
@@ -54,6 +58,19 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string& test_st
         components.clear();
     }
     
+    // Iterate over aliases
+    for( size_t idx=0; idx < m_alias_list.size(); idx++ )
+    {
+        // Check if the alias name matches the command input
+        if( m_alias_list[idx].Is_Alias_Name_Match( test_str, false, formatted_output ) == true )
+        {
+            // Process recursively
+            return this->Evaluate_Command( formatted_output, 
+                                           true );
+        }
+
+    }
+
 
     // Iterate over parser commands
     for( size_t idx=0; idx < m_cli_command_list.size(); idx++ ){

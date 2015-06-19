@@ -10,6 +10,7 @@
 set( LIB_CLI_CMD_MODULE_SOURCES
      A_CLI_Command.cpp
      A_Command.cpp
+     A_Command_Alias.cpp
      A_Command_Argument.cpp
      A_Command_History.cpp
      A_Command_History_Entry.cpp
@@ -28,6 +29,7 @@ set( LIB_CLI_CMD_MODULE_SOURCES
 set( LIB_CLI_CMD_MODULE_HEADERS
      A_CLI_Command.hpp
      A_Command.hpp
+     A_Command_Alias.hpp
      A_Command_Argument.hpp
      A_Command_History.hpp
      A_Command_History_Entry.hpp

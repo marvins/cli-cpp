@@ -210,7 +210,9 @@ std::vector<A_Command> Parse_Standard_Commands( pugi::xml_node& commands_node )
 /*********************************************/
 /*          Create a Command Parser          */
 /*********************************************/
-A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string& config_path )
+A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string& config_path,
+                                                               const bool&        alias_support,
+                                                               const std::string& alias_path )
 {
     // Create XML Document
     pugi::xml_document xmldoc;
@@ -270,10 +272,18 @@ A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string
         return nullptr;
     }
 
+
+    // If alias support is enabled, load the alias list path
+    std::vector<A_Command_Alias> alias_list;
+    if( alias_support == true ){
+        
+    }
+
     // Create the parser
     A_Command_Parser::ptr_t parser = std::make_shared<A_Command_Parser>( regex_split_pattern, 
             cli_command_list, 
-            command_list );
+            command_list,
+            alias_list );
 
     // Return new parser
     return parser;

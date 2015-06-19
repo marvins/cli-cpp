@@ -113,10 +113,46 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
         m_current_configuration.Set_Socket_Window_Cols( socket_config_node.child("window-size").attribute("cols").as_int(100));
         m_current_configuration.Set_Socket_Window_Rows( socket_config_node.child("window-size").attribute("rows").as_int(20));
     }
+    
+    
+    // Grab the CLI Node
+    pugi::xml_node cli_node = root_node.child(CLI_CONFIG_QUERY.c_str());
+
+    // Get the CLI title
+    temp_str = cli_node.child(CLI_TITLE_QUERY.c_str()).attribute("value").as_string();
+    if( temp_str == "" ){
+        temp_str = "Console";
+    }
+    m_current_configuration.Set_CLI_Title( temp_str );
+
+    
+    // Get the CLI Command Queue Max Size
+    temp_int = cli_node.child( CLI_COMMAND_QUEUE_QUERY.c_str()).attribute("max_size").as_int();
+    if( temp_int <= 0 ){
+        std::cerr << "CLI Command Queue Max Size must be > 0" << std::endl;
+        return;
+    }
+    m_current_configuration.Set_Command_Queue_Max_Size( temp_int );
+    
+    
+    // Get the redirect variables
+    bool redirect_stdout = cli_node.child(CLI_REDIRECT_QUERY.c_str()).attribute("stdout").as_bool(false);
+    bool redirect_stderr = cli_node.child(CLI_REDIRECT_QUERY.c_str()).attribute("stderr").as_bool(false);
+
+    m_current_configuration.Set_Log_Window_Redirect_Flags( redirect_stdout,
+                                                           redirect_stderr );
+
+    // Grab the alias parameters
+    pugi::xml_node alias_node = cli_node.child("alias-support");
+
+    bool alias_support = alias_node.attribute("enable").as_bool(false);
+    std::string alias_path = alias_node.child("alias-list").attribute("pathname").as_string("");
+   
 
     // Get the Command Parser config file
     temp_str = root_node.child(COMMAND_CONFIG_NODE.c_str()).attribute("path").as_string();
-    
+   
+
     // make sure it exists
     if( boost::filesystem::exists( temp_str ) == false ){
         std::cerr << "error:  " << temp_str << " does not exist." << std::endl;
@@ -124,7 +160,7 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     }
 
     // Parse the command file
-    CMD::A_Command_Parser::ptr_t command_parser = CMD::A_Command_Parser_Factory::Initialize( temp_str );
+    CMD::A_Command_Parser::ptr_t command_parser = CMD::A_Command_Parser_Factory::Initialize( temp_str, alias_support, alias_path );
 
     // Make sure the parser is not null
     if( command_parser == nullptr ){
@@ -136,31 +172,7 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
         m_current_configuration.Set_Command_Parser(command_parser);
     }
 
-    // Grab the CLI Node
-    pugi::xml_node cli_node = root_node.child(CLI_CONFIG_QUERY.c_str());
-
-    // Get the CLI title
-    temp_str = cli_node.child(CLI_TITLE_QUERY.c_str()).attribute("value").as_string();
-    if( temp_str == "" ){
-        temp_str = "Console";
-    }
-    m_current_configuration.Set_CLI_Title( temp_str );
-
-    // Get the CLI Command Queue Max Size
-    temp_int = cli_node.child( CLI_COMMAND_QUEUE_QUERY.c_str()).attribute("max_size").as_int();
-    if( temp_int <= 0 ){
-        std::cerr << "CLI Command Queue Max Size must be > 0" << std::endl;
-        return;
-    }
-    m_current_configuration.Set_Command_Queue_Max_Size( temp_int );
     
-    // Get the redirect variables
-    bool redirect_stdout = cli_node.child(CLI_REDIRECT_QUERY.c_str()).attribute("stdout").as_bool(false);
-    bool redirect_stderr = cli_node.child(CLI_REDIRECT_QUERY.c_str()).attribute("stderr").as_bool(false);
-
-    m_current_configuration.Set_Log_Window_Redirect_Flags( redirect_stdout,
-                                                           redirect_stderr );
-
     // Set valid
     m_is_valid = true;
 }
