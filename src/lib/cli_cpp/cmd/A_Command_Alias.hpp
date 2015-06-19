@@ -72,6 +72,16 @@ class A_Command_Alias
                                   const bool&        match_whole,
                                   std::string&       formatted_output )const;
 
+        
+        /**
+         * @brief Load an Alias Configuration File
+         *
+         * @param[in] pathname
+         *
+         * @return List of aliases.
+         */
+        static std::vector<A_Command_Alias> Load_Alias_Configuration_File( const std::string& pathname );
+
 
     private:
 

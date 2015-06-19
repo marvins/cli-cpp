@@ -88,6 +88,17 @@ bool A_Command_Alias::Is_Alias_Name_Match( const std::string&  test_input,
 }
 
 
+/*****************************************************/
+/*         Load an Alias Configuration File          */
+/*****************************************************/
+std::vector<A_Command_Alias> A_Command_Alias::Load_Alias_Configuration_File( const std::string& pathname )
+{
+
+
+
+}
+
+
 } // End of CMD Namespace
 } // End of CLI Namespace
 

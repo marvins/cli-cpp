@@ -276,7 +276,7 @@ A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string
     // If alias support is enabled, load the alias list path
     std::vector<A_Command_Alias> alias_list;
     if( alias_support == true ){
-        
+       alias_list = A_Command_Alias::Load_Alias_Configuration_File( alias_path );
     }
 
     // Create the parser
