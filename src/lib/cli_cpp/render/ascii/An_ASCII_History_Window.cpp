@@ -125,7 +125,7 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
                 max_temp_row = std::max( (int)(print_buffers[a].size() / table_widths[a]), max_temp_row );
 
             // Reset all print flags
-            for( int fid=0; fid<print_flags.size(); fid++ ){
+            for( size_t fid=0; fid<print_flags.size(); fid++ ){
                 print_flags[fid] = true;
             }
 
@@ -152,7 +152,7 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
             
                 // Update the buffers
                 for( size_t a=0; a<print_buffers.size(); a++ ){
-                    if( print_buffers[a].size() > table_widths[a] ){
+                    if( (int)print_buffers[a].size() > table_widths[a] ){
                         print_buffers[a] = " " + print_buffers[a].substr(table_widths[a]);
                     }else{
                         print_flags[a] = false;

@@ -99,6 +99,18 @@ std::vector<A_CLI_Command> Parse_CLI_Commands( pugi::xml_node& cli_cmd_node )
             cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_LOG );
             cli_command.Set_Formal_Name("Log");
         }
+        else if( mode_str == "alias-add" ){
+            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_ADD );
+            cli_command.Set_Formal_Name("Add Alias");
+        }
+        else if( mode_str == "alias-remove" ){
+            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_REMOVE );
+            cli_command.Set_Formal_Name("Remove Alias");
+        } 
+        else if( mode_str == "alias-list" ){
+            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_LIST );
+            cli_command.Set_Formal_Name("List Aliases");
+        }
         else{
             throw std::runtime_error("error: Unknown CLI command mode (" + mode_str + ")");
         }

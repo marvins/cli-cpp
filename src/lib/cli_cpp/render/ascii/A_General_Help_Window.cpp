@@ -60,7 +60,7 @@ A_General_Help_Window::A_General_Help_Window( A_Render_Driver_Context_ASCII::ptr
     
     
     // Define our stop and start rows
-    int help_table_size = 10;
+    int help_table_size = 13;
     int max_cli_row = help_table_size + min_row;
         
     // Print Parse Table

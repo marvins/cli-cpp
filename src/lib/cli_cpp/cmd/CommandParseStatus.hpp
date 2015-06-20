@@ -28,6 +28,9 @@ enum class CommandParseStatus : uint8_t {
     CLI_BACK            = 7 /**< Back command entered.*/,
     CLI_CLEAR           = 8 /**< Clear History Command Entered.*/,
     CLI_LOG             = 9 /**< Show the log information.*/,
+    CLI_ALIAS_ADD       = 10 /**< Add an alias.*/,
+    CLI_ALIAS_REMOVE    = 11 /**< Remove an alias.*/,
+    CLI_ALIAS_LIST      = 12 /**< List all aliases.*/,
 }; // End of CommandParseStatus Enumeration
 
 /**

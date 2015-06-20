@@ -9,6 +9,7 @@
 
 // C++ Standard Libraries
 #include <string>
+#include <vector>
 
 
 namespace CLI{

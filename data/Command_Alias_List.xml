@@ -1,0 +1,7 @@
+<command-alias-list>
+
+    <!-- Each Alias should have the alias plus the resulting command -->
+    <alias name="ping-localhost" 
+           value="ping localhost 10" />
+
+</command-alias-list>

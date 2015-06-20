@@ -6,7 +6,20 @@
 #include "A_Command_Alias.hpp"
 
 // CLI Libraries
+#include "../utility/Log_Utilities.hpp"
 #include "../utility/String_Utilities.hpp"
+
+
+// Boost Libraries
+#include <boost/filesystem.hpp>
+
+
+// PUGI Xml
+#include "../thirdparty/pugixml.hpp"
+
+
+// C++ Standard Libraries
+#include <sstream>
 
 
 namespace CLI{
@@ -93,8 +106,72 @@ bool A_Command_Alias::Is_Alias_Name_Match( const std::string&  test_input,
 /*****************************************************/
 std::vector<A_Command_Alias> A_Command_Alias::Load_Alias_Configuration_File( const std::string& pathname )
 {
+    
+    // Make sure the file exists
+    if( boost::filesystem::exists(pathname) == false ){
+        return std::vector<A_Command_Alias>();
+    }
+
+    
+    // Create XML Document
+    pugi::xml_document xmldoc;
+    pugi::xml_parse_result result = xmldoc.load_file( pathname.c_str() );
+
+    // Make sure it opened properly
+    if( result == false ){
+        std::stringstream sin;
+        sin << "error: " << __FILE__ << ", Line: " << __LINE__ << ". CLI Command Configuration File parsed with errors. Details: " << result.description();
+        BOOST_LOG_TRIVIAL(error) << sin.str();
+        return std::vector<A_Command_Alias>();
+    }
+
+    // Create output list
+    std::vector<A_Command_Alias> output;
 
 
+    // Catch any exceptions
+    try{
+
+        // Temp values
+        std::string name, value;
+
+        // Get the root node
+        pugi::xml_node root_node = xmldoc.child("command-alias-list");
+
+        // Check the node
+        if( root_node == pugi::xml_node() ){ 
+            return output; 
+        }
+
+        
+        // Iterate over command nodes
+        for( pugi::xml_node_iterator nit = root_node.begin(); nit != root_node.end(); nit++ )
+        {
+            // Check the node name
+            if( std::string(nit->name()) == "alias" ){
+
+                // Get the value
+                name  = nit->attribute("name").as_string("");
+                value = nit->attribute("value").as_string("");
+
+                if( name != "" && value != "" ){
+                    output.push_back( A_Command_Alias( name, value));
+                }
+
+            }
+
+        }
+
+
+    } catch ( std::exception& e ) {
+        BOOST_LOG_TRIVIAL(error) << "Exception caught in the Command-Alias Configuration File Parser. Details: " << e.what();
+        return output;
+    }
+
+
+
+    // Return new parser
+    return output;
 
 }
 

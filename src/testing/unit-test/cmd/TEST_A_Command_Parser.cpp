@@ -24,6 +24,10 @@ TEST( A_Command_Parser, Constructors )
     cli_cmd_names01.push_back("Hello");
 
 
+    // Alias List
+    std::vector<CMD::A_Command_Alias> alias_list;
+
+
     // Create a CLI Command
     CMD::A_CLI_Command cli_command01( CMD::CommandParseStatus::CLI_HELP, 
                                       cli_cmd_names01,
@@ -36,7 +40,7 @@ TEST( A_Command_Parser, Constructors )
     std::vector<CMD::A_CLI_Command> cli_commands;
     cli_commands.push_back(cli_command01);
 
-    CMD::A_Command_Parser parser(" ", cli_commands, commands);
+    CMD::A_Command_Parser parser(" ", cli_commands, commands, alias_list);
 
     // Check the command list
     std::vector<CMD::A_Command> cmd_out = parser.Get_Command_List();
@@ -61,6 +65,10 @@ TEST( A_Command_Parser, Update_Autocomplete_String )
     cli_cmd_names01.push_back("HELLO");
     cli_cmd_names01.push_back("Hello");
 
+    
+    // Alias List
+    std::vector<CMD::A_Command_Alias> alias_list;
+
 
     // Create a CLI Command
     CMD::A_CLI_Command cli_command01( CMD::CommandParseStatus::CLI_HELP, 
@@ -76,7 +84,7 @@ TEST( A_Command_Parser, Update_Autocomplete_String )
     std::vector<CMD::A_CLI_Command> cli_commands;
     cli_commands.push_back(cli_command01);
 
-    CMD::A_Command_Parser parser(" ", cli_commands, commands);
+    CMD::A_Command_Parser parser(" ", cli_commands, commands, alias_list);
 
     
     // Test the update
