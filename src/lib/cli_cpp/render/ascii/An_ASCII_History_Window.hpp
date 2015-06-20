@@ -52,6 +52,29 @@ class An_ASCII_History_Window
                            const int&                max_col) const;
 
     private:
+
+        /**
+         * @brief Get the number of rows for the given line.
+         *
+         * @param[in] data Data to print.
+         * @param[in] cols Columns.
+        */
+        int Get_Data_Row_Count( const std::string& data,
+                                const int& cols )const;
+        
+        
+        /**
+         * @brief Prune the data row
+        */
+        std::string Strip_Data( const std::string& buffer, 
+                                const int& cols ) const;
+
+        /**
+         * @brief Prune the data row
+        */
+        std::string Prune_Data( const std::string& buffer, 
+                                const int& cols ) const;
+
         
         /// Class Name
         std::string m_class_name;

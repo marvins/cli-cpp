@@ -164,13 +164,13 @@ class A_CLI_Manager_Configuration{
          }
 
 
-         /**
-          * @brief Set the socket terminal window columns
-          */
-         inline void Set_Socket_Window_Cols( const int& socket_window_cols )
-         {
+        /**
+         * @brief Set the socket terminal window columns
+         */
+        inline void Set_Socket_Window_Cols( const int& socket_window_cols )
+        {
             m_socket_window_cols = socket_window_cols;
-         }
+        }
 
 
          /**
@@ -224,10 +224,8 @@ class A_CLI_Manager_Configuration{
         /// Socket window rows
         int m_socket_window_rows;
 
-
         /// Socket window cols
         int m_socket_window_cols;
-
 
         /// Redirect stdout
         bool m_redirect_stdout;

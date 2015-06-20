@@ -67,6 +67,11 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
         
 
         /**
+         * @brief Refresh the screen.
+        */
+        void Refresh_Screen();
+
+        /**
          * @brief Check for special keys.
          *
          * @param[in]  key_str String of digits from system.

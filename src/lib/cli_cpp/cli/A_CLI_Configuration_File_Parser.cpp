@@ -104,14 +104,25 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
 
         // Get the port number
         int portno = socket_config_node.child("listening-port").attribute("value").as_int();
-
+        
+        
+        // Get the sleep time
+        int socket_read_sleep_time_usec = socket_config_node.child("read-polling-sleep-time").attribute("time-usec").as_int(500);
+        
+        // Get the max refresh count
+        int socket_read_max_refresh_count = socket_config_node.child("read-polling-refresh-override-count").attribute("value").as_int(25);
+        
         // Create the configuration
-        m_connection_manager_config = std::make_shared<A_Connection_Manager_Socket_Config>( portno );
+        m_connection_manager_config = std::make_shared<A_Connection_Manager_Socket_Config>( portno,
+                                                                                            socket_read_sleep_time_usec,
+                                                                                            socket_read_max_refresh_count );
         m_current_configuration.Set_Connection_Manager_Config( m_connection_manager_config );
 
         // set the window size
         m_current_configuration.Set_Socket_Window_Cols( socket_config_node.child("window-size").attribute("cols").as_int(100));
         m_current_configuration.Set_Socket_Window_Rows( socket_config_node.child("window-size").attribute("rows").as_int(20));
+    
+
     }
     
     

@@ -98,7 +98,7 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
 
     // Iterate over main window region
     int row_id = m_command_history->Size()-1;
-    std::string row_data;
+    std::string row_data, temp_buff;
     bool skip_row = false;
     for( int row = max_row-1; row >= current_row; row--, row_id-- )
     {
@@ -118,11 +118,11 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
             print_buffers[0] = UTILS::num2str<int>(m_command_history->Get_Entry(row_id).Get_Command_ID());
             print_buffers[1] = " " + m_command_history->Get_Entry( row_id ).Get_Command_String();
             print_buffers[2] = " " + m_command_history->Get_Entry( row_id ).Get_Command_Result().Get_Parse_Status_String();
-            
+
             // Compute max number of rows
             max_temp_row = 0;
             for( size_t a=0; a<print_buffers.size(); a++ )
-                max_temp_row = std::max( (int)(print_buffers[a].size() / table_widths[a]), max_temp_row );
+                max_temp_row = std::max( Get_Data_Row_Count( print_buffers[a], table_widths[a]), max_temp_row );
 
             // Reset all print flags
             for( size_t fid=0; fid<print_flags.size(); fid++ ){
@@ -140,7 +140,9 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
                 {
                     
                     if( print_flags[a] == true ){
-                        row_data += UTILS::Format_String( print_buffers[a], table_widths[a], m_table_alignments[a]) + "|";
+                        row_data += UTILS::Format_String( Strip_Data(print_buffers[a], table_widths[a]),
+                                                          table_widths[a], 
+                                                          m_table_alignments[a]) + "|";
                     }
                     else{
                         row_data += UTILS::String_Fill(" ", ' ', table_widths[a]-1) + "|";
@@ -152,9 +154,16 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
             
                 // Update the buffers
                 for( size_t a=0; a<print_buffers.size(); a++ ){
-                    if( (int)print_buffers[a].size() > table_widths[a] ){
-                        print_buffers[a] = " " + print_buffers[a].substr(table_widths[a]);
-                    }else{
+                    
+                    // Prune the buffer to get what is left
+                    temp_buff = Prune_Data( print_buffers[a], table_widths[a] );
+                    
+                    // If we have more data to print
+                    if( temp_buff.size() > 1 ){
+                        print_buffers[a] = " " + temp_buff;
+                    }
+                    // Otherwise, stop printing
+                    else{
                         print_flags[a] = false;
                     }
                 }
@@ -179,6 +188,86 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     // Return successful operation
     return true;
 }
+
+/*******************************/
+/*    Get the data row count   */
+/*******************************/
+int An_ASCII_History_Window::Get_Data_Row_Count( const std::string& data,
+                                                 const int& cols ) const
+{
+    // Compute the baseline row count
+    int count = data.size() / cols;
+
+    // Look for newlines
+    for( int i=0; i<data.size(); i++ ){
+        if( data[i] == '\n' ){
+            count++;
+        }
+    }
+    return count;
+}
+
+
+/******************************/
+/*        Strip the data      */
+/******************************/
+std::string An_ASCII_History_Window::Strip_Data( const std::string& data,
+                                                 const int& cols )const
+{
+    // Check input size
+    if( data.size() <= 0 ){
+        return "";
+    }
+    
+    // Create output
+    int max_col = std::min( (int)data.size(), cols );
+    std::string output = data.substr(0, max_col);
+
+    // Iterate, looking for the first newline
+    for( size_t i=1; i<output.size(); i++ ){
+        if( output[i] == '\n' ){
+            return output.substr(0, i);
+        }
+    }
+
+    return output;
+}
+
+
+
+
+/******************************/
+/*        Prune the data      */
+/******************************/
+std::string An_ASCII_History_Window::Prune_Data( const std::string& data,
+                                                 const int& cols )const
+{
+    // Check input size
+    if( data.size() <= 0 ){
+        return "";
+    }
+
+    // Iterate over what we have, looking for the first newline
+    int max_col = std::min( cols, (int)data.size());
+    int split_idx = max_col;
+    for( int i=1; i<max_col; i++ ){
+        if( data[i] == '\n' ){
+            split_idx = i;
+            break;
+        }
+    }
+
+    // Create output
+    std::string output = data.substr(split_idx);
+    
+    // Trim any newlines
+    if( output[0] == '\n' ){
+        output = output.substr(1);
+    }
+
+    return output;
+}
+
 
 } // End of RENDER Namespace
 } // End of CLI    Namespace

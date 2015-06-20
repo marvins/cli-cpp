@@ -133,7 +133,12 @@ void A_Connection_Manager_Socket::Run_Handler()
     char buffer[256];
     int n;
     std::string input;
-    
+
+    // Get the sleep time and refresh counter
+    int read_sleep_time_usec = m_configuration->Get_Socket_Read_Sleep_Time_USec();
+    int refresh_counter_max  = m_configuration->Get_Socket_Max_Wait_Refresh_Count();
+    int refresh_counter = 0;
+
     // Get the length
     socklen_t clilen;
     struct sockaddr_in cli_addr;
@@ -221,7 +226,17 @@ void A_Connection_Manager_Socket::Run_Handler()
                     break;
                 }
                 else{
-                    usleep(500);
+
+                    // If we have hit the max count, then refresh the screen anyhow
+                    if( refresh_counter >= refresh_counter_max ){
+                        refresh_counter = 0;
+                        Refresh_Screen();
+                    }
+                    // Since not valid, sleep
+                    usleep(read_sleep_time_usec);
+
+                    // Increment the refresh counter
+                    refresh_counter++;
                 }
 
             }
@@ -241,16 +256,8 @@ void A_Connection_Manager_Socket::Run_Handler()
             CORE::Event_Manager::Process_Event( key );
             BOOST_LOG_TRIVIAL(trace) << "Event_Manager::Process_Event returned.";
         
-            // Render the screen
-            this->m_render_manager->Refresh();
-
-            // Get the buffer string
-            std::vector<std::string>& buffer_data = std::dynamic_pointer_cast<RENDER::A_Render_Manager_ASCII>(m_render_manager)->Get_Console_Buffer();
-       
-            // Write each line to the socket
-            for( size_t i=0; i<buffer_data.size(); i++ ){
-                write( m_client_fd, buffer_data[i].c_str(), buffer_data[i].size() );
-            }
+            // Refresh
+            Refresh_Screen();
 
             // Check if time to exit
             if( m_is_running == false || 
@@ -276,6 +283,24 @@ void A_Connection_Manager_Socket::Run_Handler()
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
+
+/*********************************/
+/*       Refresh the screen      */
+/*********************************/
+void A_Connection_Manager_Socket::Refresh_Screen()
+{
+    
+    // Refresh the window manager
+    this->m_render_manager->Refresh();
+    
+    // Get the buffer string
+    std::vector<std::string>& buffer_data = std::dynamic_pointer_cast<RENDER::A_Render_Manager_ASCII>(m_render_manager)->Get_Console_Buffer();
+    
+    // Write each line to the socket
+    for( size_t i=0; i<buffer_data.size(); i++ ){
+        write( m_client_fd, buffer_data[i].c_str(), buffer_data[i].size() );   
+    }
+}
 
 /**************************************/
 /*        Process Special Keys        */
