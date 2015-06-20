@@ -15,6 +15,7 @@
 #include "ascii/A_General_Help_Window.hpp"
 #include "ascii/A_Log_Window.hpp"
 #include "ascii/A_Main_Window.hpp"
+#include "ascii/An_Alias_List_Window.hpp"
 #include "../utility/ANSI_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
 #include "../utility/String_Utilities.hpp"
@@ -69,6 +70,12 @@ void A_Render_Manager_ASCII::Initialize()
     // Add the log window
     m_window_list.push_back(std::make_shared<A_Log_Window>( m_render_driver_context ));
     
+    
+    // Add the alias list window
+    m_window_list.push_back(std::make_shared<An_Alias_List_Window>( m_render_driver_context, 
+                                                                    m_command_parser ));
+
+    
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
@@ -108,6 +115,9 @@ std::vector<std::string>& A_Render_Manager_ASCII::Get_Console_Buffer()
 /********************************/
 void A_Render_Manager_ASCII::Refresh()
 {
+    // Update the buffer data
+    m_window_list[m_current_window]->Update_Buffer_Data();
+
     // Print the CLI Onto the Current Buffer Data
     Print_CLI(m_window_list[m_current_window]->Get_Buffer_Data());
     

@@ -60,6 +60,13 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& event )
         m_render_manager->Set_Current_Window(2);
     }
 
+    // If we have a command for CLI_ALIAS_LIST, then set the current window to the alias list
+    else if( event == (int)CORE::CLI_Event_Type::CLI_ALIAS_LIST ||
+             event == (int)CORE::CLI_Event_Type::KEYBOARD_F4 )
+    {
+        m_render_manager->Set_Current_Window(3);
+    }
+
     // Otherwise, Process the Keyboard Input
     else{
         m_render_manager->Process_Keyboard_Input( event );

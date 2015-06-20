@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <command-alias-list>
 	<alias name="ping-localhost" value="ping localhost 10" />
-	<alias name="ping-me" value="ping hello 4" />
-	<alias name="ping-ME" value="howdy partner" />
+	<alias name="ping-me" value="ping 10.2.18.222" />
+	<alias name="ping_ME" value="wow" />
 </command-alias-list>

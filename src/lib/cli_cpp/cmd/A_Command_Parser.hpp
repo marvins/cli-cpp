@@ -82,6 +82,16 @@ class A_Command_Parser {
         inline std::vector<A_CLI_Command> Get_CLI_Command_List()const{
             return m_cli_command_list;
         }
+
+
+        /**
+         * @brief Get the Command Alias List.
+         *
+         * @return Alias list.
+        */
+        inline std::vector<A_Command_Alias> Get_Alias_List()const{
+            return m_alias_list;
+        }
         
 
         /**

@@ -243,7 +243,23 @@ void A_Command_Parser::Add_Command_Alias( const A_Command_Alias& alias )
 /**********************************/
 void A_Command_Parser::Remove_Command_Alias( const A_Command_Alias& alias )
 {
-    // 
+    // Modify flag
+    bool modified = false;
+
+    //  Make sure the alias does exist in the list
+    for( int i=0; i<(int)m_alias_list.size(); i++ ){
+        if( m_alias_list[i].Get_Alias_Name() == alias.Get_Alias_Name() ){
+            m_alias_list.erase( m_alias_list.begin() + i );
+            i--;
+            modified = true;
+        }
+    }
+
+    // Write the list
+    if( m_alias_list_write_access == true && modified == true ){
+        A_Command_Alias::Write_Alias_Configuration_File( m_alias_pathname, 
+                                                         m_alias_list );
+    }
 
 }
 

@@ -40,7 +40,17 @@ class An_ASCII_Render_Window_Base
             return m_buffer_data;
         }
 
-
+        
+        /**
+         * @brief Update the current buffer data.
+         *
+         * @brief Note that this will do nothing unless implemented.
+         */
+        inline virtual void Update_Buffer_Data()
+        {
+        }
+    
+    
     protected:
 
         /// Buffer Data

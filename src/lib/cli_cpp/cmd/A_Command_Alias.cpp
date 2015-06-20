@@ -232,7 +232,8 @@ A_Command_Alias A_Command_Alias::From_CLI_Input( const std::string& input, bool&
 
     // Check the component list
     if( components.size() < 2 ){
-        return A_Command_Alias();
+        valid = true;
+        return A_Command_Alias(components[0], "" );
     }
 
     std::vector<std::string> arg_components;
