@@ -335,14 +335,23 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
     
     // If adding an alias
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_ADD ){
-        CMD::A_Command_Alias temp_alias( UTILS::String_Merge( result.Get_Argument_Value_List() ), "" ); 
-        m_command_parser->Add_Command_Alias( temp_alias );
+        
+        bool valid_alias;
+        CMD::A_Command_Alias temp_alias = CMD::A_Command_Alias::From_CLI_Input( UTILS::String_Merge( result.Get_Argument_Value_List() ),
+                                                                                valid_alias);
+        if( valid_alias == true ){
+            m_command_parser->Add_Command_Alias( temp_alias );
+        }
     }
 
     // If removing an alias
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_REMOVE ){
-        CMD::A_Command_Alias temp_alias( UTILS::String_Merge( result.Get_Argument_Value_List() ), "" ); 
-        m_command_parser->Remove_Command_Alias( temp_alias );
+        bool valid_alias;
+        CMD::A_Command_Alias temp_alias = CMD::A_Command_Alias::From_CLI_Input( UTILS::String_Merge( result.Get_Argument_Value_List() ),
+                                                                                valid_alias);
+        if( valid_alias == true ){
+            m_command_parser->Remove_Command_Alias( temp_alias );
+        }
     }
 
     // If listing aliases

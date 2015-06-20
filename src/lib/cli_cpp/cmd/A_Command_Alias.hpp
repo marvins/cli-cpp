@@ -75,13 +75,45 @@ class A_Command_Alias
 
         
         /**
+         * @brief Generate Command Alias from CLI Input String.
+         *
+         * @param[in] input Text to evaluate.
+         * @param[out] valid True if the command is valid, false otherwise.
+         *
+         * @return Command-Alias.
+        */
+        static A_Command_Alias From_CLI_Input( const std::string& input,
+                                               bool& valid );
+        
+        
+        /**
          * @brief Load an Alias Configuration File
          *
-         * @param[in] pathname
+         * @param[in] pathname Path to load from.
          *
          * @return List of aliases.
          */
         static std::vector<A_Command_Alias> Load_Alias_Configuration_File( const std::string& pathname );
+        
+
+        /**
+         * @brief Write an Alias Configuration File.
+         *
+         * @param[in] pathname Path to write to.
+         * @param[in] alias_list List of aliases to write.
+         * 
+         * @return Status. True if successful, false otherwise.
+        */
+        static bool Write_Alias_Configuration_File( const std::string& pathname,
+                                                    const std::vector<A_Command_Alias>& alias_list );
+        
+
+        /**
+         * @brief Print the Command Alias as a debug string.
+         *
+         * @return formatted string.
+        */
+        std::string To_Debug_String()const;
 
 
     private:

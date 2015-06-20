@@ -219,8 +219,21 @@ void A_Command_Parser::Update_Autocomplete_String( const std::string&          i
 /*****************************/
 void A_Command_Parser::Add_Command_Alias( const A_Command_Alias& alias )
 {
-    // Check the alias list to make sure it does not already exist.
-    std::cout << "Adding alias: " << alias.Get_Alias_Name() << std::endl;
+    // Make sure the alias does not already exist.
+    for( size_t i=0; i<m_alias_list.size(); i++ ){
+        if( m_alias_list[i].Get_Alias_Name() == alias.Get_Alias_Name() ){
+            return;
+        }
+    }
+
+    // Add the alias to the list
+    m_alias_list.push_back(alias);
+
+    // Open the file and write the alias out
+    if( m_alias_list_write_access == true ){
+        A_Command_Alias::Write_Alias_Configuration_File( m_alias_pathname, 
+                                                         m_alias_list );
+    }
 
 }
 

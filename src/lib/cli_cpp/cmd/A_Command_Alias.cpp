@@ -157,24 +157,112 @@ std::vector<A_Command_Alias> A_Command_Alias::Load_Alias_Configuration_File( con
                 if( name != "" && value != "" ){
                     output.push_back( A_Command_Alias( name, value));
                 }
-
             }
-
         }
-
-
     } catch ( std::exception& e ) {
         BOOST_LOG_TRIVIAL(error) << "Exception caught in the Command-Alias Configuration File Parser. Details: " << e.what();
         return output;
     }
 
-
-
-    // Return new parser
+    // Return new list
     return output;
 
 }
 
+
+/*****************************************************/
+/*        Write an Alias Configuration File          */
+/*****************************************************/
+bool A_Command_Alias::Write_Alias_Configuration_File( const std::string& pathname,
+                                                      const std::vector<A_Command_Alias>& alias_list )
+{
+    
+    // Create XML Document
+    pugi::xml_document xmldoc;
+    
+    
+    // Catch any exceptions
+    try{
+    
+        // Add the root node
+        pugi::xml_node root_node = xmldoc.append_child("command-alias-list");
+
+        // Iterate over the alias list
+        for( size_t i=0; i<alias_list.size(); i++ )
+        {
+            // Create the node
+            pugi::xml_node alias_node = root_node.append_child("alias");
+            
+            // Add the name attribute
+            alias_node.append_attribute("name")  = alias_list[i].Get_Alias_Name().c_str();
+            alias_node.append_attribute("value") = alias_list[i].Get_Command_Text().c_str();
+
+        }
+
+        // Save the file
+        xmldoc.save_file( pathname.c_str() );
+
+    } catch ( std::exception& e ) {
+        BOOST_LOG_TRIVIAL(error) << "Exception caught in the Command-Alias Configuration File Parser. Details: " << e.what();
+        return false;
+    }
+
+    // Return true
+    return true;
+}
+
+
+
+/**********************************************/
+/*        Create Alias from CLI Input         */
+/**********************************************/
+A_Command_Alias A_Command_Alias::From_CLI_Input( const std::string& input, bool& valid )
+{
+    // Default valid flag to false
+    valid = false;
+
+    // Check the input string
+    if( (int)input.size() <= 0 )
+    {
+        return A_Command_Alias();
+    }
+
+    // Create a component list
+    std::vector<std::string> components = UTILS::String_Split( input );
+
+    // Check the component list
+    if( components.size() < 2 ){
+        return A_Command_Alias();
+    }
+
+    std::vector<std::string> arg_components;
+    for( size_t i=1; i<components.size(); i++ ){
+        arg_components.push_back(components[i]);
+    }
+
+    // Merge
+    std::string name  = components[0];
+    std::string value = UTILS::String_Merge(arg_components);
+    
+    // Return the output
+    valid = true;
+    return A_Command_Alias( name, value );
+}
+
+
+/***************************************/
+/*      Write to Debugging String      */
+/***************************************/
+std::string A_Command_Alias::To_Debug_String()const{
+    
+    // create stringstream
+    std::stringstream sin;
+    sin << m_class_name << std::endl;
+    sin << "    Alias Name   : " << m_alias_name << std::endl;
+    sin << "    Command Text : " << m_command_text << std::endl;
+    
+    return sin.str();
+}
 
 } // End of CMD Namespace
 } // End of CLI Namespace

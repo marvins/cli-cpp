@@ -252,7 +252,7 @@ std::string Format_Command_String( const std::string& input_data )
     }
 
     // Return output
-    return output;
+    return String_Trim(output);
 }
 
 
