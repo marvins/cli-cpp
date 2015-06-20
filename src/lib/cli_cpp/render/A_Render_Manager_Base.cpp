@@ -89,7 +89,8 @@ void A_Render_Manager_Base::Process_Command()
         m_command_queue->Push_Command( result_ptr );
     
         // Wait for a completed response if response required
-        if( result.Get_Command().Response_Expected() == true ){
+        if( result.Get_Command().Response_Expected() == true )
+        {
             
             // Publish the notice
             Set_Waiting_Command_Response( result_ptr );
@@ -122,7 +123,7 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
         return;
     }
     
-    // Check that the render state is not null
+    // Check that the render state is not null.  I want this to seg fault for now so I know when a problem occurs
     if( this->m_render_state == nullptr ){
         BOOST_LOG_TRIVIAL(error) << "Render-State is currently nullptr. Expect a seg fault.";
     }

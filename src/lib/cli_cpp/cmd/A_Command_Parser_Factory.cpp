@@ -293,9 +293,11 @@ A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string
 
     // Create the parser
     A_Command_Parser::ptr_t parser = std::make_shared<A_Command_Parser>( regex_split_pattern, 
-            cli_command_list, 
-            command_list,
-            alias_list );
+                                                                         cli_command_list, 
+                                                                         command_list,
+                                                                         alias_list,
+                                                                         alias_path,
+                                                                         alias_support );
 
     // Return new parser
     return parser;

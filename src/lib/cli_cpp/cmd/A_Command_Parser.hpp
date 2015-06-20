@@ -42,7 +42,9 @@ class A_Command_Parser {
         A_Command_Parser( const std::string&                   regex_split_pattern,
                           const std::vector<A_CLI_Command>&    parser_command_list,
                           const std::vector<A_Command>&        command_list,
-                          const std::vector<A_Command_Alias>&  alias_list );
+                          const std::vector<A_Command_Alias>&  alias_list,
+                          const std::string&                   alias_pathname,
+                          const bool&                          alias_list_write_access );
 
         
         /**
@@ -89,6 +91,22 @@ class A_Command_Parser {
          */
         void Update_Autocomplete_String( const std::string&        input_string,
                                          std::vector<std::string>& match_list )const;
+        
+
+        /**
+         * @brief Add command alias.
+         *
+         * @param[in] new_alias
+         */
+        void Add_Command_Alias( const A_Command_Alias& new_alias );
+
+
+        /**
+         * @brief Remove Command Alias.
+         *
+         * @brief old_alias
+         */
+        void Remove_Command_Alias( const A_Command_Alias& old_alias );
 
     
     private:
@@ -110,6 +128,12 @@ class A_Command_Parser {
 
         /// Alias List
         std::vector<A_Command_Alias> m_alias_list;
+        
+        /// Alias Pathname
+        std::string m_alias_pathname;
+
+        /// Alias List Write Access
+        bool m_alias_list_write_access;
 
         /// Regex Split Pattern
         std::string m_regex_split_pattern;

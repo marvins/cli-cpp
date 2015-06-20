@@ -40,7 +40,7 @@ TEST( A_Command_Parser, Constructors )
     std::vector<CMD::A_CLI_Command> cli_commands;
     cli_commands.push_back(cli_command01);
 
-    CMD::A_Command_Parser parser(" ", cli_commands, commands, alias_list);
+    CMD::A_Command_Parser parser(" ", cli_commands, commands, alias_list, "", false);
 
     // Check the command list
     std::vector<CMD::A_Command> cmd_out = parser.Get_Command_List();
@@ -84,7 +84,7 @@ TEST( A_Command_Parser, Update_Autocomplete_String )
     std::vector<CMD::A_CLI_Command> cli_commands;
     cli_commands.push_back(cli_command01);
 
-    CMD::A_Command_Parser parser(" ", cli_commands, commands, alias_list);
+    CMD::A_Command_Parser parser(" ", cli_commands, commands, alias_list, "", false);
 
     
     // Test the update

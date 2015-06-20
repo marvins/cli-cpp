@@ -206,6 +206,30 @@ std::vector<std::string> String_Split( const std::string& data,
 }
 
 
+/***********************************/
+/*        Merge a String           */
+/***********************************/
+std::string String_Merge( const std::vector<std::string>& components )
+{
+    // Output
+    std::string output = "";
+
+    // Check empty string
+    if( (int)components.size() <= 0 ){
+        return output;
+    }
+
+
+    // Build the output
+    output = components[0];
+    for( size_t i=1; i<components.size(); i++ ){
+        output += " " + components[i];
+    }
+
+    return output;
+}
+
+
 /***************************************/
 /*       Format a Command String       */
 /***************************************/
@@ -230,6 +254,55 @@ std::string Format_Command_String( const std::string& input_data )
     // Return output
     return output;
 }
+
+
+/****************************************************/
+/*        Return the Matching Left Substring        */
+/****************************************************/
+std::string String_Substring_Match( const std::string& str1,
+                                    const std::string& str2 )
+{
+    // Output
+    std::string output;
+
+    // Iterate over string
+    for( size_t i=0; i<str1.size() && i<str2.size(); i++ ){
+        if( str1[i] == str2[i] ){
+            output.push_back(str1[i]);
+        }
+        else{
+            return output;
+        }
+    }
+    return output;
+}
+
+
+/****************************************************/
+/*        Return the Matching Left Substring        */
+/****************************************************/
+std::string String_Substring_Match( const std::vector<std::string>& string_list )
+{
+    // Output
+    std::string output = "";
+
+    // Skip if empty
+    if( string_list.size() < 1 ){
+        return output;
+    }
+
+    // set the output to the first value
+    output = string_list[0];
+
+    // Iterate over list, updating the output
+    for( size_t i=1; i<string_list.size(); i++ ){
+        output = String_Substring_Match( output, string_list[i]);
+    }
+    
+    // Return the completed output
+    return output;
+}
+
 
 
 } // End of UTILS Namespace

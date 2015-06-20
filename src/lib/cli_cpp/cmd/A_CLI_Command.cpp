@@ -6,6 +6,13 @@
 #include "A_CLI_Command.hpp"
 
 
+// C++ Standard Libraries
+#include <iostream>
+
+
+// CLI Libraries
+#include "../utility/String_Utilities.hpp"
+
 namespace CLI{
 namespace CMD{
 
@@ -78,34 +85,52 @@ bool A_CLI_Command::Is_Match( const std::string& name )const
 bool A_CLI_Command::Is_Name_Substring( const std::string& input_string,
                                        std::string&       match_result )const
 {
-    
+    // Match list
+    std::vector<std::string> match_list;
+
     // Iterate over the name list
     for( size_t i=0; i<m_names.size(); i++ )
     {
 
-        // Check the length
+        // If the name is less than the input, it cannot match
         if( m_names[i].size() < input_string.size() ){
             continue;
         }
+
+        // If the sizes are the same, do a string compare
         else if( m_names[i].size() == input_string.size() ){
             if( m_names[i] == input_string ){
-                match_result = m_names[i];
-                return true;
+                match_list.push_back(m_names[i]);
             }
             else{
                 continue;
             }
         }
+
+        // Otherwise, the name is greater than the input, so check the substring match
         else{
+
+            // Look for a perfect substring match
             if( m_names[i].substr(0, input_string.size()) == input_string ){
-                match_result = m_names[i];
-                return true;
+                match_list.push_back(m_names[i]);
             }
         }
     }
 
-    // Otherwise, return false
-    return false;
+    // Check if we found any matches
+    if( (int)match_list.size() <= 0 ){
+        match_result = "";
+        return false;
+    }
+
+    // Find the minimum spanning substring
+    match_result = match_list[0];
+    for( size_t i=1; i<match_list.size(); i++ ){
+        match_result = UTILS::String_Substring_Match( match_result, match_list[i]);
+    }
+    
+    // success
+    return true;
 }
 
 

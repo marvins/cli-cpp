@@ -151,6 +151,14 @@ std::string Format_String( const std::string&     data,
 
 
 /**
+ * @brief Merge the components into a string.
+ *
+ * @param[in] components.
+*/
+std::string String_Merge( std::vector<std::string> const& components );
+
+
+/**
  * @brief Format a string into proper command format.
  *
  * This method will take an input string and format it to look like what the command 
@@ -166,6 +174,28 @@ std::string Format_String( const std::string&     data,
  * @return Formatted String.
  */
 std::string Format_Command_String( const std::string& input_data );
+
+
+/**
+ * @brief Return the matching substring between the two strings.
+ *
+ * @param[in] str1 First string to compare.
+ * @param[in] str2 Second string to compare.
+ *
+ * @return Substring match.
+*/
+std::string String_Substring_Match( const std::string& str1,
+                                    const std::string& str2 );
+
+
+/**
+ * @brief Return the matching substring between the items in the string list.
+ *
+ * @param[in] string_list List of strings to match.
+ *
+ * @return Substring match
+*/
+std::string String_Substring_Match( const std::vector<std::string>& string_list );
 
 
 } // End of UTILS Namespace

@@ -52,9 +52,9 @@ class A_Command_Result{
          * @param[in] command Command that was executed.
          * @param[in] argument_values List of arguments provided to the command.
          */
-        A_Command_Result( CommandParseStatus const&    parse_status,
-                              A_Command const&            command,
-                              std::vector<std::string> const& argument_values );
+        A_Command_Result( CommandParseStatus const&       parse_status,
+                          A_Command const&                command,
+                          std::vector<std::string> const& argument_values );
 
     
         /**
@@ -91,8 +91,8 @@ class A_Command_Result{
          *
          * @return Result of the operation.
          */
-        static A_Command_Result  Process_Arguments( const A_Command&             command,
-                                                        const std::vector<std::string>&  arguments );
+        static A_Command_Result  Process_Arguments( const A_Command&                 command,
+                                                    const std::vector<std::string>&  arguments );
 
         /**
          * @brief Print to a debug string.
@@ -135,6 +135,16 @@ class A_Command_Result{
         */
         inline int Get_Argument_Value_Count()const{
             return m_argument_values.size();
+        }
+
+
+        /**
+         * @brief Get the argument value list.
+         *
+         * @returen Argument value list.
+        */
+        inline std::vector<std::string> Get_Argument_Value_List()const{
+            return m_argument_values;
         }
         
 

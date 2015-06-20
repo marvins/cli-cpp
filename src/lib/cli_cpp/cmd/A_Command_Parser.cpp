@@ -25,11 +25,15 @@ namespace CMD{
 A_Command_Parser::A_Command_Parser( const std::string&                   regex_split_pattern,
                                     const std::vector<A_CLI_Command>&    cli_command_list,
                                     const std::vector<A_Command>&        command_list,
-                                    const std::vector<A_Command_Alias>&  alias_list )
+                                    const std::vector<A_Command_Alias>&  alias_list,
+                                    const std::string&                   alias_pathname,
+                                    const bool&                          alias_list_write_access )
   : m_class_name("A_Command_Parser"),
     m_command_list(command_list),
     m_cli_command_list(cli_command_list),
     m_alias_list(alias_list),
+    m_alias_pathname(alias_pathname),
+    m_alias_list_write_access(alias_list_write_access),
     m_regex_split_pattern(regex_split_pattern)
 {
 }
@@ -72,13 +76,16 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string&  test_s
     }
 
 
-    // Iterate over parser commands
+    // Iterate over cli commands
     for( size_t idx=0; idx < m_cli_command_list.size(); idx++ ){
         if( m_cli_command_list[idx].Is_Match( command_name ) == true )
         {
             return A_Command_Result( m_cli_command_list[idx].Get_Mode(),
-                                     A_Command( "", "", false),
-                                     components );
+                                     A_Command( command_name, 
+                                                m_cli_command_list[idx].Get_Description(), 
+                                                false),
+                                     components 
+                                   );
         }
 
     }
@@ -203,9 +210,29 @@ void A_Command_Parser::Update_Autocomplete_String( const std::string&          i
         
 
     }
+}
 
+
+/*****************************/
+/*       Add an Alias        */
+/*****************************/
+void A_Command_Parser::Add_Command_Alias( const A_Command_Alias& alias )
+{
+    // Check the alias list to make sure it does not already exist.
+    std::cout << "Adding alias: " << alias.Get_Alias_Name() << std::endl;
 
 }
+
+
+/**********************************/
+/*         Remove Alias           */
+/**********************************/
+void A_Command_Parser::Remove_Command_Alias( const A_Command_Alias& alias )
+{
+    // 
+
+}
+
 
 } // End of CMD Namespace
 } // End of CLI Namespace

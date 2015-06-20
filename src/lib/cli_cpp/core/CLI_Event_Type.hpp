@@ -16,6 +16,7 @@ namespace CORE{
  * @enum CLI_Event_Type
 */
 enum class CLI_Event_Type : int32_t{
+    CLI_ALIAS_LIST       = -7,
     CLI_LOG              = -6,
     CLI_HELP             = -5,
     CLI_BACK             = -4,
