@@ -99,6 +99,18 @@ std::vector<A_CLI_Command> Parse_CLI_Commands( pugi::xml_node& cli_cmd_node )
             cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_LOG );
             cli_command.Set_Formal_Name("Log");
         }
+        else if( mode_str == "alias-add" ){
+            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_ADD );
+            cli_command.Set_Formal_Name("Add Alias");
+        }
+        else if( mode_str == "alias-remove" ){
+            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_REMOVE );
+            cli_command.Set_Formal_Name("Remove Alias");
+        } 
+        else if( mode_str == "alias-list" ){
+            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_LIST );
+            cli_command.Set_Formal_Name("List Aliases");
+        }
         else{
             throw std::runtime_error("error: Unknown CLI command mode (" + mode_str + ")");
         }
@@ -210,7 +222,9 @@ std::vector<A_Command> Parse_Standard_Commands( pugi::xml_node& commands_node )
 /*********************************************/
 /*          Create a Command Parser          */
 /*********************************************/
-A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string& config_path )
+A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string& config_path,
+                                                               const bool&        alias_support,
+                                                               const std::string& alias_path )
 {
     // Create XML Document
     pugi::xml_document xmldoc;
@@ -270,10 +284,20 @@ A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string
         return nullptr;
     }
 
+
+    // If alias support is enabled, load the alias list path
+    std::vector<A_Command_Alias> alias_list;
+    if( alias_support == true ){
+       alias_list = A_Command_Alias::Load_Alias_Configuration_File( alias_path );
+    }
+
     // Create the parser
     A_Command_Parser::ptr_t parser = std::make_shared<A_Command_Parser>( regex_split_pattern, 
-            cli_command_list, 
-            command_list );
+                                                                         cli_command_list, 
+                                                                         command_list,
+                                                                         alias_list,
+                                                                         alias_path,
+                                                                         alias_support );
 
     // Return new parser
     return parser;

@@ -39,6 +39,21 @@ std::string CommandParseStatusToString( CommandParseStatus const& status )
         return "CLI_LOG";
     }
 
+    // Add Alias
+    if( status == CommandParseStatus::CLI_ALIAS_ADD ){
+        return "CLI_ALIAS_ADD";
+    }
+
+    // Remove Alias
+    if( status == CommandParseStatus::CLI_ALIAS_REMOVE ){
+        return "CLI_ALIAS_REMOVE";
+    }
+
+    // List Aliases
+    if( status == CommandParseStatus::CLI_ALIAS_LIST ){
+        return "CLI_ALIAS_LIST";
+    }
+
     // Invalid arguments
     if( status == CommandParseStatus::INVALID_ARGUMENTS ){
         return "INVALID_ARGUMENTS";
@@ -100,6 +115,21 @@ std::string CommandParseStatusToHistoryString( CommandParseStatus const& status 
         return "Success";
     }
 
+    // Add Alias
+    if( status == CommandParseStatus::CLI_ALIAS_ADD ){
+        return "Success";
+    }
+
+    // Remove Alias
+    if( status == CommandParseStatus::CLI_ALIAS_REMOVE ){
+        return "Success";
+    }
+
+    // List Alias
+    if( status == CommandParseStatus::CLI_ALIAS_LIST ){
+        return "Success";
+    }
+
     // Invalid arguments
     if( status == CommandParseStatus::INVALID_ARGUMENTS ){
         return "Invalid arguments";
@@ -155,6 +185,21 @@ int CommandParseStatusToColorCode( CommandParseStatus const& status )
         return 0;
     }
 
+    // Add Alias
+    if( status == CommandParseStatus::CLI_ALIAS_ADD ){
+        return 0;
+    }
+    
+    // Remove Alias
+    if( status == CommandParseStatus::CLI_ALIAS_REMOVE ){
+        return 0;
+    }
+    
+    // List Alias
+    if( status == CommandParseStatus::CLI_ALIAS_LIST ){
+        return 0;
+    }
+
     // Invalid arguments
     if( status == CommandParseStatus::INVALID_ARGUMENTS ){
         return 1;
@@ -205,6 +250,21 @@ CommandParseStatus StringToCommandParseStatus( const std::string& status )
     if( status == "CLI_LOG" ){
         return CommandParseStatus::CLI_LOG;
     }
+    
+    // Add Alias
+    if( status == "CLI_ALIAS_ADD" ){
+        return CommandParseStatus::CLI_ALIAS_ADD;
+    }
+
+    // Remove Alias
+    if( status == "CLI_ALIAS_REMOVE" ){
+        return CommandParseStatus::CLI_ALIAS_REMOVE;
+    }
+
+    // Alias List
+    if( status == "CLI_ALIAS_LIST" ){
+        return CommandParseStatus::CLI_ALIAS_LIST;
+    }
 
     // Invalid ARguments
     if( status == "INVALID_ARGUMENTS" ){
@@ -245,6 +305,9 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
         case CommandParseStatus::CLI_SHUTDOWN:
         case CommandParseStatus::CLI_CLEAR:
         case CommandParseStatus::CLI_LOG:
+        case CommandParseStatus::CLI_ALIAS_ADD:
+        case CommandParseStatus::CLI_ALIAS_REMOVE:
+        case CommandParseStatus::CLI_ALIAS_LIST:
             return true;
         
         case CommandParseStatus::VALID:

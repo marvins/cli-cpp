@@ -14,6 +14,7 @@
 // CLI Libraries
 #include "A_CLI_Command.hpp"
 #include "A_Command.hpp"
+#include "A_Command_Alias.hpp"
 #include "A_Command_Result.hpp"
 
 
@@ -38,19 +39,28 @@ class A_Command_Parser {
          * @param[in] cli_command_list List of CLI Commands.
          * @param[in] command_list List of regular, user-provided commands.
         */
-        A_Command_Parser( const std::string&                 regex_split_pattern,
-                          const std::vector<A_CLI_Command>&  parser_command_list,
-                          const std::vector<A_Command>&      command_list );
+        A_Command_Parser( const std::string&                   regex_split_pattern,
+                          const std::vector<A_CLI_Command>&    parser_command_list,
+                          const std::vector<A_Command>&        command_list,
+                          const std::vector<A_Command_Alias>&  alias_list,
+                          const std::string&                   alias_pathname,
+                          const bool&                          alias_list_write_access );
 
         
         /**
          * @brief Evaluate Command
          *
-         * @param[in] test_str String to evaluate.
+         * @param[in] test_str      String to evaluate.
+         * @param[in] ignore_alias  Skip processing the alias list.
+         *
+         * This method will process the input test string and check if it is a valid command.
+         * Note that the ignore_alias flag is used so that if the input matches an alias, the method 
+         * can be called again to process the alias command text.
          *
          * @return Command result.
          */
-        A_Command_Result Evaluate_Command( const std::string& test_str ) const;
+        A_Command_Result Evaluate_Command( const std::string&  test_str,
+                                           const bool&         ignore_alias = false ) const;
         
 
         /**
@@ -81,6 +91,22 @@ class A_Command_Parser {
          */
         void Update_Autocomplete_String( const std::string&        input_string,
                                          std::vector<std::string>& match_list )const;
+        
+
+        /**
+         * @brief Add command alias.
+         *
+         * @param[in] new_alias
+         */
+        void Add_Command_Alias( const A_Command_Alias& new_alias );
+
+
+        /**
+         * @brief Remove Command Alias.
+         *
+         * @brief old_alias
+         */
+        void Remove_Command_Alias( const A_Command_Alias& old_alias );
 
     
     private:
@@ -99,6 +125,15 @@ class A_Command_Parser {
 
         /// CLI Command List
         std::vector<A_CLI_Command> m_cli_command_list;
+
+        /// Alias List
+        std::vector<A_Command_Alias> m_alias_list;
+        
+        /// Alias Pathname
+        std::string m_alias_pathname;
+
+        /// Alias List Write Access
+        bool m_alias_list_write_access;
 
         /// Regex Split Pattern
         std::string m_regex_split_pattern;

@@ -38,6 +38,24 @@
             <description value="Show current program output and logging." />
         </command>
 
+        <!-- Alias Add -->
+        <command mode="alias-add" >
+            <name value="alias-add" />
+            <description value="Add a new alias to the system." />
+        </command>
+
+        <!-- Alias Remove -->
+        <command mode="alias-remove" >
+            <name value="alias-rm" />
+            <description value="Remove an alias from the system." />
+        </command>
+
+        <!-- Alias List -->
+        <command mode="alias-list" >
+            <name value="alias-list" />
+            <description value="List available aliases." />
+        </command>
+
 
     </cli-commands>
 

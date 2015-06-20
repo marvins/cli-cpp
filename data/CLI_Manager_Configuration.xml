@@ -26,7 +26,7 @@
         <listening-port value="12344" />
 
         <!-- Window Size -->
-        <window-size rows="30" cols="120" />
+        <window-size rows="40" cols="120" />
 
     </socket-configuration>
 
@@ -34,7 +34,7 @@
     <!-- Command Configuration -->
     <command-configuration path="../data/Command_Configuration.xml" />
 
-    <!-- CLI Name -->
+    <!-- CLI Configuration -->
     <cli>
         <!-- CLI Title String -->
         <title value="Command-Line Interface Demo" />
@@ -45,6 +45,15 @@
         <!-- Flag if we want to redirect stdout and stderr to log. -->
         <redirect stdout="false"
                   stderr="false" />
+
+        <!-- Alias Configuration -->
+        <alias-support enable="true" >
+
+            <!-- Path to the alias list. Stored as an XML File. -->
+            <alias-list  pathname="../data/Command_Alias_List.xml" />
+             
+        </alias-support>
+
 
     </cli>
 

@@ -11,30 +11,15 @@
 // C++ Standard Libraries
 #include <iostream>
 
+
+// CLI Libraries
+#include "../utility/String_Utilities.hpp"
+
+
 namespace CLI{
 namespace CMD{
 
 
-/****************************************************/
-/*        Return the Matching Left Substring        */
-/****************************************************/
-std::string Matching_Substring( const std::string& str1,
-                                const std::string& str2 )
-{
-    // Output
-    std::string output;
-
-    // Iterate over string
-    for( size_t i=0; i<str1.size() && i<str2.size(); i++ ){
-        if( str1[i] == str2[i] ){
-            output.push_back(str1[i]);
-        }
-        else{
-            return output;
-        }
-    }
-    return output;
-}
 
 /**********************************/
 /*          Constructor           */
@@ -187,7 +172,7 @@ bool A_Command_Argument::Is_Argument_Substring( const std::string& argument_name
     // Find the minimum spanning substring
     match_name = match_list[0];
     for( size_t i=1; i<match_list.size(); i++ ){
-        match_name = Matching_Substring( match_name, match_list[i]);
+        match_name = UTILS::String_Substring_Match( match_name, match_list[i]);
     }
     return true;
 }

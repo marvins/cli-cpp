@@ -237,7 +237,7 @@ void A_Render_State::Apply_Down_Key()
         }
 
         // Update the pointers
-        m_cli_prompt_cursor_at = 0;
+        m_cli_prompt_cursor_at = m_cli_prompt_text.size();
         m_cli_prompt_cursor_tail = 0;
         m_cli_prompt_cursor_head = m_cli_prompt_text.size();
 
@@ -265,7 +265,7 @@ void A_Render_State::Apply_Up_Key()
         m_cli_prompt_text = m_command_history->Get_Entry( m_command_history_ptr ).Get_Command_String();
         
         // Update the pointers
-        m_cli_prompt_cursor_at = 0;
+        m_cli_prompt_cursor_at = m_cli_prompt_text.size();
         m_cli_prompt_cursor_tail = 0;
         m_cli_prompt_cursor_head = m_cli_prompt_text.size();
     }
@@ -298,6 +298,15 @@ void A_Render_State::Apply_Tab_Key()
         m_cli_prompt_cursor_tail = 0;
 
     }
+    else if( autocomplete_match_list.size() > 1 ){
+
+        // Get the best match
+        m_cli_prompt_text   = UTILS::String_Substring_Match( autocomplete_match_list );
+        m_cli_prompt_cursor_at = m_cli_prompt_text.size();
+        m_cli_prompt_cursor_head = m_cli_prompt_text.size();
+        m_cli_prompt_cursor_tail = 0;
+    }
+
 }
 
 
@@ -322,6 +331,23 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
     // If Log
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_LOG ){
         CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_LOG );
+    }
+    
+    // If adding an alias
+    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_ADD ){
+        CMD::A_Command_Alias temp_alias( UTILS::String_Merge( result.Get_Argument_Value_List() ), "" ); 
+        m_command_parser->Add_Command_Alias( temp_alias );
+    }
+
+    // If removing an alias
+    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_REMOVE ){
+        CMD::A_Command_Alias temp_alias( UTILS::String_Merge( result.Get_Argument_Value_List() ), "" ); 
+        m_command_parser->Remove_Command_Alias( temp_alias );
+    }
+
+    // If listing aliases
+    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_LIST ){
+        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_ALIAS_LIST );
     }
 
     // If clear
