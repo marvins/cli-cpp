@@ -67,6 +67,7 @@ find_library( LIB_CLI_CPP
 set( CLI_CPP_TEST_SOURCES
      cmd/TEST_A_CLI_Command.cpp
      cmd/TEST_A_Command.cpp
+     cmd/TEST_A_Command_Alias.cpp
      cmd/TEST_A_Command_Argument.cpp
      cmd/TEST_A_Command_Parser.cpp
      cmd/TEST_A_Command_Parser_Factory.cpp
