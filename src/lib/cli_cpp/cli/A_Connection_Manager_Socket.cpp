@@ -360,10 +360,12 @@ int A_Connection_Manager_Socket::Process_Special_Key( const std::string& input_s
     }
 
     // Otherwise, there was an error
-    std::cerr << "Warning, data is larger than expected. Size: " << input_str.size() << std::endl;
+    std::stringstream sin;
+    sin  << "Warning, data is larger than expected. Size: " << input_str.size() << std::endl;
     for( size_t i=0; i<input_str.size(); i++ ){
-        std::cout << i << " : " << (int)input_str[i] << std::endl;
+        sin << i << " : " << (int)input_str[i] << std::endl;
     }
+    BOOST_LOG_TRIVIAL(warning) << sin.str();
 
     // otherwise, return failure
     return (int)CORE::CLI_Event_Type::UNKNOWN;
