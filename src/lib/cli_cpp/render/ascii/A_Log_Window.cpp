@@ -188,6 +188,7 @@ void A_Log_Window::Pipe_Thread_Runner( const int& fd,
     const int MAX_LEN = 500;
     char buffer[MAX_LEN+1] = {0};
     int bytes_read;
+    std::string temp_buffer;
     std::vector<std::string> split_string_list;
 
     // Iterate until closed
@@ -206,11 +207,14 @@ void A_Log_Window::Pipe_Thread_Runner( const int& fd,
         if( shutdown_flag == true ){
             break;
         }
+
+        // Create the temp buffer
+        temp_buffer = UTILS::String_Trim( std::string(buffer).substr(0, bytes_read));
         
         // Split the list
-        split_string_list = UTILS::String_Split( UTILS::String_Trim(std::string(buffer).substr(0,bytes_read)),
+        split_string_list = UTILS::String_Split( UTILS::String_Trim( temp_buffer ),
                                                  "\n");
-
+        
         // Add to stdout
         for( int i=0; i<(int)split_string_list.size(); i++ ){ 
 

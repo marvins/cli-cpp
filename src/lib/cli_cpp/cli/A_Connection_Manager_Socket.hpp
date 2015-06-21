@@ -16,6 +16,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <tuple>
 
 namespace CLI{
 
@@ -71,6 +72,13 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
         */
         void Refresh_Screen();
 
+
+        /**
+         * @brief Configure the Special Key List.
+        */
+        void Configure_Special_Key_List();
+
+
         /**
          * @brief Check for special keys.
          *
@@ -94,6 +102,10 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
 
         /// Client File Description
         int m_client_fd;
+
+
+        /// Keyboard Special Key Map
+        std::vector<std::tuple<std::string,int>> m_special_key_list;
 
 }; // End of A_Connection_Manager_Socket Class
 

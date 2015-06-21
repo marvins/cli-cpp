@@ -111,14 +111,21 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         }
     
     protected:
-        
+       
+        /**
+         * @brief Print the header
+         *
+         * @param[in] print_buffer Buffer to print header contents to.
+        */
+        virtual void Print_Header( std::vector<std::string>& print_buffer );
+
         /**
          * @brief Print CLI
          *
          * @param[in] print_buffer Buffer to post cli contents to.
          */
         virtual void Print_CLI( std::vector<std::string>& print_buffer );
-
+       
 
     private:
 

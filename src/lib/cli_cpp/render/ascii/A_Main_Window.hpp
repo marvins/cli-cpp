@@ -38,12 +38,6 @@ class A_Main_Window : public An_ASCII_Render_Window_Base
     protected:
         
         /**
-         * @brief Print the Header
-        */
-        void Print_Header();
-        
-
-        /**
          * @brief Print the Main Content.
          */
         void Print_Main_Content();

@@ -23,14 +23,17 @@
 
 
 // Keyboard Delete Key Value
+const std::string TELNET_JUNK   = { (char)-1, (char)-3, (char)3, (char)-1, (char)-5, (char)34, (char)-1, (char)-6, (char)34, (char)3, (char)1, (char)3 };
 const std::string KEYBOARD_DELETE_KEY = "\033\133\063\176";
 const std::string KEYBOARD_LEFT_KEY   = "\033\133\104";
 const std::string KEYBOARD_RIGHT_KEY  = "\033\133\103";
 const std::string KEYBOARD_UP_KEY     = "\033\133\101";
 const std::string KEYBOARD_DOWN_KEY   = "\033\133\102";
-const std::string KEYBOARD_F1_KEY     = "\033\119\120";
-const std::string KEYBOARD_F2_KEY     = "\033\119\121";
-const std::string KEYBOARD_F3_KEY     = "\033\119\122";
+const std::string KEYBOARD_F1_KEY     = "\033\117\120";
+const std::string KEYBOARD_F2_KEY     = "\033\117\121";
+const std::string KEYBOARD_F3_KEY     = "\033\117\122";
+const std::string KEYBOARD_F4_KEY     = "\033\117\123";
+const std::string KEYBOARD_F5_KEY     = "\033\117\124";
 
 namespace CLI{
 
@@ -48,6 +51,10 @@ A_Connection_Manager_Socket::A_Connection_Manager_Socket( A_Connection_Manager_B
 
     // Configure the socket
     Setup_Socket();
+
+    // Configure Special Key List
+    Configure_Special_Key_List();
+
 }
 
 
@@ -246,14 +253,30 @@ void A_Connection_Manager_Socket::Run_Handler()
         
             // Process the text
             if( input.size() > 1 ){
-                key = this->Process_Special_Key( input );    
+                
+                // Check if the input has a special key
+                key = this->Process_Special_Key( input );
+                
+                if( key != (int)CORE::CLI_Event_Type::UNKNOWN ){
+                    CORE::Event_Manager::Process_Event( key );
+                }
+                else{
+                
+                    // If no special key, just process it in chunks
+                    for( size_t ch=0; ch<input.size(); ch++ ){
+                        CORE::Event_Manager::Process_Event( input[ch] );
+                    }
+                }
+
             } else {
-                key = input[0];
+            
+                // Process the single key
+                CORE::Event_Manager::Process_Event( input[0] );
+            
             }
 
             // Process the command
             BOOST_LOG_TRIVIAL(trace) << "Calling Event_Manager::Process_Event with Key = " << key;
-            CORE::Event_Manager::Process_Event( key );
             BOOST_LOG_TRIVIAL(trace) << "Event_Manager::Process_Event returned.";
         
             // Refresh
@@ -302,6 +325,26 @@ void A_Connection_Manager_Socket::Refresh_Screen()
     }
 }
 
+/********************************************/
+/*      Configure the Special Key Map       */
+/********************************************/
+void A_Connection_Manager_Socket::Configure_Special_Key_List()
+{
+    // Add each keyboard to event mapping here
+    m_special_key_list.push_back( std::make_tuple( TELNET_JUNK,          (int)CORE::CLI_Event_Type::CLI_NULL             ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_DELETE_KEY,  (int)CORE::CLI_Event_Type::KEYBOARD_DELETE_KEY  ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_LEFT_KEY,    (int)CORE::CLI_Event_Type::KEYBOARD_LEFT_ARROW  ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_RIGHT_KEY,   (int)CORE::CLI_Event_Type::KEYBOARD_RIGHT_ARROW ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_UP_KEY,      (int)CORE::CLI_Event_Type::KEYBOARD_UP_ARROW    ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_DOWN_KEY,    (int)CORE::CLI_Event_Type::KEYBOARD_DOWN_ARROW  ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F1_KEY,      (int)CORE::CLI_Event_Type::KEYBOARD_F1          ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F2_KEY,      (int)CORE::CLI_Event_Type::KEYBOARD_F2          ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F3_KEY,      (int)CORE::CLI_Event_Type::KEYBOARD_F3          ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F4_KEY,      (int)CORE::CLI_Event_Type::KEYBOARD_F4          ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F5_KEY,      (int)CORE::CLI_Event_Type::KEYBOARD_F5          ));
+
+}
+
 /**************************************/
 /*        Process Special Keys        */
 /**************************************/
@@ -310,57 +353,20 @@ int A_Connection_Manager_Socket::Process_Special_Key( const std::string& input_s
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
-    // Check Delete Key
-    if( input_str == KEYBOARD_DELETE_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_DELETE_KEY;
-    }
-
-    // Check Left Key
-    else if( input_str == KEYBOARD_LEFT_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_LEFT_ARROW;
-    }
-
-    // Check Right Key
-    else if( input_str == KEYBOARD_RIGHT_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_RIGHT_ARROW;
-    }
-
-    // Check Up Key
-    else if( input_str == KEYBOARD_UP_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_UP_ARROW;
-    }
-
-    // Check Down Key
-    else if( input_str == KEYBOARD_DOWN_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_DOWN_ARROW;
-    }
-    
-    // Check F1 Key
-    else if( input_str == KEYBOARD_F1_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_F1;
-    }
-
-    // Check F2 Key
-    else if( input_str == KEYBOARD_F2_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_F2;
-    }
-
-    // Check F3 Key
-    else if( input_str == KEYBOARD_F3_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_F3;
+    // Iterate over list
+    for( size_t i=0; i<m_special_key_list.size(); i++ ){
+        if( input_str == std::get<0>(m_special_key_list[i]) )
+            return std::get<1>(m_special_key_list[i]);
     }
 
     // Otherwise, there was an error
-    else{
-        std::cerr << "Warning, data is larger than expected. Size: " << input_str.size() << std::endl;
-        for( size_t i=0; i<input_str.size(); i++ ){
-            std::cout << i << " : " << (int)input_str[i] << std::endl;
-        }
+    std::cerr << "Warning, data is larger than expected. Size: " << input_str.size() << std::endl;
+    for( size_t i=0; i<input_str.size(); i++ ){
+        std::cout << i << " : " << (int)input_str[i] << std::endl;
     }
 
-
     // otherwise, return failure
-    return -1;
+    return (int)CORE::CLI_Event_Type::UNKNOWN;
 }
 
 

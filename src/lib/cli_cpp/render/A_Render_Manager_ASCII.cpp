@@ -118,9 +118,49 @@ void A_Render_Manager_ASCII::Refresh()
     // Update the buffer data
     m_window_list[m_current_window]->Update_Buffer_Data();
 
+    // Print the Header onto the Current Buffer Data
+    Print_Header(m_window_list[m_current_window]->Get_Buffer_Data());
+
     // Print the CLI Onto the Current Buffer Data
     Print_CLI(m_window_list[m_current_window]->Get_Buffer_Data());
     
+}
+
+
+/*******************************/
+/*      Print the Header       */
+/*******************************/
+void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffer )
+{
+    
+    // Get the CLI Title
+    std::string cli_title = m_render_driver_context->Get_CLI_Title();
+    
+    // Status Code String
+    std::string status_code_string;
+
+    // Check for status
+    if( m_render_driver_context->Check_Waiting_Command_Response() == true ){
+        status_code_string = UTILS::ANSI_BACK_RED + UTILS::ANSI_BLACK + "Waiting for Command Response";
+        status_code_string.resize( m_render_driver_context->Get_Window_Cols()/4, ' ' );
+    } else {
+        status_code_string = UTILS::ANSI_BACK_WHITE + UTILS::ANSI_BLACK + UTILS::Format_String( "Ready", m_render_driver_context->Get_Window_Cols()/4);
+    }
+
+    // Find the title length
+    int title_length = std::min((int)cli_title.size(), m_render_driver_context->Get_Window_Cols()/2);
+    int title_width  = m_render_driver_context->Get_Window_Cols() * 5 / 8;
+    
+    // Define the first title part
+    std::string title_header = cli_title.substr( 0, title_length);
+    title_header.resize(title_width, ' ');
+
+    // Append the status text
+    title_header += status_code_string + UTILS::ANSI_RESET;
+    
+    // Set the header
+    print_buffer[0] = UTILS::ANSI_CLEARSCREEN + UTILS::ANSI_RESETCURSOR + "     " + title_header + UTILS::ANSI_NEWLINE;
+
 }
 
 
