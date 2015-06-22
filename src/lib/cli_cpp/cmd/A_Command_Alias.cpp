@@ -101,6 +101,30 @@ bool A_Command_Alias::Is_Alias_Name_Match( const std::string&  test_input,
 }
 
 
+/*************************************************************************/
+/*         Check if the input string is a substring of the alias         */
+/*************************************************************************/
+bool A_Command_Alias::Is_Alias_Name_Substring( const std::string& command_name )const
+{
+
+    // if the command is longer than the command name, it must be false
+    if( command_name.size() > m_alias_name.size() ){
+        return false;
+    }
+
+    // If the sizes are the same, do a string compare
+    if( command_name.size() == m_alias_name.size() ){
+        return (command_name == m_alias_name);
+    }
+
+    // Otherwise, do a substring compare
+    if( m_alias_name.substr(0, command_name.size()) == command_name ){
+        return true;
+    }
+    return false;
+}
+
+
 /*****************************************************/
 /*         Load an Alias Configuration File          */
 /*****************************************************/

@@ -72,6 +72,15 @@ class A_Command_Alias
         bool Is_Alias_Name_Match( const std::string& test_input,
                                   const bool&        match_whole,
                                   std::string&       formatted_output )const;
+        
+        /**
+         * @brief Check if the input is a substring of the alias.
+         *
+         * @param[in] command_name Text to check.
+         * 
+         * @return True if a match, false otherwise.
+         */
+        bool Is_Alias_Name_Substring( const std::string& command_name )const;
 
         
         /**

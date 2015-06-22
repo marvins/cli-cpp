@@ -178,6 +178,16 @@ void A_Command_Parser::Update_Autocomplete_String( const std::string&          i
                 match_list.push_back( matching_value );
             }
         }
+
+        // Iterate over aliases
+        for( size_t i=0; i<m_alias_list.size(); i++ )
+        {
+            // Check the names
+            if( m_alias_list[i].Is_Alias_Name_Substring( components.back() ) == true ){
+                match_list.push_back( m_alias_list[i].Get_Alias_Name());
+            }
+
+        }
     }
 
     // Otherwise, check the arguments
