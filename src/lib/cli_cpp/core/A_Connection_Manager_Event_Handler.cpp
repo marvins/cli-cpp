@@ -5,6 +5,9 @@
 */
 #include "A_Connection_Manager_Event_Handler.hpp"
 
+// CLI Libraries
+#include "../utility/Log_Utilities.hpp"
+
 namespace CLI{
 namespace CORE{
 
@@ -27,6 +30,11 @@ void A_Connection_Manager_Event_Handler::Process_Event( int const& event )
 {
     // Check if we have a shutdown event
     if( event == (int)CLI_Event_Type::CLI_SHUTDOWN ){
+        
+        // Log
+        BOOST_LOG_TRIVIAL(debug) << "CLI_SHUTDOWN Event Registered.  Disconnecting now.";
+        
+        // Set the connection flag
         m_connection_manager->Set_Is_Connected_Flag( false );
     }
 }

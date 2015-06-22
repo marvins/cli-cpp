@@ -258,13 +258,22 @@ void A_Connection_Manager_Socket::Run_Handler()
                 key = this->Process_Special_Key( input );
                 
                 if( key != (int)CORE::CLI_Event_Type::UNKNOWN ){
+                    
                     CORE::Event_Manager::Process_Event( key );
                 }
                 else{
                 
                     // If no special key, just process it in chunks
                     for( size_t ch=0; ch<input.size(); ch++ ){
-                        CORE::Event_Manager::Process_Event( input[ch] );
+                    
+                        // Since we are just parsing straight input,
+                        // make sure we avoid negative numbers from the 
+                        // telnet client (HACK).  For some reason, telnet sends
+                        // a bunch of 250+ digits which causes the char to return
+                        // negative numbers.  -3 tells me right now to shut down.
+                        if( input[ch] > 0 ){    
+                            CORE::Event_Manager::Process_Event( input[ch] );
+                        }
                     }
                 }
 
@@ -355,8 +364,9 @@ int A_Connection_Manager_Socket::Process_Special_Key( const std::string& input_s
     
     // Iterate over list
     for( size_t i=0; i<m_special_key_list.size(); i++ ){
-        if( input_str == std::get<0>(m_special_key_list[i]) )
+        if( input_str == std::get<0>(m_special_key_list[i]) ){
             return std::get<1>(m_special_key_list[i]);
+        }
     }
 
     // Otherwise, there was an error
