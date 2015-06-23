@@ -97,7 +97,8 @@ void A_Render_State::Process_Input( const int& input )
     else if( Is_Text( input ) == true ){
 
         // Otherwise, add character to string
-        m_cli_prompt_text.push_back((char)input);
+        m_cli_prompt_text.insert( m_cli_prompt_text.begin() + m_cli_prompt_cursor_at,
+                                  (char)input );
 
         // increment head
         m_cli_prompt_cursor_head++;
