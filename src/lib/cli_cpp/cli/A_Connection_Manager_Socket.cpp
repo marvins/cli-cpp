@@ -9,6 +9,7 @@
 #include "A_Connection_Manager_Socket_Config.hpp"
 #include "../core/Event_Manager.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
+#include "../utility/ANSI_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
 
 
@@ -299,7 +300,13 @@ void A_Connection_Manager_Socket::Run_Handler()
             }
 
         }
+
+        // Before we close the socket, write out the vis string to
+        // remove the effects of hiding the cursor
+        std::string close_socket_str = UTILS::ANSI_CLEARSCREEN +  UTILS::ANSI_CURSORVIS;
+        write( m_client_fd, close_socket_str.c_str(), close_socket_str.size() );
     
+        
         // Close the current session
         close( m_client_fd );
     }
