@@ -121,12 +121,6 @@ class A_Command_Parser {
     
     private:
     
-        /**
-         * @brief Parse the string.
-         */
-        std::vector<std::string> Parse_String( const std::string& test_str )const;
-
-
         /// Class Name
         std::string m_class_name;
 

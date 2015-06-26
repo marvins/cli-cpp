@@ -49,7 +49,7 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string&  test_s
     BOOST_LOG_TRIVIAL(trace) << "Start of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
     
     // Split the string
-    std::vector<std::string> components = Parse_String( test_str );
+    std::vector<std::string> components = UTILS::String_Split( test_str, m_regex_split_pattern );
 
     // Get the first element
     std::string command_name = components[0];
@@ -109,26 +109,6 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string&  test_s
     return A_Command_Result( CommandParseStatus::NO_COMMAND_FOUND,
                              A_Command( command_name, "", false),
                              components);
-
-}
-
-
-/******************************/
-/*        Parse String        */
-/******************************/
-std::vector<std::string>  A_Command_Parser::Parse_String( const std::string& test_str )const
-{
-    // Create output list
-    std::vector<std::string> output;
-
-    // Trim the string
-    std::string trimmed_string = UTILS::String_Trim( test_str, " ", UTILS::StringDirection::BOTH );
-
-    // Split
-    boost::split( output, trimmed_string, boost::is_any_of( m_regex_split_pattern ));
-
-    // return results
-    return output;
 
 }
 
