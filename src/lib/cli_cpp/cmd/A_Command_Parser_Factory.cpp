@@ -271,7 +271,7 @@ A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string
 
         // Make sure the command lists have values
         if( cli_command_list.size() <= 0 ){
-            throw std::runtime_error("CLI Command-List is currently empty.");
+            throw std::runtime_error("CLI Command-List is currently empty. Configuration File Path (" + config_path + ").");
         }
 
         if( command_list.size() <= 0 ){
