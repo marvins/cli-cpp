@@ -59,6 +59,44 @@ std::vector<std::string> Parse_Argument_Autocomplete( pugi::xml_node const& arg_
 }
 
 
+/********************************************************/
+/*          Parse a Command Argument XML Node           */
+/********************************************************/
+A_Command_Argument Parse_Command_Argument_Node( pugi::xml_node const& arg_node )
+{
+
+    // Get the name
+    std::string arg_name = arg_node.attribute("name").as_string();
+
+    // Get the description
+    std::string arg_description = arg_node.attribute("description").as_string();
+
+    // Get the type
+    CommandArgumentType arg_type = StringToCommandArgumentType(arg_node.attribute("type").as_string());
+
+    // Get the required flag
+    bool arg_required = arg_node.attribute("required").as_bool(true);
+
+    // Get the default flag
+    std::string arg_default_value = arg_node.attribute("default").as_string("");
+
+    // Get any auto-complete terms
+    std::vector<std::string> arg_auto_complete = Parse_Argument_Autocomplete( arg_node.child("auto-complete") );
+    
+    // Check the auto complete path
+    bool arg_auto_complete_path = arg_node.attribute("auto-complete-path").as_bool(false);
+
+    // return the autocomplete
+    return A_Command_Argument( arg_name,
+                               arg_type,
+                               arg_description,
+                               arg_required,
+                               arg_default_value,
+                               arg_auto_complete_path,
+                               arg_auto_complete );
+
+}
+
 /*******************************************/
 /*        Parse the CLI Commands           */
 /*******************************************/
@@ -75,7 +113,7 @@ std::vector<A_CLI_Command> Parse_CLI_Commands( pugi::xml_node& cli_cmd_node )
         // Get the node
         pugi::xml_node cli_node = (*pit);
 
-        // Get the mode
+        // Get the mode string
         std::string mode_str = cli_node.attribute("mode").as_string();
 
         // set the mode
@@ -111,18 +149,41 @@ std::vector<A_CLI_Command> Parse_CLI_Commands( pugi::xml_node& cli_cmd_node )
             cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_LIST );
             cli_command.Set_Formal_Name("List Aliases");
         }
+        else if( mode_str == "run-script" ){
+            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_RUN_SCRIPT );
+            cli_command.Set_Formal_Name("Run CLI script");
+        }
         else{
             throw std::runtime_error("error: Unknown CLI command mode (" + mode_str + ")");
         }
 
-        // Iterate over names
+        // Iterate over internal nodes 
         for( pugi::xml_node_iterator ait = cli_node.begin(); ait != cli_node.end(); ait++ )
         {
+            
+            // Add a name to the node
             if( std::string((*ait).name()) == "name" ){
                 cli_command.Add_Name( (*ait).attribute("value").as_string());
             }
+
+            // Process the description
             if( std::string((*ait).name()) == "description") {
                 cli_command.Set_Description( (*ait).attribute("value").as_string());
+            }
+
+            // Check if arguments node
+            if( std::string((*ait).name()) == "arguments" ){
+                
+                // Process each argument node
+                for( pugi::xml_node_iterator arg_it = ait->begin(); arg_it != ait->end(); arg_it++ )
+                {
+            
+                    // Check the name
+                    if( std::string(arg_it->name()) == "argument" ){
+                        cli_command.Add_Argument(Parse_Command_Argument_Node( *arg_it ));
+                    }    
+                }
+
             }
         }
 
@@ -149,9 +210,7 @@ std::vector<A_Command> Parse_Standard_Commands( pugi::xml_node& commands_node )
     // List of arguments
     std::vector<A_Command_Argument> argument_list;
 
-    std::string arg_name, arg_description, arg_default_value;
     bool arg_required;
-    CommandArgumentType arg_type;
     std::vector<std::string> arg_auto_complete;
 
     // Parse the Commands Node
@@ -179,34 +238,11 @@ std::vector<A_Command> Parse_Standard_Commands( pugi::xml_node& commands_node )
         {
             // Get the node
             pugi::xml_node arg_node = (*ait);
-
-            // Get the name
-            arg_name = arg_node.attribute("name").as_string();
-
-            // Get the description
-            arg_description = arg_node.attribute("description").as_string();
-
-            // Get the type
-            arg_type = StringToCommandArgumentType(arg_node.attribute("type").as_string());
-
-            // Get the required flag
-            arg_required = arg_node.attribute("required").as_bool(true);
-
-            // Get the default flag
-            arg_default_value = arg_node.attribute("default").as_string("");
-
-            // Get any auto-complete terms
-            arg_auto_complete = Parse_Argument_Autocomplete( arg_node.child("auto-complete") );
-
-
-            // Add the next argument
-            argument_list.push_back( A_Command_Argument( arg_name,
-                                                         arg_type,
-                                                         arg_description,
-                                                         arg_required,
-                                                         arg_default_value,
-                                                         arg_auto_complete ));
-
+            
+            // Check the name
+            if( std::string(arg_node.name()) == "argument" ){
+                argument_list.push_back( Parse_Command_Argument_Node( arg_node ));
+            }    
         }
 
         // Add the command

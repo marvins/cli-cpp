@@ -8,6 +8,7 @@
 
 // CLI Libraries
 #include "A_Command.hpp"
+#include "A_CLI_Command.hpp"
 #include "CommandParseStatus.hpp"
 #include "../utility/String_Utilities.hpp"
 
@@ -93,6 +94,18 @@ class A_Command_Result{
          */
         static A_Command_Result  Process_Arguments( const A_Command&                 command,
                                                     const std::vector<std::string>&  arguments );
+
+
+        /**
+         * @brief Process CLI Command Results.
+         *
+         * @param[in] command CLI Command that was executed.
+         * @param[in] arguments List of arguments to check for validity.
+         *
+         * @return Result of the operation.
+        */
+        static A_Command_Result  Process_CLI_Arguments( const A_CLI_Command&             command,
+                                                        const std::vector<std::string>&  arguments );
 
         /**
          * @brief Print to a debug string.

@@ -186,7 +186,7 @@ void A_Connection_Manager_Socket::Run_Handler()
         }
 
         // Make the socket non-blocking
-        fcntl( m_client_fd, F_SETFL, O_NONBLOCK );
+        //fcntl( m_client_fd, F_SETFL, O_NONBLOCK );
         
         // Log
         char host[NI_MAXHOST];

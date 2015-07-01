@@ -324,15 +324,18 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
         CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_HELP );
     }
 
+
     // If back
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_BACK ){
         CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_BACK );
     }
 
+
     // If Log
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_LOG ){
         CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_LOG );
     }
+
     
     // If adding an alias
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_ADD ){
@@ -345,6 +348,7 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
         }
     }
 
+
     // If removing an alias
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_REMOVE ){
         bool valid_alias;
@@ -355,15 +359,23 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
         }
     }
 
+
     // If listing aliases
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_LIST ){
         CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_ALIAS_LIST );
     }
 
+
     // If clear
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_CLEAR )
     {
         m_command_history->Clear();
+    }
+
+    // If We are running a CLI Run Script
+    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_RUN_SCRIPT ){
+
+        // Get the path
     }
 }
 
@@ -394,7 +406,8 @@ bool A_Render_State::Is_Text( const int& input )const
         input == '.' ||
         input == ',' ||
         input == '_' ||
-        input == '?' )
+        input == '?' ||
+        input == '/' )
     {
         return true;
     }

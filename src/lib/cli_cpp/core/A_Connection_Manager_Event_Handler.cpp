@@ -32,11 +32,22 @@ void A_Connection_Manager_Event_Handler::Process_Event( int const& event )
     if( event == (int)CLI_Event_Type::CLI_SHUTDOWN ){
         
         // Log
-        BOOST_LOG_TRIVIAL(debug) << "CLI_SHUTDOWN Event Registered.  Disconnecting now.";
+        BOOST_LOG_TRIVIAL(debug) << "CLI_SHUTDOWN Event triggered.  Disconnecting now.";
         
         // Set the connection flag
         m_connection_manager->Set_Is_Connected_Flag( false );
     }
+
+    // Check if we have a refresh event
+    if( event == (int)CLI_Event_Type::CLI_REFRESH ){
+
+        // Log
+        BOOST_LOG_TRIVIAL(trace) << "CLI_REFRESH Event triggered. Refreshing the screen now.";
+
+        // Set the refresh command
+        m_connection_manager->Refresh_Screen();
+    }
+
 }
 
 

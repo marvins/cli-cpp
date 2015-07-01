@@ -74,6 +74,11 @@ std::string CommandParseStatusToString( CommandParseStatus const& status )
         return "CLI_CLEAR";
     }
 
+    // Run SCript
+    if( status == CommandParseStatus::CLI_RUN_SCRIPT ){
+        return "CLI_RUN_SCRIPT";
+    }
+
     // UNKNOWN
     return "UNKNOWN";
 }
@@ -128,6 +133,11 @@ std::string CommandParseStatusToHistoryString( CommandParseStatus const& status 
     // List Alias
     if( status == CommandParseStatus::CLI_ALIAS_LIST ){
         return "Success";
+    }
+
+    // CLI Run Script
+    if( status == CommandParseStatus::CLI_RUN_SCRIPT ){
+        return "Starting Script";
     }
 
     // Invalid arguments
@@ -200,6 +210,11 @@ int CommandParseStatusToColorCode( CommandParseStatus const& status )
         return 0;
     }
 
+    // Run Script
+    if( status == CommandParseStatus::CLI_RUN_SCRIPT ){
+        return 0;
+    }
+
     // Invalid arguments
     if( status == CommandParseStatus::INVALID_ARGUMENTS ){
         return 1;
@@ -266,6 +281,11 @@ CommandParseStatus StringToCommandParseStatus( const std::string& status )
         return CommandParseStatus::CLI_ALIAS_LIST;
     }
 
+    // CLI Run Script
+    if( status == "CLI_RUN_SCRIPT" ){
+        return CommandParseStatus::CLI_RUN_SCRIPT;
+    }
+
     // Invalid ARguments
     if( status == "INVALID_ARGUMENTS" ){
         return CommandParseStatus::INVALID_ARGUMENTS;
@@ -308,6 +328,7 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
         case CommandParseStatus::CLI_ALIAS_ADD:
         case CommandParseStatus::CLI_ALIAS_REMOVE:
         case CommandParseStatus::CLI_ALIAS_LIST:
+        case CommandParseStatus::CLI_RUN_SCRIPT:
             return true;
         
         case CommandParseStatus::VALID:

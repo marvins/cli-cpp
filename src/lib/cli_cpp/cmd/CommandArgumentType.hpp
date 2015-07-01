@@ -21,6 +21,7 @@ enum class CommandArgumentType : uint8_t {
     STRING  = 1,
     INTEGER = 2,
     FLOAT   = 3,
+    PATH    = 4 /**<  Command Argument is a Pathname.*/,
 }; // End of CommandArgument Enumeration
 
 

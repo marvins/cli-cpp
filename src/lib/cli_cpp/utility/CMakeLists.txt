@@ -9,6 +9,7 @@
 #-----------------------------------#
 set( LIB_CLI_UTILITY_MODULE_SOURCES
      An_ASCII_Print_Table.cpp
+     Filesystem_Utilities.cpp
      Log_Utilities.cpp
      String_Utilities.cpp
      System_Utilities.cpp
@@ -21,6 +22,7 @@ set( LIB_CLI_UTILITY_MODULE_SOURCES
 set( LIB_CLI_UTILITY_MODULE_HEADERS
      An_ASCII_Print_Table.hpp
      ANSI_Utilities.hpp
+     Filesystem_Utilities.hpp
      Log_Utilities.hpp
      String_Utilities.hpp
      System_Utilities.hpp

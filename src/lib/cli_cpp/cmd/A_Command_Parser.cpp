@@ -78,14 +78,12 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string&  test_s
 
     // Iterate over cli commands
     for( size_t idx=0; idx < m_cli_command_list.size(); idx++ ){
-        if( m_cli_command_list[idx].Is_Match( command_name ) == true )
+
+        // Check if there is a name match
+        if( m_cli_command_list[idx].Is_Name_Match( command_name ) == true )
         {
-            return A_Command_Result( m_cli_command_list[idx].Get_Mode(),
-                                     A_Command( command_name, 
-                                                m_cli_command_list[idx].Get_Description(), 
-                                                false),
-                                     components 
-                                   );
+            return A_Command_Result::Process_CLI_Arguments( m_cli_command_list[idx],
+                                                            components );
         }
 
     }
@@ -196,7 +194,14 @@ void A_Command_Parser::Update_Autocomplete_String( const std::string&          i
 
         // pass the component to each cli command
         for( size_t i=0; i<m_cli_command_list.size(); i++ ){
-
+            
+            // Check if there is an argument match
+            if( m_cli_command_list[i].Is_Argument_Substring( arg_idx,
+                                                             components.back(),
+                                                             matching_value ) == true )
+            {
+                match_list.push_back( test_output + " " + matching_value );
+            }
         }
         
 

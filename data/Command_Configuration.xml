@@ -56,6 +56,15 @@
             <description value="List available aliases." />
         </command>
 
+        <!-- Run Script -->
+        <command mode="run-script" >
+            <name value="run-script" />
+            <description value="Run a script on the server running the CLI." />
+            <arguments>
+                <argument name="path" type="PATH"  description="File to run in CLI." required="true" auto-complete-path="true" />
+            </arguments>
+        </command>
+
 
     </cli-commands>
 

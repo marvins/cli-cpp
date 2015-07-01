@@ -31,7 +31,9 @@ enum class CommandParseStatus : uint8_t {
     CLI_ALIAS_ADD       = 10 /**< Add an alias.*/,
     CLI_ALIAS_REMOVE    = 11 /**< Remove an alias.*/,
     CLI_ALIAS_LIST      = 12 /**< List all aliases.*/,
+    CLI_RUN_SCRIPT      = 13 /**< Run a script on the CLI.*/,
 }; // End of CommandParseStatus Enumeration
+
 
 /**
  * @brief Convert a CommandParseStatus to Color Code.

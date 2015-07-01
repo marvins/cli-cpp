@@ -10,6 +10,7 @@
 #include <string>
 
 // CLI Libraries
+#include "../core/Event_Manager.hpp"
 #include "../utility/Log_Utilities.hpp"
 
 namespace CLI{
@@ -84,6 +85,7 @@ std::string A_Command_Result::Get_Parse_Status_String()const
 void A_Command_Result::Set_System_Response( const std::string& system_response ){
     m_system_response_value = system_response;
     m_system_response_set = true;
+    CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
 }
 
 
@@ -91,7 +93,7 @@ void A_Command_Result::Set_System_Response( const std::string& system_response )
 /*          Process Command Arguments         */
 /**********************************************/
 A_Command_Result  A_Command_Result::Process_Arguments( const A_Command& command,    
-                                                               const std::vector<std::string>&  arguments )
+                                                       const std::vector<std::string>&  arguments )
 {
     // Log 
     BOOST_LOG_TRIVIAL(trace) << "Start of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
@@ -150,6 +152,75 @@ A_Command_Result  A_Command_Result::Process_Arguments( const A_Command& command,
     // Return success
     return A_Command_Result( CommandParseStatus::VALID,
                              command,
+                             arguments );
+
+
+}
+
+
+/**********************************************/
+/*          Process Command Arguments         */
+/**********************************************/
+A_Command_Result  A_Command_Result::Process_CLI_Arguments( const A_CLI_Command& command,    
+                                                       const std::vector<std::string>&  arguments )
+{
+    // Log 
+    BOOST_LOG_TRIVIAL(trace) << "Start of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
+    
+    // Check for no arguments
+    if( arguments.size() <= 0 ){
+        
+        // If we have no arguments passed in, yet the first argument
+        // in the comparison command has a required argument, then throw an error.
+        if( command.Get_Argument_List().size() > 0 &&
+            command.Get_Command_Argument(0).Is_Required() == true )
+        {
+            return A_Command_Result( CommandParseStatus::INVALID_ARGUMENTS,
+                                     command.To_Command(),
+                                     arguments );
+        }
+
+        // Otherwise, we are fine.
+        else{
+            return A_Command_Result( command.Get_Mode(),
+                                     command.To_Command(),
+                                     arguments );
+        }
+    }
+    
+    // Check for enough arguments
+    for( int i=(int)arguments.size(); i<(int)command.Get_Argument_List().size(); i++ ){
+        
+        // Validate missing argument is not required
+        if( command.Get_Command_Argument(i).Is_Required() == true ){
+            return A_Command_Result( CommandParseStatus::INVALID_ARGUMENTS,
+                                     command.To_Command(),
+                                     arguments );
+        }
+    }
+
+    //  Iterate over arguments
+    for( size_t arg=0; arg < arguments.size(); arg++ )
+    {
+        // Check the types
+        if( command.Check_Argument_Type( arg, arguments[arg] ) == false ){
+            return A_Command_Result( CommandParseStatus::INVALID_ARGUMENTS,
+                                     command.To_Command(),
+                                     arguments );
+        }
+    }
+
+
+    // Check the excess arguments
+    if( arguments.size() > command.Get_Argument_List().size() ){
+        return A_Command_Result( CommandParseStatus::EXCESSIVE_ARGUMENTS,
+                                 command.To_Command(),
+                                 arguments );
+    }
+    
+    // Return success
+    return A_Command_Result( command.Get_Mode(),
+                             command.To_Command(),
                              arguments );
 
 

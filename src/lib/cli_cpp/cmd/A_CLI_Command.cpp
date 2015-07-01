@@ -25,7 +25,8 @@ A_CLI_Command::A_CLI_Command( const CommandParseStatus& mode )
     m_mode(mode),
     m_names(0),
     m_formal_name(""),
-    m_description("")
+    m_description(""),
+    m_command_argument_list(0)
 {
 }
 
@@ -41,7 +42,8 @@ A_CLI_Command::A_CLI_Command( const CommandParseStatus&        mode,
     m_mode(mode),
     m_names(names),
     m_formal_name(formal_name),
-    m_description(description)
+    m_description(description),
+    m_command_argument_list(0)
 {
 }
 
@@ -56,6 +58,14 @@ void A_CLI_Command::Add_Name( const std::string& name )
 }
 
 
+/***************************************************/
+/*              Add Command Argument               */
+/***************************************************/
+void A_CLI_Command::Add_Argument( const A_Command_Argument& arg )
+{
+    m_command_argument_list.push_back(arg);
+}
+
 /****************************/
 /*      Set formal Name     */
 /****************************/
@@ -65,11 +75,28 @@ void A_CLI_Command::Set_Formal_Name( const std::string& formal_name )
 }
 
 
+/************************************/
+/*         Check Arguments          */
+/************************************/
+bool A_CLI_Command::Check_Argument_Type( const int& argument_idx,
+                                         const std::string& test_argument )const
+{
+    // Check the size
+    if( argument_idx < 0 || argument_idx >= (int)m_command_argument_list.size() ){
+        return false;
+    }
+
+    // Compare
+    return m_command_argument_list[argument_idx].Is_Valid_Type( test_argument );
+}
+
+
 /****************************/
 /*          Is Valid        */
 /****************************/
-bool A_CLI_Command::Is_Match( const std::string& name )const
+bool A_CLI_Command::Is_Name_Match( const std::string& name )const
 {
+    // Iterate over all supported names
     for( size_t i=0; i<m_names.size(); i++ ){
         if( m_names[i] == name ){
             return true;
@@ -134,6 +161,25 @@ bool A_CLI_Command::Is_Name_Substring( const std::string& input_string,
 }
 
 
+/********************************************/
+/*      Check if Argument is a Match        */
+/********************************************/
+bool A_CLI_Command::Is_Argument_Substring( const int&         argument_index,
+                                           const std::string& argument_name,
+                                           std::string&  match_name )const
+{
+    // Don't go over bounds
+    if( argument_index >= m_command_argument_list.size() ){
+        return false;
+    }
+
+    // Pass to argument
+    return m_command_argument_list[argument_index].Is_Argument_Substring( argument_name,
+                                                                          match_name );
+
+}
+
+
 /********************************/
 /*      Equivalent Operator     */
 /********************************/
@@ -161,6 +207,41 @@ bool A_CLI_Command::operator ==( A_CLI_Command const& other )const
 
     // return success
     return true;
+}
+
+
+/*****************************************/
+/*          Write as a Command           */
+/*****************************************/
+A_Command A_CLI_Command::To_Command()const{
+
+    return A_Command( m_names[0],
+                      Get_Description(),
+                      false,
+                      m_command_argument_list );
+}
+
+
+/*************************************************/
+/*          Write as a debugging string          */
+/*************************************************/
+std::string A_CLI_Command::To_Debug_String()const
+{
+
+    // Create the stream
+    std::stringstream sin;
+    sin << m_class_name << ":\n";
+    sin << "    Formal Name: " << Get_Formal_Name() << std::endl;
+    sin << "    Description: " << Get_Description() << std::endl;
+
+    // Iterate over arguments
+    sin << "    Arguments:\n";
+    for( size_t i=0; i<m_command_argument_list.size(); i++ ){
+        sin << m_command_argument_list[i].To_Debug_String(8) << std::endl;
+    }
+
+    // Return output
+    return sin.str();
 }
 
 

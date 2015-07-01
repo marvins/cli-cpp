@@ -23,12 +23,16 @@ class A_Connection_Manager_Event_Handler : public A_CLI_Event_Handler_Base
         
         /**
          * @brief Constructor
+         *
+         * @param[in] connection_manager Connection manager to send responses to.
         */
         A_Connection_Manager_Event_Handler( A_Connection_Manager_Base::ptr_t connection_manager );
         
 
         /**
          * @brief Process Event.
+         *
+         * @param[in] event Event to process.  Cast the CLI_Event_Type for input to make things easier.
          */
         virtual void Process_Event( const int& event );
 

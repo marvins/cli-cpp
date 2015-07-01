@@ -54,6 +54,7 @@ class A_Command_Argument{
          * @param[in] arg_description Description of the argument's purpose or function.
          * @param[in] arg_required Flag if the argument is required on input.
          * @param[in] arg_default_value Default value if the argument is not provided.
+         * @param[in] arg_autocomplete_path   Flag if we want to auto-complete path values (Only valid on PATH types).
          * @param[in] arg_autocomplete_terms  Argument autocomplete terms.
         */
         A_Command_Argument( const std::string&              arg_name,
@@ -61,6 +62,7 @@ class A_Command_Argument{
                             const std::string&              arg_description,
                             const bool&                     arg_required,
                             const std::string&              arg_default_value,
+                            const bool&                     arg_autocomplete_path,
                             std::vector<std::string>const&  arg_autocomplete_terms );
 
 
@@ -145,6 +147,17 @@ class A_Command_Argument{
          * @return True if equivalent, false otherwise.
          */
         bool operator == ( const A_Command_Argument& other )const;
+        
+
+        /**
+         * @brief Print as a debug string.
+         *
+         * @param[in] offset Amount to offset the output by.
+         *
+         * @return String with info about the argument.
+        */
+        std::string To_Debug_String( const int& offset = 0 )const;
+
 
     private:
         
@@ -165,6 +178,9 @@ class A_Command_Argument{
 
         /// Required
         bool m_required;
+
+        /// Flag if we want to auto-complete the path
+        bool m_autocomplete_path;
 
         /// Argument Autocomplete Terms
         std::vector<std::string> m_autocomplete_terms;

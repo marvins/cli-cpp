@@ -51,10 +51,10 @@ class A_Command{
          * @param[in] command_expect_response  Flag if the command should return a response.
          * @param[in] command_arguments        Command arguments.
          */
-        A_Command( const std::string&                         command_name,
-                   const std::string&                         command_description,
-                   const bool&                                command_expect_response,
-                   const std::vector<A_Command_Argument>& command_arguments );
+        A_Command( const std::string&                      command_name,
+                   const std::string&                      command_description,
+                   const bool&                             command_expect_response,
+                   const std::vector<A_Command_Argument>&  command_arguments );
 
 
         /**

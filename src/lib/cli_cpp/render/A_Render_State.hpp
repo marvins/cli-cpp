@@ -193,6 +193,10 @@ class A_Render_State{
         /// Current History Index
         int m_command_history_ptr;
 
+        /// Active Command Queue
+        std::vector<std::string> m_active_command_queue;
+
+
 }; // End of A_Render_State Class
 
 } // End of RENDER Namespace

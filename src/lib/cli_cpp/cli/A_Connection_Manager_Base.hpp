@@ -89,6 +89,13 @@ class A_Connection_Manager_Base{
             m_is_connected = is_connected;
         }
 
+
+        /**
+         * @brief Refresh the screen.
+         */
+        virtual void Refresh_Screen() = 0;
+
+
     protected:
         
         /**

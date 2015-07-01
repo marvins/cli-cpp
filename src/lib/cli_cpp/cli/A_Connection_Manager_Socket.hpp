@@ -43,6 +43,12 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
          * @brief Destructor
          */
         ~A_Connection_Manager_Socket();
+        
+
+        /**
+         * @brief Refresh the Screen.
+         */
+        virtual void Refresh_Screen();
 
     
     protected:
@@ -66,12 +72,6 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
          */
         void Close_Socket();
         
-
-        /**
-         * @brief Refresh the screen.
-        */
-        void Refresh_Screen();
-
 
         /**
          * @brief Configure the Special Key List.
