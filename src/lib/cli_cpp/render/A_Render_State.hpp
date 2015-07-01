@@ -7,8 +7,11 @@
 #define __CLI_CPP_CLI_A_RENDER_STATE_HPP__
 
 // C++ Standard Libraries
+#include <deque>
+#include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 
 // CLI Libraries
@@ -112,6 +115,36 @@ class A_Render_State{
         void Process_Command_Result( CMD::A_Command_Result const& result );
         
 
+        /**
+         * @brief Active Command Queue Size
+         *
+         * @return Active command queue size.
+        */
+        inline int Get_Active_Command_Queue_Size()const{
+            return m_active_command_queue.size();
+        }
+
+
+        /**
+         * @brief Load the next active command.
+        */
+        inline void Load_Next_Active_Command(){
+            
+            // Clear cursor text
+            Clear_Cursor_Text();
+            
+            // Update the cursor text
+            m_cli_prompt_text = m_active_command_queue[0];
+        
+            // Update the pointers
+            m_cli_prompt_cursor_at = m_cli_prompt_text.size();
+            m_cli_prompt_cursor_tail = 0;
+            m_cli_prompt_cursor_head = m_cli_prompt_text.size();
+            
+            // Remove the active command
+            m_active_command_queue.pop_front();
+        }
+
     private:
 
         /**
@@ -194,7 +227,7 @@ class A_Render_State{
         int m_command_history_ptr;
 
         /// Active Command Queue
-        std::vector<std::string> m_active_command_queue;
+        std::deque<std::string> m_active_command_queue;
 
 
 }; // End of A_Render_State Class

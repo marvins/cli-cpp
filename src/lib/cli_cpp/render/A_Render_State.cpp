@@ -11,6 +11,7 @@
 // CLI Libraries
 #include "../core/CLI_Event_Type.hpp"
 #include "../core/Event_Manager.hpp"
+#include "../io/CLI_Script_Loader.hpp"
 #include "../utility/Log_Utilities.hpp"
 
 namespace CLI{
@@ -376,6 +377,10 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_RUN_SCRIPT ){
 
         // Get the path
+        std::string cli_script = result.Get_Argument_Value_List()[0];
+
+        // Load the entries
+        m_active_command_queue = IO::Load_CLI_Script( cli_script ); 
     }
 }
 

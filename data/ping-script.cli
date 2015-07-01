@@ -1,0 +1,7 @@
+ping localhost
+ping localhost 10
+sleep
+ping 8.8.8.8 
+pause
+ping 1.2.3.4
+bye

@@ -37,6 +37,7 @@ A_Render_Manager_Base::A_Render_Manager_Base( CMD::A_Command_Parser::ptr_t comma
 /****************************************/
 void A_Render_Manager_Base::Process_Command()
 {
+
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
@@ -56,7 +57,7 @@ void A_Render_Manager_Base::Process_Command()
         return;
     }
 
-
+    
     // Check the command
     CMD::A_Command_Result result = m_command_parser->Evaluate_Command( m_render_state->Get_Cursor_Text() );
         
@@ -119,7 +120,25 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
     
     // Check the key value if enter
     if( key == (int)CORE::CLI_Event_Type::KEYBOARD_ENTER ){
+        
+        // Process the command
         Process_Command();
+
+        // Check if we have an active queue
+        while( m_render_state->Get_Active_Command_Queue_Size() > 0 ){
+            
+            // Update the current command
+            m_render_state->Load_Next_Active_Command();
+            
+            // Wait
+            if(  Check_Waiting_Command_Response() ){
+                usleep(5000);
+            }
+
+            // Process the command
+            Process_Command();
+        }
+
         return;
     }
     

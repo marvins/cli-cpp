@@ -30,6 +30,7 @@ class A_Command_Result{
         /// Pointer Type
         typedef std::shared_ptr<A_Command_Result> ptr_t;
         
+
         /**
          * @brief Constructor
         */
@@ -42,8 +43,8 @@ class A_Command_Result{
          * @param[in] parse_status Parsing operation status.
          * @param[in] command Command that was executed.
          */
-        A_Command_Result( CommandParseStatus const&    parse_status,
-                              A_Command const&            command );
+        A_Command_Result( CommandParseStatus const&   parse_status,
+                          A_Command const&            command );
        
 
         /**

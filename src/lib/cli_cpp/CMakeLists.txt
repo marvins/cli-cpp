@@ -22,6 +22,12 @@ add_subdirectory(cli)
 add_subdirectory(cmd)
 
 
+#-------------------------------#
+#-     Load the IO Module      -#
+#-------------------------------#
+add_subdirectory(io)
+
+
 #------------------------------------#
 #-     Load the Render Module       -#
 #------------------------------------#

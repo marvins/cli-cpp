@@ -89,7 +89,7 @@ void A_Connection_Manager_Socket::Setup_Socket()
 
 
     // Make the socket non-blocking
-    fcntl( m_sock_fd, F_SETFL, O_NONBLOCK );
+    //fcntl( m_sock_fd, F_SETFL, O_NONBLOCK );
 
 
     // configure the endpoint
