@@ -112,12 +112,30 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
     
     protected:
        
+       
+       /**
+         * @brief Get the header status bar text.
+         *
+         * @return Header status bar text.
+        */
+        virtual std::string Get_Header_Status_Bar_Text()const;
+        
+
+        /**
+         * @brief Get the header mode bar text.
+         *
+         * @return Header Mode bar text.
+        */
+        virtual std::string Get_Header_Mode_Bar_Text()const;
+
+
         /**
          * @brief Print the header
          *
          * @param[in] print_buffer Buffer to print header contents to.
         */
         virtual void Print_Header( std::vector<std::string>& print_buffer );
+
 
         /**
          * @brief Print CLI

@@ -51,7 +51,8 @@ void A_Render_Driver_Context_Base::Set_Waiting_Command_Response( const CMD::A_Co
 /**************************************************/
 /*      Check the waiting response flag value     */
 /**************************************************/
-bool A_Render_Driver_Context_Base::Check_Waiting_Command_Response(){
+bool A_Render_Driver_Context_Base::Check_Waiting_Command_Response()
+{
     
     // Log
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << ". Status: " << std::boolalpha << m_waiting_command_response;

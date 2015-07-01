@@ -8,6 +8,9 @@
 // CLI Libraries
 #include "../utility/Log_Utilities.hpp"
 
+// C++ Standard Libraries
+#include <iostream>
+
 namespace CLI{
 namespace CORE{
 

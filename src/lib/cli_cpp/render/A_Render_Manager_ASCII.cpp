@@ -134,34 +134,96 @@ void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffe
 {
     
     // Get the CLI Title
-    std::string cli_title = m_render_driver_context->Get_CLI_Title();
+    std::string cli_title = "   " + m_render_driver_context->Get_CLI_Title();
+    
     
     // Status Code String
-    std::string status_code_string;
+    std::string status_code_string = Get_Header_Status_Bar_Text();
 
-    // Check for status
-    if( m_render_driver_context->Check_Waiting_Command_Response() == true ){
-        status_code_string = UTILS::ANSI_BACK_RED + UTILS::ANSI_BLACK + "Waiting for Command Response";
-        status_code_string.resize( m_render_driver_context->Get_Window_Cols()/4, ' ' );
-    } else {
-        status_code_string = UTILS::ANSI_BACK_WHITE + UTILS::ANSI_BLACK + UTILS::Format_String( "Ready", m_render_driver_context->Get_Window_Cols()/4);
-    }
+    // Status Mode String
+    std::string status_mode_string = Get_Header_Mode_Bar_Text();
 
+    
     // Find the title length
-    int title_length = std::min((int)cli_title.size(), m_render_driver_context->Get_Window_Cols()/2);
-    int title_width  = m_render_driver_context->Get_Window_Cols() * 5 / 8;
+    int title_length = std::min((int)cli_title.size(), m_render_driver_context->Get_Window_Cols() * 3/8);
+    int title_width  = m_render_driver_context->Get_Window_Cols() * 3 / 8;
     
     // Define the first title part
     std::string title_header = cli_title.substr( 0, title_length);
     title_header.resize(title_width, ' ');
 
     // Append the status text
-    title_header += status_code_string + UTILS::ANSI_RESET;
+    title_header += status_mode_string + UTILS::ANSI_RESET + "  " + status_code_string + UTILS::ANSI_RESET;
     
     // Set the header
-    print_buffer[0] = UTILS::ANSI_CLEARSCREEN + UTILS::ANSI_RESETCURSOR + "     " + title_header + UTILS::ANSI_NEWLINE;
+    print_buffer[0] = UTILS::ANSI_CLEARSCREEN + UTILS::ANSI_RESETCURSOR + title_header + UTILS::ANSI_NEWLINE;
 
 }
+
+
+/**********************************************/
+/*          Get Header Status Bar Text        */
+/**********************************************/
+std::string A_Render_Manager_ASCII::Get_Header_Status_Bar_Text()const
+{
+
+    // Create output
+    std::string output;
+
+    // Define the window size
+    int status_bar_width = m_render_driver_context->Get_Window_Cols()/4;
+
+
+    // Check if we are waiting for a command response
+    if( m_render_driver_context->Check_Waiting_Command_Response() == true ){
+        output = UTILS::ANSI_BACK_RED + UTILS::ANSI_WHITE + UTILS::Format_String("Waiting for Command Response",
+                                                                                 status_bar_width);
+    } 
+    
+    // Otherwise, we are in a standard configuration
+    else {
+        output = UTILS::ANSI_BACK_WHITE + UTILS::ANSI_BLACK + UTILS::Format_String( "Ready", 
+                                                                                    status_bar_width );
+    }
+    
+
+    // Return the output
+    return output;
+}
+
+
+
+/********************************************/
+/*          Get Header Mode Bar Text        */
+/********************************************/
+std::string A_Render_Manager_ASCII::Get_Header_Mode_Bar_Text()const
+{
+
+    // Create output
+    std::string output;
+
+    // Define the window size
+    int mode_bar_width = m_render_driver_context->Get_Window_Cols()/4;
+
+
+    // Check if we are currently in a script
+    if( m_render_state->Get_Active_Command_Queue_Size() > 0 )
+    {
+        output = UTILS::ANSI_BACK_BLUE + UTILS::ANSI_WHITE + UTILS::Format_String("CLI Script Mode", 
+                                                                                  mode_bar_width );
+    }
+
+    // Otherwise, we are in a standard configuration
+    else {
+        output = UTILS::ANSI_BACK_GREEN + UTILS::ANSI_BLACK + UTILS::Format_String( "CLI Text Input Mode", 
+                                                                                    mode_bar_width );
+    }
+    
+
+    // Return the output
+    return output;
+}
+
 
 
 /********************************/

@@ -54,6 +54,16 @@ std::string CommandParseStatusToString( CommandParseStatus const& status )
         return "CLI_ALIAS_LIST";
     }
 
+    // Sleep
+    if( status == CommandParseStatus::CLI_SLEEP ){
+        return "CLI_SLEEP";
+    }
+
+    // Pause
+    if( status == CommandParseStatus::CLI_PAUSE ){
+        return "CLI_PAUSE";
+    }
+
     // Invalid arguments
     if( status == CommandParseStatus::INVALID_ARGUMENTS ){
         return "INVALID_ARGUMENTS";
@@ -140,6 +150,16 @@ std::string CommandParseStatusToHistoryString( CommandParseStatus const& status 
         return "Starting Script";
     }
 
+    // CLI Sleep
+    if( status == CommandParseStatus::CLI_SLEEP ){
+        return "Starting Sleep";
+    }
+
+    // CLI Pause
+    if( status == CommandParseStatus::CLI_PAUSE ){
+        return "Press any key to continue.";
+    }
+
     // Invalid arguments
     if( status == CommandParseStatus::INVALID_ARGUMENTS ){
         return "Invalid arguments";
@@ -215,6 +235,16 @@ int CommandParseStatusToColorCode( CommandParseStatus const& status )
         return 0;
     }
 
+    // Sleep
+    if( status == CommandParseStatus::CLI_SLEEP ){
+        return 0;
+    }
+
+    // Pause
+    if( status == CommandParseStatus::CLI_PAUSE ){
+        return 0;
+    }
+
     // Invalid arguments
     if( status == CommandParseStatus::INVALID_ARGUMENTS ){
         return 1;
@@ -286,6 +316,17 @@ CommandParseStatus StringToCommandParseStatus( const std::string& status )
         return CommandParseStatus::CLI_RUN_SCRIPT;
     }
 
+    // CLI Sleep
+    if( status == "CLI_SLEEP" ){
+        return CommandParseStatus::CLI_SLEEP;
+    }
+
+    // CLI Pause
+    if( status == "CLI_PAUSE" ){
+        return CommandParseStatus::CLI_PAUSE;
+    }
+
+
     // Invalid ARguments
     if( status == "INVALID_ARGUMENTS" ){
         return CommandParseStatus::INVALID_ARGUMENTS;
@@ -329,6 +370,8 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
         case CommandParseStatus::CLI_ALIAS_REMOVE:
         case CommandParseStatus::CLI_ALIAS_LIST:
         case CommandParseStatus::CLI_RUN_SCRIPT:
+        case CommandParseStatus::CLI_PAUSE:
+        case CommandParseStatus::CLI_SLEEP:
             return true;
         
         case CommandParseStatus::VALID:

@@ -60,23 +60,27 @@ void A_Render_Manager_Base::Process_Command()
     
     // Check the command
     CMD::A_Command_Result result = m_command_parser->Evaluate_Command( m_render_state->Get_Cursor_Text() );
-        
+
     
     // Create shared pointer
     CMD::A_Command_Result::ptr_t result_ptr = std::make_shared<CMD::A_Command_Result>( result );
     
+    
     // Log 
     BOOST_LOG_TRIVIAL(trace) << "File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ << ", Command Result: " << result.To_Debug_String();
 
+    
     // Add to history
     Add_Command_History( m_render_state->Get_Cursor_Text(), 
                          result_ptr );
 
+    
     //  Look for CLI Shutdown
     if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_SHUTDOWN ){
         CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_SHUTDOWN );
     }
     
+
     // Look for other CLI Command
     else if( CMD::Is_Valid_CLI_Command( result.Get_Parse_Status() ) == true ){
         m_render_state->Process_Command_Result( result );
@@ -95,6 +99,10 @@ void A_Render_Manager_Base::Process_Command()
             
             // Publish the notice
             Set_Waiting_Command_Response( result_ptr );
+        
+            // Refresh
+            CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
+
         }
     }
 
@@ -105,7 +113,7 @@ void A_Render_Manager_Base::Process_Command()
     
     // Clear the cursor    
     m_render_state->Clear_Cursor_Text();
-
+    
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
@@ -118,8 +126,10 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
+
     // Check the key value if enter
-    if( key == (int)CORE::CLI_Event_Type::KEYBOARD_ENTER ){
+    if( key == (int)CORE::CLI_Event_Type::KEYBOARD_ENTER )
+    {
         
         // Process the command
         Process_Command();
@@ -130,9 +140,13 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
             // Update the current command
             m_render_state->Load_Next_Active_Command();
             
+            // Refresh
+            CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
+            
             // Wait
-            if(  Check_Waiting_Command_Response() ){
-                usleep(5000);
+            while(  Check_Waiting_Command_Response() ){
+                BOOST_LOG_TRIVIAL(trace) << "Waiting on Check_Waiting_Command_Response()";
+                usleep(1000);
             }
 
             // Process the command

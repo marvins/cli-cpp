@@ -32,6 +32,8 @@ enum class CommandParseStatus : uint8_t {
     CLI_ALIAS_REMOVE    = 11 /**< Remove an alias.*/,
     CLI_ALIAS_LIST      = 12 /**< List all aliases.*/,
     CLI_RUN_SCRIPT      = 13 /**< Run a script on the CLI.*/,
+    CLI_PAUSE           = 14 /**< Pause the CLI until user input provided.*/,
+    CLI_SLEEP           = 15 /**< Sleep for a specified number of seconds.*/,
 }; // End of CommandParseStatus Enumeration
 
 

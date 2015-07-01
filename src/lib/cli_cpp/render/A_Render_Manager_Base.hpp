@@ -124,6 +124,22 @@ class A_Render_Manager_Base
 
 
     protected:
+
+        /**
+         * @brief Get the header status bar text.
+         *
+         * @return Header status bar text.
+        */
+        virtual std::string Get_Header_Status_Bar_Text()const = 0;
+        
+
+        /**
+         * @brief Get the header mode bar text.
+         *
+         * @return Header mode bar text.
+        */
+        virtual std::string Get_Header_Mode_Bar_Text()const = 0;
+
         
         /// Command History
         CMD::A_Command_History::ptr_t m_command_history;

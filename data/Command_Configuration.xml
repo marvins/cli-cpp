@@ -66,6 +66,22 @@
         </command>
 
 
+        <!-- Sleep -->
+        <command mode="sleep" >
+            <name value="sleep" />
+            <description value="Wait for a specified number of seconds before continuing user input." />
+            <arguments>
+                <argument name="wait_time_seconds" type="INTEGER" description="Number of seconds to wait." required="true" />
+            </arguments>
+        </command>
+
+        <!-- Pause -->
+        <command mode="pause" >
+            <name value="pause" />
+            <description value="Halt CLI execution until user enters a key. Recommended for script use only." />
+        </command>
+
+
     </cli-commands>
 
     <!-- List of Commands -->

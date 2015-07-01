@@ -116,46 +116,77 @@ std::vector<A_CLI_Command> Parse_CLI_Commands( pugi::xml_node& cli_cmd_node )
         // Get the mode string
         std::string mode_str = cli_node.attribute("mode").as_string();
 
-        // set the mode
+        // Shutdown Mode
         if( mode_str == "shutdown" ){
             cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_SHUTDOWN );
             cli_command.Set_Formal_Name("Shutdown");
         }
+        
+        // Help
         else if( mode_str == "help" ){
             cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_HELP );
             cli_command.Set_Formal_Name("Help");
         }
+
+        // Back
         else if( mode_str == "back" ){
             cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_BACK );
             cli_command.Set_Formal_Name("Back");
         }
+
+        // Clear
         else if( mode_str == "clear" ){
             cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_CLEAR );
             cli_command.Set_Formal_Name("Clear");
         }
+
+        // Log
         else if( mode_str == "log" ){
             cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_LOG );
             cli_command.Set_Formal_Name("Log");
         }
+
+        // Alias-Add
         else if( mode_str == "alias-add" ){
             cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_ADD );
             cli_command.Set_Formal_Name("Add Alias");
         }
+
+        // Alias-Remove
         else if( mode_str == "alias-remove" ){
             cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_REMOVE );
             cli_command.Set_Formal_Name("Remove Alias");
         } 
+
+        // Alias-List
         else if( mode_str == "alias-list" ){
             cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_LIST );
             cli_command.Set_Formal_Name("List Aliases");
         }
+
+        // Run Script
         else if( mode_str == "run-script" ){
             cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_RUN_SCRIPT );
             cli_command.Set_Formal_Name("Run CLI script");
         }
+
+        // Pause
+        else if( mode_str == "pause" ){
+            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_PAUSE );
+            cli_command.Set_Formal_Name("Pause CLI for user input.");
+        }
+
+        // Sleep
+        else if( mode_str == "sleep" ){
+            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_SLEEP );
+            cli_command.Set_Formal_Name("Lock CLI for specified number of seconds.");
+        }
+
+        // Otherwise, unknown mode
         else{
             throw std::runtime_error("error: Unknown CLI command mode (" + mode_str + ")");
         }
+
 
         // Iterate over internal nodes 
         for( pugi::xml_node_iterator ait = cli_node.begin(); ait != cli_node.end(); ait++ )
