@@ -136,8 +136,9 @@ class A_Render_State{
         /**
          * @brief Load the next active command.
         */
-        inline void Load_Next_Active_Command(){
-            
+        inline void Load_Next_Active_Command()
+        {
+        
             // Clear cursor text
             Clear_Cursor_Text();
             

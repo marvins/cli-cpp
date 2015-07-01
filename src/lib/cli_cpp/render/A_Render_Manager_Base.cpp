@@ -59,6 +59,7 @@ void A_Render_Manager_Base::Process_Command()
 
     
     // Check the command
+    std::cout << "Running : " << m_render_state->Get_Cursor_Text() << std::endl;
     CMD::A_Command_Result result = m_command_parser->Evaluate_Command( m_render_state->Get_Cursor_Text() );
 
     
@@ -158,8 +159,10 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
             // Refresh
             CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
             
-            // Wait
-            while(  Check_Waiting_Command_Response() ){
+            // Wait while either waiting or sleeping
+            while(  Check_Waiting_Command_Response() ||
+                    m_render_state->Get_Sleep_Mode() == true )
+            {
                 BOOST_LOG_TRIVIAL(trace) << "Waiting on Check_Waiting_Command_Response()";
                 usleep(1000);
             }

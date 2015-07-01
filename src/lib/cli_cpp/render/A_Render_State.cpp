@@ -424,7 +424,10 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
         std::string cli_script = result.Get_Argument_Value_List()[0];
 
         // Load the entries
-        m_active_command_queue = IO::Load_CLI_Script( cli_script ); 
+        m_active_command_queue = IO::Load_CLI_Script( cli_script );
+
+        // Set the complete flag to false
+        m_active_command_queue = false;
     }
 }
 
