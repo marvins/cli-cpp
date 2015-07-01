@@ -71,7 +71,7 @@
             <name value="sleep" />
             <description value="Wait for a specified number of seconds before continuing user input." />
             <arguments>
-                <argument name="wait_time_seconds" type="INTEGER" description="Number of seconds to wait." required="true" />
+                <argument name="wait_time_seconds" type="FLOAT" description="Number of seconds to wait." required="true" />
             </arguments>
         </command>
 

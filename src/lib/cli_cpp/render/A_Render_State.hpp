@@ -7,10 +7,12 @@
 #define __CLI_CPP_CLI_A_RENDER_STATE_HPP__
 
 // C++ Standard Libraries
+#include <atomic>
 #include <deque>
 #include <iostream>
 #include <memory>
 #include <string>
+#include <thread>
 #include <vector>
 
 
@@ -45,6 +47,12 @@ class A_Render_State{
         A_Render_State( CORE::ConnectionType const&    conn_type,
                         CMD::A_Command_History::ptr_t  command_history,
                         CMD::A_Command_Parser::ptr_t   command_parser );
+        
+        
+        /**
+         * @brief Destructor
+        */
+        ~A_Render_State();
 
         
         /**
@@ -145,6 +153,17 @@ class A_Render_State{
             m_active_command_queue.pop_front();
         }
 
+
+        /**
+         * @brief Check the sleep mode
+         *
+         * @return True if sleeping, false otherwise.
+        */
+        inline bool Get_Sleep_Mode()const{
+            return m_sleep_mode;
+        }
+
+
     private:
 
         /**
@@ -199,6 +218,15 @@ class A_Render_State{
         bool Is_Text( const int& input )const; 
 
 
+        /**
+         * @brief Run sleep mode 
+         *
+         * @param[in] sleep_seconds Number of seconds to sleep.
+         */
+        void Run_Sleep_Mode( const double sleep_seconds );
+
+
+
         /// CLI Text
         std::string m_cli_prompt_text;
 
@@ -228,6 +256,13 @@ class A_Render_State{
 
         /// Active Command Queue
         std::deque<std::string> m_active_command_queue;
+
+        /// Sleep Mode
+        std::atomic<bool> m_sleep_mode;
+
+
+        /// Sleep Mode Thread
+        std::thread m_sleep_mode_thread;
 
 
 }; // End of A_Render_State Class

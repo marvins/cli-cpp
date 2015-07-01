@@ -124,8 +124,23 @@ void A_Render_Manager_Base::Process_Command()
 void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Key: " << key << ", File: " << __FILE__ << ", Line: " << __LINE__;
     
+
+    // Check if we are in a refresh, ignore if so
+    if( key == (int)CORE::CLI_Event_Type::CLI_REFRESH ){
+        return;
+    }
+
+    // Check if we are sleeping, if so, block
+    if( m_render_state->Get_Sleep_Mode() == true ){
+
+        // Render
+        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
+            
+        // Exit without doing anything
+        return;
+    }
 
     // Check the key value if enter
     if( key == (int)CORE::CLI_Event_Type::KEYBOARD_ENTER )

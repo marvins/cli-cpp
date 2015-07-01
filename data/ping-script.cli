@@ -1,6 +1,6 @@
 ping localhost
 ping localhost 10
-sleep
+sleep 3
 ping 8.8.8.8 
 pause
 ping 1.2.3.4

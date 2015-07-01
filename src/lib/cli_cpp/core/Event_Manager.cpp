@@ -10,6 +10,9 @@
 #include <unistd.h>
 
 
+// CLI Libraries
+#include "../utility/Log_Utilities.hpp"
+
 namespace CLI{
 namespace CORE{
 
@@ -88,14 +91,31 @@ void Event_Manager::Register_CLI_Event_Handler( A_CLI_Event_Handler_Base::ptr_t 
 /*****************************************/
 void Event_Manager::Process_Event( const int& event )
 {
+
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Event ID: " << event << ",  File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    
     // Get an instance
     Event_Manager::ptr_t inst = Instance_Of();
 
     // Iterate over event managers
     for( size_t i=0; i<inst->m_event_handlers.size(); i++ ){
-        inst->m_event_handlers[i]->Process_Event(event);
+
+        // Check if null
+        if( inst->m_event_handlers[i] == nullptr ){
+            BOOST_LOG_TRIVIAL(warning) << "Event handler at position " << i << " is currently nullptr. Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+        }
+
+        // Check if supported
+        else if( inst->m_event_handlers[i]->Is_Supported_Event( event ) == true ){
+            inst->m_event_handlers[i]->Process_Event(event);
+        }
+
     }
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Event ID: " << event << ", File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 } // End of CORE Namespace

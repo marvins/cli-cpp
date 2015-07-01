@@ -99,91 +99,86 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     // Iterate over main window region
     int row_id = m_command_history->Size()-1;
     std::string row_data, temp_buff;
-    bool skip_row = false;
-    for( int row = max_row-1; row >= current_row; row--, row_id-- )
+    
+    // Start at the bottom row and move up
+    int row_position = max_row-1;
+    while( row_id >= 0 && row_position >= current_row )
     {
-        
-        // If we need to skip the row
-        if( skip_row == true ){ 
-            buffer_data[row] = BUFFER_OFFSET + blank_line_row;
-            continue;
+
+        //  Build the print data
+        print_buffers[0] = UTILS::num2str<int>(m_command_history->Get_Entry(row_id).Get_Command_ID());
+        print_buffers[1] = " " + m_command_history->Get_Entry( row_id ).Get_Command_String();
+        print_buffers[2] = " " + m_command_history->Get_Entry( row_id ).Get_Command_Result().Get_Parse_Status_String();
+
+
+        // Compute max number of rows required for printing
+        max_temp_row = 0;
+        for( size_t a=0; a<print_buffers.size(); a++ )
+            max_temp_row = std::max( Get_Data_Row_Count( print_buffers[a], table_widths[a]), max_temp_row );
+
+        // Reset all print flags
+        for( size_t fid=0; fid<print_flags.size(); fid++ ){
+            print_flags[fid] = true;
         }
 
+        // Iterate while there is still data to print
+        for( int mr=max_temp_row; mr>= 0; mr-- ){
 
-        // Check if we still have commands to print
-        else if( row_id < (int)m_command_history->Size() && row_id >= 0 )
-        {
+            // Clear the Data
+            row_data = "|";
 
-            // Get the print data
-            print_buffers[0] = UTILS::num2str<int>(m_command_history->Get_Entry(row_id).Get_Command_ID());
-            print_buffers[1] = " " + m_command_history->Get_Entry( row_id ).Get_Command_String();
-            print_buffers[2] = " " + m_command_history->Get_Entry( row_id ).Get_Command_Result().Get_Parse_Status_String();
-
-            // Compute max number of rows
-            max_temp_row = 0;
+            // iterate over each print buffer and format the output
             for( size_t a=0; a<print_buffers.size(); a++ )
-                max_temp_row = std::max( Get_Data_Row_Count( print_buffers[a], table_widths[a]), max_temp_row );
-
-            // Reset all print flags
-            for( size_t fid=0; fid<print_flags.size(); fid++ ){
-                print_flags[fid] = true;
-            }
-
-            // Iterate while there is still data to print
-            for( int mr=max_temp_row; mr>= 0; mr-- ){
-
-                // Clear the Data
-                row_data = "|";
-
-                // iterate over each print buffer
-                for( size_t a=0; a<print_buffers.size(); a++ )
-                {
-                    
-                    if( print_flags[a] == true ){
-                        row_data += UTILS::Format_String( Strip_Data(print_buffers[a], table_widths[a]),
-                                                          table_widths[a], 
-                                                          m_table_alignments[a]) + "|";
-                    }
-                    else{
-                        row_data += UTILS::String_Fill(" ", ' ', table_widths[a]-1) + "|";
-                    }
-                }
+            {
                 
-                // Print
-                buffer_data[row-mr] = BUFFER_OFFSET + row_data + BUFFER_NEWLINE;
-            
-                // Update the buffers
-                for( size_t a=0; a<print_buffers.size(); a++ ){
-                    
-                    // Prune the buffer to get what is left
-                    temp_buff = Prune_Data( print_buffers[a], table_widths[a] );
-                    
-                    // If we have more data to print
-                    if( temp_buff.size() > 1 ){
-                        print_buffers[a] = " " + temp_buff;
-                    }
-                    // Otherwise, stop printing
-                    else{
-                        print_flags[a] = false;
-                    }
+                if( print_flags[a] == true ){
+                    row_data += UTILS::Format_String( Strip_Data(print_buffers[a], table_widths[a]),
+                                                      table_widths[a], 
+                                                      m_table_alignments[a]) + "|";
+                }
+                else{
+                    row_data += UTILS::String_Fill(" ", ' ', table_widths[a]-1) + "|";
                 }
             }
-            row -= max_temp_row;
-            
+             
+            // Write the buffer row
+            if( row_position-mr >= current_row ){
+                buffer_data[row_position-mr] = BUFFER_OFFSET + row_data + BUFFER_NEWLINE;
+            }
+
+            // Update the buffers
+            for( size_t a=0; a<print_buffers.size(); a++ ){
+                    
+                // Prune the buffer to get what is left
+                temp_buff = Prune_Data( print_buffers[a], table_widths[a] );
+                
+                // If we have more data to print
+                if( temp_buff.size() > 1 ){
+                    print_buffers[a] = " " + temp_buff;
+                }
+                // Otherwise, stop printing
+                else{
+                    print_flags[a] = false;
+                }
+            }
+        }
+
+        // Decrement the row
+        row_position -= (max_temp_row + 1);
         
-        }
+        // Decrement the row id
+        row_id--;
 
+    }
 
-        // Otherwise, print a blank line
-        else{
-            buffer_data[row] = BUFFER_OFFSET + blank_line_row;
-            continue;
-        }
-
+    // For remaining rows, print blank lines
+    for( int row=row_position; row >= current_row; row-- ){
+        buffer_data[row] = BUFFER_OFFSET + blank_line_row;
     }
 
     // Print bottom row
     buffer_data[max_row] = BUFFER_OFFSET + header_line_row;
+
 
     // Return successful operation
     return true;
@@ -199,7 +194,7 @@ int An_ASCII_History_Window::Get_Data_Row_Count( const std::string& data,
     int count = data.size() / cols;
 
     // Look for newlines
-    for( int i=0; i<data.size(); i++ ){
+    for( size_t i=0; i<data.size(); i++ ){
         if( data[i] == '\n' ){
             count++;
         }

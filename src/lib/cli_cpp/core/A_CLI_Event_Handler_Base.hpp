@@ -33,6 +33,20 @@ class A_CLI_Event_Handler_Base
     
 
         /**
+         * @brief Check if Event is Valid.
+         *
+         * Default behavior, unless implemented is to always return true.
+         *
+         * @param[in] event Event value to evaluate.
+         *
+         * @return True if valid, false otherwise,
+        */
+        inline virtual bool Is_Supported_Event( const int& event )const{
+            return true;
+        }
+
+
+        /**
          * @brief Process Event
         */
         virtual void Process_Event( const int& event ) = 0;

@@ -31,10 +31,25 @@ A_Render_State::A_Render_State( CORE::ConnectionType const&    conn_type,
     m_window_cols(0),
     m_command_history(command_history),
     m_command_parser(command_parser),
-    m_command_history_ptr(m_command_history->Size())
+    m_command_history_ptr(m_command_history->Size()),
+    m_sleep_mode(false)
 {
 }
 
+
+/******************************/
+/*         Destructor         */
+/******************************/
+A_Render_State::~A_Render_State()
+{
+
+    // Stop thread
+    if( m_sleep_mode_thread.joinable() ){
+        m_sleep_mode_thread.join();
+    }
+
+
+}
 
 /************************/
 /*      Push Text       */
@@ -373,6 +388,35 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
         m_command_history->Clear();
     }
 
+    // If sleep mode
+    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_SLEEP ){
+        
+        // Get the number of seconds to sleep
+        float sleep_seconds = result.Get_Argument_Value<float>(0);
+
+        // Make sure its above zero
+        if( sleep_seconds <= 0 ){
+            throw std::runtime_error("Unable to handle negative numbers.");
+        }
+
+        // Start the thread
+        else{
+            
+            // Stop the thread if it is still running
+            if( m_sleep_mode_thread.joinable()){
+                BOOST_LOG_TRIVIAL(debug) << "Waiting on current Run_Sleep_Mode Thread to Complete.";
+                m_sleep_mode_thread.join();
+            }
+
+            // Start next thread
+            BOOST_LOG_TRIVIAL(debug) << "Starting Run_Sleep_Mode Thread.";
+            m_sleep_mode_thread = std::thread( &A_Render_State::Run_Sleep_Mode, this, sleep_seconds );
+            BOOST_LOG_TRIVIAL(debug) << "Started Run_Sleep_Mode Thread.";
+
+        }
+
+    }
+
     // If We are running a CLI Run Script
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_RUN_SCRIPT ){
 
@@ -430,6 +474,34 @@ bool A_Render_State::Is_Text( const int& input )const
     return false;
 }
 
+
+
+/******************************************/
+/*          Run the CLI Sleep Mode        */
+/******************************************/
+void A_Render_State::Run_Sleep_Mode( const double sleep_seconds ){
+
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+
+    // Set the sleep mode
+    m_sleep_mode = true;
+
+    // Sleep
+    usleep( sleep_seconds * 1000000 );
+
+
+    // Turn off the sleep mode
+    m_sleep_mode = false;
+            
+    
+    // Refresh
+    CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+
+}
 
 } // End of RENDER Namespace
 } // End of CLI    Namespace

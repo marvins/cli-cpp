@@ -174,10 +174,16 @@ std::string A_Render_Manager_ASCII::Get_Header_Status_Bar_Text()const
     int status_bar_width = m_render_driver_context->Get_Window_Cols()/4;
 
 
+    // Check if we are currently sleeping
+    if( m_render_state->Get_Sleep_Mode() == true ){
+         output = UTILS::ANSI_BACK_BLUE + UTILS::ANSI_WHITE + UTILS::Format_String("Sleeping",
+                                                                                   status_bar_width);
+    }
+
     // Check if we are waiting for a command response
-    if( m_render_driver_context->Check_Waiting_Command_Response() == true ){
-        output = UTILS::ANSI_BACK_RED + UTILS::ANSI_WHITE + UTILS::Format_String("Waiting for Command Response",
-                                                                                 status_bar_width);
+    else if( m_render_driver_context->Check_Waiting_Command_Response() == true ){
+         output = UTILS::ANSI_BACK_RED + UTILS::ANSI_WHITE + UTILS::Format_String("Waiting for Command Response",
+                                                                                  status_bar_width);
     } 
     
     // Otherwise, we are in a standard configuration

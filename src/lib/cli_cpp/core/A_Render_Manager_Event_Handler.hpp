@@ -25,6 +25,16 @@ class A_Render_Manager_Event_Handler : public A_CLI_Event_Handler_Base
         */
         A_Render_Manager_Event_Handler( RENDER::A_Render_Manager_Base::ptr_t render_manager );
         
+        
+        /**
+         * @brief Check if Event is Valid.
+         *
+         * @param[in] event Event value to evaluate.
+         *
+         * @return True if valid, false otherwise,
+        */
+        virtual bool Is_Supported_Event( const int& event )const;
+
 
         /**
          * @brief Process Event.
