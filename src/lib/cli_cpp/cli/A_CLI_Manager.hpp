@@ -86,6 +86,12 @@ class A_CLI_Manager{
          * @brief Process Command Result Messages
         */
         void Process_Command_Results();
+        
+
+        /**
+         * @brief Register Internal Command Response Handlers.
+        */
+        void Register_Internal_Command_Response_Handlers();
 
         
         /// Class Name

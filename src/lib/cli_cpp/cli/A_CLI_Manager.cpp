@@ -11,6 +11,7 @@
 #include "../core/A_Connection_Manager_Event_Handler.hpp"
 #include "../core/A_Render_Manager_Event_Handler.hpp"
 #include "../core/Event_Manager.hpp"
+#include "../handlers.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
 #include "../utility/Log_Utilities.hpp"
 
@@ -46,6 +47,10 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
     m_connection_manager->Update_Command_Parser( m_configuration.Get_Command_Parser());
     m_connection_manager->Update_Command_Queue( m_command_queue );
     CORE::Event_Manager::Register_CLI_Event_Handler( std::make_shared<CORE::A_Connection_Manager_Event_Handler>( m_connection_manager ));
+    
+
+    // Add the Required Command Response Handler
+    Register_Internal_Command_Response_Handlers();
 
 }
 
@@ -219,6 +224,25 @@ void A_CLI_Manager::Register_Command_Response_Handler( A_Command_Response_Handle
 
 
 }
+
+
+/******************************************************************/
+/*          Register Internal Command Response Handlers           */
+/******************************************************************/
+void A_CLI_Manager::Register_Internal_Command_Response_Handlers() 
+{
+
+    // Find the Render State
+    RENDER::A_Render_State::ptr_t render_state = m_render_manager->Get_Render_State();
+
+
+    // CLI Resize
+    HANDLER::A_CLI_Resize_Command_Response_Handler::ptr_t cli_resize = std::make_shared<HANDLER::A_CLI_Resize_Command_Response_Handler>( render_state );
+    Register_Command_Response_Handler( cli_resize );
+
+
+}
+
 
 
 } // End of CLI Namespace

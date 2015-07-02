@@ -62,16 +62,6 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         
 
         /**
-         * @brief Get the render state.
-         *
-         * @return Render state.
-         */
-        inline virtual A_Render_State::ptr_t Get_Render_State()const{
-            return m_render_state;
-        }
-
-
-        /**
          * @brief Get the buffer.
          *
          * @return Console buffer.

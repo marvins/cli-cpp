@@ -93,6 +93,19 @@
         </command>
 
 
+        <!-- Resize CLI -->
+        <command mode="cli-resize" >
+            <name value="cli-resize" />
+            <description value="Resize the CLI Window" />
+            <task-name value="Resize CLI" />
+            <expect_response value="true" />
+            <arguments>
+                <argument name="rows" type="INTEGER" description="CLI Window Rows."    required="false" default="40" />
+                <argument name="cols" type="INTEGER" description="CLI Window Columns." required="false" default="120" />
+            </arguments>
+        </command>
+
+
     </cli-commands>
 
     <!-- List of Commands -->

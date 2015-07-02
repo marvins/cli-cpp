@@ -36,6 +36,7 @@ enum class CommandParseStatus : uint8_t {
     CLI_RUN_SCRIPT      = 13 /**< Run a script on the CLI.*/,
     CLI_PAUSE           = 14 /**< Pause the CLI until user input provided.*/,
     CLI_SLEEP           = 15 /**< Sleep for a specified number of seconds.*/,
+    CLI_RESIZE          = 16 /**< Resize the CLI Window.*/,
 }; // End of CommandParseStatus Enumeration
 
 

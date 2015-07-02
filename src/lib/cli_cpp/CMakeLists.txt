@@ -22,6 +22,12 @@ add_subdirectory(cli)
 add_subdirectory(cmd)
 
 
+#-----------------------------------#
+#-     Load the Handler Module     -#
+#-----------------------------------#
+add_subdirectory(handlers)
+
+
 #-------------------------------#
 #-     Load the IO Module      -#
 #-------------------------------#

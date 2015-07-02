@@ -57,7 +57,17 @@ class A_Render_Manager_Base
         */
         virtual void Finalize() = 0;
 
+        
+        /**
+         * @brief Get the render state.
+         *
+         * @return Render state.
+         */
+        inline virtual A_Render_State::ptr_t Get_Render_State()const{
+            return m_render_state;
+        }
 
+        
         /**
          * @brief Refresh the Screen.
          */
@@ -120,7 +130,7 @@ class A_Render_Manager_Base
         /**
          * @brief Set the Current Window
         */
-        inline virtual void Set_Current_Window( const int& window_id ) = 0;
+        virtual void Set_Current_Window( const int& window_id ) = 0;
 
 
     protected:

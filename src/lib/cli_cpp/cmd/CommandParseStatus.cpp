@@ -89,6 +89,11 @@ std::string CommandParseStatusToString( CommandParseStatus const& status )
         return "CLI_RUN_SCRIPT";
     }
 
+    // Resize CLI
+    if( status == CommandParseStatus::CLI_RESIZE ){
+        return "CLI_RESIZE";
+    }
+
     // UNKNOWN
     return "UNKNOWN";
 }
@@ -142,6 +147,11 @@ std::string CommandParseStatusToHistoryString( CommandParseStatus const& status 
 
     // List Alias
     if( status == CommandParseStatus::CLI_ALIAS_LIST ){
+        return "Success";
+    }
+
+    // CLI Resize
+    if( status == CommandParseStatus::CLI_RESIZE ){
         return "Success";
     }
 
@@ -245,6 +255,11 @@ int CommandParseStatusToColorCode( CommandParseStatus const& status )
         return 0;
     }
 
+    // Resize
+    if( status == CommandParseStatus::CLI_RESIZE ){
+        return 0;
+    }
+
     // Invalid arguments
     if( status == CommandParseStatus::INVALID_ARGUMENTS ){
         return 1;
@@ -326,6 +341,11 @@ CommandParseStatus StringToCommandParseStatus( const std::string& status )
         return CommandParseStatus::CLI_PAUSE;
     }
 
+    // CLI Resize
+    if( status == "CLI_RESIZE" ){
+        return CommandParseStatus::CLI_RESIZE;
+    }
+
 
     // Invalid ARguments
     if( status == "INVALID_ARGUMENTS" ){
@@ -372,6 +392,7 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
         case CommandParseStatus::CLI_RUN_SCRIPT:
         case CommandParseStatus::CLI_PAUSE:
         case CommandParseStatus::CLI_SLEEP:
+        case CommandParseStatus::CLI_RESIZE:
             return true;
         
         case CommandParseStatus::VALID:
@@ -406,6 +427,8 @@ std::vector<std::tuple<std::string,CommandParseStatus>> Get_CLI_Mode_To_Parse_St
     output.push_back( std::make_tuple("run-script",   CommandParseStatus::CLI_RUN_SCRIPT)   );
     output.push_back( std::make_tuple("pause",        CommandParseStatus::CLI_PAUSE)        );
     output.push_back( std::make_tuple("sleep",        CommandParseStatus::CLI_SLEEP)        );
+    output.push_back( std::make_tuple("cli-resize",   CommandParseStatus::CLI_RESIZE)       );
+
 
     // return output
     return output;

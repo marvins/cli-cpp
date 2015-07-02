@@ -12,6 +12,7 @@
 
 namespace CLI{
 namespace UTILS{
+namespace TELNET{
 
 // Telnet Codes
 const char echo      = 1;
@@ -40,7 +41,8 @@ std::string Telnet_To_Pretty_String( const std::string& substr );
 void Telnet_Get_Window_Size( const int& fd );
 
 
-} // End of UTILS Namespace 
-} // End of CLI   Namespace
+} // End of TELNET Namespace
+} // End of UTILS  Namespace 
+} // End of CLI    Namespace
 
 #endif
