@@ -47,6 +47,10 @@ bool A_Render_Manager_Event_Handler::Is_Supported_Event( const int& event )const
 /****************************/
 void A_Render_Manager_Event_Handler::Process_Event( int const& event )
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Event: " << event << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    
     // Skip if a CLI Shutdown Command
     if( event == (int)CORE::CLI_Event_Type::UNKNOWN ||
         event == (int)CORE::CLI_Event_Type::CLI_SHUTDOWN )

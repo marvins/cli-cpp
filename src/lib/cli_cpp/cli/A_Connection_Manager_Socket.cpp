@@ -224,9 +224,6 @@ void A_Connection_Manager_Socket::Run_Handler()
                 // Read from socket
                 n = read( m_client_fd, buffer, 255 );
                
-                // Get the window size
-                //UTILS::Telnet_Get_Window_Size( m_client_fd );
-
                 // Check if the socket has closed
                 if( n == 0 ){
                     break;
@@ -261,7 +258,7 @@ void A_Connection_Manager_Socket::Run_Handler()
 
             // Check the buffer
             input = std::string(buffer).substr(0,n);
-        
+
             // Process the text
             if( input.size() > 1 ){
                 

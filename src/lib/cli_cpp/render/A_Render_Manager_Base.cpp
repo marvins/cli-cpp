@@ -55,10 +55,14 @@ void A_Render_Manager_Base::Process_Command()
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
+
     // Make sure the command is not blank
-    if( UTILS::String_Trim( m_render_state->Get_Cursor_Text() ).size() <= 0 ){
+    if( UTILS::String_Trim( m_render_state->Get_Cursor_Text() ).size() <= 0 )
+    {
         
         // Clear the string
+        BOOST_LOG_TRIVIAL(debug) << "Empty command. Skipping action.";
+
         m_render_state->Clear_Cursor_Text();
         return;
     }
@@ -146,6 +150,7 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
         return;
     }
 
+    
     // Check if we are sleeping, if so, block
     if( m_render_state->Get_Sleep_Mode() == true ){
 
@@ -156,6 +161,7 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
         return;
     }
 
+
     // Check the key value if enter
     if( key == (int)CORE::CLI_Event_Type::KEYBOARD_ENTER )
     {
@@ -163,23 +169,29 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
         // Process the command
         Process_Command();
 
-        // Check if we have an active queue
+
+        // Check if we have an active queue (CLI_RUN_SCRIPT)
         while( m_render_state->Get_Active_Command_Queue_Size() > 0 ){
+            
             
             // Update the current command
             m_render_state->Load_Next_Active_Command();
             
+            
             // Refresh
             CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
             
+            
             // Wait while either waiting or sleeping
             while(  Check_Waiting_Command_Response() ||
+                    m_render_state->Get_Pause_Mode() == true ||
                     m_render_state->Get_Sleep_Mode() == true )
             {
                 BOOST_LOG_TRIVIAL(trace) << "Waiting on Check_Waiting_Command_Response()";
                 usleep(1000);
             }
 
+            
             // Process the command
             Process_Command();
         }

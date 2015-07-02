@@ -21,6 +21,8 @@
 #include "../cmd/A_Command_History.hpp"
 #include "../cmd/A_Command_Parser.hpp"
 #include "../cmd/A_Command_Result.hpp"
+#include "../utility/Log_Utilities.hpp"
+
 
 namespace CLI{
 namespace RENDER{
@@ -138,6 +140,26 @@ class A_Render_State{
         }
 
 
+        /**
+         * @brief Get the CLI Pause Mode Status
+         *
+         * @return True if waiting for user input, false otherwise.
+        */
+        inline bool Get_Pause_Mode()const{
+            BOOST_LOG_TRIVIAL(trace) << "Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+            return m_waiting_user_input;
+        }
+
+        
+        /**
+         * @brief Reset the CLI Pause Mode
+         */
+        inline void Reset_Pause_Mode(){
+            BOOST_LOG_TRIVIAL(trace) << "Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+            m_waiting_user_input = false;
+        }
+
+        
     private:
 
         /**
@@ -213,20 +235,26 @@ class A_Render_State{
         int m_cli_prompt_cursor_tail;
         int m_cli_prompt_cursor_at;
 
+
         /// Window Rows
         int m_window_rows;
+
 
         /// Window Cols
         int m_window_cols;
 
+
         /// Reference to Command History
         CMD::A_Command_History::ptr_t m_command_history;
+
 
         /// Reference to Command Parser
         CMD::A_Command_Parser::ptr_t m_command_parser;
 
+
         /// Current History Index
         int m_command_history_ptr;
+
 
         /// Active Command Queue
         std::deque<std::string> m_active_command_queue;
@@ -237,6 +265,10 @@ class A_Render_State{
 
         /// Sleep Mode Thread
         std::thread m_sleep_mode_thread;
+
+
+        /// Waiting User Key
+        bool m_waiting_user_input;
 
 
 }; // End of A_Render_State Class

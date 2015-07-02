@@ -30,7 +30,8 @@ A_Render_State::A_Render_State( CORE::ConnectionType const&    conn_type,
     m_command_history(command_history),
     m_command_parser(command_parser),
     m_command_history_ptr(m_command_history->Size()),
-    m_sleep_mode(false)
+    m_sleep_mode(false),
+    m_waiting_user_input(false)
 {
 }
 
@@ -62,6 +63,14 @@ void A_Render_State::Process_Input( const int& input )
     if( input < 0 ){ 
         BOOST_LOG_TRIVIAL(trace) << "Invalid Input Value.";
         return; 
+    }
+
+
+    // Check if pause mode is set
+    if( Get_Pause_Mode() == true ){
+        BOOST_LOG_TRIVIAL(trace) << "Resetting Pause Mode from input: " << input << ". " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+        Reset_Pause_Mode();
+        return;
     }
 
 
@@ -413,6 +422,17 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
         m_active_command_queue = IO::Load_CLI_Script( cli_script );
 
     }
+
+
+    // If Pause
+    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_PAUSE ){
+
+        // Set the flag
+        BOOST_LOG_TRIVIAL(trace) << "Setting CLI_PAUSE Flag";
+        m_waiting_user_input = true;
+
+    }
+
 }
 
 
