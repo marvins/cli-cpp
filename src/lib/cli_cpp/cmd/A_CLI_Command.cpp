@@ -169,7 +169,7 @@ bool A_CLI_Command::Is_Argument_Substring( const int&         argument_index,
                                            std::string&  match_name )const
 {
     // Don't go over bounds
-    if( argument_index >= m_command_argument_list.size() ){
+    if( argument_index >= (int)m_command_argument_list.size() ){
         return false;
     }
 

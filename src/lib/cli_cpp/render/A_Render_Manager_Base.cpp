@@ -59,7 +59,6 @@ void A_Render_Manager_Base::Process_Command()
 
     
     // Check the command
-    std::cout << "Running : " << m_render_state->Get_Cursor_Text() << std::endl;
     CMD::A_Command_Result result = m_command_parser->Evaluate_Command( m_render_state->Get_Cursor_Text() );
 
     

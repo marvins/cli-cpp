@@ -384,6 +384,34 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
     return false;
 }
 
+
+/****************************************************/
+/*         Map Command Parse Status to String       */
+/****************************************************/
+std::vector<std::tuple<std::string,CommandParseStatus>> Get_CLI_Mode_To_Parse_Status_List()
+{
+    // Create output list
+    std::vector<std::tuple<std::string,CommandParseStatus>> output;
+
+
+    // Add each cli command
+    output.push_back( std::make_tuple("shutdown",     CommandParseStatus::CLI_SHUTDOWN)     );
+    output.push_back( std::make_tuple("help",         CommandParseStatus::CLI_HELP)         );
+    output.push_back( std::make_tuple("back",         CommandParseStatus::CLI_BACK)         );
+    output.push_back( std::make_tuple("clear",        CommandParseStatus::CLI_CLEAR)        );
+    output.push_back( std::make_tuple("log",          CommandParseStatus::CLI_LOG)          );
+    output.push_back( std::make_tuple("alias-add",    CommandParseStatus::CLI_ALIAS_ADD)    );
+    output.push_back( std::make_tuple("alias-remove", CommandParseStatus::CLI_ALIAS_REMOVE) );
+    output.push_back( std::make_tuple("alias-list",   CommandParseStatus::CLI_ALIAS_LIST)   );
+    output.push_back( std::make_tuple("run-script",   CommandParseStatus::CLI_RUN_SCRIPT)   );
+    output.push_back( std::make_tuple("pause",        CommandParseStatus::CLI_PAUSE)        );
+    output.push_back( std::make_tuple("sleep",        CommandParseStatus::CLI_SLEEP)        );
+
+    // return output
+    return output;
+}
+
+
 } // End of CMD Namespace
 } // End of CLI Namespace
 

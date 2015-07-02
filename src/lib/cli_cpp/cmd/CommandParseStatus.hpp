@@ -9,6 +9,8 @@
 // C++ Standard Libraries
 #include <cinttypes>
 #include <string>
+#include <tuple>
+#include <vector>
 
 
 namespace CLI{
@@ -73,6 +75,13 @@ CommandParseStatus StringToCommandParseStatus( std::string const& status );
 */
 bool Is_Valid_CLI_Command( CommandParseStatus const& command );
 
+
+/**
+ * @brief Create a list which maps the CommandParseStatus items to their expected names.
+ *
+ * @return List of mappings between the CommandParseStatus and its name.
+ */
+std::vector<std::tuple<std::string,CommandParseStatus>> Get_CLI_Mode_To_Parse_Status_List();
 
 } // End of CMD Namespace
 } // End of CLI Namespace

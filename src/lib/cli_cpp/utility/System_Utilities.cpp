@@ -6,6 +6,7 @@
 #include "System_Utilities.hpp"
 
 // C++ Standard Libraries
+#include <cstdio>
 #include <cxxabi.h>
 #include <deque>
 #include <execinfo.h>
@@ -108,6 +109,42 @@ void Stack_Trace_Handler( int exec_code )
     BOOST_LOG_TRIVIAL(fatal) << sin.str();
 
 } 
+
+
+/************************************************************/
+/*                    Run Shell Command                     */
+/************************************************************/
+bool Execute_Shell_Command( const std::string& command,
+                            const std::string& stdout_data,
+                            const std::string& stderr_data )
+{
+    // Clear
+    stdout_data = "";
+    stderr_data = "";
+
+
+    // Create the file
+    FILE *in;
+    char buff[512];
+    std::stringstream sin;
+
+    // Open the stream and run
+    if(!(in = popen( command.c_str(), "r"))){
+        return false;
+    }
+
+    
+    // Grab input
+    while(fgets(buff, sizeof(buff), in)!=NULL){
+        sin << buff;
+    }
+    pclose(in);
+
+
+    // Return 
+    stdout_data = sin.str();
+    return true;
+
 
 } // End of UTILS Namespace
 } // End of CLI   Namespace

@@ -10,6 +10,7 @@
         <command mode="shutdown">
             <name value="bye" />
             <description value="Command to exit the CLI.  The application will keep running." />
+            <task-name value="Shutdown" />
         </command>
         
         <!-- Help Command -->
@@ -17,43 +18,50 @@
             <name value="?" />
             <name value="help" />
             <description value="Command to print the general help menu." />
+            <task-name value="Help" />
         </command>
         
         <!-- Back Command -->
         <command mode="back" >
             <name value="back" />
             <description value="Back up to main window." />
+            <task-name value="Back" />
         </command>
         
         <!-- Clear History Command -->
         <command mode="clear" >
             <name value="cls" />
-            <name value="clear-history" />
+            <name value="clear" />
             <description value="Delete current history." />
+            <task-name value="Clear History" />
         </command>
 
         <!-- Show output information command -->
         <command mode="log" >
             <name value="log" />
             <description value="Show current program output and logging." />
+            <task-name value="Log Window" />
         </command>
 
         <!-- Alias Add -->
         <command mode="alias-add" >
             <name value="alias-add" />
             <description value="Add a new alias to the system." />
+            <task-name value="Add Alias" />
         </command>
 
         <!-- Alias Remove -->
         <command mode="alias-remove" >
             <name value="alias-rm" />
             <description value="Remove an alias from the system." />
+            <task-name value="Remove Alias" />
         </command>
 
         <!-- Alias List -->
         <command mode="alias-list" >
             <name value="alias-list" />
             <description value="List available aliases." />
+            <task-name value="List Aliases" />
         </command>
 
         <!-- Run Script -->
@@ -63,6 +71,7 @@
             <arguments>
                 <argument name="path" type="PATH"  description="File to run in CLI." required="true" auto-complete-path="true" />
             </arguments>
+            <task-name value="Run Script" />
         </command>
 
 
@@ -73,12 +82,14 @@
             <arguments>
                 <argument name="wait_time_seconds" type="FLOAT" description="Number of seconds to wait." required="true" />
             </arguments>
+            <task-name value="Sleep" />
         </command>
 
         <!-- Pause -->
         <command mode="pause" >
             <name value="pause" />
             <description value="Halt CLI execution until user enters a key. Recommended for script use only." />
+            <task-name value="Wait for Key" />
         </command>
 
 

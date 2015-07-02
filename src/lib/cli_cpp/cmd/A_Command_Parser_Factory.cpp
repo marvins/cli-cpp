@@ -104,7 +104,12 @@ std::vector<A_CLI_Command> Parse_CLI_Commands( pugi::xml_node& cli_cmd_node )
 {
     // Create list
     std::vector<A_CLI_Command> cli_list;
-    
+    bool mode_match;
+
+    // Create list of tuple pairs
+    std::vector<std::tuple<std::string,CMD::CommandParseStatus>> cli_command_reference = CMD::Get_CLI_Mode_To_Parse_Status_List();
+
+
     // Iterate over each command
     CMD::A_CLI_Command cli_command( CMD::CommandParseStatus::UNKNOWN );
     for( pugi::xml_node_iterator pit = cli_cmd_node.begin(); pit != cli_cmd_node.end(); pit++ )
@@ -116,74 +121,22 @@ std::vector<A_CLI_Command> Parse_CLI_Commands( pugi::xml_node& cli_cmd_node )
         // Get the mode string
         std::string mode_str = cli_node.attribute("mode").as_string();
 
-        // Shutdown Mode
-        if( mode_str == "shutdown" ){
-            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_SHUTDOWN );
-            cli_command.Set_Formal_Name("Shutdown");
-        }
         
-        // Help
-        else if( mode_str == "help" ){
-            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_HELP );
-            cli_command.Set_Formal_Name("Help");
+        // Iterate over each item in the reference, looking for matching mode
+        mode_match = false;
+        for( size_t i=0; i<cli_command_reference.size(); i++ ){
+            
+            // Check if the mode name strings match
+            if( std::get<0>(cli_command_reference[i]) == mode_str ){
+                
+                // Create the node
+                cli_command = CMD::A_CLI_Command( std::get<1>(cli_command_reference[i]));
+                mode_match = true;
+            }
         }
 
-        // Back
-        else if( mode_str == "back" ){
-            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_BACK );
-            cli_command.Set_Formal_Name("Back");
-        }
-
-        // Clear
-        else if( mode_str == "clear" ){
-            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_CLEAR );
-            cli_command.Set_Formal_Name("Clear");
-        }
-
-        // Log
-        else if( mode_str == "log" ){
-            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_LOG );
-            cli_command.Set_Formal_Name("Log");
-        }
-
-        // Alias-Add
-        else if( mode_str == "alias-add" ){
-            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_ADD );
-            cli_command.Set_Formal_Name("Add Alias");
-        }
-
-        // Alias-Remove
-        else if( mode_str == "alias-remove" ){
-            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_REMOVE );
-            cli_command.Set_Formal_Name("Remove Alias");
-        } 
-
-        // Alias-List
-        else if( mode_str == "alias-list" ){
-            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_ALIAS_LIST );
-            cli_command.Set_Formal_Name("List Aliases");
-        }
-
-        // Run Script
-        else if( mode_str == "run-script" ){
-            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_RUN_SCRIPT );
-            cli_command.Set_Formal_Name("Run CLI script");
-        }
-
-        // Pause
-        else if( mode_str == "pause" ){
-            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_PAUSE );
-            cli_command.Set_Formal_Name("Pause CLI for user input.");
-        }
-
-        // Sleep
-        else if( mode_str == "sleep" ){
-            cli_command = CMD::A_CLI_Command( CMD::CommandParseStatus::CLI_SLEEP );
-            cli_command.Set_Formal_Name("Lock CLI for specified number of seconds.");
-        }
-
-        // Otherwise, unknown mode
-        else{
+        // Fail if no match found
+        if( mode_match == false ){    
             throw std::runtime_error("error: Unknown CLI command mode (" + mode_str + ")");
         }
 
@@ -200,6 +153,11 @@ std::vector<A_CLI_Command> Parse_CLI_Commands( pugi::xml_node& cli_cmd_node )
             // Process the description
             if( std::string((*ait).name()) == "description") {
                 cli_command.Set_Description( (*ait).attribute("value").as_string());
+            }
+
+            // CLI_Task node
+            if( std::string((*ait).name()) == "task-name" ){
+                cli_command.Set_Formal_Name( (*ait).attribute("value").as_string());
             }
 
             // Check if arguments node
@@ -238,11 +196,11 @@ std::vector<A_Command> Parse_Standard_Commands( pugi::xml_node& commands_node )
     // Output list
     std::vector<A_Command> command_list;
 
+    
     // List of arguments
     std::vector<A_Command_Argument> argument_list;
-
-    bool arg_required;
     std::vector<std::string> arg_auto_complete;
+
 
     // Parse the Commands Node
     for( pugi::xml_node_iterator it = commands_node.begin(); it != commands_node.end(); it++ )
