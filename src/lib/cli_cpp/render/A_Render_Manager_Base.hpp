@@ -42,6 +42,8 @@ class A_Render_Manager_Base
         
         /**
          * @brief Constructor
+         *
+         * @param[in] command_parser Command parser to process cli results.
          */
         A_Render_Manager_Base( CMD::A_Command_Parser::ptr_t command_parser );
         
@@ -79,8 +81,16 @@ class A_Render_Manager_Base
          *
          * @param[in] driver_context Rendering driver to register.
          */
-        virtual void Update_Render_Driver_Context( A_Render_Driver_Context_Base::ptr_t driver_context ) = 0;
+        virtual void Update_Render_Driver_Context( A_Render_Driver_Context_Base::ptr_t driver_context ){
+            m_render_driver_context = driver_context;
+        }
 
+
+        /**
+         * @brief Update the Command Queue Pointer.
+         *
+         * @param[in] command_queue Command queue to refer to.
+         */
         inline virtual void Update_Command_Queue( CMD::A_Command_Queue::ptr_t command_queue ){
             m_command_queue = command_queue;
         }
@@ -133,6 +143,17 @@ class A_Render_Manager_Base
         virtual void Set_Current_Window( const int& window_id ) = 0;
 
 
+        /**
+         * @brief Set the CLI Window Size
+         *
+         * @param[in] rows CLI Window Rows.
+         * @param[in] cols CLI Window Cols.
+         */
+        virtual void Set_CLI_Window_Size( const int& rows,
+                                          const int& cols );
+
+
+
     protected:
 
         /**
@@ -162,17 +183,25 @@ class A_Render_Manager_Base
         /// Command Counter
         int m_command_counter;
         
+        
         /// Render State
         A_Render_State::ptr_t m_render_state;
         
+
         /// Command Parser
         CMD::A_Command_Parser::ptr_t m_command_parser;
+
+        
+        /// Render Driver Context
+        A_Render_Driver_Context_Base::ptr_t m_render_driver_context;
 
 
     private:
 
         /// Class Name
         std::string m_class_name;
+        
+        
 
 }; // End of A_Render_Manager Class
 

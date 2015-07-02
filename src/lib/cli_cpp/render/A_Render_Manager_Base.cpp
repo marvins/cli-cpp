@@ -32,6 +32,20 @@ A_Render_Manager_Base::A_Render_Manager_Base( CMD::A_Command_Parser::ptr_t comma
 }
 
 
+/**************************************/
+/*       Set the CLI Window Size      */
+/**************************************/
+void A_Render_Manager_Base::Set_CLI_Window_Size( const int& rows,
+                                                 const int& cols )
+{
+
+    // Update Driver
+    m_render_driver_context->Set_CLI_Window_Size( rows, cols );
+
+
+}
+
+
 /****************************************/
 /*      Process the Current Command     */
 /****************************************/

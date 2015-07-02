@@ -70,17 +70,6 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         
         
         /**
-         * @brief Update the rendering driver context.
-         *
-         * @param[in] driver_context Rendering driver to register.
-         */
-        inline virtual void Update_Render_Driver_Context( A_Render_Driver_Context_Base::ptr_t driver_context )
-        {
-            m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>( driver_context );
-        }
-        
-        
-        /**
          * @brief Command the system to wait on the input command response.
          */
         virtual void Set_Waiting_Command_Response( const CMD::A_Command_Result::ptr_t response );
@@ -93,12 +82,14 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
          */
         virtual bool Check_Waiting_Command_Response();
 
+
         /**
          * @brief Set the Current Window
          */
         inline virtual void Set_Current_Window( const int& window_id ){
             m_current_window = window_id;
         }
+
     
     protected:
        
@@ -141,10 +132,6 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         std::string m_class_name;
 
         
-        /// Render Context
-        A_Render_Driver_Context_ASCII::ptr_t m_render_driver_context;
-        
-
         /// List of Render Windows
         std::vector<An_ASCII_Render_Window_Base::ptr_t> m_window_list;
 

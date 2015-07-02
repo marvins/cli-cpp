@@ -56,26 +56,6 @@ class A_Render_State{
 
         
         /**
-         * @brief Get the rows.
-         *
-         * @return Number of rows.
-         */
-        inline virtual int Get_Rows()const{
-            return m_window_rows;
-        }
-
-
-        /**
-         * @brief Number of columns.
-         *
-         * @return Number of columns.
-         */
-        inline virtual int Get_Cols()const{
-            return m_window_cols;
-        }
-
-
-        /**
          * @brief Get the Cursor Position.
          *
          * @return Cursor position.
@@ -107,13 +87,6 @@ class A_Render_State{
          */
         virtual void Process_Input( const int& input );
    
-        
-        /**
-         * @brief Set Window Size
-         */
-        virtual void Set_Window_Size( const int& rows,
-                                      const int& cols );
-
         
         /**
          * @brief Process CLI Command

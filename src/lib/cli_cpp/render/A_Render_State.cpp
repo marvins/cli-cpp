@@ -27,8 +27,6 @@ A_Render_State::A_Render_State( CORE::ConnectionType const&    conn_type,
     m_cli_prompt_cursor_head(0),
     m_cli_prompt_cursor_tail(0),
     m_cli_prompt_cursor_at(0),
-    m_window_rows(0),
-    m_window_cols(0),
     m_command_history(command_history),
     m_command_parser(command_parser),
     m_command_history_ptr(m_command_history->Size()),
@@ -121,20 +119,6 @@ void A_Render_State::Process_Input( const int& input )
         m_cli_prompt_cursor_at++;
 
     }
-}
-
-
-/**************************************/
-/*          Set window size           */
-/**************************************/
-void A_Render_State::Set_Window_Size( const int& rows,
-                                      const int& cols )
-{
-    // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
-    m_window_rows = rows;
-    m_window_cols = cols;
 }
 
 

@@ -97,25 +97,28 @@ class A_CLI_Manager{
         /// Class Name
         std::string m_class_name;
 
+        
         /// Configuration
         A_CLI_Manager_Configuration m_configuration;
 
-        /// Render Driver Context
-        RENDER::A_Render_Driver_Context_Base::ptr_t m_render_driver_context;
-
+        
         /// CLI Connection Handler
         A_Connection_Manager_Base::ptr_t m_connection_manager;
 
+        
         /// Render Manager
         RENDER::A_Render_Manager_Base::ptr_t m_render_manager;
 
+        
         /// Handler Thread
         std::thread m_handler_thread;
         std::atomic<bool> m_handler_thread_running;
 
+        
         /// Handler Queue
         CMD::A_Command_Queue::ptr_t m_command_queue;
 
+        
         /// CLI Handler List
         std::vector<A_Command_Response_Handler_Base::ptr_t> m_command_handlers;
 

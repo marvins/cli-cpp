@@ -54,25 +54,26 @@ void A_Render_Manager_ASCII::Initialize()
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
-    // Set the size
-    m_render_state->Set_Window_Size( m_render_driver_context->Get_Window_Rows(), 
-                                     m_render_driver_context->Get_Window_Cols() );
+
+    // Cast the driver
+    A_Render_Driver_Context_ASCII::ptr_t driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>( m_render_driver_context);
+
 
     // Add the main window
-    m_window_list.push_back(std::make_shared<A_Main_Window>( m_render_driver_context,
+    m_window_list.push_back(std::make_shared<A_Main_Window>( driver_context,
                                                              m_command_history ));
     
     // Add the help window
-    m_window_list.push_back(std::make_shared<A_General_Help_Window>( m_render_driver_context,
+    m_window_list.push_back(std::make_shared<A_General_Help_Window>( driver_context,
                                                                      m_command_parser->Get_CLI_Command_List(),
                                                                      m_command_parser->Get_Command_List() ));
 
     // Add the log window
-    m_window_list.push_back(std::make_shared<A_Log_Window>( m_render_driver_context ));
+    m_window_list.push_back(std::make_shared<A_Log_Window>( driver_context ));
     
     
     // Add the alias list window
-    m_window_list.push_back(std::make_shared<An_Alias_List_Window>( m_render_driver_context, 
+    m_window_list.push_back(std::make_shared<An_Alias_List_Window>( driver_context, 
                                                                     m_command_parser ));
 
     
@@ -241,7 +242,7 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
     // Set the buffer row
-    int cli_row = m_render_state->Get_Rows() - 2;
+    int cli_row = m_render_driver_context->Get_Window_Rows() - 2;
 
     
     // Get the cursor text

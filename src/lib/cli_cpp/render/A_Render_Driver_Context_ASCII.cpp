@@ -30,6 +30,30 @@ A_Render_Driver_Context_ASCII::A_Render_Driver_Context_ASCII( const std::string&
 }
 
 
+/***************************************/
+/*       Set the CLI Window Size       */
+/***************************************/
+void A_Render_Driver_Context_ASCII::Set_CLI_Window_Size( const int& rows,
+                                                         const int& cols )
+{
+    m_window_rows = rows;
+    m_window_cols = cols;
+    m_min_content_row = 0;
+    m_min_content_col = 0;
+
+}
+
+
+/********************************************/
+/*      Set the CLI Min Content Bounds      */
+/********************************************/
+void A_Render_Driver_Context_ASCII::Set_CLI_Window_Min_Content_Bounds( const int& row,
+                                                                       const int& col )
+{
+    m_min_content_row = row;
+    m_min_content_col = col;
+}
+
 
 } // End of RENDER Namespace
 } // End of CLI    Namespace 

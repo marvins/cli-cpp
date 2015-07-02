@@ -15,10 +15,10 @@ namespace HANDLER{
 /**********************************/
 /*          Constructor           */
 /**********************************/
-A_CLI_Resize_Command_Response_Handler::A_CLI_Resize_Command_Response_Handler( RENDER::A_Render_State::ptr_t render_state )
+A_CLI_Resize_Command_Response_Handler::A_CLI_Resize_Command_Response_Handler( RENDER::A_Render_Manager_Base::ptr_t render_manager )
   : CLI::A_Command_Response_Handler_Base(),
     m_class_name("A_CLI_Resize_Command_Response_Handler"),
-    m_render_state(render_state)
+    m_render_manager(render_manager)
 {
 }
 
@@ -58,7 +58,7 @@ void A_CLI_Resize_Command_Response_Handler::Process_Command( CLI::CMD::A_Command
     }
 
     // Set the size
-    m_render_state->Set_Window_Size( rows, cols );
+    m_render_manager->Set_CLI_Window_Size( rows, cols );
 
     // Set response
     response->Set_System_Response("Resized window.");

@@ -75,11 +75,11 @@ bool A_Render_Driver_Context_Base::Check_Waiting_Command_Response()
     }
 
     // Check if recieved
-    if( m_waiting_command_response_value->Check_System_Response() &&
+    if( m_waiting_command_response_value->Check_System_Response() == true &&
         m_waiting_command_response == true )
     {
         m_waiting_command_response = false;
-        return true;
+        return false;
     }
 
     else{

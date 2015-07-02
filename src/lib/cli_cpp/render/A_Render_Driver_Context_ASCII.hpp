@@ -55,7 +55,7 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
          * 
          * @return Window rows.
         */
-        inline int Get_Window_Rows()const{
+        inline virtual int Get_Window_Rows()const{
             return m_window_rows;
         }
 
@@ -65,7 +65,7 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
          *
          * @return Window columns.
         */
-        inline int Get_Window_Cols()const{
+        inline virtual int Get_Window_Cols()const{
             return m_window_cols;
         }
 
@@ -73,7 +73,7 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
         /**
          * @brief Get the min content row.
          */
-        inline int Get_Min_Content_Row()const{
+        inline virtual int Get_Min_Content_Row()const{
             return m_min_content_row;
         }
 
@@ -81,9 +81,34 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
         /**
          * @brief Get the min content column.
         */
-        inline int Get_Min_Content_Col()const{
+        inline virtual int Get_Min_Content_Col()const{
             return m_min_content_col;
         }
+
+
+        /**
+         * @brief Set CLI Window Size
+         *
+         * @param[in] rows Number of rows.
+         * @param[in] cols Number of columns.
+         *
+         *  This operation will also reset the Min/Max content bounds
+         *  to match the CLI window size to avoid the user going out of
+         *  bounds on the CLI window.
+         */
+        virtual void Set_CLI_Window_Size( const int& rows,
+                                          const int& cols );
+
+
+        /**
+         * @brief Set CLI Window Min Content Bounds
+         *
+         * @param[in] row Minimum row for data.
+         * @param[in] col Minimum column for data.
+         */
+        virtual void Set_CLI_Window_Min_Content_Bounds( const int& row,
+                                                        const int& col );
+
 
 
     private:

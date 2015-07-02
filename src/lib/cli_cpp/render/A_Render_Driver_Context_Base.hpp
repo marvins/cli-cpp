@@ -62,8 +62,9 @@ class A_Render_Driver_Context_Base{
          */
         bool Check_Waiting_Command_Response();
 
+
         /**
-         * @brief Get Standard Output.
+         * @brief Get the Redirect Standard Output Mode Flag.
          * 
          * @return Standard Output Redirect Flag. 
          */
@@ -71,9 +72,64 @@ class A_Render_Driver_Context_Base{
             return m_redirect_stdout;
         }
 
+        
+        /**
+         * @brief Get the Redirect Standard Error Mode Flag.
+         * 
+         * @return Standard Output Redirect Flag. 
+         */
         inline bool Get_Redirect_Stderr_Flag()const{
             return m_redirect_stderr;
         }
+
+
+        /**
+         * @brief Set the CLI Window Size
+         *
+         * @param[in] rows Number of Rows 
+         * @param[in] cols Number of Columns
+         */
+        virtual void Set_CLI_Window_Size( const int& rows,
+                                          const int& cols ) = 0;
+
+
+        /**
+         * @brief Set the CLI Min Content Bounds
+         *
+         * @param[in] row Min row for printing data.
+         * @param[in] col Min column for printing data.
+        */
+        virtual void Set_CLI_Window_Min_Content_Bounds( const int& row,
+                                                        const int& col ) = 0;
+        
+        
+        /**
+         * @brief Get the number of rows.
+         * 
+         * @return Window rows.
+        */
+        virtual int Get_Window_Rows()const = 0;
+
+
+        /**
+         * @brief Get the number of columns.
+         *
+         * @return Window columns.
+        */
+        virtual int Get_Window_Cols()const = 0;
+
+
+        /**
+         * @brief Get the min content row.
+         */
+        virtual int Get_Min_Content_Row()const = 0;
+
+
+        /**
+         * @brief Get the min content column.
+        */
+        virtual int Get_Min_Content_Col()const = 0;
+
 
 
     protected:

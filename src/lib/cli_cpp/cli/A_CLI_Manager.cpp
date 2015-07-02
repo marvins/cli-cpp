@@ -29,7 +29,6 @@ namespace CLI{
 A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
   : m_class_name("A_CLI_Manager"),
     m_configuration(configuration),
-    m_render_driver_context(nullptr),
     m_handler_thread_running(false)
 {
     
@@ -232,12 +231,8 @@ void A_CLI_Manager::Register_Command_Response_Handler( A_Command_Response_Handle
 void A_CLI_Manager::Register_Internal_Command_Response_Handlers() 
 {
 
-    // Find the Render State
-    RENDER::A_Render_State::ptr_t render_state = m_render_manager->Get_Render_State();
-
-
     // CLI Resize
-    HANDLER::A_CLI_Resize_Command_Response_Handler::ptr_t cli_resize = std::make_shared<HANDLER::A_CLI_Resize_Command_Response_Handler>( render_state );
+    HANDLER::A_CLI_Resize_Command_Response_Handler::ptr_t cli_resize = std::make_shared<HANDLER::A_CLI_Resize_Command_Response_Handler>( m_render_manager );
     Register_Command_Response_Handler( cli_resize );
 
 

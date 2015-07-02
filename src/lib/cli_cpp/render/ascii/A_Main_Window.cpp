@@ -28,7 +28,7 @@ A_Main_Window::A_Main_Window( A_Render_Driver_Context_ASCII::ptr_t render_driver
     m_history_window = std::make_shared<An_ASCII_History_Window>( m_command_history ); 
 
     // Build the shortcut print line
-    m_shortcut_print_line = "  " + UTILS::ANSI_BLUE + "Shortcuts:" + UTILS::ANSI_RESET + "  F2) Help, F3) Log Output, F4, Alias List.";
+    m_shortcut_print_line = "  " + UTILS::ANSI_BLUE + "Shortcuts:" + UTILS::ANSI_RESET + "  F2) Help, F3) Log Output, F4) Alias List.";
 }
 
 

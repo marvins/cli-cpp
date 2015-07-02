@@ -8,7 +8,7 @@
 
 // CLI Libraries
 #include "../cli/A_Command_Response_Handler_Base.hpp"
-#include "../render/A_Render_State.hpp"
+#include "../render/A_Render_Manager_Base.hpp"
 
 namespace CLI{
 namespace HANDLER{
@@ -30,7 +30,7 @@ class A_CLI_Resize_Command_Response_Handler : public CLI::A_Command_Response_Han
          *
          * @param[in] render_state Render state manager which contains the CLI Size.
          */
-        A_CLI_Resize_Command_Response_Handler( RENDER::A_Render_State::ptr_t render_state );
+        A_CLI_Resize_Command_Response_Handler( RENDER::A_Render_Manager_Base::ptr_t render_manager );
 
 
         /**
@@ -50,8 +50,8 @@ class A_CLI_Resize_Command_Response_Handler : public CLI::A_Command_Response_Han
         std::string m_class_name;
     
         
-        /// Render State
-        RENDER::A_Render_State::ptr_t m_render_state;
+        /// Render Manager
+        RENDER::A_Render_Manager_Base::ptr_t m_render_manager;
 
 
 }; // End of A_CLI_Resize_Command_Response_Handler Class
