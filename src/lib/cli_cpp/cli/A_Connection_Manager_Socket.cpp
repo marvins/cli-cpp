@@ -199,6 +199,7 @@ void A_Connection_Manager_Socket::Run_Handler()
         write( m_client_fd,"\377\375\042\377\373\001",6);
         write( m_client_fd,"Welcome\n\0", 9);
 
+        
         // Set the connected flag
         m_is_connected = true;
     
@@ -217,7 +218,10 @@ void A_Connection_Manager_Socket::Run_Handler()
                 
                 // Read from socket
                 n = read( m_client_fd, buffer, 255 );
-                
+               
+                // Get the window size
+                //UTILS::Telnet_Get_Window_Size( m_client_fd );
+
                 // Check if the socket has closed
                 if( n == 0 ){
                     break;
