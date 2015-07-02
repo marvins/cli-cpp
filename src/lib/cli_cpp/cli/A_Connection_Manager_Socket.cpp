@@ -149,9 +149,6 @@ void A_Connection_Manager_Socket::Run_Handler()
     std::string input;
 
     // Get the sleep time and refresh counter
-    int read_sleep_time_usec = m_configuration->Get_Socket_Read_Sleep_Time_USec();
-    int refresh_counter_max  = m_configuration->Get_Socket_Max_Wait_Refresh_Count();
-    int refresh_counter = 0;
 
     // Get the length
     socklen_t clilen;
@@ -212,52 +209,33 @@ void A_Connection_Manager_Socket::Run_Handler()
         while( m_is_connected == true &&
                m_is_running   == true )
         {
+
             // Check the manager
             if( this->m_render_manager == nullptr ){
                 break;
             }
 
         
-            // Check keyboard value
-            while( true ){
-                
-                // Read from socket
-                n = read( m_client_fd, buffer, 255 );
+            // Read from socket
+            n = read( m_client_fd, buffer, 255 );
                
-                // Check if the socket has closed
-                if( n == 0 ){
-                    break;
-                }
-
-                // Check time to quit
-                else if ( m_is_running   == false || 
-                          m_is_connected == false )
-                {
-                    break;
-                }
-
-                // Check if valid data
-                else if( n != EAGAIN && n > 0 ){
-                    break;
-                }
-                else{
-
-                    // If we have hit the max count, then refresh the screen anyhow
-                    if( refresh_counter >= refresh_counter_max ){
-                        refresh_counter = 0;
-                        Refresh_Screen();
-                    }
-                    // Since not valid, sleep
-                    usleep(read_sleep_time_usec);
-
-                    // Increment the refresh counter
-                    refresh_counter++;
-                }
-
+            // Check if the socket has closed
+            if( n == 0 ){
+                m_is_connected = false;
+                break;
             }
+
+            // Check time to quit
+            else if ( m_is_running   == false || 
+                      m_is_connected == false )
+            {
+                break;
+            }
+
 
             // Check the buffer
             input = std::string(buffer).substr(0,n);
+
 
             // Process the text
             if( input.size() > 1 ){
@@ -343,7 +321,7 @@ void A_Connection_Manager_Socket::Refresh_Screen()
 
     
     // Get the buffer string
-    std::vector<std::string>& buffer_data = std::dynamic_pointer_cast<RENDER::A_Render_Manager_ASCII>(m_render_manager)->Get_Console_Buffer();
+    std::vector<std::string> buffer_data = std::dynamic_pointer_cast<RENDER::A_Render_Manager_ASCII>(m_render_manager)->Get_Console_Buffer();
     
     
     // Write each line to the socket

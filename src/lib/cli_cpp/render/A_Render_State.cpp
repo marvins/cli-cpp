@@ -70,50 +70,42 @@ void A_Render_State::Process_Input( const int& input )
     if( Get_Pause_Mode() == true ){
         BOOST_LOG_TRIVIAL(trace) << "Resetting Pause Mode from input: " << input << ". " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
         Reset_Pause_Mode();
-        return;
     }
 
 
     // check for backspace
-    if( input == (int)CORE::CLI_Event_Type::KEYBOARD_BACKSPACE || input == 127 ){
+    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_BACKSPACE || input == 127 ){
         Apply_Backspace();
-        return;
     }
 
     // check for delete
     else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_DELETE_KEY ){
         Apply_Delete();
-        return;
     }
 
     // Check for left-key
     else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_LEFT_ARROW ){
         Apply_Left_Key();
-        return;
     }
 
     // Check for right-key
     else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_RIGHT_ARROW ){
         Apply_Right_Key();
-        return;
     }
 
     // Check for up-key
     else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_UP_ARROW ){
         Apply_Up_Key();
-        return;
     }
 
     // Check for down-key
     else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_DOWN_ARROW ){
         Apply_Down_Key();
-        return;
     }
 
     // Check for Tab Key
     else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_TAB_KEY ){
         Apply_Tab_Key();
-        return;
     }
     
     // Check for text
@@ -128,6 +120,9 @@ void A_Render_State::Process_Input( const int& input )
         m_cli_prompt_cursor_at++;
 
     }
+    
+    // Refresh the screen
+    CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
 }
 
 

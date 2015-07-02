@@ -9,11 +9,13 @@
 // C++ Standard Libraries
 #include <memory>
 #include <string>
+#include <thread>
 #include <vector>
 
 
 // CLI Libraries
 #include "A_CLI_Event_Handler_Base.hpp"
+#include "An_Event_Queue.hpp"
 #include "CLI_Event_Type.hpp"
 
 
@@ -78,12 +80,30 @@ class Event_Manager{
         static Event_Manager::ptr_t Instance_Of();
 
 
+        /** 
+         * @brief Event process thread runner.
+         */
+        void Event_Process_Runner();
+
+
         /// Class Name
         std::string m_class_name;
 
 
         /// List of event handlers
         std::vector<A_CLI_Event_Handler_Base::ptr_t> m_event_handlers;
+
+
+        /// Event Manager Queue
+        An_Event_Queue::ptr_t m_event_queue;
+
+        
+        /// Process thread
+        std::thread m_event_process_thread;
+
+        
+        // Running flag
+        bool m_is_running;
 
 }; // End of Event_Manager Class
 

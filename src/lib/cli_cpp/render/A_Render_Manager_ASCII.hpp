@@ -61,7 +61,7 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
          *
          * @return Console buffer.
          */
-        std::vector<std::string>& Get_Console_Buffer();
+        std::vector<std::string> Get_Console_Buffer();
         
         
         /**

@@ -104,7 +104,7 @@ void A_Render_Manager_ASCII::Finalize()
 /****************************/
 /*      Get the buffer      */
 /****************************/
-std::vector<std::string>& A_Render_Manager_ASCII::Get_Console_Buffer()
+std::vector<std::string> A_Render_Manager_ASCII::Get_Console_Buffer()
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
@@ -117,6 +117,10 @@ std::vector<std::string>& A_Render_Manager_ASCII::Get_Console_Buffer()
     Refresh();
 
     
+    // Get the data
+    std::vector<std::string> output = m_window_list[m_current_window]->Get_Buffer_Data();
+
+    
     // Unlock the mutex
     m_refresh_mutex.unlock();
     
@@ -124,7 +128,7 @@ std::vector<std::string>& A_Render_Manager_ASCII::Get_Console_Buffer()
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
     // Return the current window
-    return m_window_list[m_current_window]->Get_Buffer_Data();
+    return output;
 }
 
 

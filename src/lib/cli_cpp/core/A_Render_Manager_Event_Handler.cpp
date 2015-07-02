@@ -34,7 +34,7 @@ bool A_Render_Manager_Event_Handler::Is_Supported_Event( const int& event )const
     
     // Skip Refresh
     if( event == (int)CORE::CLI_Event_Type::CLI_REFRESH ){
-        //return false;
+        return false;
     }
     
     // Otherwise, we are fine

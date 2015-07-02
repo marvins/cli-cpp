@@ -11,6 +11,7 @@ set( LIB_CLI_CORE_MODULE_SOURCES
      A_CLI_Event_Handler_Base.cpp
      A_Connection_Manager_Event_Handler.cpp
      A_Render_Manager_Event_Handler.cpp
+     An_Event_Queue.cpp
      ConnectionType.cpp
      Event_Manager.cpp
 )
@@ -23,6 +24,7 @@ set( LIB_CLI_CMD_MODULE_HEADERS
      A_CLI_Event_Handler_Base.hpp
      A_Connection_Manager_Event_Handler.hpp
      A_Render_Manager_Event_Handler.hpp
+     An_Event_Queue.hpp
      ConnectionType.hpp
      Event_Manager.hpp
 )

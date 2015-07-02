@@ -51,6 +51,17 @@ class A_CLI_Event_Handler_Base
         */
         virtual void Process_Event( const int& event ) = 0;
 
+
+        /**
+         * @brief Return the Handler Name.
+         *
+         * @return Class Name
+        */
+        inline virtual std::string Get_Handler_Name()const{
+            return m_class_name;
+        }
+
+
     private:
         
         /// Class Name

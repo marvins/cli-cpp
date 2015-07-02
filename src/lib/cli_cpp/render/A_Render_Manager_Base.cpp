@@ -142,22 +142,32 @@ void A_Render_Manager_Base::Process_Command()
 void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Key: " << key << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    BOOST_LOG_TRIVIAL(debug) << "Start of " << __func__ << " method. Key: " << key << ", File: " << __FILE__ << ", Line: " << __LINE__;
     
 
-    // Check if we are in a refresh, ignore if so
-    if( key == (int)CORE::CLI_Event_Type::CLI_REFRESH ){
+    // Check if we are sleeping. If we are just return
+    if( m_render_state->Get_Sleep_Mode() == true ){
         return;
     }
 
-    
-    // Check if we are sleeping, if so, block
-    if( m_render_state->Get_Sleep_Mode() == true ){
 
-        // Render
+    // Check if we are waiting on a command response. If we are, return
+    if( Check_Waiting_Command_Response() == true ){
+        return;
+    }
+    
+
+    // Check if the user presses enter while paused
+    if( key == (int)CORE::CLI_Event_Type::KEYBOARD_ENTER &&
+        m_render_state->Get_Pause_Mode() )
+    {
+        
+        // Reset the pause mode
+        m_render_state->Reset_Pause_Mode();
+        
+        // Refresh the screen
         CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
-            
-        // Exit without doing anything
+        
         return;
     }
 
@@ -189,23 +199,33 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
             {
                 BOOST_LOG_TRIVIAL(trace) << "Waiting on Check_Waiting_Command_Response()";
                 usleep(1000);
+        
+                // Refresh the screen
+                CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
             }
 
             
             // Process the command
             Process_Command();
+                
         }
+    
+        // Refresh the screen
+        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
 
         return;
     }
+
     
     // Check that the render state is not null.  I want this to seg fault for now so I know when a problem occurs
     if( this->m_render_state == nullptr ){
         BOOST_LOG_TRIVIAL(error) << "Render-State is currently nullptr. Expect a seg fault.";
     }
+
     
     // Process Keyboard Input
     this->m_render_state->Process_Input( key );
+
 
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;

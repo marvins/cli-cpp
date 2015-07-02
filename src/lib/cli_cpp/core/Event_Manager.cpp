@@ -22,8 +22,16 @@ static std::shared_ptr<Event_Manager> instance = nullptr;
 /*      Constructor       */
 /**************************/
 Event_Manager::Event_Manager()
-  : m_class_name("Event_Manager")
+  : m_class_name("Event_Manager"),
+    m_is_running(true)
 {
+    // Create the event queue
+    m_event_queue = std::make_shared<An_Event_Queue>(100);
+
+
+    // Start the thread
+    m_event_process_thread = std::thread( &Event_Manager::Event_Process_Runner,
+                                          this );
 }
 
 
@@ -32,6 +40,23 @@ Event_Manager::Event_Manager()
 /**************************/
 Event_Manager::~Event_Manager()
 {
+
+    // Stop the thread
+    m_is_running = false;
+    
+    
+    // Clear the event queue
+    m_event_queue->Clear();
+
+    
+    // Wait to join the thread
+    if( m_event_process_thread.joinable() ){
+        m_event_process_thread.join();
+    }
+
+
+    // Reset
+    m_event_queue.reset();
 
 }
 
@@ -99,23 +124,53 @@ void Event_Manager::Process_Event( const int& event )
     // Get an instance
     Event_Manager::ptr_t inst = Instance_Of();
 
-    // Iterate over event managers
-    for( size_t i=0; i<inst->m_event_handlers.size(); i++ ){
+    
+    // Add event to queue
+    std::cout << "Queue Size: " << inst->m_event_queue->Current_Size() << std::endl;
+    inst->m_event_queue->Push_Event( event );
 
-        // Check if null
-        if( inst->m_event_handlers[i] == nullptr ){
-            BOOST_LOG_TRIVIAL(warning) << "Event handler at position " << i << " is currently nullptr. Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+}
+
+
+/*********************************/
+/*          Event Runner         */
+/*********************************/
+void Event_Manager::Event_Process_Runner()
+{
+    // Misc variables
+    int temp_event;
+
+    // Run while the flag is valid
+    while( m_is_running == true )
+    {
+
+        // Get the next event
+        temp_event = m_event_queue->Pop_Event();
+
+        // Skip null events
+        if( temp_event == (int)CLI_Event_Type::CLI_NULL ){
+            continue;
         }
+    
+        // Iterate over event managers
+        for( size_t i=0; i<m_event_handlers.size(); i++ ){
+            
+            // Log
+            BOOST_LOG_TRIVIAL(trace) << "Processing event " << temp_event << " through handler " << i << std::endl;
 
-        // Check if supported
-        else if( inst->m_event_handlers[i]->Is_Supported_Event( event ) == true ){
-            inst->m_event_handlers[i]->Process_Event(event);
+            // Check if null
+            if( m_event_handlers[i] == nullptr ){
+                BOOST_LOG_TRIVIAL(warning) << "Event handler at position " << i << " is currently nullptr. Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+            }
+
+            // Check if supported
+            else if( m_event_handlers[i]->Is_Supported_Event( temp_event ) == true ){
+                m_event_handlers[i]->Process_Event(temp_event);
+            }
         }
 
     }
 
-    // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Event ID: " << event << ", File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 } // End of CORE Namespace
