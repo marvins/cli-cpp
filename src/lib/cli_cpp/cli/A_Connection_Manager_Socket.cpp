@@ -11,6 +11,7 @@
 #include "../render/A_Render_Manager_ASCII.hpp"
 #include "../utility/ANSI_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
+#include "../utility/Telnet_Utilities.hpp"
 
 
 // C++ Standard Libraries

@@ -6,6 +6,10 @@
 #ifndef __CLI_CPP_UTILS_SYSTEM_UTILITIES_HPP__
 #define __CLI_CPP_UTILS_SYSTEM_UTILITIES_HPP__
 
+// C++ Standard Libraries
+#include <string>
+
+
 namespace CLI{
 namespace UTILS{
 
@@ -26,9 +30,9 @@ void Stack_Trace_Handler( int signal_code );
  *
  * @return True if command executed, false if error.
 */
-bool Execute_Shell_Command( const std::string& command,
-                            const std::string& stdout_data,
-                            const std::string& stderr_data );
+bool Execute_Shell_Command( const std::string&  command,
+                            std::string&        stdout_data,
+                            std::string&        stderr_data );
 
 
 } // End of UTILS Namespace

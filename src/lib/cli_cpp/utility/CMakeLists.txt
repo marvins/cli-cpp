@@ -13,6 +13,7 @@ set( LIB_CLI_UTILITY_MODULE_SOURCES
      Log_Utilities.cpp
      String_Utilities.cpp
      System_Utilities.cpp
+     Telnet_Utilities.cpp
 )
 
 
@@ -26,6 +27,7 @@ set( LIB_CLI_UTILITY_MODULE_HEADERS
      Log_Utilities.hpp
      String_Utilities.hpp
      System_Utilities.hpp
+     Telnet_Utilities.hpp
 )
 
 

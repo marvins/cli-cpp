@@ -114,9 +114,9 @@ void Stack_Trace_Handler( int exec_code )
 /************************************************************/
 /*                    Run Shell Command                     */
 /************************************************************/
-bool Execute_Shell_Command( const std::string& command,
-                            const std::string& stdout_data,
-                            const std::string& stderr_data )
+bool Execute_Shell_Command( const std::string&  command,
+                            std::string&        stdout_data,
+                            std::string&        stderr_data )
 {
     // Clear
     stdout_data = "";
@@ -144,6 +144,7 @@ bool Execute_Shell_Command( const std::string& command,
     // Return 
     stdout_data = sin.str();
     return true;
+}
 
 
 } // End of UTILS Namespace
