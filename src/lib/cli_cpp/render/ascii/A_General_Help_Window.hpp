@@ -32,19 +32,42 @@ class A_General_Help_Window : public An_ASCII_Render_Window_Base
 
 
         /**
-         * @brief Constructor
+         * @brief Constructor.
+         *
+         * @param[in] render_driver Driver containing rendering parameters.
+         * @param[in] cli_command_list List of CLI Commands to process.
+         * @param[in] command_list List of Commands to process.
         */
         A_General_Help_Window( A_Render_Driver_Context_ASCII::ptr_t    render_driver,
                                const std::vector<CMD::A_CLI_Command>&  cli_command_list,
                                const std::vector<CMD::A_Command>&      command_list );
 
 
+        /**
+         * @brief Update the buffer data.
+         */
+        virtual void Update_Buffer_Data();
+
+
     private:
 
 
-        void Initialize_CLI_Command_Table();
+        /**
+         * @brief Update Buffer Lines
+        */
+        void Update_Buffer_Lines();
 
-        void Initialize_Command_Table();
+        
+        /**
+         * @brief Update the CLI Command Print Table.
+        */
+        void Update_CLI_Command_Table();
+
+        
+        /**
+         * @brief Update the Command Print Table.
+        */
+        void Update_Command_Table();
 
         
         /// Class Name
@@ -54,12 +77,15 @@ class A_General_Help_Window : public An_ASCII_Render_Window_Base
         /// CLI Command LIst
         std::vector<CMD::A_CLI_Command> m_cli_command_list;
 
+
         /// Command List
         std::vector<CMD::A_Command> m_command_list;
+
 
         /// Render Print Managers
         UTILS::An_ASCII_Print_Table::ptr_t  m_command_print_table;
         UTILS::An_ASCII_Print_Table::ptr_t  m_cli_command_print_table;
+
 
 }; // End of A_General_Help_Window Class
 

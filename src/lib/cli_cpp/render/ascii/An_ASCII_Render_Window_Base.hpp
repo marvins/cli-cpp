@@ -46,9 +46,7 @@ class An_ASCII_Render_Window_Base
          *
          * @brief Note that this will do nothing unless implemented.
          */
-        inline virtual void Update_Buffer_Data()
-        {
-        }
+        virtual void Update_Buffer_Data();
     
     
     protected:

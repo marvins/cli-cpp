@@ -64,6 +64,10 @@ An_Alias_List_Window::An_Alias_List_Window( A_Render_Driver_Context_ASCII::ptr_t
 /*************************************/
 void An_Alias_List_Window::Update_Buffer_Data()
 {
+
+    // Call Parent Method First
+    An_ASCII_Render_Window_Base::Update_Buffer_Data();
+
     // Update the alias list table
     Update_Alias_List_Table();
 

@@ -48,6 +48,7 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
                                            int const&                min_col,
                                            int const&                max_col )const
 {
+
     // Define our offset amount
     std::string BUFFER_OFFSET( min_col, ' ');
 
@@ -61,6 +62,7 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
     table_widths[0] = 7;
     table_widths[1] = (max_col - table_widths[0])/2;
     table_widths[2] = max_col - table_widths[1] - table_widths[0] - min_col;
+
 
     // Misc strings
     std::vector<std::string> print_buffers(3);

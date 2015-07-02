@@ -42,8 +42,12 @@ class An_ASCII_History_Window
          * @brief Print table.
          *
          * @param[in] buffer_data Buffer data to print to.
+         * @param[in] min_row Min row to print data on.
+         * @param[in] max_row Max row to print data on.
+         * @param[in] min_col Min column to print data on.
+         * @param[in] max_col Max column to print data on.
          *
-         * @return Status of the operation.
+         * @return Status of the operation.  True if success, false if failure.
          */
          bool Print_Table( std::vector<std::string>& buffer_data,
                            const int&                min_row,

@@ -9,6 +9,7 @@
 // C++ Standard Libraries
 #include <deque>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -56,12 +57,6 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
 
 
         /**
-         * @brief Refresh the Screen.
-         */
-        virtual void Refresh();
-        
-
-        /**
          * @brief Get the buffer.
          *
          * @return Console buffer.
@@ -90,9 +85,26 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
             m_current_window = window_id;
         }
 
-    
+        
+        /**
+         * @brief Set the CLI Window Size
+         *
+         * @param[in] rows CLI Window Rows.
+         * @param[in] cols CLI Window Cols.
+         */
+        virtual void Set_CLI_Window_Size( const int& rows,
+                                          const int& cols );
+
+
+
     protected:
        
+        /**
+         * @brief Refresh the Screen.
+         */
+        virtual void Refresh();
+        
+
        
        /**
          * @brief Get the header status bar text.
@@ -138,6 +150,10 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
 
         /// Current Window Index
         int m_current_window;
+
+        
+        /// Refresh Mutex
+        std::mutex m_refresh_mutex;
 
 }; // End of A_Render_Manager_ASCII Class
 

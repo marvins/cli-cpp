@@ -392,7 +392,6 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
         case CommandParseStatus::CLI_RUN_SCRIPT:
         case CommandParseStatus::CLI_PAUSE:
         case CommandParseStatus::CLI_SLEEP:
-        case CommandParseStatus::CLI_RESIZE:
             return true;
         
         case CommandParseStatus::VALID:
@@ -400,6 +399,7 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
         case CommandParseStatus::EXCESSIVE_ARGUMENTS:
         case CommandParseStatus::INVALID_ARGUMENTS:
         case CommandParseStatus::UNKNOWN:
+        case CommandParseStatus::CLI_RESIZE: ///<  This is done to allow CLI Resize Commands to be pushed to the handlers
             return false;
     }
     return false;
@@ -427,7 +427,7 @@ std::vector<std::tuple<std::string,CommandParseStatus>> Get_CLI_Mode_To_Parse_St
     output.push_back( std::make_tuple("run-script",   CommandParseStatus::CLI_RUN_SCRIPT)   );
     output.push_back( std::make_tuple("pause",        CommandParseStatus::CLI_PAUSE)        );
     output.push_back( std::make_tuple("sleep",        CommandParseStatus::CLI_SLEEP)        );
-    output.push_back( std::make_tuple("cli-resize",   CommandParseStatus::CLI_RESIZE)       );
+    output.push_back( std::make_tuple("cli-resize",   CommandParseStatus::VALID)            ); ///<  CLI Resize Commands should be treated like normal commands.
 
 
     // return output

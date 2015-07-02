@@ -14,6 +14,7 @@
 // C++ Standard Libraries
 #include <memory>
 #include <sys/socket.h>
+#include <mutex>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <tuple>
@@ -87,7 +88,8 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
          * @return Key value.  -1 if no key present.
         */
         int Process_Special_Key( std::string const& key_str ) const;
-        
+       
+
         /// Class Name
         std::string m_class_name;
 
@@ -106,6 +108,10 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
 
         /// Keyboard Special Key Map
         std::vector<std::tuple<std::string,int>> m_special_key_list;
+
+
+        /// Refresh Lock
+        std::mutex m_refresh_lock;
 
 }; // End of A_Connection_Manager_Socket Class
 

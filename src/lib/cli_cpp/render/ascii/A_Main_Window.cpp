@@ -41,7 +41,7 @@ void A_Main_Window::Print_Main_Content()
     int max_row = m_render_driver->Get_Window_Rows()-5;
     int min_col = m_render_driver->Get_Min_Content_Col();
     int min_row = m_render_driver->Get_Min_Content_Row();
-    
+   
     // Update the cli window
     m_history_window->Print_Table( m_buffer_data, 
                                    min_row,

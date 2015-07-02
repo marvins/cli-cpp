@@ -38,9 +38,6 @@ void A_Render_Driver_Context_ASCII::Set_CLI_Window_Size( const int& rows,
 {
     m_window_rows = rows;
     m_window_cols = cols;
-    m_min_content_row = 0;
-    m_min_content_col = 0;
-
 }
 
 

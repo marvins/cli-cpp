@@ -106,9 +106,47 @@ void A_Render_Manager_ASCII::Finalize()
 /****************************/
 std::vector<std::string>& A_Render_Manager_ASCII::Get_Console_Buffer()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    // Lock the mutex
+    m_refresh_mutex.lock();
+    
+    
+    // Refresh
+    Refresh();
+
+    
+    // Unlock the mutex
+    m_refresh_mutex.unlock();
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Return the current window
     return m_window_list[m_current_window]->Get_Buffer_Data();
 }
+
+
+/**************************************/
+/*       Set the CLI Window Size      */
+/**************************************/
+void A_Render_Manager_ASCII::Set_CLI_Window_Size( const int& rows,
+                                                  const int& cols )
+{
+    // Lock the mutex
+    m_refresh_mutex.lock();
+
+    
+    // Update Driver
+    m_render_driver_context->Set_CLI_Window_Size( rows, cols );
+
+    
+    // Unlock the mutex
+    m_refresh_mutex.unlock();
+
+}
+
 
 
 /********************************/
@@ -116,15 +154,24 @@ std::vector<std::string>& A_Render_Manager_ASCII::Get_Console_Buffer()
 /********************************/
 void A_Render_Manager_ASCII::Refresh()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
+
     // Update the buffer data
     m_window_list[m_current_window]->Update_Buffer_Data();
+
 
     // Print the Header onto the Current Buffer Data
     Print_Header(m_window_list[m_current_window]->Get_Buffer_Data());
 
+
     // Print the CLI Onto the Current Buffer Data
     Print_CLI(m_window_list[m_current_window]->Get_Buffer_Data());
+
     
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 

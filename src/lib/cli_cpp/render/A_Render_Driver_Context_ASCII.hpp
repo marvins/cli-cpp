@@ -92,7 +92,7 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
          * @param[in] rows Number of rows.
          * @param[in] cols Number of columns.
          *
-         *  This operation will also reset the Min/Max content bounds
+         *  This operation will also reset the Max content bounds
          *  to match the CLI window size to avoid the user going out of
          *  bounds on the CLI window.
          */

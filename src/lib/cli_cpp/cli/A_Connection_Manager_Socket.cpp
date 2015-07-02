@@ -338,17 +338,28 @@ void A_Connection_Manager_Socket::Run_Handler()
 /*********************************/
 void A_Connection_Manager_Socket::Refresh_Screen()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
-    // Refresh the window manager
-    this->m_render_manager->Refresh();
+    // Lock the mutex
+    m_refresh_lock.lock();
+
     
     // Get the buffer string
     std::vector<std::string>& buffer_data = std::dynamic_pointer_cast<RENDER::A_Render_Manager_ASCII>(m_render_manager)->Get_Console_Buffer();
+    
     
     // Write each line to the socket
     for( size_t i=0; i<buffer_data.size(); i++ ){
         write( m_client_fd, buffer_data[i].c_str(), buffer_data[i].size() );   
     }
+
+    // Unlock the mutex
+    m_refresh_lock.unlock();
+    
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 /********************************************/

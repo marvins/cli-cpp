@@ -84,8 +84,13 @@ std::string A_Command_Result::Get_Parse_Status_String()const
 /*************************************/
 void A_Command_Result::Set_System_Response( const std::string& system_response )
 {
+    // Set the system response value
     m_system_response_value = system_response;
+
+    // Signal that the system response has been received
     m_system_response_set = true;
+
+    // Process a CLI Refresh event.
     CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
 }
 

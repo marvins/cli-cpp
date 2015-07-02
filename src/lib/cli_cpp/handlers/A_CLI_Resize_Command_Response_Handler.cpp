@@ -43,12 +43,9 @@ bool A_CLI_Resize_Command_Response_Handler::Is_Supported( CLI::CMD::A_Command_Re
 void A_CLI_Resize_Command_Response_Handler::Process_Command( CLI::CMD::A_Command_Result::ptr_t response ){
 
 
-    std::cout << "Inside A_CLI_Resize_Command_Response_Handler" << std::endl;
-
     // Define our values
     int rows         = response->Get_Argument_Value<int>( 0 );
     int cols         = response->Get_Argument_Value<int>( 1 );
-    
 
     // Check the dimensions
     if( rows <= 0 ){
@@ -63,6 +60,7 @@ void A_CLI_Resize_Command_Response_Handler::Process_Command( CLI::CMD::A_Command
     // Set the size
     m_render_manager->Set_CLI_Window_Size( rows, cols );
 
+    
     // Set response
     response->Set_System_Response("Resized window.");
     

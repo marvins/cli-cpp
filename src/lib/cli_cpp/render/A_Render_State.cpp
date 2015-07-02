@@ -314,11 +314,13 @@ void A_Render_State::Apply_Tab_Key()
 /********************************************/
 /*      Process a CLI Command Result        */
 /********************************************/
-void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result ){
+void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result )
+{
 
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+
+
     // If help
     if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_HELP ){
         CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_HELP );

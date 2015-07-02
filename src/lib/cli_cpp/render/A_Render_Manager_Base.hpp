@@ -71,12 +71,6 @@ class A_Render_Manager_Base
 
         
         /**
-         * @brief Refresh the Screen.
-         */
-        virtual void Refresh() = 0;
-        
-
-        /**
          * @brief Update the rendering driver context.
          *
          * @param[in] driver_context Rendering driver to register.
@@ -155,6 +149,14 @@ class A_Render_Manager_Base
 
 
     protected:
+        
+        
+        /**
+         * @brief Refresh the Screen.
+         */
+        virtual void Refresh() = 0;
+        
+
 
         /**
          * @brief Get the header status bar text.
