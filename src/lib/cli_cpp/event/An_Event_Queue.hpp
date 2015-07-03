@@ -13,11 +13,11 @@
 #include <semaphore.h>
 
 // CLI Libraries
-#include "CLI_Event_Type.hpp"
+#include "../core/CLI_Event_Type.hpp"
 
 
 namespace CLI{
-namespace CORE{
+namespace EVT{
 
 /**
  * @class An_Event_Queue
@@ -72,8 +72,18 @@ class An_Event_Queue
          *
          * @return Current size.
         */
-        inline int Current_Size()const{
+        inline int Get_Current_Size()const{
             return m_current_size;
+        }
+
+
+        /**
+         * @brief Get the max queue size.
+         *
+         * @return Max queue size.
+        */
+        inline int Get_Max_Size()const{
+            return m_max_queue_size;
         }
 
 
@@ -105,7 +115,7 @@ class An_Event_Queue
 
 }; // End of An_Event_Queue Class
 
-} // End of CORE Namespace
-} // End of CLI  Namespace
+} // End of EVT Namespace
+} // End of CLI Namespace
 
 #endif

@@ -23,6 +23,12 @@ add_subdirectory(cmd)
 
 
 #-----------------------------------#
+#-      Load the Event Module      -#
+#-----------------------------------#
+add_subdirectory(event)
+
+
+#-----------------------------------#
 #-     Load the Handler Module     -#
 #-----------------------------------#
 add_subdirectory(handlers)

@@ -10,19 +10,25 @@
 
 
 namespace CLI{
-namespace CORE{
+namespace EVT{
 
 /******************************/
 /*        Constructor         */
 /******************************/
 An_Event_Queue::An_Event_Queue( const int& max_queue_size )
-  : m_event_queue(new int[max_queue_size] ),
-    m_head(0),
+  : m_head(0),
     m_tail(0),
     m_max_queue_size(max_queue_size),
     m_close_flag(false),
     m_current_size(0)
 {
+    // Create the queue
+    if( max_queue_size < 1 ){
+        throw std::runtime_error("Size cannot be less than 1.");
+    }
+    m_event_queue = new int[max_queue_size];
+    
+    
     // Initialize the semaphores
     sem_init( &m_push_semaphore, 0, max_queue_size);
     sem_init( &m_pop_semaphore, 0, 0);
@@ -143,6 +149,6 @@ int An_Event_Queue::Pop_Event()
     return event;
 }
 
-} // End of CORE Namespace
-} // End of CLI  Namespace
+} // End of EVT Namespace
+} // End of CLI Namespace
 

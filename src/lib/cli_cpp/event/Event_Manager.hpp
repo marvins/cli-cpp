@@ -14,13 +14,13 @@
 
 
 // CLI Libraries
+#include "../core/CLI_Event_Type.hpp"
 #include "A_CLI_Event_Handler_Base.hpp"
 #include "An_Event_Queue.hpp"
-#include "CLI_Event_Type.hpp"
 
 
 namespace CLI{
-namespace CORE{
+namespace EVT{
 
 /**
  *  @class Event_Manager
@@ -107,7 +107,7 @@ class Event_Manager{
 
 }; // End of Event_Manager Class
 
-} // End of CORE Namespace
-} // End of CLI  Namespace
+} // End of EVT Namespace
+} // End of CLI Namespace
 
 #endif

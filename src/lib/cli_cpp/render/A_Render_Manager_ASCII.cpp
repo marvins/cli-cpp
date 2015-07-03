@@ -343,7 +343,14 @@ void A_Render_Manager_ASCII::Set_Waiting_Command_Response( const CMD::A_Command_
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
+    // Lock the mutex
+    m_refresh_mutex.lock();
+    
+    // Set the flag
     m_render_driver_context->Set_Waiting_Command_Response( response );
+    
+    // Unlock the mutex
+    m_refresh_mutex.unlock();
     
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
@@ -357,8 +364,22 @@ bool A_Render_Manager_ASCII::Check_Waiting_Command_Response(){
     
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
-    return m_render_driver_context->Check_Waiting_Command_Response();
+
+
+    // Lock the mutex
+    m_refresh_mutex.lock();
+
+
+    // Get the value
+    bool output = m_render_driver_context->Check_Waiting_Command_Response();
+
+
+    // Unlock the mutex
+    m_refresh_mutex.unlock();
+
+
+    // Return
+    return output;
 }
         
 

@@ -114,8 +114,8 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string&  test_s
 /***************************************************/
 /*          Update the Autocomplete string         */
 /***************************************************/
-void A_Command_Parser::Update_Autocomplete_String( const std::string&          input_string,
-                                                   std::vector<std::string>&   match_list )const
+void A_Command_Parser::Update_Autocomplete_String( const std::string&    input_string,
+                                                   std::string&          match_name )const
 {
     
     // Split up the input string
@@ -123,10 +123,12 @@ void A_Command_Parser::Update_Autocomplete_String( const std::string&          i
     for( int i=0; i<(int)components.size(); i++ ){
         components[i] = UTILS::String_Trim(components[i]);
     }
-    
+
+    // Default the match name
+    match_name = "";
 
     // Clear the match list
-    match_list.clear();
+    std::vector<std::string> match_list;
     std::string matching_value;
 
     
@@ -203,9 +205,19 @@ void A_Command_Parser::Update_Autocomplete_String( const std::string&          i
                 match_list.push_back( test_output + " " + matching_value );
             }
         }
-        
-
     }
+
+    // Make sure at least one match was found
+    if( (int)match_list.size() <= 0 ){
+        return;
+    }
+
+    // Prune the list down to the minimum spanning item
+    match_name = match_list[0];
+    for( size_t i=1; i<match_list.size(); i++ ){
+        match_name = UTILS::String_Substring_Match( match_name, match_list[i]);
+    }
+
 }
 
 

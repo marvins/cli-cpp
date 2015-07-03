@@ -179,9 +179,13 @@ TEST( A_CLI_Command, Parameterized_Constructor_Full )
 
     // Test the IsName Substr function
     std::string act_match_result;
+    
+    // Since two entries will start with H, just H should come back
     cli_command04.Add_Name("HELLO");
     ASSERT_TRUE( cli_command04.Is_Name_Substring("H", act_match_result) );
-    ASSERT_EQ( act_match_result, "Hello");
+    ASSERT_EQ( act_match_result, "H");
+
+    // Since only HELLO has HE, the whole thing should work.
     ASSERT_TRUE( cli_command04.Is_Name_Substring("HE", act_match_result) );
     ASSERT_EQ( act_match_result, "HELLO");
 

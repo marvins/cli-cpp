@@ -6,7 +6,7 @@
 #include "A_CLI_Event_Handler_Base.hpp"
 
 namespace CLI{
-namespace CORE{
+namespace EVT{
 
 /*****************************/
 /*        Constructor        */
@@ -17,6 +17,6 @@ A_CLI_Event_Handler_Base::A_CLI_Event_Handler_Base()
 }
 
 
-} // End of CORE Namespace
-} // End of CLI  Namespace
+} // End of EVT Namespace
+} // End of CLI Namespace
 

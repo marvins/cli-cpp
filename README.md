@@ -36,6 +36,11 @@ directory...
 
     git submodule update --init src/lib/cli_cpp/thirdparty/pugixml
 
+Documentation can be constructed using Doxygen with 
+
+    doxygen docs/Doxyfile
+
+
 ###  Test Application ###
 
 CLI-CPP comes with a basic test application to demonstrate core capabilities.  To run...

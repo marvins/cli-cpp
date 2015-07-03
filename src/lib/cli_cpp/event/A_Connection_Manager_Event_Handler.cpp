@@ -12,7 +12,7 @@
 #include <iostream>
 
 namespace CLI{
-namespace CORE{
+namespace EVT{
 
 
 /****************************/
@@ -42,7 +42,7 @@ void A_Connection_Manager_Event_Handler::Process_Event( int const& event )
     }
 
     // Check if we have a refresh event
-    if( event == (int)CLI_Event_Type::CLI_REFRESH ){
+    else if( event == (int)CLI_Event_Type::CLI_REFRESH ){
 
         // Log
         BOOST_LOG_TRIVIAL(trace) << "CLI_REFRESH Event triggered. Refreshing the screen now.";
@@ -57,6 +57,6 @@ void A_Connection_Manager_Event_Handler::Process_Event( int const& event )
 }
 
 
-} // End of CORE Namespace
-} // End of CLI  Namespace
+} // End of EVT Namespace
+} // End of CLI Namespace
 

@@ -10,7 +10,7 @@
 #include <string>
 
 // CLI Libraries
-#include "../core/Event_Manager.hpp"
+#include "../event/Event_Manager.hpp"
 #include "../utility/Log_Utilities.hpp"
 
 namespace CLI{
@@ -91,7 +91,7 @@ void A_Command_Result::Set_System_Response( const std::string& system_response )
     m_system_response_set = true;
 
     // Process a CLI Refresh event.
-    CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
+    EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
 }
 
 

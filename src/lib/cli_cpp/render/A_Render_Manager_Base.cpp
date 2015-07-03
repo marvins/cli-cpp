@@ -10,7 +10,7 @@
 #include <sstream>
 
 // CLI Libraries
-#include "../core/Event_Manager.hpp"
+#include "../event/Event_Manager.hpp"
 #include "../utility/ANSI_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
 #include "../utility/String_Utilities.hpp"
@@ -62,16 +62,18 @@ void A_Render_Manager_Base::Process_Command()
         
         // Clear the string
         BOOST_LOG_TRIVIAL(debug) << "Empty command. Skipping action.";
-
         m_render_state->Clear_Cursor_Text();
+        
         return;
     }
 
     // Cancel the command if we are still waiting on another command to finish
     if(  Check_Waiting_Command_Response() )
     {
+        // Clear the cursor text
         BOOST_LOG_TRIVIAL(debug) << "Waiting on response for existing command. Skipping action.";
         m_render_state->Clear_Cursor_Text();
+    
         return;
     }
 
@@ -95,7 +97,7 @@ void A_Render_Manager_Base::Process_Command()
     
     //  Look for CLI Shutdown
     if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_SHUTDOWN ){
-        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_SHUTDOWN );
+        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_SHUTDOWN );
     }
     
 
@@ -119,7 +121,7 @@ void A_Render_Manager_Base::Process_Command()
             Set_Waiting_Command_Response( result_ptr );
         
             // Refresh
-            CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
+            EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
 
         }
     }
@@ -131,6 +133,7 @@ void A_Render_Manager_Base::Process_Command()
     
     // Clear the cursor    
     m_render_state->Clear_Cursor_Text();
+    
     
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
@@ -158,7 +161,7 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
     
 
     // Check if the user presses enter while paused
-    if( key == (int)CORE::CLI_Event_Type::KEYBOARD_ENTER &&
+    if( key == (int)CLI_Event_Type::KEYBOARD_ENTER &&
         m_render_state->Get_Pause_Mode() )
     {
         
@@ -166,14 +169,14 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
         m_render_state->Reset_Pause_Mode();
         
         // Refresh the screen
-        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
+        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
         
         return;
     }
 
 
     // Check the key value if enter
-    if( key == (int)CORE::CLI_Event_Type::KEYBOARD_ENTER )
+    if( key == (int)CLI_Event_Type::KEYBOARD_ENTER )
     {
         
         // Process the command
@@ -189,7 +192,7 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
             
             
             // Refresh
-            CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
+            EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
             
             
             // Wait while either waiting or sleeping
@@ -201,7 +204,7 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
                 usleep(1000);
         
                 // Refresh the screen
-                CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
+                EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
             }
 
             
@@ -211,7 +214,7 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
         }
     
         // Refresh the screen
-        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
+        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
 
         return;
     }

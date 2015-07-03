@@ -7,7 +7,7 @@
 
 // CLI Libraries
 #include "A_Connection_Manager_Socket_Config.hpp"
-#include "../core/Event_Manager.hpp"
+#include "../event/Event_Manager.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
 #include "../utility/ANSI_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
@@ -243,9 +243,9 @@ void A_Connection_Manager_Socket::Run_Handler()
                 // Check if the input has a special key
                 key = this->Process_Special_Key( input );
                 
-                if( key != (int)CORE::CLI_Event_Type::UNKNOWN ){
+                if( key != (int)CLI_Event_Type::UNKNOWN ){
                     
-                    CORE::Event_Manager::Process_Event( key );
+                    EVT::Event_Manager::Process_Event( key );
                 }
                 else{
                 
@@ -258,7 +258,7 @@ void A_Connection_Manager_Socket::Run_Handler()
                         // a bunch of 250+ digits which causes the char to return
                         // negative numbers.  -3 tells me right now to shut down.
                         if( input[ch] > 0 ){    
-                            CORE::Event_Manager::Process_Event( input[ch] );
+                            EVT::Event_Manager::Process_Event( input[ch] );
                         }
                     }
                 }
@@ -266,7 +266,7 @@ void A_Connection_Manager_Socket::Run_Handler()
             } else {
             
                 // Process the single key
-                CORE::Event_Manager::Process_Event( input[0] );
+                EVT::Event_Manager::Process_Event( input[0] );
             
             }
 
@@ -343,22 +343,22 @@ void A_Connection_Manager_Socket::Refresh_Screen()
 void A_Connection_Manager_Socket::Configure_Special_Key_List()
 {
     // Add each keyboard to event mapping here
-    m_special_key_list.push_back( std::make_tuple( TELNET_JUNK,          (int)CORE::CLI_Event_Type::CLI_NULL             ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_DELETE_KEY,  (int)CORE::CLI_Event_Type::KEYBOARD_DELETE_KEY  ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_LEFT_KEY,    (int)CORE::CLI_Event_Type::KEYBOARD_LEFT_ARROW  ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_RIGHT_KEY,   (int)CORE::CLI_Event_Type::KEYBOARD_RIGHT_ARROW ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_UP_KEY,      (int)CORE::CLI_Event_Type::KEYBOARD_UP_ARROW    ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_DOWN_KEY,    (int)CORE::CLI_Event_Type::KEYBOARD_DOWN_ARROW  ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_PG_UP_KEY,   (int)CORE::CLI_Event_Type::KEYBOARD_PG_UP       ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_PG_DN_KEY,   (int)CORE::CLI_Event_Type::KEYBOARD_PG_DN       ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_HOME_KEY,    (int)CORE::CLI_Event_Type::KEYBOARD_HOME        ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_END_KEY,     (int)CORE::CLI_Event_Type::KEYBOARD_END         ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_INSERT_KEY,  (int)CORE::CLI_Event_Type::KEYBOARD_INSERT      ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F1_KEY,      (int)CORE::CLI_Event_Type::KEYBOARD_F1          ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F2_KEY,      (int)CORE::CLI_Event_Type::KEYBOARD_F2          ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F3_KEY,      (int)CORE::CLI_Event_Type::KEYBOARD_F3          ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F4_KEY,      (int)CORE::CLI_Event_Type::KEYBOARD_F4          ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F5_KEY,      (int)CORE::CLI_Event_Type::KEYBOARD_F5          ));
+    m_special_key_list.push_back( std::make_tuple( TELNET_JUNK,          (int)CLI_Event_Type::CLI_NULL             ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_DELETE_KEY,  (int)CLI_Event_Type::KEYBOARD_DELETE_KEY  ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_LEFT_KEY,    (int)CLI_Event_Type::KEYBOARD_LEFT_ARROW  ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_RIGHT_KEY,   (int)CLI_Event_Type::KEYBOARD_RIGHT_ARROW ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_UP_KEY,      (int)CLI_Event_Type::KEYBOARD_UP_ARROW    ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_DOWN_KEY,    (int)CLI_Event_Type::KEYBOARD_DOWN_ARROW  ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_PG_UP_KEY,   (int)CLI_Event_Type::KEYBOARD_PG_UP       ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_PG_DN_KEY,   (int)CLI_Event_Type::KEYBOARD_PG_DN       ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_HOME_KEY,    (int)CLI_Event_Type::KEYBOARD_HOME        ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_END_KEY,     (int)CLI_Event_Type::KEYBOARD_END         ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_INSERT_KEY,  (int)CLI_Event_Type::KEYBOARD_INSERT      ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F1_KEY,      (int)CLI_Event_Type::KEYBOARD_F1          ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F2_KEY,      (int)CLI_Event_Type::KEYBOARD_F2          ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F3_KEY,      (int)CLI_Event_Type::KEYBOARD_F3          ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F4_KEY,      (int)CLI_Event_Type::KEYBOARD_F4          ));
+    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F5_KEY,      (int)CLI_Event_Type::KEYBOARD_F5          ));
 
 }
 
@@ -386,7 +386,7 @@ int A_Connection_Manager_Socket::Process_Special_Key( const std::string& input_s
     BOOST_LOG_TRIVIAL(warning) << sin.str();
 
     // otherwise, return failure
-    return (int)CORE::CLI_Event_Type::UNKNOWN;
+    return (int)CLI_Event_Type::UNKNOWN;
 }
 
 

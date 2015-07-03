@@ -10,6 +10,8 @@
 #include <deque>
 #include <memory>
 #include <string>
+#include <thread>
+
 
 // CLI Libraries
 #include "A_Render_Driver_Context_Base.hpp"
@@ -202,8 +204,7 @@ class A_Render_Manager_Base
 
         /// Class Name
         std::string m_class_name;
-        
-        
+
 
 }; // End of A_Render_Manager Class
 

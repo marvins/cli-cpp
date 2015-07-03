@@ -88,12 +88,19 @@ TEST( A_Command_Parser, Update_Autocomplete_String )
 
     
     // Test the update
-    std::vector<std::string> match_list;
+    std::string match_name;
 
-    // Test 01
-    parser.Update_Autocomplete_String( "H", match_list );
-    ASSERT_EQ( (int)match_list.size(), 2 );
-    ASSERT_EQ( match_list[0], "HellO");
-    ASSERT_EQ( match_list[1], "HELLO");
+    // Test 01 (Partial input, multiple output)
+    parser.Update_Autocomplete_String( "H", match_name );
+    ASSERT_EQ( match_name, "H");
+    
+    // Test 02 (Partial input, no matching outputs)
+    parser.Update_Autocomplete_String( "Football", match_name );
+    ASSERT_EQ( match_name, "" );
+
+    // Test 3
+    parser.Update_Autocomplete_String( "Hel", match_name );
+    ASSERT_EQ( match_name, "Hell" );
+
 
 }

@@ -14,7 +14,7 @@
 #include "../utility/Log_Utilities.hpp"
 
 namespace CLI{
-namespace CORE{
+namespace EVT{
 
 static std::shared_ptr<Event_Manager> instance = nullptr;
 
@@ -126,7 +126,7 @@ void Event_Manager::Process_Event( const int& event )
 
     
     // Add event to queue
-    std::cout << "Queue Size: " << inst->m_event_queue->Current_Size() << std::endl;
+    std::cout << "Queue Size: " << inst->m_event_queue->Get_Current_Size() << std::endl;
     inst->m_event_queue->Push_Event( event );
 
 }
@@ -173,5 +173,5 @@ void Event_Manager::Event_Process_Runner()
 
 }
 
-} // End of CORE Namespace
-} // End of CLI  Namespace
+} // End of EVT Namespace
+} // End of CLI Namespace

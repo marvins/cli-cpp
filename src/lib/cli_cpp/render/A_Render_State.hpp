@@ -21,7 +21,6 @@
 #include "../cmd/A_Command_History.hpp"
 #include "../cmd/A_Command_Parser.hpp"
 #include "../cmd/A_Command_Result.hpp"
-#include "../utility/Log_Utilities.hpp"
 
 
 namespace CLI{
@@ -135,9 +134,7 @@ class A_Render_State{
          *
          * @return True if sleeping, false otherwise.
         */
-        inline bool Get_Sleep_Mode()const{
-            return m_sleep_mode;
-        }
+        bool Get_Sleep_Mode()const;
 
 
         /**
@@ -145,19 +142,13 @@ class A_Render_State{
          *
          * @return True if waiting for user input, false otherwise.
         */
-        inline bool Get_Pause_Mode()const{
-            BOOST_LOG_TRIVIAL(trace) << "Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
-            return m_waiting_user_input;
-        }
+        bool Get_Pause_Mode()const;
 
         
         /**
          * @brief Reset the CLI Pause Mode
          */
-        inline void Reset_Pause_Mode(){
-            BOOST_LOG_TRIVIAL(trace) << "Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
-            m_waiting_user_input = false;
-        }
+        void Reset_Pause_Mode();
 
         
     private:
@@ -234,14 +225,6 @@ class A_Render_State{
         /// CLI Cursor Position
         int m_cli_prompt_cursor_tail;
         int m_cli_prompt_cursor_at;
-
-
-        /// Window Rows
-        int m_window_rows;
-
-
-        /// Window Cols
-        int m_window_cols;
 
 
         /// Reference to Command History

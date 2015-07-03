@@ -10,7 +10,6 @@
 #include <cinttypes>
 
 namespace CLI{
-namespace CORE{
 
 /**
  * @enum CLI_Event_Type
@@ -108,7 +107,6 @@ enum class CLI_Event_Type : int32_t{
     KEYBOARD_END         = 513,
 }; // End of event type enum
 
-} // End of CORE Namespace
 } // End of CLI  Namespace
 
 #endif

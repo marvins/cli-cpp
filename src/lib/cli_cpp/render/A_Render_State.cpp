@@ -10,7 +10,7 @@
 
 // CLI Libraries
 #include "../core/CLI_Event_Type.hpp"
-#include "../core/Event_Manager.hpp"
+#include "../event/Event_Manager.hpp"
 #include "../io/CLI_Script_Loader.hpp"
 #include "../utility/Log_Utilities.hpp"
 
@@ -50,6 +50,33 @@ A_Render_State::~A_Render_State()
 
 }
 
+
+/*******************************************/
+/*           Get the Pause Mode            */
+/*******************************************/
+bool A_Render_State::Get_Pause_Mode()const{
+    BOOST_LOG_TRIVIAL(trace) << "Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    return m_waiting_user_input;
+}
+
+
+/***********************************************/
+/*          Reset the Pause Mode Value         */
+/***********************************************/
+void A_Render_State::Reset_Pause_Mode(){    
+    BOOST_LOG_TRIVIAL(trace) << "Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    m_waiting_user_input = false;
+}
+
+
+/*******************************************/
+/*          Get the Sleep Mode             */
+/*******************************************/
+bool A_Render_State::Get_Sleep_Mode()const{
+    return m_sleep_mode;
+}
+
+
 /************************/
 /*      Push Text       */
 /************************/
@@ -74,37 +101,37 @@ void A_Render_State::Process_Input( const int& input )
 
 
     // check for backspace
-    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_BACKSPACE || input == 127 ){
+    else if( input == (int)CLI_Event_Type::KEYBOARD_BACKSPACE || input == 127 ){
         Apply_Backspace();
     }
 
     // check for delete
-    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_DELETE_KEY ){
+    else if( input == (int)CLI_Event_Type::KEYBOARD_DELETE_KEY ){
         Apply_Delete();
     }
 
     // Check for left-key
-    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_LEFT_ARROW ){
+    else if( input == (int)CLI_Event_Type::KEYBOARD_LEFT_ARROW ){
         Apply_Left_Key();
     }
 
     // Check for right-key
-    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_RIGHT_ARROW ){
+    else if( input == (int)CLI_Event_Type::KEYBOARD_RIGHT_ARROW ){
         Apply_Right_Key();
     }
 
     // Check for up-key
-    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_UP_ARROW ){
+    else if( input == (int)CLI_Event_Type::KEYBOARD_UP_ARROW ){
         Apply_Up_Key();
     }
 
     // Check for down-key
-    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_DOWN_ARROW ){
+    else if( input == (int)CLI_Event_Type::KEYBOARD_DOWN_ARROW ){
         Apply_Down_Key();
     }
 
     // Check for Tab Key
-    else if( input == (int)CORE::CLI_Event_Type::KEYBOARD_TAB_KEY ){
+    else if( input == (int)CLI_Event_Type::KEYBOARD_TAB_KEY ){
         Apply_Tab_Key();
     }
     
@@ -122,7 +149,7 @@ void A_Render_State::Process_Input( const int& input )
     }
     
     // Refresh the screen
-    CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
+    EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
 }
 
 
@@ -288,26 +315,16 @@ void A_Render_State::Apply_Tab_Key()
     }
 
     // Query the command parser
-    std::vector<std::string> autocomplete_match_list;
+    std::string autocomplete_match;
 
     m_command_parser->Update_Autocomplete_String( m_cli_prompt_text,
-                                                  autocomplete_match_list );
+                                                  autocomplete_match );
 
-    // If the size is 1, then just update to that.
-    if( autocomplete_match_list.size() == 1 ){
-        
-        // Set the text
-        m_cli_prompt_text = autocomplete_match_list[0];
-        m_cli_prompt_cursor_at = m_cli_prompt_text.size();
-        m_cli_prompt_cursor_head = m_cli_prompt_text.size();
-        m_cli_prompt_cursor_tail = 0;
+    // Set the text
+    if( autocomplete_match.size() > 0 ){
 
-    }
-    else if( autocomplete_match_list.size() > 1 ){
-
-        // Get the best match
-        m_cli_prompt_text   = UTILS::String_Substring_Match( autocomplete_match_list );
-        m_cli_prompt_cursor_at = m_cli_prompt_text.size();
+        m_cli_prompt_text        = autocomplete_match;
+        m_cli_prompt_cursor_at   = m_cli_prompt_text.size();
         m_cli_prompt_cursor_head = m_cli_prompt_text.size();
         m_cli_prompt_cursor_tail = 0;
     }
@@ -327,19 +344,19 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
 
     // If help
     if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_HELP ){
-        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_HELP );
+        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_HELP );
     }
 
 
     // If back
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_BACK ){
-        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_BACK );
+        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_BACK );
     }
 
 
     // If Log
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_LOG ){
-        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_LOG );
+        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_LOG );
     }
 
     
@@ -368,7 +385,7 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
 
     // If listing aliases
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_LIST ){
-        CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_ALIAS_LIST );
+        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_ALIAS_LIST );
     }
 
 
@@ -498,7 +515,7 @@ void A_Render_State::Run_Sleep_Mode( const double sleep_seconds ){
             
     
     // Refresh
-    CORE::Event_Manager::Process_Event( (int)CORE::CLI_Event_Type::CLI_REFRESH );
+    EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
     
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;

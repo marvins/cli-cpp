@@ -26,7 +26,6 @@ find_package( Boost REQUIRED
                     log
                     thread
 )
-
 include_directories( ${Boost_INCLUDE_DIRS})
 
 
@@ -50,6 +49,7 @@ add_library( cli_cpp SHARED
              $<TARGET_OBJECTS:LIB_CLI_CORE_OBJ>
              $<TARGET_OBJECTS:LIB_CLI_CLI_OBJ>
              $<TARGET_OBJECTS:LIB_CLI_CMD_OBJ>
+             $<TARGET_OBJECTS:LIB_CLI_EVENT_OBJ>
              $<TARGET_OBJECTS:LIB_CLI_HANDLERS_OBJ>
              $<TARGET_OBJECTS:LIB_CLI_IO_OBJ>
              $<TARGET_OBJECTS:LIB_CLI_RENDER_OBJ>

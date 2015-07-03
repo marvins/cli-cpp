@@ -8,9 +8,7 @@
 
 // CLI Libraries
 #include "A_Connection_Manager_Base.hpp"
-#include "../core/A_Connection_Manager_Event_Handler.hpp"
-#include "../core/A_Render_Manager_Event_Handler.hpp"
-#include "../core/Event_Manager.hpp"
+#include "../event.hpp"
 #include "../handlers.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
 #include "../utility/Log_Utilities.hpp"
@@ -36,7 +34,7 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
     m_render_manager = m_configuration.Get_Render_Manager(); 
 
     // Add to the event manager
-    CORE::Event_Manager::Register_CLI_Event_Handler( std::make_shared<CORE::A_Render_Manager_Event_Handler>( m_render_manager ));
+    EVT::Event_Manager::Register_CLI_Event_Handler( std::make_shared<EVT::A_Render_Manager_Event_Handler>( m_render_manager ));
 
     // Set the Queue
     m_command_queue = std::make_shared<CMD::A_Command_Queue>( m_configuration.Get_Command_Queue_Max_Size() );
@@ -45,7 +43,7 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
     m_connection_manager = m_configuration.Get_Connection_Manager();
     m_connection_manager->Update_Command_Parser( m_configuration.Get_Command_Parser());
     m_connection_manager->Update_Command_Queue( m_command_queue );
-    CORE::Event_Manager::Register_CLI_Event_Handler( std::make_shared<CORE::A_Connection_Manager_Event_Handler>( m_connection_manager ));
+    EVT::Event_Manager::Register_CLI_Event_Handler( std::make_shared<EVT::A_Connection_Manager_Event_Handler>( m_connection_manager ));
     
 
     // Add the Required Command Response Handler
@@ -108,7 +106,7 @@ void A_CLI_Manager::Disconnect()
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
     // Disable the Event Manager
-    CORE::Event_Manager::Finalize();
+    EVT::Event_Manager::Finalize();
 
     // Make sure the connection manager is not already de-allocated
     if( m_connection_manager != nullptr ){

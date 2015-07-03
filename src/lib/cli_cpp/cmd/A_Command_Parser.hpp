@@ -98,9 +98,10 @@ class A_Command_Parser {
          * @brief Query Autocomplete
          *
          * @param[in] input_string Input string to check.
+         * @param[in] Nearest match.
          */
-        void Update_Autocomplete_String( const std::string&        input_string,
-                                         std::vector<std::string>& match_list )const;
+        void Update_Autocomplete_String( const std::string&  input_string,
+                                         std::string&        match_list )const;
         
 
         /**

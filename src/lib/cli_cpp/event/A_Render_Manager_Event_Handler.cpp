@@ -6,14 +6,16 @@
 #include "A_Render_Manager_Event_Handler.hpp"
 
 // CLI Libraries
-#include "CLI_Event_Type.hpp"
+#include "../core/CLI_Event_Type.hpp"
+#include "../utility/Log_Utilities.hpp"
+
 
 // C++ Standard Libraries
 #include <iostream>
 
 
 namespace CLI{
-namespace CORE{
+namespace EVT{
 
 
 /****************************/
@@ -33,7 +35,7 @@ A_Render_Manager_Event_Handler::A_Render_Manager_Event_Handler( RENDER::A_Render
 bool A_Render_Manager_Event_Handler::Is_Supported_Event( const int& event )const{
     
     // Skip Refresh
-    if( event == (int)CORE::CLI_Event_Type::CLI_REFRESH ){
+    if( event == (int)CLI_Event_Type::CLI_REFRESH ){
         return false;
     }
     
@@ -52,36 +54,36 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& event )
     
     
     // Skip if a CLI Shutdown Command
-    if( event == (int)CORE::CLI_Event_Type::UNKNOWN ||
-        event == (int)CORE::CLI_Event_Type::CLI_SHUTDOWN )
+    if( event == (int)CLI_Event_Type::UNKNOWN ||
+        event == (int)CLI_Event_Type::CLI_SHUTDOWN )
     {
         return;
     }
 
     // If we have a command to show the CLI Help, then show that
-    else if( event == (int)CORE::CLI_Event_Type::CLI_HELP ||
-             event == (int)CORE::CLI_Event_Type::KEYBOARD_F2 )
+    else if( event == (int)CLI_Event_Type::CLI_HELP ||
+             event == (int)CLI_Event_Type::KEYBOARD_F2 )
     {
         m_render_manager->Set_Current_Window(1);
     }
 
     // If we have a command for CLI_BACK, then set the current window to the main
-    else if( event == (int)CORE::CLI_Event_Type::CLI_BACK ||
-             event == (int)CORE::CLI_Event_Type::KEYBOARD_F1 )
+    else if( event == (int)CLI_Event_Type::CLI_BACK ||
+             event == (int)CLI_Event_Type::KEYBOARD_F1 )
     {
         m_render_manager->Set_Current_Window(0);
     }
 
     // If we have a command for CLI_LOG, then set the current window to the log
-    else if( event == (int)CORE::CLI_Event_Type::CLI_LOG ||
-             event == (int)CORE::CLI_Event_Type::KEYBOARD_F3 )
+    else if( event == (int)CLI_Event_Type::CLI_LOG ||
+             event == (int)CLI_Event_Type::KEYBOARD_F3 )
     {
         m_render_manager->Set_Current_Window(2);
     }
 
     // If we have a command for CLI_ALIAS_LIST, then set the current window to the alias list
-    else if( event == (int)CORE::CLI_Event_Type::CLI_ALIAS_LIST ||
-             event == (int)CORE::CLI_Event_Type::KEYBOARD_F4 )
+    else if( event == (int)CLI_Event_Type::CLI_ALIAS_LIST ||
+             event == (int)CLI_Event_Type::KEYBOARD_F4 )
     {
         m_render_manager->Set_Current_Window(3);
     }
@@ -94,6 +96,6 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& event )
 }
 
 
-} // End of CORE Namespace
-} // End of CLI  Namespace
+} // End of EVT Namespace
+} // End of CLI Namespace
 
