@@ -21,19 +21,19 @@ static std::shared_ptr<Event_Manager> instance = nullptr;
 /**************************/
 /*      Constructor       */
 /**************************/
-Event_Manager::Event_Manager( const int& event_queue_max_capacity,
-                              const int& event_work_queue_threads )
+Event_Manager::Event_Manager( Event_Manager_Config const& config )
   : m_class_name("Event_Manager"),
-    m_is_running(event_work_queue_threads, true)
+    m_config(config),
+    m_is_running(config.Get_Event_Work_Queue_Thread_Count(), true)
 {
     
     // Create the event queue
-    m_event_queue = std::make_shared<An_Event_Queue>(event_queue_max_capacity);
+    m_event_queue = std::make_shared<An_Event_Queue>(m_config.Get_Event_Queue_Max_Capacity());
 
 
     // Start the threads
     m_event_process_threads.clear();
-    for( int i=0; i<event_work_queue_threads; i++ ){
+    for( int i=0; i<m_config.Get_Event_Work_Queue_Thread_Count(); i++ ){
         m_event_process_threads.push_back( std::thread( &Event_Manager::Event_Process_Runner,
                                                         this,
                                                         i ) );
@@ -76,20 +76,18 @@ Event_Manager::~Event_Manager()
 /********************************/
 /*          Initialize          */
 /********************************/
-void Event_Manager::Initialize( const int& event_queue_max_capacity,
-                                const int& event_work_queue_threads )
+void Event_Manager::Initialize( Event_Manager_Config const& config )
 {
     // Check the singleton instance
     if( instance == nullptr ){
-        instance = Event_Manager::ptr_t(new Event_Manager( event_queue_max_capacity,
-                                                           event_work_queue_threads ));
+        instance = Event_Manager::ptr_t(new Event_Manager( config ));
     }
 
 }
 
 
 /********************************/
-/*          Initialize          */
+/*            Finalize          */
 /********************************/
 void Event_Manager::Finalize()
 {
@@ -100,14 +98,32 @@ void Event_Manager::Finalize()
 
 }
 
+
+/*************************************************************/
+/*          Check if Event Manager is Initialized            */
+/*************************************************************/
+bool Event_Manager::Is_Initialized()
+{
+    // Check the singleton instance
+    if( instance == nullptr ){
+        return false;
+    }
+    return true;
+}
+
+
 /**********************************************/
 /*          Get Instance Of Handler           */
 /**********************************************/
 Event_Manager::ptr_t Event_Manager::Instance_Of()
 {
-    // Initialize
-    Initialize();
+    // Check if we are initialized
+    if( Is_Initialized() == false ){
+        BOOST_LOG_TRIVIAL(warning) << "Event_Manager has not been initialized while calling method " << __func__;
+        return nullptr;
+    }
 
+    // Otherwise, return instance
     return instance;
 }
 

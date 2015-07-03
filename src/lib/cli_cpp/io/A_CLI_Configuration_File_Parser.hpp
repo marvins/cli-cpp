@@ -9,11 +9,16 @@
 // C++ Standard Libraries
 #include <string>
 
+
 // CLI Libraries
-#include "A_CLI_Manager_Configuration.hpp"
-#include "A_Connection_Manager_Base_Config.hpp"
+#include "../cli/A_CLI_Manager_Configuration.hpp"
+#include "../cli/A_Connection_Manager_Base_Config.hpp"
+#include "../event/Event_Manager_Config.hpp"
+
 
 namespace CLI{
+namespace IO{
+namespace CONFIG{
 
 /**
  * @class A_CLI_Configuration_File_Parser
@@ -39,6 +44,16 @@ class A_CLI_Configuration_File_Parser{
         {
             return m_current_configuration;
         }
+        
+
+        /**
+         * @brief Get Event Manager Configuration.
+         *
+         * @return Event manager configuration object.
+        */
+        inline EVT::Event_Manager_Config  Get_Event_Manager_Config()const{
+            return m_event_manager_config;
+        }
 
 
         /**
@@ -62,20 +77,30 @@ class A_CLI_Configuration_File_Parser{
         /// Class Name
         std::string m_class_name;
 
+        
         /// Configuration File Path
         std::string m_config_pathname;
 
+        
         /// Current Configuration
         A_CLI_Manager_Configuration m_current_configuration;
 
+        
         /// Connection Handler Configuration
         A_Connection_Manager_Base_Config::ptr_t m_connection_manager_config;
+
+        
+        /// Event Manager Configuration
+        EVT::Event_Manager_Config m_event_manager_config;
+
 
         /// Parsing Status
         bool m_is_valid;
 
 }; // End of A_CLI_Configuration_File_Parser Class
 
-} // End of CLI Namespace
+} // End of CONFIG Namespace
+} // End of IO     Namespace
+} // End of CLI    Namespace
 
 #endif

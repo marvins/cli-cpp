@@ -17,6 +17,7 @@
 #include "../core/CLI_Event_Type.hpp"
 #include "A_CLI_Event_Handler_Base.hpp"
 #include "An_Event_Queue.hpp"
+#include "Event_Manager_Config.hpp"
 
 
 namespace CLI{
@@ -42,14 +43,21 @@ class Event_Manager{
          * @param[in] event_queue_max_capacity Max number of messages to wait in the event queue.
          * @param[in] event_work_queue_threads Number of threads to process jobs on the work queue.
          */
-        static void Initialize( const int& event_queue_max_capacity = 100,
-                                const int& event_work_queue_threads = 2 );
+        static void Initialize( Event_Manager_Config const& config );
 
 
         /**
          * @brief Finalize the Event Manager
         */
         static void Finalize();
+
+        
+        /**
+         * @brief Check if initialized.
+         *
+         * @return True if initialized, false otherwise.
+        */
+        static bool Is_Initialized();
 
 
         /**
@@ -79,11 +87,13 @@ class Event_Manager{
          * @param[in] event_queue_max_capacity Max size of the event queue.
          * @param[in] event_work_queue_threads Number of threads to process jobs.
          */
-        Event_Manager( const int& event_queue_max_capacity,
-                       const int& event_work_queue_threads );
-
+        Event_Manager( Event_Manager_Config const& config );
+        
+        
         /**
-         * @brief Get Instance
+         * @brief Get Instance of the event manager.
+         *
+         * @return Event_Manager global singleton instance.
         */
         static Event_Manager::ptr_t Instance_Of();
 
@@ -98,11 +108,15 @@ class Event_Manager{
 
         /// Class Name
         std::string m_class_name;
+        
+
+        /// Configuration
+        Event_Manager_Config m_config;
 
 
         /// List of event handlers
         std::vector<A_CLI_Event_Handler_Base::ptr_t> m_event_handlers;
-
+        
 
         /// Event Manager Queue
         An_Event_Queue::ptr_t m_event_queue;

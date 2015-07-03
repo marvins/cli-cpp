@@ -13,6 +13,7 @@ set( LIB_CLI_EVENT_MODULE_SOURCES
     A_Render_Manager_Event_Handler.cpp
     An_Event_Queue.cpp
     Event_Manager.cpp
+    Event_Manager_Config.cpp
 )
 
 
@@ -26,6 +27,7 @@ set( LIB_CLI_EVENT_MODULE_HEADERS
     A_Render_Manager_Event_Handler.hpp
     An_Event_Queue.hpp
     Event_Manager.hpp
+    Event_Manager_Config.hpp
 )
 
 

@@ -6,20 +6,25 @@
 #include "A_CLI_Configuration_File_Parser.hpp"
 
 // CLI Libraries
-#include "A_Connection_Manager_Socket_Config.hpp"
+#include "../cli/A_Connection_Manager_Socket_Config.hpp"
 #include "../cmd/A_Command_Parser_Factory.hpp"
 #include "../thirdparty/pugixml.hpp"
 #include "../utility/Log_Utilities.hpp"
+#include "CLI_Configuration_File_Parser_Utilities.hpp"
+
 
 // C++ Standard Libraries
 #include <iostream>
 #include <sstream>
 
+
 // Boost Libraries
 #include <boost/filesystem.hpp>
 
-namespace CLI{
 
+namespace CLI{
+namespace IO{
+namespace CONFIG{
 
 /************************************/
 /*          Constructor             */
@@ -49,6 +54,7 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     const std::string CLI_TITLE_QUERY         = "title";
     const std::string CLI_COMMAND_QUEUE_QUERY = "command-queue"; 
     const std::string CLI_REDIRECT_QUERY      = "redirect";
+    const std::string EVENT_MANAGER_QUERY     = "event-manager";
 
 
     // Temp Variables
@@ -183,12 +189,21 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
         m_current_configuration.Set_Command_Parser(command_parser);
     }
 
+
+    // Load the Event-Manager Configuration
+    pugi::xml_node event_node = root_node.child(EVENT_MANAGER_QUERY.c_str());
+    m_event_manager_config = XML::Load_Event_Manager_Config_XML_Node( event_node );
+    
+    // Pass the event manager configuration to the cli manager config
+    m_current_configuration.Set_Event_Manager_Config( m_event_manager_config );
+
     
     // Set valid
     m_is_valid = true;
 }
 
 
-
-} // End of CLI Namespace
+} // End of CONFIG Namespace
+} // End of IO     Namespace
+} // End of CLI    Namespace
 

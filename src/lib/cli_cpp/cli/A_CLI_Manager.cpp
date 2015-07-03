@@ -29,8 +29,12 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
     m_configuration(configuration),
     m_handler_thread_running(false)
 {
+    // Register the event manager
+    if( EVT::Event_Manager::Is_Initialized() != true ){
+        EVT::Event_Manager::Initialize( configuration.Get_Event_Manager_Config() );
+    }
     
-    // Call the factory
+    // Grab the rendering manager
     m_render_manager = m_configuration.Get_Render_Manager(); 
 
     // Add to the event manager
