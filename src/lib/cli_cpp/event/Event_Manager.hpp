@@ -37,9 +37,13 @@ class Event_Manager{
 
 
         /**
-         * @brief Initialize the Event Manager
+         * @brief Initialize the Event Manager.
+         *
+         * @param[in] event_queue_max_capacity Max number of messages to wait in the event queue.
+         * @param[in] event_work_queue_threads Number of threads to process jobs on the work queue.
          */
-        static void Initialize();
+        static void Initialize( const int& event_queue_max_capacity = 100,
+                                const int& event_work_queue_threads = 2 );
 
 
         /**
@@ -71,8 +75,12 @@ class Event_Manager{
 
         /**
          * @brief Constructor
+         *
+         * @param[in] event_queue_max_capacity Max size of the event queue.
+         * @param[in] event_work_queue_threads Number of threads to process jobs.
          */
-        Event_Manager();
+        Event_Manager( const int& event_queue_max_capacity,
+                       const int& event_work_queue_threads );
 
         /**
          * @brief Get Instance
@@ -82,8 +90,10 @@ class Event_Manager{
 
         /** 
          * @brief Event process thread runner.
+         *
+         * @param[in] thread_id ID of the particular thread for indexing specific resources.
          */
-        void Event_Process_Runner();
+        void Event_Process_Runner( const int& thread_id );
 
 
         /// Class Name
@@ -99,11 +109,11 @@ class Event_Manager{
 
         
         /// Process thread
-        std::thread m_event_process_thread;
+        std::vector<std::thread>  m_event_process_threads;
 
         
         // Running flag
-        bool m_is_running;
+        std::vector<bool> m_is_running;
 
 }; // End of Event_Manager Class
 

@@ -21,17 +21,24 @@ static std::shared_ptr<Event_Manager> instance = nullptr;
 /**************************/
 /*      Constructor       */
 /**************************/
-Event_Manager::Event_Manager()
+Event_Manager::Event_Manager( const int& event_queue_max_capacity,
+                              const int& event_work_queue_threads )
   : m_class_name("Event_Manager"),
-    m_is_running(true)
+    m_is_running(event_work_queue_threads, true)
 {
+    
     // Create the event queue
-    m_event_queue = std::make_shared<An_Event_Queue>(100);
+    m_event_queue = std::make_shared<An_Event_Queue>(event_queue_max_capacity);
 
 
-    // Start the thread
-    m_event_process_thread = std::thread( &Event_Manager::Event_Process_Runner,
-                                          this );
+    // Start the threads
+    m_event_process_threads.clear();
+    for( int i=0; i<event_work_queue_threads; i++ ){
+        m_event_process_threads.push_back( std::thread( &Event_Manager::Event_Process_Runner,
+                                                        this,
+                                                        i ) );
+    }
+
 }
 
 
@@ -42,16 +49,21 @@ Event_Manager::~Event_Manager()
 {
 
     // Stop the thread
-    m_is_running = false;
+    for( size_t i=0; i<m_event_process_threads.size(); i++ ){
+        m_is_running[i] = false;
+        m_event_queue->Push_Event((int)CLI_Event_Type::CLI_NULL);
+    }
     
     
     // Clear the event queue
     m_event_queue->Clear();
 
     
-    // Wait to join the thread
-    if( m_event_process_thread.joinable() ){
-        m_event_process_thread.join();
+    // Wait to join the threads
+    for( size_t i=0; i<m_event_process_threads.size(); i++ ){
+        if( m_event_process_threads[i].joinable() ){
+            m_event_process_threads[i].join();
+        }
     }
 
 
@@ -64,11 +76,13 @@ Event_Manager::~Event_Manager()
 /********************************/
 /*          Initialize          */
 /********************************/
-void Event_Manager::Initialize()
+void Event_Manager::Initialize( const int& event_queue_max_capacity,
+                                const int& event_work_queue_threads )
 {
     // Check the singleton instance
     if( instance == nullptr ){
-        instance = Event_Manager::ptr_t(new Event_Manager());
+        instance = Event_Manager::ptr_t(new Event_Manager( event_queue_max_capacity,
+                                                           event_work_queue_threads ));
     }
 
 }
@@ -126,7 +140,6 @@ void Event_Manager::Process_Event( const int& event )
 
     
     // Add event to queue
-    std::cout << "Queue Size: " << inst->m_event_queue->Get_Current_Size() << std::endl;
     inst->m_event_queue->Push_Event( event );
 
 }
@@ -135,13 +148,13 @@ void Event_Manager::Process_Event( const int& event )
 /*********************************/
 /*          Event Runner         */
 /*********************************/
-void Event_Manager::Event_Process_Runner()
+void Event_Manager::Event_Process_Runner( const int& thread_id )
 {
     // Misc variables
     int temp_event;
 
     // Run while the flag is valid
-    while( m_is_running == true )
+    while( m_is_running[thread_id] == true )
     {
 
         // Get the next event

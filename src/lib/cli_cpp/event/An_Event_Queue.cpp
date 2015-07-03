@@ -8,6 +8,10 @@
 // CLI Libraries
 #include "../utility/Log_Utilities.hpp"
 
+// C++ Standard Libraries
+#include <cerrno>
+#include <iostream>
+#include <sstream>
 
 namespace CLI{
 namespace EVT{
@@ -30,13 +34,25 @@ An_Event_Queue::An_Event_Queue( const int& max_queue_size )
     
     
     // Initialize the semaphores
-    sem_init( &m_push_semaphore, 0, max_queue_size);
-    sem_init( &m_pop_semaphore, 0, 0);
+    if( (m_pop_semaphore = sem_open("/pop_semaphore", O_CREAT, 0666, 0)) == SEM_FAILED ){
+        sem_close(m_pop_semaphore);
+        sem_unlink("/pop_semaphore");
+        throw std::runtime_error(std::string("Unable to initialize pop semaphore. Details: ") + strerror(errno));
+    }
+    
+    if( (m_push_semaphore = sem_open("/push_semaphore", O_CREAT, 0666, max_queue_size)) == SEM_FAILED ){
+        sem_close(m_push_semaphore);
+        sem_unlink("/push_semaphore");
+        throw std::runtime_error(std::string("Unable to initialize push semaphore. Details: ") + strerror(errno));
+    }
 
+    
     // Initialize array values
     for( int i=0; i<m_max_queue_size; i++ ){
         m_event_queue[i] = (int)CLI_Event_Type::CLI_NULL;
     }
+
+    m_current_size = 0;
 }
 
 
@@ -50,6 +66,15 @@ An_Event_Queue::~An_Event_Queue()
 
     // Set to null
     m_event_queue = nullptr;
+
+    // Close semaphores
+    sem_close( m_pop_semaphore );
+    sem_close( m_push_semaphore );
+    
+    // Unlink the semaphores
+    sem_unlink("/pop_semaphore");
+    sem_unlink("/push_semaphore");
+
 }
 
 
@@ -62,8 +87,8 @@ void An_Event_Queue::Clear()
     m_close_flag = true;
 
     // Increment all semaphores
-    sem_post( &m_push_semaphore );
-    sem_post( &m_pop_semaphore );
+    sem_post( m_push_semaphore );
+    sem_post( m_pop_semaphore );
 
 }
 
@@ -74,7 +99,11 @@ void An_Event_Queue::Clear()
 void An_Event_Queue::Push_Event( int const& event )
 {
     // Decrement the push semaphore
-    sem_wait( &m_push_semaphore );
+    if( sem_wait( m_push_semaphore ) < 0 ){
+        std::stringstream sin;
+        sin << "Error with semaphore.";
+        throw std::runtime_error(sin.str());   
+    }
 
     
     // Lock the mutex
@@ -98,7 +127,7 @@ void An_Event_Queue::Push_Event( int const& event )
 
 
     // Increment the pop semaphore
-    sem_post( &m_pop_semaphore );
+    sem_post( m_pop_semaphore );
 }
 
 /*****************************/
@@ -112,7 +141,11 @@ int An_Event_Queue::Pop_Event()
 
 
     // Decrement the pop semaphore
-    sem_wait( &m_pop_semaphore );
+    if( sem_wait( m_pop_semaphore ) != 0 ){
+        std::stringstream sin;
+        sin << "sem_wait failed with error. Details: " << strerror(errno) << ", File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__;
+        throw std::runtime_error(sin.str());
+    }
 
 
     // Return if the list is empty
@@ -142,7 +175,11 @@ int An_Event_Queue::Pop_Event()
 
     
     // Increment the push semaphore
-    sem_post( &m_push_semaphore );
+    if( sem_post( m_push_semaphore ) < 0 ){
+        std::stringstream sin;
+        sin << "sem_push failed with error. Details: " << strerror(errno) << ", File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__;
+        throw std::runtime_error(sin.str());
+    }
     
     
     // return command

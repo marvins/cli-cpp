@@ -158,7 +158,7 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
     if( Check_Waiting_Command_Response() == true ){
         return;
     }
-    
+
 
     // Check if the user presses enter while paused
     if( key == (int)CLI_Event_Type::KEYBOARD_ENTER &&
@@ -182,50 +182,51 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
         // Process the command
         Process_Command();
 
+        // Refresh the screen
+        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
+        
 
         // Check if we have an active queue (CLI_RUN_SCRIPT)
         while( m_render_state->Get_Active_Command_Queue_Size() > 0 ){
-            
-            
+                                        
+
             // Update the current command
             m_render_state->Load_Next_Active_Command();
-            
-            
+
+
             // Refresh
             EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
-            
-            
+
+
             // Wait while either waiting or sleeping
             while(  Check_Waiting_Command_Response() ||
                     m_render_state->Get_Pause_Mode() == true ||
                     m_render_state->Get_Sleep_Mode() == true )
             {
                 BOOST_LOG_TRIVIAL(trace) << "Waiting on Check_Waiting_Command_Response()";
-                usleep(1000);
-        
+                usleep(500000);
+
                 // Refresh the screen
                 EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
             }
 
-            
+
             // Process the command
             Process_Command();
-                
+
         }
-    
-        // Refresh the screen
-        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
+
 
         return;
     }
 
-    
+
     // Check that the render state is not null.  I want this to seg fault for now so I know when a problem occurs
     if( this->m_render_state == nullptr ){
         BOOST_LOG_TRIVIAL(error) << "Render-State is currently nullptr. Expect a seg fault.";
     }
 
-    
+
     // Process Keyboard Input
     this->m_render_state->Process_Input( key );
 

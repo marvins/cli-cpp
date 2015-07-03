@@ -96,8 +96,8 @@ class An_Event_Queue
         std::mutex m_mtx;
 
         /// Counters
-        sem_t m_push_semaphore;
-        sem_t m_pop_semaphore;
+        sem_t* m_push_semaphore;
+        sem_t* m_pop_semaphore;
 
         /// Head and Tail Cursors
         int m_head;
@@ -111,7 +111,7 @@ class An_Event_Queue
 
 
         /// Current size
-        std::atomic<int> m_current_size;
+        int m_current_size;
 
 }; // End of An_Event_Queue Class
 

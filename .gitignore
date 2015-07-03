@@ -2,3 +2,7 @@ debug
 scratch
 .*.swp
 release
+.idea
+docs/html
+docs/latex
+*.tmp
