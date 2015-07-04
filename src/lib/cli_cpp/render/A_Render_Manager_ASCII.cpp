@@ -32,7 +32,8 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( A_Render_Driver_Context_Base::pt
                                                 CMD::A_Command_Parser::ptr_t        command_parser )
  :  A_Render_Manager_Base( command_parser ),
     m_class_name("A_Render_Manager_ASCII"),
-    m_current_window(0)
+    m_current_window(0),
+    m_help_window_mode(false)
 {
     // Cast the driver
     m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(driver_context);
@@ -75,6 +76,14 @@ void A_Render_Manager_ASCII::Initialize()
     // Add the alias list window
     m_window_list.push_back(std::make_shared<An_Alias_List_Window>( driver_context, 
                                                                     m_command_parser ));
+    
+    // Create the CLI Man Pages
+    for( size_t i=0; i<m_command_parser->Get_CLI_Command_List().size(); i++ ){
+        m_help_windows.push_back(std::make_shared<A_CLI_Command_Detailed_Help_Window>( driver_context,
+                                                                                        m_command_parser->Get_CLI_Command_List()[i] ));
+    }
+
+    
 
     
     // Log Exit
@@ -95,6 +104,7 @@ void A_Render_Manager_ASCII::Finalize()
     
     // Clear out the windows
     m_window_list.clear();
+    m_help_windows.clear();
 
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
@@ -118,8 +128,13 @@ std::vector<std::string> A_Render_Manager_ASCII::Get_Console_Buffer()
 
     
     // Get the data
-    std::vector<std::string> output = m_window_list[m_current_window]->Get_Buffer_Data();
-
+    std::vector<std::string> output;
+    if( m_help_window_mode == false ){
+        output = m_window_list[m_current_window]->Get_Buffer_Data();
+    }
+    else {
+        output = m_help_windows[m_current_window]->Get_Buffer_Data();
+    }
     
     // Unlock the mutex
     m_refresh_mutex.unlock();
@@ -162,16 +177,23 @@ void A_Render_Manager_ASCII::Refresh()
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
 
+    // Pick the right window
+    An_ASCII_Render_Window_Base::ptr_t ref = m_window_list[m_current_window];
+    if( m_help_window_mode == true ){
+        ref = m_help_windows[m_current_window];
+    }
+
+
     // Update the buffer data
-    m_window_list[m_current_window]->Update_Buffer_Data();
+    ref->Update_Buffer_Data();
 
 
     // Print the Header onto the Current Buffer Data
-    Print_Header(m_window_list[m_current_window]->Get_Buffer_Data());
+    Print_Header(ref->Get_Buffer_Data());
 
 
     // Print the CLI Onto the Current Buffer Data
-    Print_CLI(m_window_list[m_current_window]->Get_Buffer_Data());
+    Print_CLI(ref->Get_Buffer_Data());
 
     
     // Log Exit
@@ -184,6 +206,12 @@ void A_Render_Manager_ASCII::Refresh()
 /*******************************/
 void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffer )
 {
+    
+    // Pick the right window
+    An_ASCII_Render_Window_Base::ptr_t ref = m_window_list[m_current_window];
+    if( m_help_window_mode == true ){
+        ref = m_help_windows[m_current_window];
+    }
     
     // Get the CLI Title
     std::string cli_title = "   " + m_render_driver_context->Get_CLI_Title();
@@ -209,7 +237,10 @@ void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffe
     
     // Set the header
     print_buffer[0] = UTILS::ANSI_CLEARSCREEN + UTILS::ANSI_RESETCURSOR + title_header + UTILS::ANSI_NEWLINE;
-
+    
+    // Set the titlebar
+    print_buffer[1] = "   " + UTILS::ANSI_BLUE + ref->Get_Window_Title() + UTILS::ANSI_RESET + UTILS::ANSI_NEWLINE;
+    
 }
 
 
@@ -382,8 +413,23 @@ bool A_Render_Manager_ASCII::Check_Waiting_Command_Response(){
     return output;
 }
         
-
-
+/******************************************************/
+/*          Set the CLI Detailed Help Window          */
+/******************************************************/
+bool A_Render_Manager_ASCII::Set_CLI_Detailed_Help_Window( const std::string& command_name )
+{
+    // Iterate over help windows, looking for a match
+    for( size_t i=0; i<m_help_windows.size(); i++ ){
+        
+        // Check the name match
+        if( m_help_windows[i]->Is_Matching_Name( command_name ) == true ){
+            m_help_window_mode = true;
+            m_current_window = i;
+            return true;
+        }
+    }
+    return false;
+}
 
 } // End of RENDER Namespace
 } // End of CLI    Namespace

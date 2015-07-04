@@ -417,7 +417,6 @@ std::vector<std::tuple<std::string,CommandParseStatus>> Get_CLI_Mode_To_Parse_St
 
     // Add each cli command
     output.push_back( std::make_tuple("shutdown",     CommandParseStatus::CLI_SHUTDOWN)     );
-    output.push_back( std::make_tuple("help",         CommandParseStatus::CLI_HELP)         );
     output.push_back( std::make_tuple("back",         CommandParseStatus::CLI_BACK)         );
     output.push_back( std::make_tuple("clear",        CommandParseStatus::CLI_CLEAR)        );
     output.push_back( std::make_tuple("log",          CommandParseStatus::CLI_LOG)          );
@@ -427,6 +426,7 @@ std::vector<std::tuple<std::string,CommandParseStatus>> Get_CLI_Mode_To_Parse_St
     output.push_back( std::make_tuple("run-script",   CommandParseStatus::CLI_RUN_SCRIPT)   );
     output.push_back( std::make_tuple("pause",        CommandParseStatus::CLI_PAUSE)        );
     output.push_back( std::make_tuple("sleep",        CommandParseStatus::CLI_SLEEP)        );
+    output.push_back( std::make_tuple("help",         CommandParseStatus::VALID)            ); ///<  CLI Help Commands should be treated like normal commands.
     output.push_back( std::make_tuple("cli-resize",   CommandParseStatus::VALID)            ); ///<  CLI Resize Commands should be treated like normal commands.
 
 

@@ -8,6 +8,7 @@
 #-      Handler Module Sources     -#
 #-----------------------------------#
 set( LIB_CLI_HANDLERS_MODULE_SOURCES
+   A_CLI_Detailed_Help_Command_Response_Handler.cpp 
    A_CLI_Resize_Command_Response_Handler.cpp 
 )
 
@@ -16,6 +17,7 @@ set( LIB_CLI_HANDLERS_MODULE_SOURCES
 #-      Handler Module Headers     -#
 #-----------------------------------#
 set( LIB_CLI_HANDLERS_MODULE_HEADERS
+   A_CLI_Detailed_Help_Command_Response_Handler.hpp 
    A_CLI_Resize_Command_Response_Handler.hpp 
 )
 

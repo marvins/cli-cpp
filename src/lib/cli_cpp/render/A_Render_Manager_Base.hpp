@@ -148,6 +148,13 @@ class A_Render_Manager_Base
         virtual void Set_CLI_Window_Size( const int& rows,
                                           const int& cols );
 
+    
+        /**
+         * @brief Set the window to the appropriate Detailed Help ID.
+         *
+         * @param[in] command_name
+        */
+        virtual bool Set_CLI_Detailed_Help_Window( const std::string& command_name ) = 0;
 
 
     protected:

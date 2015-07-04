@@ -36,14 +36,23 @@ class An_Alias_List_Window : public An_ASCII_Render_Window_Base
         */
         An_Alias_List_Window( A_Render_Driver_Context_ASCII::ptr_t    render_driver,
                               const CMD::A_Command_Parser::ptr_t      command_parser );
+        
+        
+        /**
+         * @brief Get the Window Title
+        */
+        inline virtual std::string  Get_Window_Title()const{
+            return "CLI Alias List Window";
+        }
 
-
-    private:
 
         /**
          * @brief Update the Buffer Data
         */
-        void Update_Buffer_Data();
+        virtual void Update_Buffer_Data();
+    
+    
+    private:
 
         
         /**

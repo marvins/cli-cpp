@@ -18,6 +18,7 @@
 #include "A_Render_Manager_Base.hpp"
 #include "A_Render_State.hpp"
 #include "ascii/An_ASCII_Render_Window_Base.hpp"
+#include "ascii/A_CLI_Command_Detailed_Help_Window.hpp"
 #include "../cmd/A_Command_History.hpp"
 #include "../utility/An_ASCII_Print_Table.hpp"
 
@@ -83,6 +84,7 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
          */
         inline virtual void Set_Current_Window( const int& window_id ){
             m_current_window = window_id;
+            m_help_window_mode = false;
         }
 
         
@@ -94,7 +96,13 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
          */
         virtual void Set_CLI_Window_Size( const int& rows,
                                           const int& cols );
-
+        
+        /**
+         * @brief Set the window to the appropriate Detailed Help ID.
+         *
+         * @param[in] command_name
+        */
+        virtual bool Set_CLI_Detailed_Help_Window( const std::string& command_name );
 
 
     protected:
@@ -146,11 +154,15 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         
         /// List of Render Windows
         std::vector<An_ASCII_Render_Window_Base::ptr_t> m_window_list;
+        
 
+        /// List of CLI Detailed Help Windows
+        std::vector<A_Detailed_Help_Window::ptr_t> m_help_windows;
 
         /// Current Window Index
         int m_current_window;
-
+        
+        bool m_help_window_mode;
         
         /// Refresh Mutex
         std::mutex m_refresh_mutex;

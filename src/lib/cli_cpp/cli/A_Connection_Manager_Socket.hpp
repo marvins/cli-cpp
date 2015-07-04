@@ -18,6 +18,8 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <tuple>
+#include <unistd.h>
+
 
 namespace CLI{
 
@@ -50,6 +52,14 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
          * @brief Refresh the Screen.
          */
         virtual void Refresh_Screen();
+        
+        
+        /**
+         * @brief Set the Is Connection Flag
+        */
+        inline virtual void Set_Is_Connected_Flag( const bool& is_connected ){
+            m_is_connected = is_connected;
+        }
 
     
     protected:

@@ -50,7 +50,16 @@ class A_Log_Window : public An_ASCII_Render_Window_Base
          * @brief Refresh the window
         */
         void Refresh();
-
+        
+        
+        /**
+         * @brief Get the Window Title.
+         *
+         * @return Window Title.
+        */
+        inline virtual std::string Get_Window_Title()const{
+            return "Log Output History Window";
+        }
 
     private:
 

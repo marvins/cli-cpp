@@ -49,6 +49,15 @@ class A_General_Help_Window : public An_ASCII_Render_Window_Base
         virtual void Update_Buffer_Data();
 
 
+        /**
+         * @brief Get the Window Title.
+         *
+         * @return Window Title.
+        */
+        inline virtual std::string Get_Window_Title()const{
+            return "General Help Window";
+        }
+
     private:
 
 

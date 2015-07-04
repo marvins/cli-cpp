@@ -33,7 +33,16 @@ class A_Main_Window : public An_ASCII_Render_Window_Base
          * @brief Retrieve the buffer data
         */
         virtual std::vector<std::string>& Get_Buffer_Data();
+        
 
+        /**
+         * @brief Get the Window Title.
+         *
+         * @return Window Title.
+        */
+        inline virtual std::string Get_Window_Title()const{
+            return "Command History Window";
+        }
 
     protected:
         

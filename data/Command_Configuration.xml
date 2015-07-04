@@ -19,6 +19,10 @@
             <name value="help" />
             <description value="Command to print the general help menu." />
             <task-name value="Help" />
+            <expect_response value="true" />
+            <arguments>
+                <argument name="topic" type="STRING"  description="Sub-topic.  Leave blank to show general." required="false" />
+            </arguments>
         </command>
         
         <!-- Back Command -->

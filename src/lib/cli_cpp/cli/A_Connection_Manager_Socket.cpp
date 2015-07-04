@@ -328,7 +328,7 @@ void A_Connection_Manager_Socket::Refresh_Screen()
     for( size_t i=0; i<buffer_data.size(); i++ ){
         write( m_client_fd, buffer_data[i].c_str(), buffer_data[i].size() );   
     }
-
+          
     // Unlock the mutex
     m_refresh_lock.unlock();
     

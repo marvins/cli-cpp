@@ -168,7 +168,7 @@ A_Command_Result  A_Command_Result::Process_Arguments( const A_Command& command,
 /*          Process Command Arguments         */
 /**********************************************/
 A_Command_Result  A_Command_Result::Process_CLI_Arguments( const A_CLI_Command& command,    
-                                                       const std::vector<std::string>&  arguments )
+                                                           const std::vector<std::string>&  arguments )
 {
     // Log 
     BOOST_LOG_TRIVIAL(trace) << "Start of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;

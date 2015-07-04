@@ -15,6 +15,8 @@ set( LIB_CLI_RENDER_MODULE_SOURCES
     A_Render_Manager_Base.cpp
     A_Render_Manager_Factory.cpp
     A_Render_State.cpp
+    ascii/A_CLI_Command_Detailed_Help_Window.cpp
+    ascii/A_Detailed_Help_Window.cpp
     ascii/A_General_Help_Window.cpp
     ascii/A_Log_Window.cpp
     ascii/A_Main_Window.cpp
@@ -37,6 +39,8 @@ set( LIB_CLI_RENDER_MODULE_HEADERS
     A_Render_Manager_Base.hpp
     A_Render_Manager_Factory.hpp
     A_Render_State.hpp
+    ascii/A_CLI_Command_Detailed_Help_Window.hpp
+    ascii/A_Detailed_Help_Window.hpp
     ascii/A_General_Help_Window.hpp
     ascii/A_Log_Window.hpp
     ascii/A_Main_Window.hpp

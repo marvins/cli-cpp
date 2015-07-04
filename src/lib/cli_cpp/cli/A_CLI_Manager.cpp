@@ -236,7 +236,10 @@ void A_CLI_Manager::Register_Internal_Command_Response_Handlers()
     // CLI Resize
     HANDLER::A_CLI_Resize_Command_Response_Handler::ptr_t cli_resize = std::make_shared<HANDLER::A_CLI_Resize_Command_Response_Handler>( m_render_manager );
     Register_Command_Response_Handler( cli_resize );
-
+    
+    // CLI Detailed Help
+    HANDLER::A_CLI_Detailed_Help_Command_Response_Handler::ptr_t cli_help = std::make_shared<HANDLER::A_CLI_Detailed_Help_Command_Response_Handler>( m_render_manager );
+    Register_Command_Response_Handler( cli_help );
 
 }
 

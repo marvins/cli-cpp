@@ -7,6 +7,7 @@
 
 // CLI Libraries
 #include "../core/CLI_Event_Type.hpp"
+#include "../event/Event_Manager.hpp"
 #include "../utility/Log_Utilities.hpp"
 
 
@@ -35,8 +36,10 @@ A_Render_Manager_Event_Handler::A_Render_Manager_Event_Handler( RENDER::A_Render
 bool A_Render_Manager_Event_Handler::Is_Supported_Event( const int& event )const{
     
     // Skip Refresh
-    if( event == (int)CLI_Event_Type::CLI_REFRESH ){
-        return false;
+    switch( event ){
+        case (int)CLI_Event_Type::CLI_REFRESH:
+        case (int)CLI_Event_Type::CLI_HELP:
+            return false;
     }
     
     // Otherwise, we are fine
@@ -61,11 +64,11 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& event )
     }
 
     // If we have a command to show the CLI Help, then show that
-    else if( event == (int)CLI_Event_Type::CLI_HELP ||
-             event == (int)CLI_Event_Type::KEYBOARD_F2 )
+    else if( event == (int)CLI_Event_Type::KEYBOARD_F2 )
     {
         m_render_manager->Set_Current_Window(1);
     }
+
 
     // If we have a command for CLI_BACK, then set the current window to the main
     else if( event == (int)CLI_Event_Type::CLI_BACK ||
@@ -92,6 +95,9 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& event )
     else{
         m_render_manager->Process_Keyboard_Input( event );
     }
+
+    // Refresh screen
+    EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
 
 }
 
