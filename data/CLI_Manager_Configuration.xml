@@ -29,12 +29,6 @@
         <!-- Window Size -->
         <window-size rows="40" cols="120" />
 
-        <!-- Socket Read Failure Refresh Sleep Time -->
-        <read-polling-sleep-time time-usec="1000" />
-
-        <!-- Number of sleeps before refreshing the screen anyways. -->
-        <read-polling-refresh-override-count value="500" />
-
     </socket-configuration>
 
 

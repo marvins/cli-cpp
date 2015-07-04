@@ -27,10 +27,10 @@ class A_Connection_Manager_Socket_Config : public A_Connection_Manager_Base_Conf
 
         /**
          * @brief Constructor
+         *
+         * @param[in] port Port number to configure the Connection-Manager's socket with.
         */
-        A_Connection_Manager_Socket_Config( const int& port,
-                                            const int& socket_read_sleep_time_usec,
-                                            const int& socket_read_max_wait_refresh_count) ;
+        A_Connection_Manager_Socket_Config( const int& port );
 
 
         /**
@@ -48,26 +48,8 @@ class A_Connection_Manager_Socket_Config : public A_Connection_Manager_Base_Conf
         {
             return m_port;
         }
-        
-        
-         /**
-          * @brief Get the socket read sleep time.
-          *
-          * @return Socket wait time in microseconds.
-         */
-         inline int Get_Socket_Read_Sleep_Time_USec()const{
-             return m_socket_read_sleep_time_usec;
-         }
-    
-    
-        /**
-         * @brief Get the socket read max wait refresh counter.
-        */
-        inline int Get_Socket_Max_Wait_Refresh_Count() const{
-            return m_socket_read_max_wait_refresh_count;
-        }
+       
 
-        
         /**
          * @brief Get the Connection Type.
          *
@@ -85,12 +67,6 @@ class A_Connection_Manager_Socket_Config : public A_Connection_Manager_Base_Conf
         /// Port Number
         int m_port;
         
-        /// Socket Window Refresh Sleep Time in Microseconds
-        int m_socket_read_sleep_time_usec;
-
-        /// Socket Read Max Wait Refresh Count
-        int m_socket_read_max_wait_refresh_count;
-
 }; // End of A_Connection_Manager_Socket_Config Class
 
 } // End of CLI Namespace
