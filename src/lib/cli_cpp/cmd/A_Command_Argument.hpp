@@ -148,6 +148,19 @@ class A_Command_Argument{
          */
         bool operator == ( const A_Command_Argument& other )const;
         
+        
+        /**
+         * @brief Not-Equivalent Operator.
+         *
+         * This method will check if two arguments are not the same.  Note that this will not 
+         * check the description as that does not affect the outcome of the argument input.
+         *
+         * @param[in] other Command argument to compare.
+         *
+         * @return True if not-equivalent, false otherwise.
+         */
+        bool operator != ( const A_Command_Argument& other )const;
+
 
         /**
          * @brief Print as a debug string.

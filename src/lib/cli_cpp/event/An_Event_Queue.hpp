@@ -11,6 +11,7 @@
 #include <memory>
 #include <mutex>
 #include <semaphore.h>
+#include <string>
 
 // CLI Libraries
 #include "../core/CLI_Event_Type.hpp"
@@ -88,6 +89,9 @@ class An_Event_Queue
 
 
     private:
+
+        /// Class Name
+        std::string m_class_name;
         
         /// Event Queue
         int* m_event_queue;

@@ -10,6 +10,7 @@
 set( LIB_CLI_HANDLERS_MODULE_SOURCES
    A_CLI_Detailed_Help_Command_Response_Handler.cpp 
    A_CLI_Resize_Command_Response_Handler.cpp 
+   A_Custom_Window_Command_Response_Handler.cpp
 )
 
 
@@ -19,6 +20,7 @@ set( LIB_CLI_HANDLERS_MODULE_SOURCES
 set( LIB_CLI_HANDLERS_MODULE_HEADERS
    A_CLI_Detailed_Help_Command_Response_Handler.hpp 
    A_CLI_Resize_Command_Response_Handler.hpp 
+   A_Custom_Window_Command_Response_Handler.hpp
 )
 
 

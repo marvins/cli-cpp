@@ -10,6 +10,7 @@
 #include "A_CLI_Manager_Configuration.hpp"
 #include "A_Command_Response_Handler_Base.hpp"
 #include "../cmd/A_Command_Queue.hpp"
+#include "../handlers/A_Custom_Window_Command_Response_Handler.hpp"
 #include "../render/A_Render_Driver_Context_Base.hpp"
 #include "../render/A_Render_Manager_Base.hpp"
 
@@ -77,8 +78,20 @@ class A_CLI_Manager{
 
         /**
          * @brief Register Command Response Handler.
+         *
+         * @param[in] handler Command-Response Handler to register with the system.
          */
         void Register_Command_Response_Handler( A_Command_Response_Handler_Base::ptr_t handler );
+
+        
+        /**
+         * @brief Register Custom Render Window
+         *
+         * @param[in] render_window   Custom window to register.
+         * @param[in] command         Command that will render the window.
+        */
+        void Register_Custom_Render_Window( RENDER::An_ASCII_Render_Window_Base::ptr_t  render_window,
+                                            CMD::A_Command const&                       command );
 
     private:
 
@@ -92,6 +105,12 @@ class A_CLI_Manager{
          * @brief Register Internal Command Response Handlers.
         */
         void Register_Internal_Command_Response_Handlers();
+
+
+        /**
+         * @brief Register the Internal Event Handlers.
+        */
+        void Register_Internal_Event_Handlers();
 
         
         /// Class Name
@@ -121,6 +140,9 @@ class A_CLI_Manager{
         
         /// CLI Handler List
         std::vector<A_Command_Response_Handler_Base::ptr_t> m_command_handlers;
+
+        /// Custom Window Command Response Handler
+        HANDLER::A_Custom_Window_Command_Response_Handler::ptr_t m_custom_window_command_handler;
 
 
 }; // End of A_CLI_Manager Class

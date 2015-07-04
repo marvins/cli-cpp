@@ -143,6 +143,16 @@ bool A_Command_Argument::operator == ( A_Command_Argument const& other )const
     return true;
 }
 
+
+/*********************************************/
+/*          Not-Equivalent Operator          */
+/*********************************************/
+bool A_Command_Argument::operator != ( A_Command_Argument const& other )const
+{
+    return (!((*this) == other));
+}
+
+
 /************************************************/
 /*       Check if Argument is a Substring       */
 /************************************************/

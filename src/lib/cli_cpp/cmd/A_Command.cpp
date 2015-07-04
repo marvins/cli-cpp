@@ -136,6 +136,37 @@ std::string A_Command::To_Debug_String()const
 }
 
 
+/********************************/
+/*      Equivalent Operator     */
+/********************************/
+bool A_Command::operator == ( A_Command const& other )const
+{
+    
+    // Check the command name
+    if( m_command_name != other.m_command_name ){
+        return false;
+    }
+
+    // Check the expect reponse
+    if( m_expect_response != other.m_expect_response ){
+        return false;
+    }
+
+    // Check the argument list
+    if( m_command_argument_list.size() != other.m_command_argument_list.size() ){
+        return false;
+    }
+
+    for( size_t i=0; i<m_command_argument_list.size(); i++ ){
+        if( m_command_argument_list[i] != other.m_command_argument_list[i] ){
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
 } // End of CMD
 } // End of CLI
 

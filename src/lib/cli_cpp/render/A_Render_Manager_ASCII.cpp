@@ -431,6 +431,24 @@ bool A_Render_Manager_ASCII::Set_CLI_Detailed_Help_Window( const std::string& co
     return false;
 }
 
+
+/*********************************************/
+/*          Register Render Window           */
+/*********************************************/
+int A_Render_Manager_ASCII::Register_Custom_Render_Window( An_ASCII_Render_Window_Base::ptr_t render_window )
+{
+    // Attach the driver
+    render_window->Set_Render_Driver_Context( std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(m_render_driver_context) );
+    
+    // Add to the window
+    m_window_list.push_back( render_window );
+
+    // return the id
+    return (m_window_list.size()-1);
+
+}
+
+
 } // End of RENDER Namespace
 } // End of CLI    Namespace
 

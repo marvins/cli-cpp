@@ -20,12 +20,18 @@ namespace EVT{
 /*        Constructor         */
 /******************************/
 An_Event_Queue::An_Event_Queue( const int& max_queue_size )
-  : m_head(0),
+  : m_class_name("An_Event_Queue"),
+    m_head(0),
     m_tail(0),
     m_max_queue_size(max_queue_size),
     m_close_flag(false),
     m_current_size(0)
 {
+
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << m_class_name << "::" << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    
     // Create the queue
     if( max_queue_size < 1 ){
         throw std::runtime_error("Size cannot be less than 1.");
@@ -52,7 +58,13 @@ An_Event_Queue::An_Event_Queue( const int& max_queue_size )
         m_event_queue[i] = (int)CLI_Event_Type::CLI_NULL;
     }
 
+
+    // Set the current size
     m_current_size = 0;
+    
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -61,6 +73,10 @@ An_Event_Queue::An_Event_Queue( const int& max_queue_size )
 /*********************************/
 An_Event_Queue::~An_Event_Queue()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    
     // Delete the queue
     delete [] m_event_queue;
 
@@ -75,6 +91,8 @@ An_Event_Queue::~An_Event_Queue()
     sem_unlink("/pop_semaphore");
     sem_unlink("/push_semaphore");
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 

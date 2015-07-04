@@ -21,6 +21,7 @@
 #include "../cmd/A_Command_Result.hpp"
 #include "../cmd/A_Command_Parser.hpp"
 #include "../cmd/A_Command_Queue.hpp"
+#include "../render/ascii/An_ASCII_Render_Window_Base.hpp"
 
 
 namespace CLI{
@@ -155,6 +156,16 @@ class A_Render_Manager_Base
          * @param[in] command_name
         */
         virtual bool Set_CLI_Detailed_Help_Window( const std::string& command_name ) = 0;
+        
+
+        /**
+         * @brief Add a Custom Render Window.
+         *
+         * @param[in] render_window Render window to add.
+         *
+         * @return ID of the window.
+        */
+        virtual int Register_Custom_Render_Window( An_ASCII_Render_Window_Base::ptr_t render_window ) = 0;
 
 
     protected:

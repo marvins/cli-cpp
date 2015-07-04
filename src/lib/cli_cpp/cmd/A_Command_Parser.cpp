@@ -221,6 +221,16 @@ void A_Command_Parser::Update_Autocomplete_String( const std::string&    input_s
 }
 
 
+/******************************/
+/*       Add a Command        */
+/******************************/
+void A_Command_Parser::Add_Command( A_Command const& command )
+{
+    // Add to list
+    m_command_list.push_back(command);
+}
+
+
 /*****************************/
 /*       Add an Alias        */
 /*****************************/

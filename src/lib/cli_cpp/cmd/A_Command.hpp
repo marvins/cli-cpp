@@ -158,6 +158,16 @@ class A_Command{
         std::string To_Debug_String()const;
 
 
+        /**
+         * @brief Equivalent Operator.
+         *
+         * @param[in] other Comparison object.
+         *
+         * @return True if equivalent, false otherwise.
+        */
+        bool operator == (const A_Command&  other) const;
+
+
     private:
         
         /// Class Name

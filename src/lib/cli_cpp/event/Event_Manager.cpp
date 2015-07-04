@@ -93,9 +93,9 @@ void Event_Manager::Finalize()
 {
     // Check the singleton instance
     if( instance != nullptr ){
+        instance.reset();
         instance = nullptr;
     }
-
 }
 
 
@@ -133,6 +133,12 @@ Event_Manager::ptr_t Event_Manager::Instance_Of()
 /***********************************************/
 void Event_Manager::Register_CLI_Event_Handler( A_CLI_Event_Handler_Base::ptr_t handler )
 {
+    // Make sure we are initialized
+    if( Is_Initialized() == false ){
+        BOOST_LOG_TRIVIAL(error) << "Unable to register the CLI Event Handler as the Event-Manager is not initialized. File: " << __FILE__ << ", Method: " << __func__ << ", Line: " << __LINE__;
+    }
+
+
     // Get an instance
     Event_Manager::ptr_t inst = Instance_Of();
 
@@ -150,6 +156,11 @@ void Event_Manager::Process_Event( const int& event )
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Event ID: " << event << ",  File: " << __FILE__ << ", Line: " << __LINE__;
     
+    // Make sure we are initialized
+    if( Is_Initialized() == false ){
+        BOOST_LOG_TRIVIAL(trace) << "Event-Manager is not initialized. Method: " << __func__ << ", Class: Event_Manager,  File: " << __FILE__ << ", Line: " << __LINE__;
+        return;
+    }
     
     // Get an instance
     Event_Manager::ptr_t inst = Instance_Of();
@@ -175,9 +186,13 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
 
         // Get the next event
         temp_event = m_event_queue->Pop_Event();
+            
+        // Log result    
+        BOOST_LOG_TRIVIAL(trace) << "Popped event (" << temp_event << "), Event queue size: " << m_event_queue->Get_Current_Size();
 
         // Skip null events
         if( temp_event == (int)CLI_Event_Type::CLI_NULL ){
+            BOOST_LOG_TRIVIAL(trace) << "CLI_NULL event detected.  Skipping.";
             continue;
         }
     

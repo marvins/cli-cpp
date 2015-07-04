@@ -55,15 +55,11 @@ CLI-CPP comes with a basic test application to demonstrate core capabilities.  T
 For the demo, the supported commands are shown below.  Tab-complete works for both commands and arguments.  Check the configuration 
 file for arguments with tab-complete support.
 
-1.  ?, help
-  -  Print Help
-2. bye
-  -  Log out of the terminal
-3. system-shutdown
+1. system-shutdown
   - Shut down application.
-4. ping <host-required> <num-tries optional>
+2. ping <host-required> <num-tries optional>
   - ping a network address.
-5. netstat <port-required> <protocol optional>
+3. netstat <port-required> <protocol optional>
   - check if a port is open.
 
 

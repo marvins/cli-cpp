@@ -27,28 +27,33 @@ namespace CLI{
 A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
   : m_class_name("A_CLI_Manager"),
     m_configuration(configuration),
-    m_handler_thread_running(false)
+    m_handler_thread_running(false),
+    m_custom_window_command_handler(nullptr)
 {
+
     // Register the event manager
     if( EVT::Event_Manager::Is_Initialized() != true ){
         EVT::Event_Manager::Initialize( configuration.Get_Event_Manager_Config() );
     }
+
     
     // Grab the rendering manager
     m_render_manager = m_configuration.Get_Render_Manager(); 
-
-    // Add to the event manager
-    EVT::Event_Manager::Register_CLI_Event_Handler( std::make_shared<EVT::A_Render_Manager_Event_Handler>( m_render_manager ));
-
+    
+    
     // Set the Queue
     m_command_queue = std::make_shared<CMD::A_Command_Queue>( m_configuration.Get_Command_Queue_Max_Size() );
     
-    // Grab the connection handler
+    
+    // Grab the connection manager
     m_connection_manager = m_configuration.Get_Connection_Manager();
     m_connection_manager->Update_Command_Parser( m_configuration.Get_Command_Parser());
     m_connection_manager->Update_Command_Queue( m_command_queue );
-    EVT::Event_Manager::Register_CLI_Event_Handler( std::make_shared<EVT::A_Connection_Manager_Event_Handler>( m_connection_manager ));
     
+    
+    // Add the Required Event Handlers
+    Register_Internal_Event_Handlers();
+
 
     // Add the Required Command Response Handler
     Register_Internal_Command_Response_Handlers();
@@ -223,9 +228,41 @@ void A_CLI_Manager::Register_Command_Response_Handler( A_Command_Response_Handle
     // Add to the list
     m_command_handlers.push_back( handler );
 
-
 }
 
+
+/************************************************/
+/*        Register Custom Render Window         */
+/************************************************/
+void A_CLI_Manager::Register_Custom_Render_Window( RENDER::An_ASCII_Render_Window_Base::ptr_t render_window,
+                                                   CMD::A_Command const&                      command )
+{
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of method. File: " << __FILE__ << ", Class: " << m_class_name << ", Method: " << __func__ << ", Line: " << __LINE__;
+    
+    // Make sure the window is valid
+    if( render_window == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "Render window is null. Ignoring.  File: " << __FILE__ << ", Class: " << m_class_name << ", Line: " << __LINE__;
+        return;
+    }
+    if( m_custom_window_command_handler == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "Custom Window Command Handler is null. Ignoring.  File: " << __FILE__ << ", Class: " << m_class_name << ", Line: " << __LINE__;
+        return;
+    }
+
+    // Attach the window
+    int window_id = m_render_manager->Register_Custom_Render_Window( render_window );
+
+    // Add to the custom window handler
+    m_custom_window_command_handler->Register_Trigger_Command( command, window_id );
+
+    // Add to the command parser
+    m_configuration.Get_Command_Parser()->Add_Command( command ); 
+    
+    
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of method. File: " << __FILE__ << ", Class: " << m_class_name << ", Method: " << __func__ << ", Line: " << __LINE__;
+}
 
 /******************************************************************/
 /*          Register Internal Command Response Handlers           */
@@ -241,8 +278,29 @@ void A_CLI_Manager::Register_Internal_Command_Response_Handlers()
     HANDLER::A_CLI_Detailed_Help_Command_Response_Handler::ptr_t cli_help = std::make_shared<HANDLER::A_CLI_Detailed_Help_Command_Response_Handler>( m_render_manager );
     Register_Command_Response_Handler( cli_help );
 
+    // Custom Window Command Response Handler
+    if( m_custom_window_command_handler == nullptr ){
+        m_custom_window_command_handler = std::make_shared<HANDLER::A_Custom_Window_Command_Response_Handler>( m_render_manager );
+    }
+    Register_Command_Response_Handler( m_custom_window_command_handler );
+    
+
 }
 
+
+/******************************************************/
+/*          Register Internal Event Handlers          */
+/******************************************************/
+void A_CLI_Manager::Register_Internal_Event_Handlers()
+{
+
+    // Add the Render-Manager's Event Handler
+    EVT::Event_Manager::Register_CLI_Event_Handler( std::make_shared<EVT::A_Render_Manager_Event_Handler>( m_render_manager ));
+
+    // Add the Connection Manager's Event Handler
+    EVT::Event_Manager::Register_CLI_Event_Handler( std::make_shared<EVT::A_Connection_Manager_Event_Handler>( m_connection_manager ));
+
+}
 
 
 } // End of CLI Namespace

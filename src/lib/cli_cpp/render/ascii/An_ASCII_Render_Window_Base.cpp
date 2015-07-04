@@ -7,6 +7,7 @@
 
 // CLI Libraries
 #include "../../utility/ANSI_Utilities.hpp"
+#include "../../utility/Log_Utilities.hpp"
 
 
 // C++ Standard Libraries
@@ -14,6 +15,16 @@
 
 namespace CLI{
 namespace RENDER{
+
+/**********************************/
+/*          Constructor           */
+/**********************************/
+An_ASCII_Render_Window_Base::An_ASCII_Render_Window_Base()
+   :  m_render_driver(nullptr),
+      m_class_name("An_ASCII_Render_Window_Base")
+{
+}
+
 
 /**********************************/
 /*          Constructor           */
@@ -46,6 +57,32 @@ void An_ASCII_Render_Window_Base::Update_Buffer_Data()
             m_buffer_data[i] = UTILS::ANSI_NEWLINE;
         }
     }
+
+}
+        
+
+/************************************************/
+/*        Set the Render Driver Context         */
+/************************************************/
+void An_ASCII_Render_Window_Base::Set_Render_Driver_Context( A_Render_Driver_Context_ASCII::ptr_t render_driver )
+{
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of method. File: " << __FILE__ << ", Class: " << m_class_name << ", Method: " << __func__ << ", Line: " << __LINE__;
+    
+    // Make sure the driver is not null
+    if( render_driver == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "Render driver is currently null.  Expect a seg fault!. File: " << __FILE__ << ", Class: " << m_class_name << ", Method: " << __func__ << ", Line: " << __LINE__;
+        return;
+    }
+
+    // Set the driver
+    m_render_driver = render_driver;
+    
+    // Set the buffer size
+    m_buffer_data = std::vector<std::string>( m_render_driver->Get_Window_Rows(), UTILS::ANSI_NEWLINE );
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of method. File: " << __FILE__ << ", Class: " << m_class_name << ", Method: " << __func__ << ", Line: " << __LINE__;
 
 }
 

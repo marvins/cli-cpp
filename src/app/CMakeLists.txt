@@ -25,6 +25,8 @@ set( CLI_APP_SOURCES
      cli/A_Ping_Command_Response_Handler.cpp
      cli/A_System_Command_Response_Handler.cpp
      core/State_Manager.cpp
+     render/A_Network_Status_Render_Window.cpp
+     utils/Init_Utilities.cpp
      utils/System_Utilities.cpp
 )
 
@@ -36,6 +38,8 @@ set( CLI_APP_HEADERS
      cli/A_Ping_Command_Response_Handler.hpp
      cli/A_System_Command_Response_Handler.hpp
      core/State_Manager.hpp
+     render/A_Network_Status_Render_Window.hpp
+     utils/Init_Utilities.hpp
      utils/System_Utilities.hpp
 )
 

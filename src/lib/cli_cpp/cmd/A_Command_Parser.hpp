@@ -105,6 +105,14 @@ class A_Command_Parser {
         
 
         /**
+         * @brief Add a Command to the Parser.
+         *
+         * @param[in] command Command to add.
+        */
+        void Add_Command( const A_Command& command );
+
+
+        /**
          * @brief Add command alias.
          *
          * @param[in] new_alias
