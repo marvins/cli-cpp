@@ -52,6 +52,9 @@
             <name value="alias-add" />
             <description value="Add a new alias to the system." />
             <task-name value="Add Alias" />
+            <arguments>
+                <argument name="alias-name" type="STRING" description="Alias name to add." required="true" />
+            </arguments>
         </command>
 
         <!-- Alias Remove -->
@@ -59,6 +62,9 @@
             <name value="alias-rm" />
             <description value="Remove an alias from the system." />
             <task-name value="Remove Alias" />
+            <arguments>
+                <argument name="alias-name" type="STRING" description="Alias name to remove." required="true" />
+            </arguments>
         </command>
 
         <!-- Alias List -->
@@ -72,10 +78,10 @@
         <command mode="run-script" >
             <name value="run-script" />
             <description value="Run a script on the server running the CLI." />
+            <task-name value="Run Script" />
             <arguments>
                 <argument name="path" type="PATH"  description="File to run in CLI." required="true" auto-complete-path="true" />
             </arguments>
-            <task-name value="Run Script" />
         </command>
 
 

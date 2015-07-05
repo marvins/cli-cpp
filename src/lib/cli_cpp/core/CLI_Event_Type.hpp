@@ -13,18 +13,21 @@ namespace CLI{
 
 /**
  * @enum CLI_Event_Type
+ *
+ * @brief Enumerates different events that may be registered or triggered within CLI-CPP.
 */
-enum class CLI_Event_Type : int32_t{
-    CLI_NULL             = -11,
-    CLI_PAUSE            = -10,
-    CLI_SLEEP            = -9,
-    CLI_REFRESH          = -8,
-    CLI_ALIAS_LIST       = -7,
-    CLI_LOG              = -6,
-    CLI_HELP             = -5,
-    CLI_BACK             = -4,
-    CLI_SHUTDOWN         = -3,
-    UNKNOWN              = -1,
+enum class CLI_Event_Type : int32_t
+{
+    CLI_NULL             = -11 /**< Treat a null or no-op value.*/,
+    CLI_PAUSE            = -10 /**< User requested to pause the CLI.*/,
+    CLI_SLEEP            = -9  /**< User requested to sleep for a period of time.*/,
+    CLI_REFRESH          = -8  /**< Event for refreshing the interface.*/,
+    CLI_ALIAS_LIST       = -7  /**< Event for showing the alias list screen.*/,
+    CLI_LOG              = -6  /**< Event for showing the log output screen.*/,
+    CLI_HELP             = -5  /**< Event for showing the help windows.*/,
+    CLI_BACK             = -4  /**< Event for returning to the main window.*/,
+    CLI_SHUTDOWN         = -3  /**< Event for disconnecting the CLI.*/,
+    UNKNOWN              = -1  /**< Unknown event.  Treat this as an error.*/,
     KEYBOARD_ENTER       = 13,
     KEYBOARD_A           = 'A',
     KEYBOARD_B           = 'B',

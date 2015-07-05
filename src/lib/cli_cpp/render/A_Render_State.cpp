@@ -378,7 +378,11 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
         CMD::A_Command_Alias temp_alias = CMD::A_Command_Alias::From_CLI_Input( UTILS::String_Merge( result.Get_Argument_Value_List() ),
                                                                                 valid_alias);
         if( valid_alias == true ){
+            BOOST_LOG_TRIVIAL(debug) << "Removing Command Alias: " << temp_alias.Get_Alias_Name() << std::endl;
             m_command_parser->Remove_Command_Alias( temp_alias );
+        }
+        else{
+            BOOST_LOG_TRIVIAL(debug) << "No alias found with name: " << temp_alias.Get_Alias_Name() << std::endl;
         }
     }
 
