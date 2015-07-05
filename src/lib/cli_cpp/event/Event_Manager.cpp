@@ -16,6 +16,7 @@
 namespace CLI{
 namespace EVT{
 
+/// Global Event Manager Instance
 static std::shared_ptr<Event_Manager> instance = nullptr;
 
 /**************************/
@@ -26,10 +27,15 @@ Event_Manager::Event_Manager( Event_Manager_Config const& config )
     m_config(config),
     m_is_running(config.Get_Event_Work_Queue_Thread_Count(), true)
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
     
     // Create the event queue
     m_event_queue = std::make_shared<An_Event_Queue>(m_config.Get_Event_Queue_Max_Capacity());
-
+    
+    // Print the queue in the outer thread
+    m_event_queue->Push_Event((int)CLI_Event_Type::CLI_NULL);
+    m_event_queue->Pop_Event();
 
     // Start the threads
     m_event_process_threads.clear();
@@ -39,6 +45,8 @@ Event_Manager::Event_Manager( Event_Manager_Config const& config )
                                                         i ) );
     }
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -47,6 +55,8 @@ Event_Manager::Event_Manager( Event_Manager_Config const& config )
 /**************************/
 Event_Manager::~Event_Manager()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
 
     // Stop the thread
     for( size_t i=0; i<m_event_process_threads.size(); i++ ){
@@ -70,6 +80,8 @@ Event_Manager::~Event_Manager()
     // Reset
     m_event_queue.reset();
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -78,11 +90,16 @@ Event_Manager::~Event_Manager()
 /********************************/
 void Event_Manager::Initialize( Event_Manager_Config const& config )
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Check the singleton instance
     if( instance == nullptr ){
         instance = Event_Manager::ptr_t(new Event_Manager( config ));
     }
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -91,11 +108,18 @@ void Event_Manager::Initialize( Event_Manager_Config const& config )
 /********************************/
 void Event_Manager::Finalize()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Check the singleton instance
     if( instance != nullptr ){
         instance.reset();
         instance = nullptr;
     }
+    
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -104,6 +128,9 @@ void Event_Manager::Finalize()
 /*************************************************************/
 bool Event_Manager::Is_Initialized()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Check the singleton instance
     if( instance == nullptr ){
         return false;
@@ -117,11 +144,18 @@ bool Event_Manager::Is_Initialized()
 /**********************************************/
 Event_Manager::ptr_t Event_Manager::Instance_Of()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Check if we are initialized
     if( Is_Initialized() == false ){
         BOOST_LOG_TRIVIAL(warning) << "Event_Manager has not been initialized while calling method " << __func__;
         return nullptr;
     }
+    
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
 
     // Otherwise, return instance
     return instance;
@@ -133,6 +167,10 @@ Event_Manager::ptr_t Event_Manager::Instance_Of()
 /***********************************************/
 void Event_Manager::Register_CLI_Event_Handler( A_CLI_Event_Handler_Base::ptr_t handler )
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    
     // Make sure we are initialized
     if( Is_Initialized() == false ){
         BOOST_LOG_TRIVIAL(error) << "Unable to register the CLI Event Handler as the Event-Manager is not initialized. File: " << __FILE__ << ", Method: " << __func__ << ", Line: " << __LINE__;
@@ -144,6 +182,9 @@ void Event_Manager::Register_CLI_Event_Handler( A_CLI_Event_Handler_Base::ptr_t 
 
     // add the handler to the list
     inst->m_event_handlers.push_back(handler);
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -167,8 +208,14 @@ void Event_Manager::Process_Event( const int& event )
 
     
     // Add event to queue
+    if( inst == nullptr || inst->m_event_queue == nullptr ){
+        BOOST_LOG_TRIVIAL(trace) << "Event queue is currently null.";
+        return;
+    }
     inst->m_event_queue->Push_Event( event );
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -183,7 +230,7 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
     // Run while the flag is valid
     while( m_is_running[thread_id] == true )
     {
-
+        
         // Get the next event
         temp_event = m_event_queue->Pop_Event();
             

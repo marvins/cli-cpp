@@ -178,9 +178,11 @@ void A_Render_Manager_ASCII::Refresh()
     
 
     // Pick the right window
-    An_ASCII_Render_Window_Base::ptr_t ref = m_window_list[m_current_window];
+    An_ASCII_Render_Window_Base::ptr_t ref;
     if( m_help_window_mode == true ){
         ref = m_help_windows[m_current_window];
+    } else {
+        ref = m_window_list[m_current_window];
     }
 
 
@@ -208,9 +210,11 @@ void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffe
 {
     
     // Pick the right window
-    An_ASCII_Render_Window_Base::ptr_t ref = m_window_list[m_current_window];
+    An_ASCII_Render_Window_Base::ptr_t ref;
     if( m_help_window_mode == true ){
         ref = m_help_windows[m_current_window];
+    } else {
+        ref = m_window_list[m_current_window];
     }
     
     // Get the CLI Title

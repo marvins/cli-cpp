@@ -101,6 +101,10 @@ An_Event_Queue::~An_Event_Queue()
 /**************************/
 void An_Event_Queue::Clear()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    
     // Set close flag
     m_close_flag = true;
 
@@ -108,6 +112,8 @@ void An_Event_Queue::Clear()
     sem_post( m_push_semaphore );
     sem_post( m_pop_semaphore );
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -116,6 +122,10 @@ void An_Event_Queue::Clear()
 /*****************************/
 void An_Event_Queue::Push_Event( int const& event )
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    
     // Decrement the push semaphore
     if( sem_wait( m_push_semaphore ) < 0 ){
         std::stringstream sin;
@@ -146,6 +156,10 @@ void An_Event_Queue::Push_Event( int const& event )
 
     // Increment the pop semaphore
     sem_post( m_pop_semaphore );
+    
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 /*****************************/
@@ -153,6 +167,8 @@ void An_Event_Queue::Push_Event( int const& event )
 /*****************************/
 int An_Event_Queue::Pop_Event()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
     
     // Output
     int event;
@@ -199,6 +215,9 @@ int An_Event_Queue::Pop_Event()
         throw std::runtime_error(sin.str());
     }
     
+
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
     
     // return command
     return event;
