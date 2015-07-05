@@ -174,6 +174,11 @@ std::vector<A_CLI_Command> Parse_CLI_Commands( pugi::xml_node& cli_cmd_node )
                 }
 
             }
+
+            // Response Expected
+            if( std::string((*ait).name()) == "expect_response" ){
+                cli_command.Set_Response_Expected( (*ait).attribute("value").as_bool(false));
+            }
         }
 
         // Add CLI command

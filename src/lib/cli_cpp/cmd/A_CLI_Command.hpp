@@ -165,6 +165,26 @@ class A_CLI_Command{
         
         
         /**
+         * @brief Check if response expected.
+         *
+         * @return True if expected, false otherwise.
+        */
+        inline bool Response_Expected()const{
+            return m_response_expected;
+        }
+
+
+        /**
+         * @brief Set the Response Expected Flag.
+         *
+         * @param[in] response_expected value of the flag.
+         */
+        inline void Set_Response_Expected( const bool& response_expected ){
+            m_response_expected = response_expected;
+        }
+
+
+        /**
          * @brief Get the requested argument.
          *
          * @param[in] index Position to fetch.
@@ -233,6 +253,9 @@ class A_CLI_Command{
 
         /// List of arguments
         std::vector<A_Command_Argument> m_command_argument_list;
+        
+        /// Response Expected Flag
+        bool m_response_expected;
 
 }; // End of A_CLI_Command Class
 

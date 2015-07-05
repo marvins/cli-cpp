@@ -25,6 +25,9 @@ A_Network_Status_Render_Window::A_Network_Status_Render_Window( State_Manager& s
 void A_Network_Status_Render_Window::Update_Buffer_Data()
 {
 
+    // Call on parent method
+    An_ASCII_Render_Window_Base::Update_Buffer_Data();
+
 
 }
 

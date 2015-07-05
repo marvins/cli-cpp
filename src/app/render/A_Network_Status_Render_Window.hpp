@@ -16,6 +16,10 @@
 
 /**
  * @class A_Network_Status_Render_Window
+ *
+ * This is a simple custom rendering window which will print the current status of values 
+ * within the application's state manager.  This is an example of how you can extend the 
+ * rendering manager within CLI-CPP to provide custom screens and windows.
 */
 class A_Network_Status_Render_Window : public CLI::RENDER::An_ASCII_Render_Window_Base
 {

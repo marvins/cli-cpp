@@ -26,7 +26,8 @@ A_CLI_Command::A_CLI_Command( const CommandParseStatus& mode )
     m_names(0),
     m_formal_name(""),
     m_description(""),
-    m_command_argument_list(0)
+    m_command_argument_list(0),
+    m_response_expected(false)
 {
 }
 
@@ -217,7 +218,7 @@ A_Command A_CLI_Command::To_Command()const{
 
     return A_Command( m_names[0],
                       Get_Description(),
-                      false,
+                      m_response_expected,
                       m_command_argument_list );
 }
 
