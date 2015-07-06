@@ -5,11 +5,11 @@ compiler:
     - clang
 
 script: 
-    mkdir -p release
-    pushd release
-    cmake ..
-    make
-    popd
+    - mkdir -p release
+    - pushd release
+    - cmake ..
+    - make
+    - popd
 
 before_install:
     - sudo apt-get update -qq
