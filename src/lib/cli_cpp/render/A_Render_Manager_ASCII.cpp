@@ -66,8 +66,7 @@ void A_Render_Manager_ASCII::Initialize()
     
     // Add the help window
     m_window_list.push_back(std::make_shared<A_General_Help_Window>( driver_context,
-                                                                     m_command_parser->Get_CLI_Command_List(),
-                                                                     m_command_parser->Get_Command_List() ));
+                                                                     m_command_parser ));
 
     // Add the log window
     m_window_list.push_back(std::make_shared<A_Log_Window>( driver_context ));
@@ -335,7 +334,6 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
     
     // Set the buffer row
     int cli_row = m_render_driver_context->Get_Window_Rows() - 2;
-
     
     // Get the cursor text
     const std::string cursor_text = m_render_state->Get_Cursor_Text();

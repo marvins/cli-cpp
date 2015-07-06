@@ -10,6 +10,7 @@
 #include "An_ASCII_Render_Window_Base.hpp"
 #include "../../cmd/A_CLI_Command.hpp"
 #include "../../cmd/A_Command.hpp"
+#include "../../cmd/A_Command_Parser.hpp"
 #include "../../utility/An_ASCII_Print_Table.hpp"
 
 // C++ Standard Libraries
@@ -35,12 +36,10 @@ class A_General_Help_Window : public An_ASCII_Render_Window_Base
          * @brief Constructor.
          *
          * @param[in] render_driver Driver containing rendering parameters.
-         * @param[in] cli_command_list List of CLI Commands to process.
-         * @param[in] command_list List of Commands to process.
+         * @param[in] command_parser Command parser containing both the CLI and general commands.
         */
         A_General_Help_Window( A_Render_Driver_Context_ASCII::ptr_t    render_driver,
-                               const std::vector<CMD::A_CLI_Command>&  cli_command_list,
-                               const std::vector<CMD::A_Command>&      command_list );
+                               CMD::A_Command_Parser::ptr_t            command_parser );
 
 
         /**
@@ -83,17 +82,17 @@ class A_General_Help_Window : public An_ASCII_Render_Window_Base
         std::string m_class_name;
         
         
-        /// CLI Command LIst
-        std::vector<CMD::A_CLI_Command> m_cli_command_list;
-
-
-        /// Command List
-        std::vector<CMD::A_Command> m_command_list;
+        /// Command Parser
+        CMD::A_Command_Parser::ptr_t m_command_parser;
 
 
         /// Render Print Managers
         UTILS::An_ASCII_Print_Table::ptr_t  m_command_print_table;
         UTILS::An_ASCII_Print_Table::ptr_t  m_cli_command_print_table;
+
+        /// Current Command List Sizes
+        int m_current_command_list_size;
+        int m_current_cli_command_list_size;
 
 
 }; // End of A_General_Help_Window Class

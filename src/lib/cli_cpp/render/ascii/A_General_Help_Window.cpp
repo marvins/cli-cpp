@@ -18,12 +18,12 @@ namespace RENDER{
 /*          Constructor           */
 /**********************************/
 A_General_Help_Window::A_General_Help_Window( A_Render_Driver_Context_ASCII::ptr_t    render_driver,
-                                              const std::vector<CMD::A_CLI_Command>&  cli_command_list,
-                                              const std::vector<CMD::A_Command>&      command_list )
+                                              CMD::A_Command_Parser::ptr_t            command_parser )
   : An_ASCII_Render_Window_Base(render_driver),
     m_class_name("A_General_Help_Window"),
-    m_cli_command_list(cli_command_list),
-    m_command_list(command_list)
+    m_command_parser(command_parser),
+    m_current_command_list_size(command_parser->Get_Command_List().size()),
+    m_current_cli_command_list_size(command_parser->Get_CLI_Command_List().size())
 {
 
     // Update the buffer data
@@ -44,8 +44,11 @@ void A_General_Help_Window::Update_Buffer_Data()
     An_ASCII_Render_Window_Base::Update_Buffer_Data();
 
 
-    // Check if the buffer size changed
-    if( (int)m_buffer_data.size() != original_row_count ){
+    // Check if the buffer size changed or the history changed
+    if( (int)m_buffer_data.size()       != original_row_count ||
+        m_current_command_list_size     != m_command_parser->Get_Command_List().size() ||
+        m_current_cli_command_list_size != m_command_parser->Get_CLI_Command_List().size() )
+    {
         Update_Buffer_Lines();
     }
 
@@ -93,14 +96,16 @@ void A_General_Help_Window::Update_Buffer_Lines()
 
 
     // Define our stop and start rows
-    int help_table_size = std::min( (int)m_cli_command_list.size()+3, max_row / 2);
+    int help_table_size = std::min( (int)m_command_parser->Get_CLI_Command_List().size()+3, max_row / 2);
     int max_cli_row = help_table_size + min_row;
 
     // Print Parse Table
     m_cli_command_print_table->Print_Table( m_buffer_data, min_row,     max_cli_row, min_col );
     m_command_print_table->Print_Table(     m_buffer_data, max_cli_row+1, max_row-3, min_col );
 
-
+    // Set the sizes
+    m_current_command_list_size     = m_command_parser->Get_Command_List().size();
+    m_current_cli_command_list_size = m_command_parser->Get_CLI_Command_List().size();
 
 }
 
@@ -128,15 +133,16 @@ void A_General_Help_Window::Update_CLI_Command_Table()
 
     // Add entries
     std::string command_list;
+    std::vector<CMD::A_CLI_Command> cli_command_list = m_command_parser->Get_CLI_Command_List();
     std::vector<std::string> command_name_list;
-    for( int i=0; i<(int)m_cli_command_list.size(); i++ ){
+    for( int i=0; i<(int)cli_command_list.size(); i++ ){
 
         // Set the Formal Name
-        m_cli_command_print_table->Add_Entry( i, 0, " " + m_cli_command_list[i].Get_Formal_Name() );
+        m_cli_command_print_table->Add_Entry( i, 0, " " + cli_command_list[i].Get_Formal_Name() );
 
         // Set argument list
         command_list = "";
-        command_name_list = m_cli_command_list[i].Get_Command_Name_List();
+        command_name_list = cli_command_list[i].Get_Command_Name_List();
         for( int j=0; j<(int)command_name_list.size(); j++ ){
             command_list += command_name_list[j];
             if( j < (int)command_name_list.size()-1){
@@ -148,7 +154,7 @@ void A_General_Help_Window::Update_CLI_Command_Table()
 
 
         // Add Description
-        m_cli_command_print_table->Add_Entry( i, 2, " " + m_cli_command_list[i].Get_Description() );
+        m_cli_command_print_table->Add_Entry( i, 2, " " + cli_command_list[i].Get_Description() );
     }
 }
 
@@ -181,18 +187,19 @@ void A_General_Help_Window::Update_Command_Table()
             UTILS::An_ASCII_Print_Table_Config(false,false));
 
     // Add entries
+    std::vector<CMD::A_Command> command_list = m_command_parser->Get_Command_List();
     std::vector<CMD::A_Command_Argument> argument_list;
     int current_row = 0;
-    for( int i=0; i<(int)m_command_list.size(); i++ ){
+    for( int i=0; i<(int)command_list.size(); i++ ){
 
         // Set the Formal Name
-        m_command_print_table->Add_Entry( current_row, 0, m_command_list[i].Get_Name() );
+        m_command_print_table->Add_Entry( current_row, 0, command_list[i].Get_Name() );
 
         // Set the description
-        m_command_print_table->Add_Entry( current_row, 5, m_command_list[i].Get_Description() );
+        m_command_print_table->Add_Entry( current_row, 5, command_list[i].Get_Description() );
 
         // Set the argument list and types
-        argument_list = m_command_list[i].Get_Argument_List();
+        argument_list = command_list[i].Get_Argument_List();
         for( int j=0; j<(int)argument_list.size(); j++ ){
 
             // Increment the row
