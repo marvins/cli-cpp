@@ -13,14 +13,8 @@ script:
 
 before_install:
     - sudo apt-add-repository ppa:boost-latest/ppa -y
+    - sudo apt-add-repository ppa:afrank/boost -y
     - sudo apt-get update -qq
-    - echo '----------------------------'
-    - echo '----------------------------'
-    - echo '----------------------------'
-    - sudo apt-cache search boost
-    - echo '----------------------------'
-    - echo '----------------------------'
-    - echo '----------------------------'
     - sudo apt-get install -y libboost-all-dev cmake doxygen 
 
 
