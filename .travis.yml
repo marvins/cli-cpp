@@ -12,6 +12,7 @@ script:
     - popd
 
 before_install:
+    - sudo apt-add repository ppa:boost-latest/ppa -y
     - sudo apt-get update -qq
     - sudo apt-get install -y libboost-all-dev cmake doxygen 
 
