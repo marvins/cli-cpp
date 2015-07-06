@@ -5,13 +5,19 @@
 */
 #include "An_Event_Queue.hpp"
 
+
 // CLI Libraries
 #include "../utility/Log_Utilities.hpp"
+
 
 // C++ Standard Libraries
 #include <cerrno>
 #include <iostream>
+#include <stdexcept>
 #include <sstream>
+
+// Semaphore
+#include <semaphore.h>
 
 namespace CLI{
 namespace EVT{
@@ -40,6 +46,7 @@ An_Event_Queue::An_Event_Queue( const int& max_queue_size )
     
     
     // Initialize the semaphores
+#ifdef __APPLE__    
     if( (m_pop_semaphore = sem_open("/pop_semaphore", O_CREAT, 0666, 0)) == SEM_FAILED ){
         sem_close(m_pop_semaphore);
         sem_unlink("/pop_semaphore");
@@ -51,6 +58,14 @@ An_Event_Queue::An_Event_Queue( const int& max_queue_size )
         sem_unlink("/push_semaphore");
         throw std::runtime_error(std::string("Unable to initialize push semaphore. Details: ") + strerror(errno));
     }
+#else
+    if( sem_init( m_pop_semaphore, 0, 0) != 0 ){
+        throw std::runtime_error(std::string("Unable to initialize pop semaphore. Details: ") + strerror(errno));
+    }
+    if( sem_init( m_push_semaphore, 0, max_queue_size) != 0 ){
+        throw std::runtime_error(std::string("Unable to initialize push semaphore. Details: ") + strerror(errno));
+    }
+#endif
 
     
     // Initialize array values
@@ -83,6 +98,9 @@ An_Event_Queue::~An_Event_Queue()
     // Set to null
     m_event_queue = nullptr;
 
+
+#ifdef __APPLE__
+    /// APPLE should remove their Unix badge as they don't implement sem_init, sem_getvalue, and sem_destroy
     // Close semaphores
     sem_close( m_pop_semaphore );
     sem_close( m_push_semaphore );
@@ -90,6 +108,12 @@ An_Event_Queue::~An_Event_Queue()
     // Unlink the semaphores
     sem_unlink("/pop_semaphore");
     sem_unlink("/push_semaphore");
+
+#else
+    // Linux is the real unix
+    sem_destroy( m_pop_semaphore  );
+    sem_destroy( m_push_semaphore );
+#endif
 
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;

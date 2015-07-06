@@ -5,6 +5,12 @@
 */
 #include "CLI_Configuration_File_Parser_Utilities.hpp"
 
+// C++ Standard Libraries
+#include <stdexcept>
+#include <string>
+#include <unistd.h>
+
+
 namespace CLI{
 namespace IO{
 namespace CONFIG{

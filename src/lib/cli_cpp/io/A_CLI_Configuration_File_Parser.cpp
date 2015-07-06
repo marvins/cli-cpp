@@ -16,6 +16,7 @@
 // C++ Standard Libraries
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 
 // Boost Libraries
