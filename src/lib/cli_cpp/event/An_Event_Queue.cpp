@@ -59,6 +59,11 @@ An_Event_Queue::An_Event_Queue( const int& max_queue_size )
         throw std::runtime_error(std::string("Unable to initialize push semaphore. Details: ") + strerror(errno));
     }
 #else
+    // Allocate the semaphores
+    m_pop_semaphore = new sem_t;
+    m_push_semaphore = new sem_t;
+    
+    // Initialized Semaphores
     if( sem_init( m_pop_semaphore, 0, 0) != 0 ){
         throw std::runtime_error(std::string("Unable to initialize pop semaphore. Details: ") + strerror(errno));
     }
@@ -113,7 +118,16 @@ An_Event_Queue::~An_Event_Queue()
     // Linux is the real unix
     sem_destroy( m_pop_semaphore  );
     sem_destroy( m_push_semaphore );
+    
+    // Deallocate
+    if( m_pop_semaphore != NULL && m_pop_semaphore != nullptr ){
+        delete m_pop_semaphore;
+    }
+    if( m_push_semaphore != NULL && m_push_semaphore != nullptr ){
+        delete m_push_semaphore;
+    }
 #endif
+
 
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
