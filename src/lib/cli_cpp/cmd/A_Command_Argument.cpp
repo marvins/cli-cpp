@@ -185,7 +185,8 @@ bool A_Command_Argument::Is_Argument_Substring( const std::string& argument_name
     }
 
     // If the type if a filesystem type, get a list of files
-    if( m_type == CommandArgumentType::PATH ){
+    if( m_type == CommandArgumentType::PATH && m_autocomplete_path == true )
+    {
         
         // Get a list of paths
         std::vector<std::string> pathname_list = FS::Get_Contents( argument_name );

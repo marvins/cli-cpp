@@ -10,11 +10,28 @@
 /*        Constructor          */
 /*******************************/
 State_Manager::State_Manager( )
-  : m_shutdown_system(false)
+  : m_shutdown_system(false),
+    m_network_scanner(std::make_shared<Network_Scanner>())
 {
+    // Add some assets
+    m_network_scanner->Add_Network_Asset( "Google", "8.8.8.8", 10 );
+
+    // Start the scanner
+    m_network_scanner->Start_Scanner();
 
 }
 
+
+/*****************************/
+/*        Destructor         */
+/*****************************/
+State_Manager::~State_Manager()
+{
+
+    // Stop the server
+    m_network_scanner->Stop_Scanner();
+
+}
 
 /********************************************/
 /*          Signal System Shutdown          */

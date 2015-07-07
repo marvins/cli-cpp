@@ -8,6 +8,7 @@
 
 // CLI Libraries
 #include <cli_cpp/render/ascii/An_ASCII_Render_Window_Base.hpp>
+#include <cli_cpp/utility/An_ASCII_Print_Table.hpp>
 
 
 // Demo Libraries
@@ -43,7 +44,15 @@ class A_Network_Status_Render_Window : public CLI::RENDER::An_ASCII_Render_Windo
          * @brief Note that this will do nothing unless implemented.
          */
         virtual void Update_Buffer_Data();
-    
+        
+        
+        /**
+         * @brief Retrieve the buffer data
+         *
+         * @return Buffer data array.
+        */
+        virtual std::vector<std::string>& Get_Buffer_Data();
+
         
         /**
          * @brief Get the Window Title
@@ -52,6 +61,13 @@ class A_Network_Status_Render_Window : public CLI::RENDER::An_ASCII_Render_Windo
             return "Network Status Window";
         }
     
+    protected:
+        
+        /**
+         * @brief Print the main window content.
+         */
+        void Print_Main_Content();
+
 
     private:
 
@@ -65,6 +81,9 @@ class A_Network_Status_Render_Window : public CLI::RENDER::An_ASCII_Render_Windo
 
         /// State Manager
         State_Manager& m_state_manager;
+        
+        /// CLI Print Table Utility
+        CLI::UTILS::An_ASCII_Print_Table::ptr_t  m_network_print_table;
 
 }; // End of A_Network_Status_Render_Window_Base
 

@@ -7,6 +7,7 @@
 
 // App Libraries
 #include "../cli/A_Netstat_Command_Response_Handler.hpp"
+#include "../cli/A_Network_Asset_Command_Response_Handler.hpp"
 #include "../cli/A_Ping_Command_Response_Handler.hpp"
 #include "../cli/A_System_Command_Response_Handler.hpp"
 #include "../render/A_Network_Status_Render_Window.hpp"
@@ -30,7 +31,11 @@ void Register_Command_Response_Handlers( CLI::A_CLI_Manager::ptr_t  cli_manager,
     // Register a System Response Handler
     A_System_Command_Response_Handler::ptr_t system_handler = std::make_shared<A_System_Command_Response_Handler>(state_manager);
     cli_manager->Register_Command_Response_Handler( system_handler );
-
+    
+    // Register a Network Asset Response Handler
+    Network_Scanner::ptr_t network_scanner = state_manager.Get_Network_Scanner();
+    A_Network_Asset_Command_Response_Handler::ptr_t network_handler = std::make_shared<A_Network_Asset_Command_Response_Handler>(network_scanner);
+    cli_manager->Register_Command_Response_Handler(network_handler);
 
 }
 
@@ -51,8 +56,6 @@ void Register_Render_Windows( CLI::A_CLI_Manager::ptr_t   cli_manager,
 
     // Register the render window
     cli_manager->Register_Custom_Render_Window( render_window, trigger_command );
-    
-    std::cout << "REGISTERED CUSTOM WINDOW" << std::endl;
 }
 
 
