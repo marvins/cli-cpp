@@ -120,6 +120,27 @@
 
     <!-- List of Commands -->
     <commands>
+        
+        <!-- Add Network Asset -->
+        <command>
+            <name value="add-network-asset" />
+            <description value="Add a network asset to the scanning list." />
+            <expect_response value="true" />
+            <arguments>
+                <argument name="name"     type="STRING"  description="Name of the asset."     required="true" />
+                <argument name="address"  type="STRING"  description="Address of the asset."  required="true" />    
+            </arguments>
+        </command>
+        
+        <!-- Remove Network Asset -->
+        <command>
+            <name value="remove-network-asset" />
+            <description value="Remove a network asset to the scanning list." />
+            <expect_response value="true" />
+            <arguments>
+                <argument name="name"     type="STRING"  description="Name of the asset."     required="true" />
+            </arguments>
+        </command>
 
         <!-- Ping Command -->
         <command>
