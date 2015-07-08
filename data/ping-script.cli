@@ -1,7 +1,20 @@
+#  Ping Localhost
 ping localhost
+
+#  Ping localhost, but longer
 ping localhost 10
+
+#  Sleep for a while
 sleep 3
+
+#  Ping google
 ping 8.8.8.8 
+
+#  Wait for input
 pause
+
+#  Ping junk
 ping 1.2.3.4
+
+#  Logout
 bye

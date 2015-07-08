@@ -46,7 +46,7 @@ std::deque<std::string> Load_CLI_Script( const std::string& script_path )
 
         // Add the line
         line = UTILS::String_Trim(line);
-        if( line.size() > 0 ){
+        if( line.size() > 0 && line[0] != '#' ){
             output.push_back(line);
         }
 
