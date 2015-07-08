@@ -163,6 +163,7 @@ void A_Connection_Manager_Socket::Run_Handler()
         while( true ){
         
             // Accept the socket
+            BOOST_LOG_TRIVIAL(debug) << "Waiting for connection";
             m_client_fd = accept( m_sock_fd, 
                                   (struct sockaddr*)&cli_addr,
                                   &clilen);
@@ -193,9 +194,18 @@ void A_Connection_Manager_Socket::Run_Handler()
         
         // Log
         char host[NI_MAXHOST];
-        getnameinfo((struct sockaddr *)&cli_addr, sizeof(cli_addr), host, sizeof(host), NULL, 0, NI_NUMERICHOST);
+        getnameinfo( (struct sockaddr *)&cli_addr, 
+                     sizeof(cli_addr), 
+                     host, 
+                     sizeof(host), 
+                     NULL, 
+                     0, 
+                     NI_NUMERICHOST);
         BOOST_LOG_TRIVIAL(debug) << "Connection has been made by " << host;
 
+
+        // Spawn a new instance
+        int next_position = 
 
         // Write back
         write( m_client_fd,"\377\375\042\377\373\001",6);
@@ -328,6 +338,17 @@ void A_Connection_Manager_Socket::Run_Handler()
 }
 
 
+/************************************************************/
+/*          Connect the Client and Run Connection           */
+/************************************************************/
+void A_Connection_Manager::Run_Client_Connection()
+{
+
+
+
+
+}
+
 /*********************************/
 /*       Refresh the screen      */
 /*********************************/
@@ -409,6 +430,27 @@ int A_Connection_Manager_Socket::Process_Special_Key( const std::string& input_s
     return (int)CLI_Event_Type::UNKNOWN;
 }
 
+
+/*****************************************************/
+/*          Get the Next Open Client Slot            */
+/*****************************************************/
+int A_Connection_Manager_Socket::Get_Next_Client_Slot()
+{
+
+    // Iterate over existing items
+    for( size_t i=0; i<m_client_fd_list.size(); i++ ){
+
+        // Look for dead thread
+        if( m_client_fd_list[i] <= 0 ){
+            return i;
+        }
+    }
+
+    // If we get here, push another open spot
+    m_client_fd_list.push_back(0);
+    m_refresh_locks.push_back(std::mutex);
+    return (m_client_fd_list.size()-1);
+}
 
 } // End of CLI Namespacee
 

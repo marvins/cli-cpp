@@ -70,6 +70,12 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
         virtual void Run_Handler();
 
 
+        /**
+         * @brief Connect Instance
+        */
+        virtual void Run_Client_Connection();
+
+
     private:
 
         /**
@@ -82,6 +88,12 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
          * @brief Close the socket.
          */
         void Close_Socket();
+
+
+        /**
+         * @brief Get next open client slot.
+         */
+        int Get_Next_Client_Slot();
         
 
         /**
@@ -113,7 +125,7 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
 
 
         /// Client File Description
-        int m_client_fd;
+        std::vector<m_client_fd> m_client_fd_list;
 
 
         /// Keyboard Special Key Map
@@ -121,7 +133,7 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
 
 
         /// Refresh Lock
-        std::mutex m_refresh_lock;
+        std::vector<std::mutex> m_refresh_locks;
 
 }; // End of A_Connection_Manager_Socket Class
 

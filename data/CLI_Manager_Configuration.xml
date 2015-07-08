@@ -9,7 +9,7 @@
     -->
     <logging enabled="true" 
              log_path="cli.log"
-             log_level="debug" />
+             log_level="trace" />
 
     
     <!-- Type of Connection 
@@ -72,7 +72,7 @@
               up the queue, doing a push will become a blocking operation until
               room opens up on the queue.
         -->
-        <event-queue-max-capacity value="20" />
+        <event-queue-max-capacity value="10" />
 
         <!-- Number of work queue threads.  More threads means you can process more jobs
              in parallel.  This will prevent blocking when a particular job is taking
