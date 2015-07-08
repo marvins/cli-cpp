@@ -189,7 +189,7 @@ void A_Connection_Manager_Socket::Run_Handler()
         }
 
         // Make the socket non-blocking
-        //fcntl( m_client_fd, F_SETFL, O_NONBLOCK );
+        fcntl( m_client_fd, F_SETFL, O_NONBLOCK );
         
         // Log
         char host[NI_MAXHOST];
@@ -216,22 +216,42 @@ void A_Connection_Manager_Socket::Run_Handler()
             }
 
             
-            // Read from socket
-            n = read( m_client_fd, buffer, 255 );
+            // While connected
+            while( m_is_connected == true &&
+                   m_is_running   == true )
+            {
+            
+                // Read from socket
+                n = read( m_client_fd, buffer, 255 );
                
-            // Check if the socket has closed
-            if( n == 0 ){
-                m_is_connected = false;
-                break;
+                // Check if the socket has closed
+                if( n == 0 ){
+                    m_is_connected = false;
+                    break;
+                }
+
+                // Check time to quit
+                else if ( m_is_running   == false || 
+                          m_is_connected == false )
+                {
+                    break;
+                }
+
+                // Otherwise, check if valid
+                if( n > 0 ){
+                    break;
+                }
+
+                // Finally sleep
+                usleep(m_configuration->Get_Read_Timeout_Sleep_Microseconds());
             }
 
-            // Check time to quit
-            else if ( m_is_running   == false || 
-                      m_is_connected == false )
+            // Check if we are still running
+            if( m_is_connected == false || 
+                m_is_running   == false )
             {
                 break;
             }
-
 
             // Check the buffer
             input = std::string(buffer).substr(0,n);

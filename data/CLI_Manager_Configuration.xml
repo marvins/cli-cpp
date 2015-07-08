@@ -29,6 +29,12 @@
         <!-- Window Size -->
         <window-size rows="40" cols="120" />
 
+        <!-- Read Timeout Sleep Time -->
+        <read-timeout-sleep-time microseconds="50000" />
+        
+        <!-- Max Number of Connections -->
+        <max-connections value="5" />
+
     </socket-configuration>
 
 

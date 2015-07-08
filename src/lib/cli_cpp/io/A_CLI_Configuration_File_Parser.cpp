@@ -112,9 +112,14 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
         // Get the port number
         int portno = socket_config_node.child("listening-port").attribute("value").as_int();
         
+        // Get the timeout time
+        int64_t sleep_time  = socket_config_node.child("read-timeout-sleep-time").attribute("microseconds").as_int(500000);
+        int max_connections = socket_config_node.child("max-connections").attribute("value").as_int(1); 
         
         // Create the configuration
-        m_connection_manager_config = std::make_shared<A_Connection_Manager_Socket_Config>( portno );
+        m_connection_manager_config = std::make_shared<A_Connection_Manager_Socket_Config>( portno,
+                                                                                            sleep_time,
+                                                                                            max_connections );
         
         // Set the connection manager config inside the CLI configuration
         m_current_configuration.Set_Connection_Manager_Config( m_connection_manager_config );
