@@ -50,7 +50,8 @@ bool A_Render_Manager_Event_Handler::Is_Supported_Event( const int& event )const
 /****************************/
 /*       Constructor        */
 /****************************/
-void A_Render_Manager_Event_Handler::Process_Event( int const& event )
+void A_Render_Manager_Event_Handler::Process_Event( int const& instance,
+                                                    int const& event )
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Event: " << event << ", File: " << __FILE__ << ", Line: " << __LINE__;
@@ -66,7 +67,8 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& event )
     // If we have a command to show the CLI Help, then show that
     else if( event == (int)CLI_Event_Type::KEYBOARD_F2 )
     {
-        m_render_manager->Set_Current_Window(1);
+        m_render_manager->Set_Current_Window( instance, 
+                                              1);
     }
 
 
@@ -74,30 +76,35 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& event )
     else if( event == (int)CLI_Event_Type::CLI_BACK ||
              event == (int)CLI_Event_Type::KEYBOARD_F1 )
     {
-        m_render_manager->Set_Current_Window(0);
+        m_render_manager->Set_Current_Window( instance, 
+                                              0);
     }
 
     // If we have a command for CLI_LOG, then set the current window to the log
     else if( event == (int)CLI_Event_Type::CLI_LOG ||
              event == (int)CLI_Event_Type::KEYBOARD_F3 )
     {
-        m_render_manager->Set_Current_Window(2);
+        m_render_manager->Set_Current_Window( instance,
+                                              2);
     }
 
     // If we have a command for CLI_ALIAS_LIST, then set the current window to the alias list
     else if( event == (int)CLI_Event_Type::CLI_ALIAS_LIST ||
              event == (int)CLI_Event_Type::KEYBOARD_F4 )
     {
-        m_render_manager->Set_Current_Window(3);
+        m_render_manager->Set_Current_Window( instance, 
+                                              3);
     }
 
     // Otherwise, Process the Keyboard Input
     else{
-        m_render_manager->Process_Keyboard_Input( event );
+        m_render_manager->Process_Keyboard_Input( instance, 
+                                                  event );
     }
 
     // Refresh screen
-    EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
+    EVT::Event_Manager::Process_Event( instance, 
+                                       (int)CLI_Event_Type::CLI_REFRESH );
 
 }
 

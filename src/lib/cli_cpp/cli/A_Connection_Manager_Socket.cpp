@@ -148,7 +148,6 @@ void A_Connection_Manager_Socket::Run_Handler()
     int n;
     std::string input;
 
-    // Get the sleep time and refresh counter
 
     // Get the length
     socklen_t clilen;
@@ -158,39 +157,24 @@ void A_Connection_Manager_Socket::Run_Handler()
     //  Iteratively load connections
     while( m_is_running == true )
     {
+        // Spawn a new instance
+        int client_fd;
 
-        // Wait until a valid connection
-        while( true ){
-        
-            // Accept the socket
-            BOOST_LOG_TRIVIAL(debug) << "Waiting for connection";
-            m_client_fd = accept( m_sock_fd, 
-                                  (struct sockaddr*)&cli_addr,
-                                  &clilen);
+        // Accept the socket
+        BOOST_LOG_TRIVIAL(debug) << "Waiting for connection";
+        client_fd = accept( m_sock_fd, 
+                            (struct sockaddr*)&cli_addr,
+                            &clilen);
             
-            // Check if we need to keep waiting
-            if( m_client_fd < 0 && m_is_running == true )
-            {
-                usleep(1000);
-                continue;
-            }
-
-            // Check the status
-            if( m_is_running != true || 
-                m_client_fd != EAGAIN )
-            {
-                break;
-            }
-        }
-
         // Check if we need to exit
         if( m_is_running != true ){
-            close(m_client_fd);
-            break;
+            close(client_fd);
+            continue;
         }
 
         // Make the socket non-blocking
-        fcntl( m_client_fd, F_SETFL, O_NONBLOCK );
+        fcntl( client_fd, F_SETFL, O_NONBLOCK );
+    
         
         // Log
         char host[NI_MAXHOST];
@@ -204,128 +188,11 @@ void A_Connection_Manager_Socket::Run_Handler()
         BOOST_LOG_TRIVIAL(debug) << "Connection has been made by " << host;
 
 
-        // Spawn a new instance
-        int next_position = 
 
-        // Write back
-        write( m_client_fd,"\377\375\042\377\373\001",6);
-        write( m_client_fd,"Welcome\n\0", 9);
-
-        
-        // Set the connected flag
-        m_is_connected = true;
-    
-        // run until time to quit
-        while( m_is_connected == true &&
-               m_is_running   == true )
-        {
-
-            // Check the manager
-            if( this->m_render_manager == nullptr ){
-                break;
-            }
-
-            
-            // While connected
-            while( m_is_connected == true &&
-                   m_is_running   == true )
-            {
-            
-                // Read from socket
-                n = read( m_client_fd, buffer, 255 );
-               
-                // Check if the socket has closed
-                if( n == 0 ){
-                    m_is_connected = false;
-                    break;
-                }
-
-                // Check time to quit
-                else if ( m_is_running   == false || 
-                          m_is_connected == false )
-                {
-                    break;
-                }
-
-                // Otherwise, check if valid
-                if( n > 0 ){
-                    break;
-                }
-
-                // Finally sleep
-                usleep(m_configuration->Get_Read_Timeout_Sleep_Microseconds());
-            }
-
-            // Check if we are still running
-            if( m_is_connected == false || 
-                m_is_running   == false )
-            {
-                break;
-            }
-
-            // Check the buffer
-            input = std::string(buffer).substr(0,n);
-
-
-            // Process the text
-            if( input.size() > 1 ){
-                
-                // Check if the input has a special key
-                key = this->Process_Special_Key( input );
-                
-                if( key != (int)CLI_Event_Type::UNKNOWN ){
-                    
-                    EVT::Event_Manager::Process_Event( key );
-                }
-                else{
-                
-                    // If no special key, just process it in chunks
-                    for( size_t ch=0; ch<input.size(); ch++ ){
-                    
-                        // Since we are just parsing straight input,
-                        // make sure we avoid negative numbers from the 
-                        // telnet client (HACK).  For some reason, telnet sends
-                        // a bunch of 250+ digits which causes the char to return
-                        // negative numbers.  -3 tells me right now to shut down.
-                        if( input[ch] > 0 ){    
-                            EVT::Event_Manager::Process_Event( input[ch] );
-                        }
-                    }
-                }
-
-            } else {
-            
-                // Process the single key
-                EVT::Event_Manager::Process_Event( input[0] );
-            
-            }
-
-            // Process the command
-            BOOST_LOG_TRIVIAL(trace) << "Calling Event_Manager::Process_Event with Key = " << key;
-            BOOST_LOG_TRIVIAL(trace) << "Event_Manager::Process_Event returned.";
-        
-            // Refresh
-            Refresh_Screen();
-
-            // Check if time to exit
-            if( m_is_running == false || 
-                m_is_connected == false )
-            {
-                break;
-            }
-
-        }
-
-        // Before we close the socket, write out the vis string to
-        // remove the effects of hiding the cursor
-        std::string close_socket_str = UTILS::ANSI_CLEARSCREEN +  UTILS::ANSI_CURSORVIS;
-        write( m_client_fd, close_socket_str.c_str(), close_socket_str.size() );
-    
-        
-        // Close the current session
-        close( m_client_fd );
-    }
-
+        // Call the process method
+        m_connection_list[next_position] = std::make_shared<A_Socket_Connection_Instance>( client_fd ); 
+                                                                                           
+    } 
 
     // Set the running flag
     m_is_running = false;
@@ -338,41 +205,18 @@ void A_Connection_Manager_Socket::Run_Handler()
 }
 
 
-/************************************************************/
-/*          Connect the Client and Run Connection           */
-/************************************************************/
-void A_Connection_Manager::Run_Client_Connection()
-{
-
-
-
-
-}
-
 /*********************************/
 /*       Refresh the screen      */
 /*********************************/
-void A_Connection_Manager_Socket::Refresh_Screen()
+void A_Connection_Manager_Socket::Refresh_Screen( const int instance_id )
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
-    // Lock the mutex
-    m_refresh_lock.lock();
-
-    
-    // Get the buffer string
-    std::vector<std::string> buffer_data = std::dynamic_pointer_cast<RENDER::A_Render_Manager_ASCII>(m_render_manager)->Get_Console_Buffer();
-    
-    
-    // Write each line to the socket
-    for( size_t i=0; i<buffer_data.size(); i++ ){
-        write( m_client_fd, buffer_data[i].c_str(), buffer_data[i].size() );   
+    if( m_connection_list[instance_id] != nullptr && 
+        m_connection_list[instance_id]->Is_Running() ){
+        m_connection_list[instance_id]->Refresh_Screen(); 
     }
-          
-    // Unlock the mutex
-    m_refresh_lock.unlock();
-    
     
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
@@ -438,18 +282,21 @@ int A_Connection_Manager_Socket::Get_Next_Client_Slot()
 {
 
     // Iterate over existing items
-    for( size_t i=0; i<m_client_fd_list.size(); i++ ){
+    for( size_t i=0; i<m_connection_list.size(); i++ ){
 
         // Look for dead thread
-        if( m_client_fd_list[i] <= 0 ){
+        if( m_connection_list[i] == nullptr ){
+            return i;
+        }
+        else if( m_connection_list[i]->Is_Running() == false ){
             return i;
         }
     }
 
     // If we get here, push another open spot
-    m_client_fd_list.push_back(0);
-    m_refresh_locks.push_back(std::mutex);
-    return (m_client_fd_list.size()-1);
+    m_connection_list.push_back(nullptr);
+    m_is_connected.resize(m_is_connected.size()+1, false );
+    return (m_connection_list.size()-1);
 }
 
 } // End of CLI Namespacee

@@ -42,7 +42,7 @@ An_Event_Queue::An_Event_Queue( const int& max_queue_size )
     if( max_queue_size < 1 ){
         throw std::runtime_error("Size cannot be less than 1.");
     }
-    m_event_queue = new int[max_queue_size];
+    m_event_queue = new std::tuple<int,int>[max_queue_size];
     
     
     // Initialize the semaphores
@@ -81,7 +81,7 @@ An_Event_Queue::An_Event_Queue( const int& max_queue_size )
     
     // Initialize array values
     for( int i=0; i<m_max_queue_size; i++ ){
-        m_event_queue[i] = (int)CLI_Event_Type::CLI_NULL;
+        m_event_queue[i] = std::make_tuple(-1, (int)CLI_Event_Type::CLI_NULL);
     }
 
 
@@ -164,7 +164,8 @@ void An_Event_Queue::Clear()
 /*****************************/
 /*        Push Command       */
 /*****************************/
-void An_Event_Queue::Push_Event( int const& event )
+void An_Event_Queue::Push_Event( int const& instance,
+                                 int const& event )
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
@@ -183,7 +184,7 @@ void An_Event_Queue::Push_Event( int const& event )
 
     
     // Set the value
-    m_event_queue[m_head] = event;
+    m_event_queue[m_head] = std::make_tuple(instance, event);
 
     
     // Update the size
@@ -238,8 +239,13 @@ int An_Event_Queue::Pop_Event()
 
 
     // Get the value
-    event = m_event_queue[m_tail];
-    m_event_queue[m_tail] = (int)CLI_Event_Type::CLI_NULL;
+    id    = std::get<0>(m_event_queue[m_tail]);
+    event = std::get<1>(m_event_queue[m_tail]);
+    
+    // set null
+    std::get<0>(m_event_queue[m_tail]) = (int)CLI_Event_Type::CLI_NULL;
+    std::get<1>(m_event_queue[m_tail]) = -1;
+
 
     // Update the size
     m_current_size--;

@@ -12,6 +12,7 @@
 #include <mutex>
 #include <semaphore.h>
 #include <string>
+#include <tuple>
 
 // CLI Libraries
 #include "../core/CLI_Event_Type.hpp"
@@ -51,7 +52,8 @@ class An_Event_Queue
          *
          * @param[in] event Event to push onto the queue.
          */
-        void Push_Event( int const& event );
+        void Push_Event( int const& id,
+                         int const& event );
 
 
         /**
@@ -59,7 +61,8 @@ class An_Event_Queue
          *
          * @return Next event on the queue.  If queue is empty, it will block.
          */
-        int Pop_Event();
+        void Pop_Event( int& id, 
+                        int& event );
 
 
         /**
@@ -94,7 +97,7 @@ class An_Event_Queue
         std::string m_class_name;
         
         /// Event Queue
-        int* m_event_queue;
+        std::tuple<int,int>* m_event_queue;
     
         /// Main Mutex
         std::mutex m_mtx;

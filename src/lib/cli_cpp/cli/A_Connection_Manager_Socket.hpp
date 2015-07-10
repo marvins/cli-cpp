@@ -50,15 +50,19 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
 
         /**
          * @brief Refresh the Screen.
+         *
+         * @param[in] instance to refresh.
          */
-        virtual void Refresh_Screen();
+        virtual void Refresh_Screen( const int& instance );
         
         
         /**
          * @brief Set the Is Connection Flag
         */
-        inline virtual void Set_Is_Connected_Flag( const bool& is_connected ){
-            m_is_connected = is_connected;
+        inline virtual void Set_Is_Connected_Flag( int const& instance, 
+                                                   const bool& is_connected )
+        {
+            m_connection_list[instance]->Set_Connection_Flag( is_connected );
         }
 
     
@@ -73,7 +77,7 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
         /**
          * @brief Connect Instance
         */
-        virtual void Run_Client_Connection();
+        virtual void Run_Client_Connection( const int instance_id );
 
 
     private:
@@ -122,18 +126,14 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
 
         /// Socket File Descriptor
         int m_sock_fd;
-
-
-        /// Client File Description
-        std::vector<m_client_fd> m_client_fd_list;
-
+       
 
         /// Keyboard Special Key Map
         std::vector<std::tuple<std::string,int>> m_special_key_list;
 
-
-        /// Refresh Lock
-        std::vector<std::mutex> m_refresh_locks;
+        
+        /// Socket Instance List
+        std::vector<A_Socket_Connection_Instance::ptr_t> m_connection_list;
 
 }; // End of A_Connection_Manager_Socket Class
 

@@ -34,8 +34,9 @@ Event_Manager::Event_Manager( Event_Manager_Config const& config )
     m_event_queue = std::make_shared<An_Event_Queue>(m_config.Get_Event_Queue_Max_Capacity());
     
     // Print the queue in the outer thread
-    m_event_queue->Push_Event((int)CLI_Event_Type::CLI_NULL);
-    m_event_queue->Pop_Event();
+    int tempA, tempB;
+    m_event_queue->Push_Event(-1, (int)CLI_Event_Type::CLI_NULL);
+    m_event_queue->Pop_Event(tempA, tempB);
 
     // Start the threads
     m_event_process_threads.clear();
@@ -61,7 +62,7 @@ Event_Manager::~Event_Manager()
     // Stop the thread
     for( size_t i=0; i<m_event_process_threads.size(); i++ ){
         m_is_running[i] = false;
-        m_event_queue->Push_Event((int)CLI_Event_Type::CLI_NULL);
+        m_event_queue->Push_Event(-1, (int)CLI_Event_Type::CLI_NULL);
     }
     
     
@@ -191,7 +192,8 @@ void Event_Manager::Register_CLI_Event_Handler( A_CLI_Event_Handler_Base::ptr_t 
 /*****************************************/
 /*           Process an Event            */
 /*****************************************/
-void Event_Manager::Process_Event( const int& event )
+void Event_Manager::Process_Event( const int& instance, 
+                                   const int& event )
 {
 
     // Log Entry
@@ -212,7 +214,7 @@ void Event_Manager::Process_Event( const int& event )
         BOOST_LOG_TRIVIAL(trace) << "Event queue is currently null.";
         return;
     }
-    inst->m_event_queue->Push_Event( event );
+    inst->m_event_queue->Push_Event( instance, event );
 
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
@@ -225,14 +227,15 @@ void Event_Manager::Process_Event( const int& event )
 void Event_Manager::Event_Process_Runner( const int& thread_id )
 {
     // Misc variables
-    int temp_event;
+    int temp_event, temp_instance;
 
     // Run while the flag is valid
     while( m_is_running[thread_id] == true )
     {
         
         // Get the next event
-        temp_event = m_event_queue->Pop_Event();
+        m_event_queue->Pop_Event( temp_instance, 
+                                  temp_event);
             
         // Log result    
         BOOST_LOG_TRIVIAL(trace) << "Popped event (" << temp_event << "), Event queue size: " << m_event_queue->Get_Current_Size();
@@ -256,7 +259,8 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
 
             // Check if supported
             else if( m_event_handlers[i]->Is_Supported_Event( temp_event ) == true ){
-                m_event_handlers[i]->Process_Event(temp_event);
+                m_event_handlers[i]->Process_Event( temp_instance, 
+                                                    temp_event);
             }
         }
 

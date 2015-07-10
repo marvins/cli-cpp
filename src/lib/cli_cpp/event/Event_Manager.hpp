@@ -71,9 +71,11 @@ class Event_Manager{
         /**
          * @brief Process_Event
          *
+         * @param[in] instance Which client the event originated from.
          * @param[in] event Event ID.  For keyboard entries, this is the ascii value, for CLI Commands, this is < -2. Check CLI_Event_Type class for more info.
         */
-        static void Process_Event( const int& event );
+        static void Process_Event( const int& instance, 
+                                   const int& event );
 
     private:
 

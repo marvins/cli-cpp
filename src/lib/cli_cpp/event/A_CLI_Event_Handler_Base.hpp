@@ -49,7 +49,8 @@ class A_CLI_Event_Handler_Base
         /**
          * @brief Process Event
         */
-        virtual void Process_Event( const int& event ) = 0;
+        virtual void Process_Event( const int& instance,
+                                    const int& event ) = 0;
 
 
         /**

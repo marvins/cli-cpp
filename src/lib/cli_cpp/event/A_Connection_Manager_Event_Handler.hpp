@@ -34,7 +34,8 @@ class A_Connection_Manager_Event_Handler : public A_CLI_Event_Handler_Base
          *
          * @param[in] event Event to process.  Cast the CLI_Event_Type for input to make things easier.
          */
-        virtual void Process_Event( const int& event );
+        virtual void Process_Event( const int& instance,
+                                    const int& event );
 
 
     private:

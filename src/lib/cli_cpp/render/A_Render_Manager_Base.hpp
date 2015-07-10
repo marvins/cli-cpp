@@ -195,7 +195,7 @@ class A_Render_Manager_Base
 
         
         /// Command History
-        CMD::A_Command_History::ptr_t m_command_history;
+        std::vector<CMD::A_Command_History::ptr_t>  m_command_history;
 
 
         /// Command Queue
@@ -203,11 +203,11 @@ class A_Render_Manager_Base
 
 
         /// Command Counter
-        int m_command_counter;
+        std::vector<int> m_command_counters;
         
         
-        /// Render State
-        A_Render_State::ptr_t m_render_state;
+        /// Render States
+        std::vector<A_Render_State::ptr_t> m_render_states;
         
 
         /// Command Parser
