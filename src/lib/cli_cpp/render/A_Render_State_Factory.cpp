@@ -72,6 +72,11 @@ A_Render_State_Factory::A_Render_State_Factory()
 /**********************************/
 void A_Render_State_Factory::Initialize( CMD::A_Command_Parser::ptr_t command_parser )
 {
+    // Do not initialize if command parser is null
+    if( command_parser == nullptr ){
+        return;
+    }
+
     // Create instance
     A_Render_State_Factory& factory = Get_Factory_Instance();
     
@@ -80,6 +85,20 @@ void A_Render_State_Factory::Initialize( CMD::A_Command_Parser::ptr_t command_pa
 
     // Set the init flag
     factory.m_is_initialized = true;
+}
+
+
+/*******************************/
+/*          Finalize           */
+/*******************************/
+void A_Render_State_Factory::Finalize()
+{
+    // Get the instance
+    A_Render_State_Factory& factory = Get_Factory_Instance();
+
+    // Clear it
+    factory = A_Render_State_Factory();
+
 }
 
 /*************************************/

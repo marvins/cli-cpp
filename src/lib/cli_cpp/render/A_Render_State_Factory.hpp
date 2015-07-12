@@ -43,6 +43,12 @@ class A_Render_State_Factory
          * @param[in] command_parser Command-Parser to tie to each instance.
         */
         static void Initialize( CMD::A_Command_Parser::ptr_t command_parser );
+
+
+        /**
+         * @brief Finalize
+        */
+        static void Finalize();
         
 
         /**
