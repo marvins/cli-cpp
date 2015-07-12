@@ -192,7 +192,9 @@ void A_Socket_Connection_Instance::Run()
     // Before we close the socket, write out the vis string to
     // remove the effects of hiding the cursor
     std::string close_socket_str = UTILS::ANSI_CLEARSCREEN +  UTILS::ANSI_CURSORVIS;
-    write( m_client_fd, close_socket_str.c_str(), close_socket_str.size() );
+    write( m_client_fd, 
+           close_socket_str.c_str(), 
+           close_socket_str.size() );
 
 
     // Close the current session

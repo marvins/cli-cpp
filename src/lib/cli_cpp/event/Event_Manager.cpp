@@ -76,7 +76,7 @@ Event_Manager::~Event_Manager()
             m_event_process_threads[i].join();
         }
     }
-
+    m_event_process_threads.clear();
 
     // Reset
     m_event_queue.reset();

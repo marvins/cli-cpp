@@ -66,6 +66,8 @@ void A_CLI_Detailed_Help_Command_Response_Handler::Process_Command( CLI::CMD::A_
     // If there are no arguments, just set the help window
     if( nargs == 0 ){
         render_manager->Set_Current_Window(1);
+        response->Set_System_Response( "Success" );
+        return;
     }
 
     // Get the next argument
