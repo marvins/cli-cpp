@@ -59,14 +59,6 @@ class A_CLI_Manager_Configuration{
 
 
         /**
-         * @brief Get the Connection Manager Configuration
-         *
-         * @return Connection Manager Configuration.
-         */
-        A_Connection_Manager_Base::ptr_t  Get_Connection_Manager();
-
-
-        /**
          * @brief Set the Connection Manager Configuration
          *
          * @param[in] configuration Configuration object to set.
@@ -74,6 +66,15 @@ class A_CLI_Manager_Configuration{
         inline void Set_Connection_Manager_Config( A_Connection_Manager_Base_Config::ptr_t configuration )
         {
             m_connection_manager_configuration = configuration;
+        }
+
+        /**
+         * @brief Get the Connection-Manager Configuration.
+         *
+         * @return Connection-Manager configuration object.
+        */
+        inline A_Connection_Manager_Base_Config::ptr_t Get_Connection_Manager_Config()const{
+            return m_connection_manager_configuration;
         }
 
 
@@ -116,28 +117,22 @@ class A_CLI_Manager_Configuration{
 
 
         /**
-         * @brief Get the CLI Command Queue Max Size
-         */
-        inline int Get_Command_Queue_Max_Size()const{
-            return m_command_queue_max_size;
-        }
-
-
-        /**
-         * @brief Set the Command Queue Max Size
-         */
-        inline void Set_Command_Queue_Max_Size( const int& command_queue_max_size )
-        {
-            m_command_queue_max_size = command_queue_max_size;
-        }
-
-
-        /**
-         * @brief Get the Render Manager Configuration
+         * @brief Get the CLI Command Queue Configuration.
          *
-         * @return Configuration
+         * @return Command-Queue Configuration
          */
-        RENDER::A_Render_Manager_Base::ptr_t  Get_Render_Manager();
+        inline CMD::A_Command_Queue_Config Get_Command_Queue_Config()const{
+            return m_command_queue_config;
+        }
+
+
+        /**
+         * @brief Set the Command Queue Configuration
+         */
+        inline void Set_Command_Queue_Config( const CMD::A_Command_Queue_Config& command_queue_config )
+        {
+            m_command_queue_config = command_queue_config;
+        }
 
 
         /**
@@ -232,14 +227,6 @@ class A_CLI_Manager_Configuration{
         CMD::A_Command_Parser::ptr_t m_command_parser;
 
 
-        /// Render Driver Context
-        RENDER::A_Render_Driver_Context_Base::ptr_t m_render_driver_context;
-
-
-        /// Render Manager
-        RENDER::A_Render_Manager_Base::ptr_t m_render_manager;
-
-
         /// Event Manager Configuration
         EVT::Event_Manager_Config m_event_manager_config;
 
@@ -247,8 +234,8 @@ class A_CLI_Manager_Configuration{
         /// Command-Line Title
         std::string m_cli_title;
 
-        /// Command Queue Max Size
-        int m_command_queue_max_size;
+        /// Command Queue Configuration
+        CMD::A_Command_Queue_Config m_command_queue_config;
 
         /// Socket window rows
         int m_socket_window_rows;

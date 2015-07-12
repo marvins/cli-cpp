@@ -17,11 +17,10 @@ namespace CLI{
 /************************/
 /*      Constructor     */
 /************************/
-A_Connection_Manager_Base::A_Connection_Manager_Base( RENDER::A_Render_Manager_Base::ptr_t render_manager )
+A_Connection_Manager_Base::A_Connection_Manager_Base( A_Connection_Manager_Base_Config::ptr_t configuration )
   : m_is_running(false),
-    m_render_manager(render_manager),
-    m_command_parser(nullptr),
-    m_class_name("A_Connection_Manager_Base")
+    m_class_name("A_Connection_Manager_Base"),
+    m_configuration(configuration)
 {
 }
 
@@ -32,10 +31,6 @@ A_Connection_Manager_Base::A_Connection_Manager_Base( RENDER::A_Render_Manager_B
 /*************************/
 A_Connection_Manager_Base::~A_Connection_Manager_Base()
 {
-    
-    // Finalize
-    m_render_manager->Finalize();
-
 }
 
 

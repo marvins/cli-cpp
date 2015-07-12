@@ -13,7 +13,6 @@
 // CLI Libraries
 #include "../cli/A_Command_Response_Handler_Base.hpp"
 #include "../cmd/A_Command.hpp"
-#include "../render/A_Render_Manager_Base.hpp"
 
 
 namespace CLI{
@@ -33,10 +32,8 @@ class A_Custom_Window_Command_Response_Handler : public CLI::A_Command_Response_
 
         /**
          * @brief Constructor
-         *
-         * @param[in]  render_manager Render state manager which contains the CLI Size.
          */
-        A_Custom_Window_Command_Response_Handler( RENDER::A_Render_Manager_Base::ptr_t render_manager );
+        A_Custom_Window_Command_Response_Handler();
 
 
         /**
@@ -67,10 +64,6 @@ class A_Custom_Window_Command_Response_Handler : public CLI::A_Command_Response_
         std::string m_class_name;
     
         
-        /// Render Manager
-        RENDER::A_Render_Manager_Base::ptr_t m_render_manager;
-
-
         /// List of Commands and their matching IDs.
         std::map<int,CMD::A_Command> m_trigger_commands;
 

@@ -13,6 +13,7 @@
 #include <semaphore.h>
 
 // CLI Libraries
+#include "A_Command_Queue_Config.hpp"
 #include "A_Command_Result.hpp"
 
 namespace CLI{
@@ -34,7 +35,7 @@ class A_Command_Queue{
          *
          * @param[in] max_queue_size Max number of elements in the queue before blocking.
         */
-        A_Command_Queue( const int& max_queue_size );
+        A_Command_Queue( const A_Command_Queue_Config& configuration );
         
 
         /**
@@ -66,10 +67,19 @@ class A_Command_Queue{
 
 
     private:
+
+        /// Class Name
+        std::string m_class_name;
+
+
+        /// Configuration 
+        A_Command_Queue_Config m_configuration;
+
         
         /// Command Queue
         A_Command_Result::ptr_t* m_command_queue;
-    
+   
+
         /// Main Mutex
         std::mutex m_mtx;
 
@@ -80,10 +90,7 @@ class A_Command_Queue{
         /// Head and Tail Cursors
         int m_head;
         int m_tail;
-
-        /// Max Queue Size
-        int m_max_queue_size;
-
+        
         /// Close Flag
         std::atomic<bool> m_close_flag;
 

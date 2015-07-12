@@ -12,6 +12,8 @@
 #include <sstream>
 
 // CLI Libraries
+#include "A_Render_Driver_Context_Factory.hpp"
+#include "A_Render_State_Factory.hpp"
 #include "ascii/A_General_Help_Window.hpp"
 #include "ascii/A_Log_Window.hpp"
 #include "ascii/A_Main_Window.hpp"
@@ -28,20 +30,21 @@ const std::string BUFFER_NEWLINE = "\n\r";
 /****************************/
 /*      Constructor         */
 /****************************/
-A_Render_Manager_ASCII::A_Render_Manager_ASCII( A_Render_Driver_Context_Base::ptr_t driver_context,
+A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int& instance_id,
                                                 CMD::A_Command_Parser::ptr_t        command_parser )
- :  A_Render_Manager_Base( command_parser ),
+ :  A_Render_Manager_Base( instance_id,
+                           command_parser ),
     m_class_name("A_Render_Manager_ASCII"),
     m_current_window(0),
     m_help_window_mode(false)
 {
     // Cast the driver
-    m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(driver_context);
+    A_Render_Driver_Context_Base::ptr_t render_driver = A_Render_Driver_Context_Factory::Create_Instance();
+    m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(render_driver);
+    
+    // Local Rendering State
+    m_render_state = A_Render_State_Factory::Instance_Of( instance_id );
 
-    // Create new render state
-    m_render_state.reset(new A_Render_State( CORE::ConnectionType::SOCKET, 
-                                             m_command_history,
-                                             m_command_parser ));
 }
 
 
@@ -62,7 +65,7 @@ void A_Render_Manager_ASCII::Initialize()
 
     // Add the main window
     m_window_list.push_back(std::make_shared<A_Main_Window>( driver_context,
-                                                             m_command_history ));
+                                                             m_render_state->Get_Command_History()));
     
     // Add the help window
     m_window_list.push_back(std::make_shared<A_General_Help_Window>( driver_context,

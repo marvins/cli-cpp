@@ -10,6 +10,7 @@
 #include <sstream>
 
 // CLI Libraries
+#include "A_Render_Manager_Factory.hpp"
 #include "../event/Event_Manager.hpp"
 #include "../utility/ANSI_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
@@ -21,12 +22,12 @@ namespace RENDER{
 /****************************/
 /*      Constructor         */
 /****************************/
-A_Render_Manager_Base::A_Render_Manager_Base( CMD::A_Command_Parser::ptr_t command_parser )
- :  m_command_history(std::make_shared<CMD::A_Command_History>()),
-    m_command_queue(nullptr),
-    m_command_counter(0),
+A_Render_Manager_Base::A_Render_Manager_Base( const int& instance_id,
+                                              CMD::A_Command_Parser::ptr_t command_parser )
+ :  m_command_queue(nullptr),
     m_render_state(nullptr),
     m_command_parser(command_parser),
+    m_instance_id(instance_id),
     m_class_name("A_Render_Manager_Base")
 {
 }
@@ -79,7 +80,8 @@ void A_Render_Manager_Base::Process_Command()
 
     
     // Check the command
-    CMD::A_Command_Result result = m_command_parser->Evaluate_Command( m_render_state->Get_Cursor_Text() );
+    CMD::A_Command_Result result = m_command_parser->Evaluate_Command( m_instance_id,
+                                                                       m_render_state->Get_Cursor_Text() );
 
     
     // Create shared pointer
@@ -91,13 +93,14 @@ void A_Render_Manager_Base::Process_Command()
 
     
     // Add to history
-    Add_Command_History( m_render_state->Get_Cursor_Text(), 
-                         result_ptr );
+    m_render_state->Add_Command_History( m_render_state->Get_Cursor_Text(), 
+                                         result_ptr );
 
     
     //  Look for CLI Shutdown
     if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_SHUTDOWN ){
-        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_SHUTDOWN );
+        EVT::Event_Manager::Process_Event( m_instance_id,
+                                           (int)CLI_Event_Type::CLI_SHUTDOWN );
     }
     
 
@@ -121,7 +124,8 @@ void A_Render_Manager_Base::Process_Command()
             Set_Waiting_Command_Response( result_ptr );
         
             // Refresh
-            EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
+            EVT::Event_Manager::Process_Event( m_instance_id,
+                                               (int)CLI_Event_Type::CLI_REFRESH );
 
         }
     }
@@ -147,6 +151,12 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Key: " << key << ", File: " << __FILE__ << ", Line: " << __LINE__;
     
+    // Make sure the instance is not null
+    if( m_render_state == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "Render-State for instance " << m_instance_id << " is null.";
+        return;
+    }
+
 
     // Check if we are sleeping. If we are just return
     if( m_render_state->Get_Sleep_Mode() == true ){
@@ -169,7 +179,8 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
         m_render_state->Reset_Pause_Mode();
         
         // Refresh the screen
-        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
+        EVT::Event_Manager::Process_Event( m_instance_id,
+                                           (int)CLI_Event_Type::CLI_REFRESH );
         
         return;
     }
@@ -183,11 +194,13 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
         Process_Command();
 
         // Refresh the screen
-        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
+        EVT::Event_Manager::Process_Event( m_instance_id,
+                                           (int)CLI_Event_Type::CLI_REFRESH );
         
 
         // Check if we have an active queue (CLI_RUN_SCRIPT)
-        while( m_render_state->Get_Active_Command_Queue_Size() > 0 ){
+        while( m_render_state->Get_Active_Command_Queue_Size() > 0 )
+        {
                                         
 
             // Update the current command
@@ -195,7 +208,8 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
 
 
             // Refresh
-            EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
+            EVT::Event_Manager::Process_Event( m_instance_id,
+                                               (int)CLI_Event_Type::CLI_REFRESH );
 
 
             // Wait while either waiting or sleeping
@@ -207,7 +221,8 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
                 usleep(500000);
 
                 // Refresh the screen
-                EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
+                EVT::Event_Manager::Process_Event( m_instance_id,
+                                                   (int)CLI_Event_Type::CLI_REFRESH );
             }
 
 
@@ -221,14 +236,8 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
     }
 
 
-    // Check that the render state is not null.  I want this to seg fault for now so I know when a problem occurs
-    if( this->m_render_state == nullptr ){
-        BOOST_LOG_TRIVIAL(error) << "Render-State is currently nullptr. Expect a seg fault.";
-    }
-
-
     // Process Keyboard Input
-    this->m_render_state->Process_Input( key );
+    m_render_state->Process_Input( key );
 
 
     // Log Exit

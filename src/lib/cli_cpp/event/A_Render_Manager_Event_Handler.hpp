@@ -23,7 +23,7 @@ class A_Render_Manager_Event_Handler : public A_CLI_Event_Handler_Base
         /**
          * @brief Constructor
         */
-        A_Render_Manager_Event_Handler( RENDER::A_Render_Manager_Base::ptr_t render_manager );
+        A_Render_Manager_Event_Handler();
         
         
         /**
@@ -38,17 +38,18 @@ class A_Render_Manager_Event_Handler : public A_CLI_Event_Handler_Base
 
         /**
          * @brief Process Event.
+         *
+         * @param[in] instance_id ID of the client issuing the event.
+         * @param[in] event Event value.
          */
-        virtual void Process_Event( const int& event );
+        virtual void Process_Event( const int& instance_id,
+                                    const int& event );
 
 
     private:
         
         /// Class Name
         std::string m_class_name;
-
-        /// Event Manager Pointer
-        RENDER::A_Render_Manager_Base::ptr_t m_render_manager;
 
 }; // End of A_Render_Manager_Event_Handler Class
 

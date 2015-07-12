@@ -40,9 +40,12 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         
         /**
          * @brief Constructor
+         *
+         * @param[in] instance_id
+         * @param[in] command_parser
          */
-        A_Render_Manager_ASCII( A_Render_Driver_Context_Base::ptr_t context,
-                                CMD::A_Command_Parser::ptr_t        command_parser );
+        A_Render_Manager_ASCII( const int&                    instance_id,
+                                CMD::A_Command_Parser::ptr_t  command_parser );
         
 
         /**
@@ -172,6 +175,7 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         /// Current Window Index
         int m_current_window;
         
+        /// Flag if we need to show the help windows
         bool m_help_window_mode;
         
         /// Refresh Mutex

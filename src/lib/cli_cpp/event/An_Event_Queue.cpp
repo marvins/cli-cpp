@@ -210,15 +210,12 @@ void An_Event_Queue::Push_Event( int const& instance,
 /*****************************/
 /*        Pop Command        */
 /*****************************/
-int An_Event_Queue::Pop_Event()
+void An_Event_Queue::Pop_Event( int& instance, 
+                                int& event )
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
     
-    // Output
-    int event;
-
-
     // Decrement the pop semaphore
     if( sem_wait( m_pop_semaphore ) != 0 ){
         std::stringstream sin;
@@ -230,7 +227,9 @@ int An_Event_Queue::Pop_Event()
     // Return if the list is empty
     if( m_close_flag == true ){
         BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-        return (int)CLI_Event_Type::CLI_NULL;
+        instance = -1;
+        event = (int)CLI_Event_Type::CLI_NULL;
+        return; 
     }
 
 
@@ -239,8 +238,8 @@ int An_Event_Queue::Pop_Event()
 
 
     // Get the value
-    id    = std::get<0>(m_event_queue[m_tail]);
-    event = std::get<1>(m_event_queue[m_tail]);
+    instance = std::get<0>(m_event_queue[m_tail]);
+    event    = std::get<1>(m_event_queue[m_tail]);
     
     // set null
     std::get<0>(m_event_queue[m_tail]) = (int)CLI_Event_Type::CLI_NULL;
@@ -270,7 +269,6 @@ int An_Event_Queue::Pop_Event()
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
     
     // return command
-    return event;
 }
 
 } // End of EVT Namespace

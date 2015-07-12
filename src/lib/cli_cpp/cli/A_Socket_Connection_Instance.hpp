@@ -11,11 +11,14 @@
 #include <string>
 
 // CLI Libraries
-#include "../render/A_Render_State.hpp"
+#include "../render/A_Render_Manager_Base.hpp"
 
 
 namespace CLI{
 
+/**
+ * @class A_Socket_Connection_Instance
+*/
 class A_Socket_Connection_Instance
 {
 
@@ -27,13 +30,12 @@ class A_Socket_Connection_Instance
 
         /**
          * @brief Constructor
-         *
+         * 
+         * @param[in] instance Instance ID of the client.
          * @param[in] client_fd Socket File Descriptor of Client.
-         * @param[in] render_state Rendering information about client UI.
          */
         A_Socket_Connection_Instance( const int& instance,
-                                      const int& client_fd,
-                                      RENDER::A_Render_State::ptr_t render_state );
+                                      const int& client_fd );
 
         
         /**
@@ -93,6 +95,9 @@ class A_Socket_Connection_Instance
 
         /// Flag if Connected
         bool m_is_connected;
+    
+        /// Local Render Manager Instance
+        RENDER::A_Render_Manager_Base::ptr_t m_render_manager; 
 
 }; // End of A_Socket_Connection_Instance_Class
 

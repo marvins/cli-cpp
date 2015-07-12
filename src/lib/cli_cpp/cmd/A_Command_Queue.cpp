@@ -15,19 +15,20 @@ namespace CMD{
 /******************************/
 /*        Constructor         */
 /******************************/
-A_Command_Queue::A_Command_Queue( const int& max_queue_size )
-  : m_command_queue(new A_Command_Result::ptr_t[max_queue_size] ),
+A_Command_Queue::A_Command_Queue( const A_Command_Queue_Config& configuration )
+  : m_class_name("A_Command_Queue"),
+    m_configuration(configuration),
+    m_command_queue(new A_Command_Result::ptr_t[configuration.Get_Max_Queue_Size()] ),
     m_head(0),
     m_tail(0),
-    m_max_queue_size(max_queue_size),
     m_close_flag(false)
 {
     // Initialize the semaphores
-    sem_init( &m_push_semaphore, 0, max_queue_size);
+    sem_init( &m_push_semaphore, 0, m_configuration.Get_Max_Queue_Size());
     sem_init( &m_pop_semaphore, 0, 0);
 
     // Initialize array values
-    for( int i=0; i<m_max_queue_size; i++ ){
+    for( int i=0; i<m_configuration.Get_Max_Queue_Size(); i++ ){
         m_command_queue[i] = nullptr;
     }
 }
@@ -76,7 +77,7 @@ void A_Command_Queue::Push_Command( A_Command_Result::ptr_t const& command )
     m_command_queue[m_head] = command;
 
     // Increment the head
-    m_head = (m_head+1) % m_max_queue_size;
+    m_head = (m_head+1) % m_configuration.Get_Max_Queue_Size();
 
     // Release the Mutex
     m_mtx.unlock();
@@ -113,7 +114,7 @@ A_Command_Result::ptr_t A_Command_Queue::Pop_Command()
     m_command_queue[m_tail] = nullptr;
 
     // Update the tail
-    m_tail = (m_tail+1) % m_max_queue_size;
+    m_tail = (m_tail+1) % m_configuration.Get_Max_Queue_Size();
     
     // Unlock the mutex
     m_mtx.unlock();

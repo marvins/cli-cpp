@@ -103,7 +103,8 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     }
     m_current_configuration.Set_Connection_Type( cli_conn_type );
 
-    
+
+   // Process the socket connection information 
    if( cli_conn_type == CORE::ConnectionType::SOCKET ){
 
         // Socket Config
@@ -149,7 +150,7 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
         std::cerr << "CLI Command Queue Max Size must be > 0" << std::endl;
         return;
     }
-    m_current_configuration.Set_Command_Queue_Max_Size( temp_int );
+    m_current_configuration.Set_Command_Queue_Config( A_Command_Queue_Config( temp_int ));
     
     
     // Get the redirect variables

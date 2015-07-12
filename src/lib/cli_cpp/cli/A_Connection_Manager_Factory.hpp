@@ -24,10 +24,11 @@ class A_Connection_Manager_Factory
         /**
          * @brief Initialize the connection manager.
          *
+         * @param[in] configuration Connection-Manager Configuration.
+         *
          * @return Connection manager.  Null if there was a problem.
         */
-        static A_Connection_Manager_Base::ptr_t Initialize( A_Connection_Manager_Base_Config::ptr_t configuration,
-                                                            RENDER::A_Render_Manager_Base::ptr_t    render_manager );
+        static A_Connection_Manager_Base::ptr_t Initialize( A_Connection_Manager_Base_Config::ptr_t configuration );
 
 
 }; // End of A_Connection_Manager_Factory Class

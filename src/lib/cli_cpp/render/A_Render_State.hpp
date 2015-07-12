@@ -41,13 +41,9 @@ class A_Render_State{
         /**
          * @brief Constructor
          * 
-         * @param[in] conn_type Connection type.
-         * @param[in] command_history History of commands.
          * @param[in] command_parser Parser for auto-complete.
          */
-        A_Render_State( CORE::ConnectionType const&    conn_type,
-                        CMD::A_Command_History::ptr_t  command_history,
-                        CMD::A_Command_Parser::ptr_t   command_parser );
+        A_Render_State( CMD::A_Command_Parser::ptr_t   command_parser );
         
         
         /**
@@ -149,6 +145,32 @@ class A_Render_State{
          * @brief Reset the CLI Pause Mode
          */
         void Reset_Pause_Mode();
+       
+
+        /**
+         * @brief Get the Command-History Object.
+         *
+         * @return Command-History.
+        */
+        inline CMD::A_Command_History::ptr_t Get_Command_History()const{
+            return m_command_history;
+        }
+
+
+        /**
+         * @brief Add a Command to the Command History.
+         *
+         * @param[in] cli_text CLI text to add to the history
+         * @param[in] command_result Command to tie to text.
+        */
+        inline void Add_Command_History( const std::string& cli_text,
+                                         const CMD::A_Command_Result::ptr_t command_result )
+        {
+            // Add to history
+            m_command_history->Add_Entry( CMD::A_Command_History_Entry( m_command_history->Size(),
+                                                                        cli_text,
+                                                                        command_result ));
+        }
 
         
     private:

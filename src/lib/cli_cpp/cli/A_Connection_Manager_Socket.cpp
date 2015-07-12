@@ -48,9 +48,8 @@ namespace CLI{
 /*************************/
 /*      Constructor      */
 /*************************/
-A_Connection_Manager_Socket::A_Connection_Manager_Socket( A_Connection_Manager_Base_Config::ptr_t configuration,
-                                                          RENDER::A_Render_Manager_Base::ptr_t    render_manager )
-  : A_Connection_Manager_Base(render_manager),
+A_Connection_Manager_Socket::A_Connection_Manager_Socket( A_Connection_Manager_Base_Config::ptr_t configuration )
+  : A_Connection_Manager_Base(configuration),
     m_class_name("A_Connection_Manager_Socket")
 {
     // Cast the configuration
@@ -140,15 +139,6 @@ void A_Connection_Manager_Socket::Run_Handler()
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
-    // Misc Variables
-    int key;
-
-    // Read the socket
-    char buffer[256];
-    int n;
-    std::string input;
-
-
     // Get the length
     socklen_t clilen;
     struct sockaddr_in cli_addr;
@@ -190,7 +180,9 @@ void A_Connection_Manager_Socket::Run_Handler()
 
 
         // Call the process method
-        m_connection_list[next_position] = std::make_shared<A_Socket_Connection_Instance>( client_fd ); 
+        int next_position = Get_Next_Client_Slot();
+        m_connection_list[next_position] = std::make_shared<A_Socket_Connection_Instance>( next_position,
+                                                                                           client_fd ); 
                                                                                            
     } 
 
@@ -208,7 +200,7 @@ void A_Connection_Manager_Socket::Run_Handler()
 /*********************************/
 /*       Refresh the screen      */
 /*********************************/
-void A_Connection_Manager_Socket::Refresh_Screen( const int instance_id )
+void A_Connection_Manager_Socket::Refresh_Screen( const int& instance_id )
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
@@ -295,7 +287,6 @@ int A_Connection_Manager_Socket::Get_Next_Client_Slot()
 
     // If we get here, push another open spot
     m_connection_list.push_back(nullptr);
-    m_is_connected.resize(m_is_connected.size()+1, false );
     return (m_connection_list.size()-1);
 }
 

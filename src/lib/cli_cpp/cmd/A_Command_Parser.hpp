@@ -50,6 +50,7 @@ class A_Command_Parser {
         /**
          * @brief Evaluate Command
          *
+         * @param[in] instance_id   Client instance who issued command.
          * @param[in] test_str      String to evaluate.
          * @param[in] ignore_alias  Skip processing the alias list.
          *
@@ -59,7 +60,8 @@ class A_Command_Parser {
          *
          * @return Command result.
          */
-        A_Command_Result Evaluate_Command( const std::string&  test_str,
+        A_Command_Result Evaluate_Command( const int&          instance_id,
+                                           const std::string&  test_str,
                                            const bool&         ignore_alias = false ) const;
         
 

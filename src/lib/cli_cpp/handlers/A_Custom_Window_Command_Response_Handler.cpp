@@ -5,6 +5,9 @@
  */
 #include "A_Custom_Window_Command_Response_Handler.hpp"
 
+// CLI Libraries
+#include "../render/A_Render_Manager_Factory.hpp"
+#include "../utility/Log_Utilities.hpp"
 
 // C++ Standard Libraries
 #include <iostream>
@@ -15,10 +18,9 @@ namespace HANDLER{
 /**********************************/
 /*          Constructor           */
 /**********************************/
-A_Custom_Window_Command_Response_Handler::A_Custom_Window_Command_Response_Handler( RENDER::A_Render_Manager_Base::ptr_t render_manager )
+A_Custom_Window_Command_Response_Handler::A_Custom_Window_Command_Response_Handler()
   : CLI::A_Command_Response_Handler_Base(),
-    m_class_name("A_Custom_Window_Command_Response_Handler"),
-    m_render_manager(render_manager)
+    m_class_name("A_Custom_Window_Command_Response_Handler")
 {
 }
 
@@ -47,6 +49,18 @@ bool A_Custom_Window_Command_Response_Handler::Is_Supported( CLI::CMD::A_Command
 void A_Custom_Window_Command_Response_Handler::Process_Command( CLI::CMD::A_Command_Result::ptr_t response )
 {
     
+    // Get the instance ID
+    int instance = response->Get_Instance_ID();
+
+    // Get the render manager
+    RENDER::A_Render_Manager_Base::ptr_t render_manager = RENDER::A_Render_Manager_Factory::Instance_Of( instance );
+
+    // Make sure the render manager is valid
+    if( render_manager == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "Render-Manager returned for instance " << instance << " is null.";
+        return;
+    }
+
     // Check the name
     std::map<int,CMD::A_Command>::iterator it = m_trigger_commands.begin();
     for( ; it != m_trigger_commands.end(); it++ ){
@@ -55,7 +69,7 @@ void A_Custom_Window_Command_Response_Handler::Process_Command( CLI::CMD::A_Comm
         if( it->second == response->Get_Command() ){
             
             // If the commands match, then set the window
-            m_render_manager->Set_Current_Window( it->first );
+            render_manager->Set_Current_Window( it->first );
             
             // Done
             return;

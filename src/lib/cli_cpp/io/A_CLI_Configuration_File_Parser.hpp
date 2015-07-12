@@ -13,6 +13,7 @@
 // CLI Libraries
 #include "../cli/A_CLI_Manager_Configuration.hpp"
 #include "../cli/A_Connection_Manager_Base_Config.hpp"
+#include "../cmd/A_Command_Queue_Config.hpp"
 #include "../event/Event_Manager_Config.hpp"
 
 

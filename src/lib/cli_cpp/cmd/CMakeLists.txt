@@ -17,6 +17,7 @@ set( LIB_CLI_CMD_MODULE_SOURCES
      A_Command_Parser.cpp
      A_Command_Parser_Factory.cpp
      A_Command_Queue.cpp
+     A_Command_Queue_Config.cpp
      A_Command_Result.cpp
      CommandArgumentType.cpp
      CommandParseStatus.cpp
@@ -36,6 +37,7 @@ set( LIB_CLI_CMD_MODULE_HEADERS
      A_Command_Parser.hpp
      A_Command_Parser_Factory.hpp
      A_Command_Queue.hpp
+     A_Command_Queue_Config.hpp
      A_Command_Result.hpp
      CommandArgumentType.hpp
      CommandParseStatus.hpp

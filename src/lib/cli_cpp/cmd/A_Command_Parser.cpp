@@ -42,7 +42,8 @@ A_Command_Parser::A_Command_Parser( const std::string&                   regex_s
 /***************************************/
 /*          Evaluate Command           */
 /***************************************/
-A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string&  test_str,
+A_Command_Result  A_Command_Parser::Evaluate_Command( const int&          instance_id,
+                                                      const std::string&  test_str,
                                                       const bool&         ignore_alias )const
 {
     // Log 
@@ -69,7 +70,8 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string&  test_s
         if( m_alias_list[idx].Is_Alias_Name_Match( test_str, false, formatted_output ) == true )
         {
             // Process recursively
-            return this->Evaluate_Command( formatted_output, 
+            return this->Evaluate_Command( instance_id,
+                                           formatted_output, 
                                            true );
         }
 
@@ -82,7 +84,8 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string&  test_s
         // Check if there is a name match
         if( m_cli_command_list[idx].Is_Name_Match( command_name ) == true )
         {
-            return A_Command_Result::Process_CLI_Arguments( m_cli_command_list[idx],
+            return A_Command_Result::Process_CLI_Arguments( instance_id,
+                                                            m_cli_command_list[idx],
                                                             components );
         }
 
@@ -94,7 +97,8 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string&  test_s
     
         // Check if there is a name match
         if( m_command_list[idx].Is_Name_Match( command_name ) == true ){
-            return A_Command_Result::Process_Arguments( m_command_list[idx], 
+            return A_Command_Result::Process_Arguments( instance_id,
+                                                        m_command_list[idx], 
                                                         components );
         }
     }
@@ -104,7 +108,8 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const std::string&  test_s
     BOOST_LOG_TRIVIAL(trace) << "End of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
 
     // return the result
-    return A_Command_Result( CommandParseStatus::NO_COMMAND_FOUND,
+    return A_Command_Result( instance_id,
+                             CommandParseStatus::NO_COMMAND_FOUND,
                              A_Command( command_name, "", false),
                              components);
 

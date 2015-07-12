@@ -46,43 +46,25 @@ class A_Render_Manager_Base
         /**
          * @brief Constructor
          *
+         * @param[in] instance_id    ID to load into the manager.
          * @param[in] command_parser Command parser to process cli results.
          */
-        A_Render_Manager_Base( CMD::A_Command_Parser::ptr_t command_parser );
+        A_Render_Manager_Base( const int& instance_id,
+                               CMD::A_Command_Parser::ptr_t command_parser );
         
 
         /**
-         * @brief Initialize
+         * @brief Initialize the Render-Manager
         */
         virtual void Initialize() = 0;
 
 
         /** 
-         * @brief Finalize
+         * @brief Finalize the Render-Manager.
         */
         virtual void Finalize() = 0;
 
         
-        /**
-         * @brief Get the render state.
-         *
-         * @return Render state.
-         */
-        inline virtual A_Render_State::ptr_t Get_Render_State()const{
-            return m_render_state;
-        }
-
-        
-        /**
-         * @brief Update the rendering driver context.
-         *
-         * @param[in] driver_context Rendering driver to register.
-         */
-        virtual void Update_Render_Driver_Context( A_Render_Driver_Context_Base::ptr_t driver_context ){
-            m_render_driver_context = driver_context;
-        }
-
-
         /**
          * @brief Update the Command Queue Pointer.
          *
@@ -93,21 +75,6 @@ class A_Render_Manager_Base
         }
 
         
-        /**
-         * @brief Append Command To History.
-         *
-         * @param[in] command_string String representing what the user typed in.
-         * @param[in] command_result Parsing and evaluation result.
-         */
-        inline virtual void Add_Command_History( const std::string&            command_string,
-                                                 CMD::A_Command_Result::ptr_t  command_result )
-        {
-            m_command_history->Add_Entry( CMD::A_Command_History_Entry( ++m_command_counter,
-                                                                        command_string,
-                                                                        command_result ));
-        } 
-
-
         /**
          * @brief Command the system to wait on the input command response.
          */
@@ -124,6 +91,8 @@ class A_Render_Manager_Base
 
         /**
          * @brief Process Keyboard Input
+         *
+         * @param[in] key Input key to handle.
          */
         virtual void Process_Keyboard_Input( const int& key );
         
@@ -194,21 +163,9 @@ class A_Render_Manager_Base
         virtual std::string Get_Header_Mode_Bar_Text()const = 0;
 
         
-        /// Command History
-        std::vector<CMD::A_Command_History::ptr_t>  m_command_history;
-
-
         /// Command Queue
         CMD::A_Command_Queue::ptr_t m_command_queue;
 
-
-        /// Command Counter
-        std::vector<int> m_command_counters;
-        
-        
-        /// Render States
-        std::vector<A_Render_State::ptr_t> m_render_states;
-        
 
         /// Command Parser
         CMD::A_Command_Parser::ptr_t m_command_parser;
@@ -216,7 +173,14 @@ class A_Render_Manager_Base
         
         /// Render Driver Context
         A_Render_Driver_Context_Base::ptr_t m_render_driver_context;
+        
 
+        /// Local Render State
+        A_Render_State::ptr_t m_render_state;
+
+
+        /// Instance ID
+        int m_instance_id;
 
     private:
 

@@ -7,10 +7,10 @@
 
 
 // CLI Libraries
-#include "A_Connection_Manager_Base.hpp"
+#include "A_Connection_Manager_Socket.hpp"
 #include "../event.hpp"
 #include "../handlers.hpp"
-#include "../render/A_Render_Manager_ASCII.hpp"
+#include "../render/A_Render_Manager_Factory.hpp"
 #include "../utility/Log_Utilities.hpp"
 
 
@@ -36,19 +36,19 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
         EVT::Event_Manager::Initialize( configuration.Get_Event_Manager_Config() );
     }
 
+
+    // Initialize the Render-Manager Factory
+    RENDER::A_Render_Manager_Factory::Initialize( m_configuration.Get_Connection_Type(),
+                                                  m_configuration.Get_CLI_Title(),
+                                                  m_configuration.Get_Command_Parser());
+
+
+    // Build the internal command queue
+    m_command_queue = std::make_shared<CMD::A_Command_Queue>( m_configuration.Get_Command_Queue_Config() );
     
-    // Grab the rendering manager
-    m_render_manager = m_configuration.Get_Render_Manager(); 
     
-    
-    // Set the Queue
-    m_command_queue = std::make_shared<CMD::A_Command_Queue>( m_configuration.Get_Command_Queue_Max_Size() );
-    
-    
-    // Grab the connection manager
-    m_connection_manager = m_configuration.Get_Connection_Manager();
-    m_connection_manager->Update_Command_Parser( m_configuration.Get_Command_Parser());
-    m_connection_manager->Update_Command_Queue( m_command_queue );
+    // Initialize the connection manager
+    Initialize_Connection_Manager();
     
     
     // Add the Required Event Handlers
@@ -251,7 +251,7 @@ void A_CLI_Manager::Register_Custom_Render_Window( RENDER::An_ASCII_Render_Windo
     }
 
     // Attach the window
-    int window_id = m_render_manager->Register_Custom_Render_Window( render_window );
+    int window_id = RENDER::A_Render_Manager_Factory::Register_Custom_Render_Window( render_window );
 
     // Add to the custom window handler
     m_custom_window_command_handler->Register_Trigger_Command( command, window_id );
@@ -271,16 +271,16 @@ void A_CLI_Manager::Register_Internal_Command_Response_Handlers()
 {
 
     // CLI Resize
-    HANDLER::A_CLI_Resize_Command_Response_Handler::ptr_t cli_resize = std::make_shared<HANDLER::A_CLI_Resize_Command_Response_Handler>( m_render_manager );
+    HANDLER::A_CLI_Resize_Command_Response_Handler::ptr_t cli_resize = std::make_shared<HANDLER::A_CLI_Resize_Command_Response_Handler>();
     Register_Command_Response_Handler( cli_resize );
     
     // CLI Detailed Help
-    HANDLER::A_CLI_Detailed_Help_Command_Response_Handler::ptr_t cli_help = std::make_shared<HANDLER::A_CLI_Detailed_Help_Command_Response_Handler>( m_render_manager );
+    HANDLER::A_CLI_Detailed_Help_Command_Response_Handler::ptr_t cli_help = std::make_shared<HANDLER::A_CLI_Detailed_Help_Command_Response_Handler>();
     Register_Command_Response_Handler( cli_help );
 
     // Custom Window Command Response Handler
     if( m_custom_window_command_handler == nullptr ){
-        m_custom_window_command_handler = std::make_shared<HANDLER::A_Custom_Window_Command_Response_Handler>( m_render_manager );
+        m_custom_window_command_handler = std::make_shared<HANDLER::A_Custom_Window_Command_Response_Handler>();
     }
     Register_Command_Response_Handler( m_custom_window_command_handler );
     
@@ -295,12 +295,32 @@ void A_CLI_Manager::Register_Internal_Event_Handlers()
 {
 
     // Add the Render-Manager's Event Handler
-    EVT::Event_Manager::Register_CLI_Event_Handler( std::make_shared<EVT::A_Render_Manager_Event_Handler>( m_render_manager ));
+    EVT::Event_Manager::Register_CLI_Event_Handler( std::make_shared<EVT::A_Render_Manager_Event_Handler>());
 
     // Add the Connection Manager's Event Handler
     EVT::Event_Manager::Register_CLI_Event_Handler( std::make_shared<EVT::A_Connection_Manager_Event_Handler>( m_connection_manager ));
 
 }
+
+
+/*****************************************************/
+/*         Initialize the Connection Manager         */
+/*****************************************************/
+void A_CLI_Manager::Initialize_Connection_Manager()
+{
+    
+    // If we are socket, create the handler
+    if( m_configuration.Get_Connection_Type() == CORE::ConnectionType::SOCKET )
+    {
+        m_connection_manager = std::make_shared<A_Connection_Manager_Socket>( m_configuration.Get_Connection_Manager_Config() );
+    }
+    
+    else{
+        throw std::runtime_error("invalid connection type.");
+    }
+
+}
+
 
 
 } // End of CLI Namespace

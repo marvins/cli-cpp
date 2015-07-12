@@ -11,8 +11,6 @@
 #include "A_Command_Response_Handler_Base.hpp"
 #include "../cmd/A_Command_Queue.hpp"
 #include "../handlers/A_Custom_Window_Command_Response_Handler.hpp"
-#include "../render/A_Render_Driver_Context_Base.hpp"
-#include "../render/A_Render_Manager_Base.hpp"
 
 
 // C++ Standard Libraries
@@ -111,6 +109,12 @@ class A_CLI_Manager{
          * @brief Register the Internal Event Handlers.
         */
         void Register_Internal_Event_Handlers();
+        
+
+        /**
+         * @brief Initialize the Connection Manager.
+        */
+        void Initialize_Connection_Manager();
 
         
         /// Class Name
@@ -123,10 +127,6 @@ class A_CLI_Manager{
         
         /// CLI Connection Handler
         A_Connection_Manager_Base::ptr_t m_connection_manager;
-
-        
-        /// Render Manager
-        RENDER::A_Render_Manager_Base::ptr_t m_render_manager;
 
         
         /// Handler Thread

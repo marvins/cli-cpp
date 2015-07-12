@@ -29,6 +29,16 @@ A_Socket_Connection_Instance::A_Socket_Connection_Instance( const int& instance,
 /************************************/
 void A_Socket_Connection_Instance::Run()
 {
+    // Get the render manager
+    m_render_manager = RENDER::A_Render_Manager_Factory::Instance_Of( m_instance_id );
+
+    // Make sure the instance is valid
+    if( render_manager == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "Render-Manager instance returned was null.";
+        m_is_running = false;
+        return;
+    }
+
     // Set the running flag
     m_is_running = true;
 
