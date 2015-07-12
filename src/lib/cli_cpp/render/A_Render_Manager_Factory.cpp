@@ -35,7 +35,8 @@ A_Render_Manager_Factory& A_Render_Manager_Factory::Get_Factory_Instance()
 /****************************/
 void  A_Render_Manager_Factory::Initialize( CORE::ConnectionType const&             connection_type,
                                             const std::string&                      cli_title,
-                                            CMD::A_Command_Parser::ptr_t            command_parser )
+                                            CMD::A_Command_Parser::ptr_t            command_parser,
+                                            CMD::A_Command_Queue::ptr_t             command_queue )
 {
     // Get the initial instance
     A_Render_Manager_Factory& factory_instance = Get_Factory_Instance();
@@ -44,6 +45,7 @@ void  A_Render_Manager_Factory::Initialize( CORE::ConnectionType const&         
     factory_instance.m_conn_type      = connection_type;
     factory_instance.m_cli_title      = cli_title;
     factory_instance.m_command_parser = command_parser;
+    factory_instance.m_command_queue  = command_queue;
 
     // Set the initialized value to true
     factory_instance.m_is_initialized = true;
@@ -123,6 +125,7 @@ A_Render_Manager_Factory::A_Render_Manager_Factory()
     m_conn_type(CORE::ConnectionType::UNKNOWN),
     m_cli_title(""),
     m_command_parser(nullptr),
+    m_command_queue(nullptr),
     m_is_initialized(false)
 {
 }
@@ -146,7 +149,8 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Create_Manager_Instance( 
     // Create the ASCII Render
     if( m_conn_type == CORE::ConnectionType::SOCKET ){
         render_manager = std::make_shared<RENDER::A_Render_Manager_ASCII>( instance_id,
-                                                                           m_command_parser );
+                                                                           m_command_parser,
+                                                                           m_command_queue );
     }
 
 
@@ -154,6 +158,9 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Create_Manager_Instance( 
     else{
         return nullptr;
     }
+
+    // Initialize
+    render_manager->Initialize();
     
     // Register the custom windows
     for( size_t i=0; i<m_custom_render_windows.size(); i++ ){

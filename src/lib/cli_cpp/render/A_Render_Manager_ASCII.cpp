@@ -30,10 +30,12 @@ const std::string BUFFER_NEWLINE = "\n\r";
 /****************************/
 /*      Constructor         */
 /****************************/
-A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int& instance_id,
-                                                CMD::A_Command_Parser::ptr_t        command_parser )
+A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int&                    instance_id,
+                                                CMD::A_Command_Parser::ptr_t  command_parser,
+                                                CMD::A_Command_Queue::ptr_t   command_queue )
  :  A_Render_Manager_Base( instance_id,
-                           command_parser ),
+                           command_parser,
+                           command_queue ),
     m_class_name("A_Render_Manager_ASCII"),
     m_current_window(0),
     m_help_window_mode(false)
@@ -44,6 +46,11 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int& instance_id,
     
     // Local Rendering State
     m_render_state = A_Render_State_Factory::Instance_Of( instance_id );
+
+    // Make sure it is not null
+    if( m_render_state == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "Render-State is currently null. Expect Failure. Func: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    }
 
 }
 
@@ -61,7 +68,11 @@ void A_Render_Manager_ASCII::Initialize()
 
     // Cast the driver
     A_Render_Driver_Context_ASCII::ptr_t driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>( m_render_driver_context);
-
+    
+    // Make sure it is not null
+    if( driver_context == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "driver-context is currently null. Expect a big seg fault.";
+    }
 
     // Add the main window
     m_window_list.push_back(std::make_shared<A_Main_Window>( driver_context,
@@ -189,6 +200,7 @@ void A_Render_Manager_ASCII::Refresh()
 
 
     // Update the buffer data
+    std::cout << "Current Window: " << m_current_window << std::endl;
     ref->Update_Buffer_Data();
 
 
@@ -255,6 +267,15 @@ void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffe
 /**********************************************/
 std::string A_Render_Manager_ASCII::Get_Header_Status_Bar_Text()const
 {
+
+    // Make sure the driver is not null
+    if( m_render_state == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "Render-State is currently null. Expect a seg fault. Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    } 
+    if( m_render_driver_context == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "Render-Driver Context is null. Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    }
+
 
     // Create output
     std::string output;
@@ -442,6 +463,11 @@ bool A_Render_Manager_ASCII::Set_CLI_Detailed_Help_Window( const std::string& co
 /*********************************************/
 int A_Render_Manager_ASCII::Register_Custom_Render_Window( An_ASCII_Render_Window_Base::ptr_t render_window )
 {
+    // Make sure the driver context is not null
+    if( m_render_driver_context == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "Render-Driver Context is null. Expect a seg fault.  File: " << __FILE__ << ", Class: " << m_class_name << ", Method: " << __func__ << ", Line: " << __LINE__;
+    }
+
     // Attach the driver
     render_window->Set_Render_Driver_Context( std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(m_render_driver_context) );
     

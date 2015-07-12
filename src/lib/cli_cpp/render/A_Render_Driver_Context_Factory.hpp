@@ -49,32 +49,37 @@ class A_Render_Driver_Context_Factory
          * @brief Create a driver context instance.
         */
         static A_Render_Driver_Context_Base::ptr_t Create_Instance();
+        
+
+        /**
+         * @brief Check if Initialized.
+         *
+         * @return True if initialized, false otherwise.
+        */
+        static bool Is_Initialized();
 
 
     private:
+
+        /**
+         * @brief Get the Factory Instance.
+         *
+         * @return Render-Driver Context Factory instance.
+        */
+        static A_Render_Driver_Context_Factory& Get_Factory_Instance();
+
         
         /**
          * @brief Constructor
-         *
-         * @param[in] conn_type ConnectionType to define what type of driver.
-         * @param[in] cli_title Main Title for the CLI program.
-         * @param[in] window_rows Number of initial window rows.
-         * @param[in] window_cols Number of initial window cols.
-         * @param[in] redirect_stdout Redirect standard output to log window.
-         * @param[in] redirect_stderr Redirect standard error to log window.
         */
-        A_Render_Driver_Context_Factory( CORE::ConnectionType const& conn_type,
-                                         std::string const&          cli_title,
-                                         int const&                  window_rows,
-                                         int const&                  window_cols,
-                                         bool const&                 redirect_stdout,
-                                         bool const&                 redirect_stderr );
+        A_Render_Driver_Context_Factory();
+
 
         /// Class Name
         std::string m_class_name;
 
         /// Connection Type
-        CORE::ConnectionType const& m_conn_type;
+        CORE::ConnectionType  m_conn_type;
 
         /// CLI Title
         std::string m_cli_title;
@@ -90,6 +95,9 @@ class A_Render_Driver_Context_Factory
 
         /// Redirect stderr
         bool m_redirect_stderr;
+
+        /// Initialized Flag
+        bool m_is_initialized;
 
 }; // End of A_Render_Driver_Context_Factory Class
 

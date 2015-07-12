@@ -49,8 +49,9 @@ class A_Render_Manager_Base
          * @param[in] instance_id    ID to load into the manager.
          * @param[in] command_parser Command parser to process cli results.
          */
-        A_Render_Manager_Base( const int& instance_id,
-                               CMD::A_Command_Parser::ptr_t command_parser );
+        A_Render_Manager_Base( const int&                   instance_id,
+                               CMD::A_Command_Parser::ptr_t command_parser,
+                               CMD::A_Command_Queue::ptr_t  command_queue );
         
 
         /**
@@ -63,16 +64,6 @@ class A_Render_Manager_Base
          * @brief Finalize the Render-Manager.
         */
         virtual void Finalize() = 0;
-
-        
-        /**
-         * @brief Update the Command Queue Pointer.
-         *
-         * @param[in] command_queue Command queue to refer to.
-         */
-        inline virtual void Update_Command_Queue( CMD::A_Command_Queue::ptr_t command_queue ){
-            m_command_queue = command_queue;
-        }
 
         
         /**

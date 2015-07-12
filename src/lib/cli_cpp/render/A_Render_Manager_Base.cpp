@@ -22,9 +22,10 @@ namespace RENDER{
 /****************************/
 /*      Constructor         */
 /****************************/
-A_Render_Manager_Base::A_Render_Manager_Base( const int& instance_id,
-                                              CMD::A_Command_Parser::ptr_t command_parser )
- :  m_command_queue(nullptr),
+A_Render_Manager_Base::A_Render_Manager_Base( const int&                   instance_id,
+                                              CMD::A_Command_Parser::ptr_t command_parser,
+                                              CMD::A_Command_Queue::ptr_t  command_queue )
+ :  m_command_queue(command_queue),
     m_command_parser(command_parser),
     m_render_state(nullptr),
     m_instance_id(instance_id),

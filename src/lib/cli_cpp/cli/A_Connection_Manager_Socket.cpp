@@ -73,7 +73,7 @@ void A_Connection_Manager_Socket::Setup_Socket()
 
 
     // Make the socket non-blocking
-    //fcntl( m_sock_fd, F_SETFL, O_NONBLOCK );
+    fcntl( m_sock_fd, F_SETFL, O_NONBLOCK );
 
 
     // configure the endpoint
@@ -130,14 +130,21 @@ void A_Connection_Manager_Socket::Run_Handler()
         int client_fd;
 
         // Accept the socket
-        BOOST_LOG_TRIVIAL(debug) << "Waiting for connection";
+        BOOST_LOG_TRIVIAL(debug) << "Waiting for connection.  (Socket FD: " << m_sock_fd << ")";
         client_fd = accept( m_sock_fd, 
                             (struct sockaddr*)&cli_addr,
                             &clilen);
+        BOOST_LOG_TRIVIAL(debug) << "Accepting Connection";
             
         // Check if we need to exit
         if( m_is_running != true ){
             close(client_fd);
+            continue;
+        }
+
+        // Check if the operation failed
+        if( client_fd < 0 ){
+            sleep(1);
             continue;
         }
 
@@ -160,14 +167,24 @@ void A_Connection_Manager_Socket::Run_Handler()
 
         // Call the process method
         int next_position = Get_Next_Client_Slot();
+        BOOST_LOG_TRIVIAL(debug) << "Starting the Socket Connection for ID " << next_position << ".";
         m_connection_list[next_position] = std::make_shared<A_Socket_Connection_Instance>( next_position,
                                                                                            client_fd,
                                                                                            m_configuration->Get_Read_Timeout_Sleep_Microseconds()); 
+
+        // Start
+        m_connection_list[next_position]->Start();
                                                                                            
     } 
 
     // Set the running flag
     m_is_running = false;
+
+    // Stop each connection
+    for( size_t i=0; i<m_connection_list.size(); i++ ){
+        m_connection_list[i]->Set_Connection_Flag(false);
+        m_connection_list[i]->Join();
+    }
 
     // Close Socket
     Close_Socket();

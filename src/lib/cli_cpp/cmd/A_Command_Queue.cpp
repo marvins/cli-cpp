@@ -23,10 +23,37 @@ A_Command_Queue::A_Command_Queue( const A_Command_Queue_Config& configuration )
     m_tail(0),
     m_close_flag(false)
 {
-    // Initialize the semaphores
-    sem_init( &m_push_semaphore, 0, m_configuration.Get_Max_Queue_Size());
-    sem_init( &m_pop_semaphore, 0, 0);
 
+    // Initialize the semaphores
+#ifdef __APPLE__
+
+    // Unlink each
+    sem_unlink("/command_queue_push_semaphore");
+    sem_unlink("/command_queue_pop_semaphore");
+
+    // Open each semaphore
+    if( (m_push_semaphore = sem_open("/command_queue_push_semaphore", O_CREAT | O_EXCL, 0666, m_configuration.Get_Max_Queue_Size())) == SEM_FAILED ){
+        sem_close(m_pop_semaphore);
+        sem_unlink("/command_queue_push_semaphore");
+        throw std::runtime_error(std::string("Unable to initialize push semaphore. Details: ") + strerror(errno));
+    }
+    if( (m_pop_semaphore = sem_open("/command_queue_pop_semaphore", O_CREAT | O_EXCL, 0666, 0)) == SEM_FAILED ){
+        sem_close(m_pop_semaphore);
+        sem_unlink("/command_queue_pop_semaphore");
+        throw std::runtime_error(std::string("Unable to initialize pop semaphore. Details: ") + strerror(errno));
+    }
+#else
+    m_push_semaphore = new sem_t;
+    m_pop_semaphore = new sem_t;
+    
+    if( sem_init( &m_push_semaphore, 0, m_configuration.Get_Max_Queue_Size()) != 0 ){
+        throw std::runtime_error(std::string("Unable to initialize push semaphore. Details: ") + strerror(errno));
+    }
+    if( sem_init( &m_pop_semaphore, 0, 0) != 0 ){
+        throw std::runtime_error(std::string("Unable to initialize pop semaphore. Details: ") + strerror(errno));
+    }
+#endif
+    
     // Initialize array values
     for( int i=0; i<m_configuration.Get_Max_Queue_Size(); i++ ){
         m_command_queue[i] = nullptr;
@@ -44,6 +71,29 @@ A_Command_Queue::~A_Command_Queue()
 
     // Set to null
     m_command_queue = nullptr;
+
+#ifdef __APPLE__
+    // Close semaphores
+    sem_close( m_pop_semaphore );
+    sem_close( m_push_semaphore );
+    
+    // Unlink the semaphores
+    sem_unlink("/command_queue_pop_semaphore");
+    sem_unlink("/command_queue_push_semaphore");
+    
+#else
+    if( m_push_semaphore != nullptr &&
+        m_push_semaphore != NULL )
+    {
+        delete m_push_semaphore;
+    }
+    if( m_pop_semaphore != nullptr &&
+        m_pop_semaphore != NULL )
+    {
+        delete m_pop_semaphore;
+    }
+#endif
+    
 }
 
 
@@ -56,8 +106,8 @@ void A_Command_Queue::Clear()
     m_close_flag = true;
 
     // Increment all semaphores
-    sem_post( &m_push_semaphore );
-    sem_post( &m_pop_semaphore );
+    sem_post( m_push_semaphore );
+    sem_post( m_pop_semaphore );
 
 }
 
@@ -68,7 +118,7 @@ void A_Command_Queue::Clear()
 void A_Command_Queue::Push_Command( A_Command_Result::ptr_t const& command )
 {
     // Decrement the push semaphore
-    sem_wait( &m_push_semaphore );
+    sem_wait( m_push_semaphore );
 
     // Lock the mutex
     m_mtx.lock();
@@ -83,7 +133,7 @@ void A_Command_Queue::Push_Command( A_Command_Result::ptr_t const& command )
     m_mtx.unlock();
 
     // Increment the pop semaphore
-    sem_post( &m_pop_semaphore );
+    sem_post( m_pop_semaphore );
 }
 
 /*****************************/
@@ -98,7 +148,7 @@ A_Command_Result::ptr_t A_Command_Queue::Pop_Command()
     A_Command_Result::ptr_t  command;
 
     // Decrement the pop semaphore
-    sem_wait( &m_pop_semaphore );
+    sem_wait( m_pop_semaphore );
     
     // Return if the list is empty
     if( m_close_flag == true ){
@@ -120,7 +170,7 @@ A_Command_Result::ptr_t A_Command_Queue::Pop_Command()
     m_mtx.unlock();
 
     // Increment the push semaphore
-    sem_post( &m_push_semaphore );
+    sem_post( m_push_semaphore );
     
     // Log Exit
     //BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;

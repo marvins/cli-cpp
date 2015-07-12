@@ -201,7 +201,7 @@ void Event_Manager::Process_Event( const int& instance,
     
     // Make sure we are initialized
     if( Is_Initialized() == false ){
-        BOOST_LOG_TRIVIAL(trace) << "Event-Manager is not initialized. Method: " << __func__ << ", Class: Event_Manager,  File: " << __FILE__ << ", Line: " << __LINE__;
+        BOOST_LOG_TRIVIAL(error) << "Event-Manager is not initialized. Method: " << __func__ << ", Class: Event_Manager,  File: " << __FILE__ << ", Line: " << __LINE__;
         return;
     }
     

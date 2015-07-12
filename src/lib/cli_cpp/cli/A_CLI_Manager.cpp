@@ -10,7 +10,9 @@
 #include "A_Connection_Manager_Socket.hpp"
 #include "../event.hpp"
 #include "../handlers.hpp"
+#include "../render/A_Render_Driver_Context_Factory.hpp"
 #include "../render/A_Render_Manager_Factory.hpp"
+#include "../render/A_Render_State_Factory.hpp"
 #include "../utility/Log_Utilities.hpp"
 
 
@@ -35,18 +37,32 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
     if( EVT::Event_Manager::Is_Initialized() != true ){
         EVT::Event_Manager::Initialize( configuration.Get_Event_Manager_Config() );
     }
-
-
-    // Initialize the Render-Manager Factory
-    RENDER::A_Render_Manager_Factory::Initialize( m_configuration.Get_Connection_Type(),
-                                                  m_configuration.Get_CLI_Title(),
-                                                  m_configuration.Get_Command_Parser());
-
-
+    
+    
     // Build the internal command queue
     m_command_queue = std::make_shared<CMD::A_Command_Queue>( m_configuration.Get_Command_Queue_Config() );
     
     
+    // Initialize the Render-Driver Context Factory
+    RENDER::A_Render_Driver_Context_Factory::Initialize( configuration.Get_Connection_Type(),
+                                                         configuration.Get_CLI_Title(),
+                                                         configuration.Get_Socket_Window_Rows(),
+                                                         configuration.Get_Socket_Window_Cols(),
+                                                         configuration.Get_Redirect_stdout(),
+                                                         configuration.Get_Redirect_stdout());
+
+    
+    // Initialize the Render-State Factory
+    RENDER::A_Render_State_Factory::Initialize( m_configuration.Get_Command_Parser() );
+
+    
+    // Initialize the Render-Manager Factory
+    RENDER::A_Render_Manager_Factory::Initialize( m_configuration.Get_Connection_Type(),
+                                                  m_configuration.Get_CLI_Title(),
+                                                  m_configuration.Get_Command_Parser(),
+                                                  m_command_queue );
+
+
     // Initialize the connection manager
     Initialize_Connection_Manager();
     
@@ -66,9 +82,14 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
 /**********************************/
 A_CLI_Manager::~A_CLI_Manager()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Disconnect
     Disconnect();
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 

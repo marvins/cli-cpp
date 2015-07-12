@@ -37,7 +37,8 @@ class A_Render_Manager_Factory
         */
         static void Initialize( CORE::ConnectionType const&   conn_type,
                                 const std::string&            cli_title,
-                                CMD::A_Command_Parser::ptr_t  command_parser );
+                                CMD::A_Command_Parser::ptr_t  command_parser,
+                                CMD::A_Command_Queue::ptr_t   command_queue );
         
 
         /**
@@ -103,6 +104,10 @@ class A_Render_Manager_Factory
 
         /// Command Parser
         CMD::A_Command_Parser::ptr_t m_command_parser;
+
+
+        /// Command Queue
+        CMD::A_Command_Queue::ptr_t m_command_queue;
 
 
         /// Custom Window

@@ -204,10 +204,25 @@ class A_CLI_Manager_Configuration{
          * @param[in] redirect_stderr Flag if we want to redirect stderr.
          */
         inline void Set_Log_Window_Redirect_Flags( const bool& redirect_stdout,
-                const bool& redirect_stderr )
+                                                   const bool& redirect_stderr )
         {
             m_redirect_stdout = redirect_stdout;
             m_redirect_stderr = redirect_stderr;
+        }
+
+        /**
+         * @brief Get the Redirect STDOUT Flag
+        */
+        inline bool Get_Redirect_stdout()const{
+            return m_redirect_stdout;
+        }
+
+
+        /**
+         * @brief Get the Redirect stderr flag
+        */
+        inline bool Get_Redirect_stderr()const{
+            return m_redirect_stderr;
         }
 
 

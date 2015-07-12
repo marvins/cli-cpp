@@ -84,8 +84,8 @@ class A_Command_Queue{
         std::mutex m_mtx;
 
         /// Counters
-        sem_t m_push_semaphore;
-        sem_t m_pop_semaphore;
+        sem_t* m_push_semaphore;
+        sem_t* m_pop_semaphore;
 
         /// Head and Tail Cursors
         int m_head;

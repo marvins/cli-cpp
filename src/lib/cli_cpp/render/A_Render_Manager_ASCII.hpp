@@ -45,7 +45,8 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
          * @param[in] command_parser
          */
         A_Render_Manager_ASCII( const int&                    instance_id,
-                                CMD::A_Command_Parser::ptr_t  command_parser );
+                                CMD::A_Command_Parser::ptr_t  command_parser,
+                                CMD::A_Command_Queue::ptr_t   command_queue );
         
 
         /**
