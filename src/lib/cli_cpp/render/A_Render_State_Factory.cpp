@@ -11,8 +11,19 @@
 namespace CLI{
 namespace RENDER{
 
-/// Instance
-std::shared_ptr<A_Render_State_Factory>  factory;
+
+/***************************************/
+/*      Get the Factory Instance       */
+/***************************************/
+A_Render_State_Factory&  A_Render_State_Factory::Get_Factory_Instance()
+{
+    // Create instance
+    static A_Render_State_Factory factory_instance;
+
+    // Return
+    return factory_instance;
+}
+
 
 /***************************************/
 /*          Create Instance            */
@@ -21,31 +32,38 @@ A_Render_State::ptr_t A_Render_State_Factory::Instance_Of( const int& instance )
 {
 
     // Check that the factory is initialized
-    if( factory == nullptr ){
+    if( Is_Initialized() == false ){
         return nullptr;
     }
 
+    // Get the instance
+    A_Render_State_Factory& factory = Get_Factory_Instance();
+
+
     // Otherwise, make sure the instance is not over the max
     if( instance >= factory.m_instances.size() ){
-        m_instances.resize( instance+1, std::make_shared<A_Render_State>( factory->m_command_parser ));
+        factory.m_instances.resize( instance+1, nullptr );
     }
 
+
     // Check if the instance is null
-    if( m_instances[instance] == nullptr ){
-        m_instances[instance] = std::make_shared<A_Render_State>( factory->m_command_parser );
+    if( factory.m_instances[instance] == nullptr ){
+        factory.m_instances[instance] = std::make_shared<A_Render_State>( instance,
+                                                                          factory.m_command_parser );
     }
 
     // Otherwise, return instance
-    return m_instances[instance];
+    return factory.m_instances[instance];
 
 }
 
 /**********************************/
 /*          Constructor           */
 /**********************************/
-A_Render_State_Factory::A_Render_State_Factory( CMD::A_Command_Parser::ptr_t command_parser )
+A_Render_State_Factory::A_Render_State_Factory()
   : m_class_name("A_Render_State_Factory"),
-    m_command_parser(command_parser)
+    m_command_parser(nullptr),
+    m_is_initialized(false)
 {
 }
 
@@ -55,8 +73,23 @@ A_Render_State_Factory::A_Render_State_Factory( CMD::A_Command_Parser::ptr_t com
 void A_Render_State_Factory::Initialize( CMD::A_Command_Parser::ptr_t command_parser )
 {
     // Create instance
-    factory = std::make_shared<A_Render_State_Factory>( command_parser );
+    A_Render_State_Factory& factory = Get_Factory_Instance();
+    
+    // Set the command parser
+    factory.m_command_parser = command_parser;
+
+    // Set the init flag
+    factory.m_is_initialized = true;
 }
+
+/*************************************/
+/*       Check if Initialized        */
+/*************************************/
+bool A_Render_State_Factory::Is_Initialized()
+{
+    return Get_Factory_Instance().m_is_initialized;
+}
+
 
 } // End of RENDER Namespace
 } // End of CLI    Namespace

@@ -8,6 +8,7 @@
 
 // C++ Standard Libraries
 #include <memory>
+#include <mutex>
 #include <string>
 
 // CLI Libraries
@@ -35,7 +36,8 @@ class A_Socket_Connection_Instance
          * @param[in] client_fd Socket File Descriptor of Client.
          */
         A_Socket_Connection_Instance( const int& instance,
-                                      const int& client_fd );
+                                      const int& client_fd,
+                                      const int& read_sleep_timeout_usec );
 
         
         /**
@@ -77,6 +79,22 @@ class A_Socket_Connection_Instance
 
 
     private:
+    
+        /**
+         * @brief Check for special keys.
+         *
+         * @param[in]  key_str String of digits from system.
+         *
+         * @return Key value.  -1 if no key present.
+        */
+        int Process_Special_Key( std::string const& key_str ) const;
+       
+        
+        /**
+         * @brief Configure the Special Key List.
+        */
+        void Configure_Special_Key_List();
+
 
         /// Class Name
         std::string m_class_name;
@@ -90,6 +108,9 @@ class A_Socket_Connection_Instance
         /// Client File Descriptor
         int m_client_fd;
         
+        /// Read Sleep Timeout Microseconds
+        int m_read_sleep_timeout_usec;
+
         /// Flag if running
         bool m_is_running;
 
@@ -98,6 +119,12 @@ class A_Socket_Connection_Instance
     
         /// Local Render Manager Instance
         RENDER::A_Render_Manager_Base::ptr_t m_render_manager; 
+
+        /// Keyboard Special Key Map
+        std::vector<std::tuple<std::string,int>> m_special_key_list;
+    
+        /// Refresh Screen Mutex Lock
+        std::mutex m_refresh_lock;
 
 }; // End of A_Socket_Connection_Instance_Class
 

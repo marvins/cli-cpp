@@ -36,6 +36,10 @@ TEST( An_Event_Queue, Simple_Push_Pop_Tests )
 {
     // Expected Queue Size
     const int exp_queue_size = 100;
+    const int instance_id = 1;
+
+    // Result values
+    int act_event, act_id;
 
     // Create an event queue
     CLI::EVT::An_Event_Queue test_queue( exp_queue_size );
@@ -46,12 +50,14 @@ TEST( An_Event_Queue, Simple_Push_Pop_Tests )
 
     // Start adding items
     for( int i=0; i<exp_queue_size; i++ ){
-        test_queue.Push_Event( i );
+        test_queue.Push_Event( instance_id, i );
     }
 
     // Test popping items
     for( int i=0; i<exp_queue_size; i++ ){
-        ASSERT_EQ( test_queue.Pop_Event(), i );
+        test_queue.Pop_Event( act_id, act_event );
+        ASSERT_EQ( act_id, instance_id );
+        ASSERT_EQ( act_event, i );
         ASSERT_EQ( test_queue.Get_Current_Size(), exp_queue_size - i - 1);
         ASSERT_EQ( test_queue.Get_Max_Size(),  exp_queue_size);
     }
@@ -65,6 +71,8 @@ void Push_Event_Queue_After_Timeout( CLI::EVT::An_Event_Queue& event_queue,
                                      const std::vector<int>&   event_list,
                                      const int&                timeout_usec )
 {
+    // Instance
+    const int instance = 1;
 
     // Start sleep
     usleep( timeout_usec );
@@ -72,7 +80,7 @@ void Push_Event_Queue_After_Timeout( CLI::EVT::An_Event_Queue& event_queue,
     // Add each event
     std::cout << "Starting Push." << std::endl;
     for( size_t i=0; i<event_list.size(); i++ ){
-        event_queue.Push_Event( event_list[i] );
+        event_queue.Push_Event( instance, event_list[i] );
     }
 
 
@@ -85,6 +93,7 @@ TEST( An_Event_Queue, Pop_Empty_Queue_Blocking_Tests )
 {
     // Expected Queue Size
     const int exp_queue_size = 100;
+    const int instance_id = 1;
 
     // Create an event queue
     CLI::EVT::An_Event_Queue test_queue( exp_queue_size );
@@ -112,10 +121,12 @@ TEST( An_Event_Queue, Pop_Empty_Queue_Blocking_Tests )
     for( int i=0; i<10; i++ ){
         
         // Get the next value
-        int value = test_queue.Pop_Event();
+        int value, id;
+        test_queue.Pop_Event( id, value);
         
         // Check the value
         ASSERT_EQ( value, i );
+        ASSERT_EQ( id, instance_id );
     }
 
     // Join the thread

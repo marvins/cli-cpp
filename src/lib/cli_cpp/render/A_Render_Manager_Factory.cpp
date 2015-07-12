@@ -22,9 +22,10 @@ namespace RENDER{
 /***************************************/
 A_Render_Manager_Factory& A_Render_Manager_Factory::Get_Factory_Instance()
 {
-    // Create static instance
+    // Create instance
     static A_Render_Manager_Factory factory_instance;
 
+    // Return the instance
     return factory_instance;
 }
     
@@ -36,10 +37,16 @@ void  A_Render_Manager_Factory::Initialize( CORE::ConnectionType const&         
                                             const std::string&                      cli_title,
                                             CMD::A_Command_Parser::ptr_t            command_parser )
 {
-    // Create the factory
-    Get_Factory_Instance() = A_Render_Manager_Factory( connection_type,
-                                                       cli_title,
-                                                       command_parser );
+    // Get the initial instance
+    A_Render_Manager_Factory& factory_instance = Get_Factory_Instance();
+    
+    // Update the internal values
+    factory_instance.m_conn_type      = connection_type;
+    factory_instance.m_cli_title      = cli_title;
+    factory_instance.m_command_parser = command_parser;
+
+    // Set the initialized value to true
+    factory_instance.m_is_initialized = true;
 
 }
 
@@ -64,7 +71,7 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Instance_Of( const int& i
 
     // Make sure the instance is not null
     if( render_factory.m_render_managers[instance_id] == nullptr ){
-        render_factory.m_render_managers[instance_id] = render_factory->Create_Manager_Instance( instance_id );
+        render_factory.m_render_managers[instance_id] = render_factory.Create_Manager_Instance( instance_id );
     }
 
     // Return the instance
@@ -121,25 +128,10 @@ A_Render_Manager_Factory::A_Render_Manager_Factory()
 }
 
 
-/*******************************/
-/*         Constructor         */
-/*******************************/
-A_Render_Manager_Factory::A_Render_Manager_Factory( CORE::ConnectionType const&   connection_type,
-                                                    std::string const&            cli_title,
-                                                    CMD::A_Command_Parser::ptr_t  command_parser )
-  : m_class_name("A_Render_Manager_Factory"),
-    m_conn_type(connection_type),
-    m_cli_title(cli_title),
-    m_command_parser(command_parser),
-    m_is_initialized(true)
-{
-}
-
-
 /********************************/
 /*      Create an Instance      */
 /********************************/
-A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Create_Instance( const int& instance_id )const
+A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Create_Manager_Instance( const int& instance_id )const
 {
 
     // Create the pointer

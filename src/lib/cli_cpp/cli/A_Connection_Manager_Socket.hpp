@@ -76,12 +76,6 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
         virtual void Run_Handler();
 
 
-        /**
-         * @brief Connect Instance
-        */
-        virtual void Run_Client_Connection( const int instance_id );
-
-
     private:
 
         /**
@@ -102,22 +96,7 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
         int Get_Next_Client_Slot();
         
 
-        /**
-         * @brief Configure the Special Key List.
-        */
-        void Configure_Special_Key_List();
-
-
-        /**
-         * @brief Check for special keys.
-         *
-         * @param[in]  key_str String of digits from system.
-         *
-         * @return Key value.  -1 if no key present.
-        */
-        int Process_Special_Key( std::string const& key_str ) const;
-       
-
+        
         /// Class Name
         std::string m_class_name;
 
@@ -129,10 +108,6 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
         /// Socket File Descriptor
         int m_sock_fd;
        
-
-        /// Keyboard Special Key Map
-        std::vector<std::tuple<std::string,int>> m_special_key_list;
-
         
         /// Socket Instance List
         std::vector<A_Socket_Connection_Instance::ptr_t> m_connection_list;

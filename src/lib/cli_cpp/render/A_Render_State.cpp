@@ -20,14 +20,16 @@ namespace RENDER{
 /************************************/
 /*          Constructor             */
 /************************************/
-A_Render_State::A_Render_State( CMD::A_Command_Parser::ptr_t   command_parser )
+A_Render_State::A_Render_State( int const&                     instance_id,
+                                CMD::A_Command_Parser::ptr_t   command_parser )
   : m_cli_prompt_text(""),
     m_cli_prompt_cursor_head(0),
     m_cli_prompt_cursor_tail(0),
     m_cli_prompt_cursor_at(0),
     m_command_parser(command_parser),
     m_sleep_mode(false),
-    m_waiting_user_input(false)
+    m_waiting_user_input(false),
+    m_instance_id(instance_id)
 {
     // Create the history
     m_command_history = std::make_shared<CMD::A_Command_History>();
@@ -150,7 +152,8 @@ void A_Render_State::Process_Input( const int& input )
     }
     
     // Refresh the screen
-    EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
+    EVT::Event_Manager::Process_Event( m_instance_id,
+                                       (int)CLI_Event_Type::CLI_REFRESH );
 }
 
 
@@ -345,19 +348,22 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
 
     // If help
     if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_HELP ){
-        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_HELP );
+        EVT::Event_Manager::Process_Event( m_instance_id,
+                                           (int)CLI_Event_Type::CLI_HELP );
     }
 
 
     // If back
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_BACK ){
-        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_BACK );
+        EVT::Event_Manager::Process_Event( m_instance_id,
+                                           (int)CLI_Event_Type::CLI_BACK );
     }
 
 
     // If Log
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_LOG ){
-        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_LOG );
+        EVT::Event_Manager::Process_Event( m_instance_id,
+                                           (int)CLI_Event_Type::CLI_LOG );
     }
 
     
@@ -390,7 +396,8 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
 
     // If listing aliases
     else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_LIST ){
-        EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_ALIAS_LIST );
+        EVT::Event_Manager::Process_Event( m_instance_id,
+                                           (int)CLI_Event_Type::CLI_ALIAS_LIST );
     }
 
 
@@ -520,7 +527,8 @@ void A_Render_State::Run_Sleep_Mode( const double sleep_seconds ){
             
     
     // Refresh
-    EVT::Event_Manager::Process_Event( (int)CLI_Event_Type::CLI_REFRESH );
+    EVT::Event_Manager::Process_Event( m_instance_id,
+                                       (int)CLI_Event_Type::CLI_REFRESH );
     
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;

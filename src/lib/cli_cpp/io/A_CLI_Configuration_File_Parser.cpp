@@ -7,6 +7,7 @@
 
 // CLI Libraries
 #include "../cli/A_Connection_Manager_Socket_Config.hpp"
+#include "../cmd/A_Command_Queue_Config.hpp"
 #include "../cmd/A_Command_Parser_Factory.hpp"
 #include "../thirdparty/pugixml.hpp"
 #include "../utility/Log_Utilities.hpp"
@@ -150,7 +151,7 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
         std::cerr << "CLI Command Queue Max Size must be > 0" << std::endl;
         return;
     }
-    m_current_configuration.Set_Command_Queue_Config( A_Command_Queue_Config( temp_int ));
+    m_current_configuration.Set_Command_Queue_Config( CMD::A_Command_Queue_Config( temp_int ));
     
     
     // Get the redirect variables

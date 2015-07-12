@@ -12,6 +12,7 @@
 #include "A_Render_Manager_Base.hpp"
 
 // C++ Standard Libraries
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -26,6 +27,7 @@ class A_Render_Manager_Factory
 {
     public:
         
+                
         /**
          * Initialize the Render-Manager Factory.
          *
@@ -62,32 +64,18 @@ class A_Render_Manager_Factory
         static bool Is_Initialized();
 
     private:
-
+        
         /**
          * @brief Default Constructor
         */
         A_Render_Manager_Factory();
 
-
+                
         /**
-         * @brief Constructor
-         *
-         * @param[in] conn_type Connection-Type used to decide which driver to use.
-         * @param[in] cli_title Title for the CLI Main Window.
-         * @param[in] command_parser Command-Parser for processing command results.
+         * @brief Get the global Factory Instance.
         */
-        A_Render_Manager_Factory( CORE::ConnectionType const&  conn_type,
-                                  const std::string&           cli_title,
-                                  CMD::A_Command_Parser::ptr_t command_parser );
+        static A_Render_Manager_Factory& Get_Factory_Instance();
 
-        
-        /**
-         * @brief Copy Constructor
-         *
-         * @note This method has been deleted as it should never be used.
-        */
-        A_Render_Manager_Factory( A_Render_Manager_Factory const& other ) = delete;
-        
 
         /**
          * @brief Create a new instance.
@@ -95,32 +83,32 @@ class A_Render_Manager_Factory
          * @param[in] instance_id ID to load into the render-manager.  Used for grabbing the driver and state.
          */
         A_Render_Manager_Base::ptr_t Create_Manager_Instance( const int& instance_id )const;
-   
         
-        /**
-         * @brief Get Factory
-        */
-        static A_Render_Manager_Factory& Get_Factory_Instance();
-
-        
+                
         /// Class Name
         std::string m_class_name;
+
 
         /// Render Manager List
         std::vector<A_Render_Manager_Base::ptr_t> m_render_managers;
 
+
         /// Configuration Items
         CORE::ConnectionType m_conn_type;
 
+
         /// CLI Title
-        const std::string m_cli_title;
+        std::string m_cli_title;
+
 
         /// Command Parser
         CMD::A_Command_Parser::ptr_t m_command_parser;
 
+
         /// Custom Window
         std::vector<An_ASCII_Render_Window_Base::ptr_t> m_custom_render_windows;
-        
+
+
         /// Initialized Flag
         bool m_is_initialized;
 

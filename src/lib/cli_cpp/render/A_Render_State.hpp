@@ -41,9 +41,11 @@ class A_Render_State{
         /**
          * @brief Constructor
          * 
+         * @param[in] instance_id    Client Instance.
          * @param[in] command_parser Parser for auto-complete.
          */
-        A_Render_State( CMD::A_Command_Parser::ptr_t   command_parser );
+        A_Render_State( const int&                     instance_id,
+                        CMD::A_Command_Parser::ptr_t   command_parser );
         
         
         /**
@@ -274,6 +276,10 @@ class A_Render_State{
 
         /// Waiting User Key
         bool m_waiting_user_input;
+
+        
+        /// Instance ID
+        int m_instance_id;
 
 
 }; // End of A_Render_State Class

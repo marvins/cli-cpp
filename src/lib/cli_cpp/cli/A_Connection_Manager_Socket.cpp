@@ -24,24 +24,6 @@
 #include <netinet/in.h>
 
 
-// Keyboard Delete Key Value
-const std::string TELNET_JUNK   = { (char)-1, (char)-3, (char)3, (char)-1, (char)-5, (char)34, (char)-1, (char)-6, (char)34, (char)3, (char)1, (char)3 };
-const std::string KEYBOARD_DELETE_KEY = "\033\133\063\176";
-const std::string KEYBOARD_LEFT_KEY   = "\033\133\104";
-const std::string KEYBOARD_RIGHT_KEY  = "\033\133\103";
-const std::string KEYBOARD_UP_KEY     = "\033\133\101";
-const std::string KEYBOARD_DOWN_KEY   = "\033\133\102";
-const std::string KEYBOARD_PG_UP_KEY  = "\033\133\065\176";
-const std::string KEYBOARD_PG_DN_KEY  = "\033\133\066\176";
-const std::string KEYBOARD_HOME_KEY   = "\033\133\110";
-const std::string KEYBOARD_END_KEY    = "\033\133\106";
-const std::string KEYBOARD_INSERT_KEY = "\033\133\062";
-const std::string KEYBOARD_F1_KEY     = "\033\117\120";
-const std::string KEYBOARD_F2_KEY     = "\033\117\121";
-const std::string KEYBOARD_F3_KEY     = "\033\117\122";
-const std::string KEYBOARD_F4_KEY     = "\033\117\123";
-const std::string KEYBOARD_F5_KEY     = "\033\117\124";
-
 namespace CLI{
 
 
@@ -57,9 +39,6 @@ A_Connection_Manager_Socket::A_Connection_Manager_Socket( A_Connection_Manager_B
 
     // Configure the socket
     Setup_Socket();
-
-    // Configure Special Key List
-    Configure_Special_Key_List();
 
 }
 
@@ -182,7 +161,8 @@ void A_Connection_Manager_Socket::Run_Handler()
         // Call the process method
         int next_position = Get_Next_Client_Slot();
         m_connection_list[next_position] = std::make_shared<A_Socket_Connection_Instance>( next_position,
-                                                                                           client_fd ); 
+                                                                                           client_fd,
+                                                                                           m_configuration->Get_Read_Timeout_Sleep_Microseconds()); 
                                                                                            
     } 
 
@@ -214,57 +194,6 @@ void A_Connection_Manager_Socket::Refresh_Screen( const int& instance_id )
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
-/********************************************/
-/*      Configure the Special Key Map       */
-/********************************************/
-void A_Connection_Manager_Socket::Configure_Special_Key_List()
-{
-    // Add each keyboard to event mapping here
-    m_special_key_list.push_back( std::make_tuple( TELNET_JUNK,          (int)CLI_Event_Type::CLI_NULL             ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_DELETE_KEY,  (int)CLI_Event_Type::KEYBOARD_DELETE_KEY  ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_LEFT_KEY,    (int)CLI_Event_Type::KEYBOARD_LEFT_ARROW  ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_RIGHT_KEY,   (int)CLI_Event_Type::KEYBOARD_RIGHT_ARROW ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_UP_KEY,      (int)CLI_Event_Type::KEYBOARD_UP_ARROW    ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_DOWN_KEY,    (int)CLI_Event_Type::KEYBOARD_DOWN_ARROW  ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_PG_UP_KEY,   (int)CLI_Event_Type::KEYBOARD_PG_UP       ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_PG_DN_KEY,   (int)CLI_Event_Type::KEYBOARD_PG_DN       ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_HOME_KEY,    (int)CLI_Event_Type::KEYBOARD_HOME        ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_END_KEY,     (int)CLI_Event_Type::KEYBOARD_END         ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_INSERT_KEY,  (int)CLI_Event_Type::KEYBOARD_INSERT      ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F1_KEY,      (int)CLI_Event_Type::KEYBOARD_F1          ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F2_KEY,      (int)CLI_Event_Type::KEYBOARD_F2          ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F3_KEY,      (int)CLI_Event_Type::KEYBOARD_F3          ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F4_KEY,      (int)CLI_Event_Type::KEYBOARD_F4          ));
-    m_special_key_list.push_back( std::make_tuple( KEYBOARD_F5_KEY,      (int)CLI_Event_Type::KEYBOARD_F5          ));
-
-}
-
-/**************************************/
-/*        Process Special Keys        */
-/**************************************/
-int A_Connection_Manager_Socket::Process_Special_Key( const std::string& input_str )const
-{
-    // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
-    // Iterate over list
-    for( size_t i=0; i<m_special_key_list.size(); i++ ){
-        if( input_str == std::get<0>(m_special_key_list[i]) ){
-            return std::get<1>(m_special_key_list[i]);
-        }
-    }
-
-    // Otherwise, there was an error
-    std::stringstream sin;
-    sin  << "Warning, data is larger than expected. Size: " << input_str.size() << std::endl;
-    for( size_t i=0; i<input_str.size(); i++ ){
-        sin << i << " : " << (int)input_str[i] << std::endl;
-    }
-    BOOST_LOG_TRIVIAL(warning) << sin.str();
-
-    // otherwise, return failure
-    return (int)CLI_Event_Type::UNKNOWN;
-}
 
 
 /*****************************************************/

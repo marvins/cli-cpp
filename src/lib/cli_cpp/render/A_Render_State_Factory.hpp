@@ -43,16 +43,27 @@ class A_Render_State_Factory
          * @param[in] command_parser Command-Parser to tie to each instance.
         */
         static void Initialize( CMD::A_Command_Parser::ptr_t command_parser );
+        
+
+        /**
+         * @brief Check if initialized
+        */
+        static bool Is_Initialized();
+
 
     private:
         
         /**
          * @brief Constructor
-         *
-         * @param[in] command_parser Command-Parser to tie to each instance.
          */
-        A_Render_State_Factory( CMD::A_Command_Parser::ptr_t command_parser );
+        A_Render_State_Factory();
         
+
+        /**
+         * @brief Get a factory instance.
+        */
+        static A_Render_State_Factory& Get_Factory_Instance();
+
 
         /// Class Name
         std::string m_class_name;
@@ -64,7 +75,10 @@ class A_Render_State_Factory
 
         /// Command Parser
         CMD::A_Command_Parser::ptr_t m_command_parser;
+        
 
+        /// Initialized Flag
+        bool m_is_initialized;
 
 }; // End of A_Render_State_Factory Class
 

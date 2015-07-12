@@ -25,8 +25,8 @@ namespace RENDER{
 A_Render_Manager_Base::A_Render_Manager_Base( const int& instance_id,
                                               CMD::A_Command_Parser::ptr_t command_parser )
  :  m_command_queue(nullptr),
-    m_render_state(nullptr),
     m_command_parser(command_parser),
+    m_render_state(nullptr),
     m_instance_id(instance_id),
     m_class_name("A_Render_Manager_Base")
 {

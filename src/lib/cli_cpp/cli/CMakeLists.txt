@@ -17,6 +17,7 @@ set( LIB_CLI_CLI_MODULE_SOURCES
      A_Connection_Manager_Socket.cpp
      A_Connection_Manager_Socket_Config.cpp
      A_Connection_Manager_Factory.cpp
+     A_Socket_Connection_Instance.cpp
 )
 
 
@@ -33,6 +34,7 @@ set( LIB_CLI_CLI_MODULE_HEADERS
      A_Connection_Manager_Socket.hpp
      A_Connection_Manager_Socket_Config.hpp
      A_Connection_Manager_Factory.hpp
+     A_Socket_Connection_Instance.hpp
 )
 
 
