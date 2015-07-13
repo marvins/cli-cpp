@@ -106,6 +106,33 @@ TEST( String_Utilities, String_Fill )
     ASSERT_EQ( UTILS::String_Fill( "Hello", '*', 10 ), "Hello**********"); 
     ASSERT_EQ( UTILS::String_Fill( "Hello", ' ', 5, UTILS::StringDirection::BOTH), "     Hello     ");
 
+}
+
+
+/************************************/
+/*          Format String           */
+/************************************/
+TEST( String_Utilities, Format_String )
+{
+    ASSERT_EQ( UTILS::Format_String( "ABCDEF", 
+                                     10,
+                                     UTILS::StringAlignment::RIGHT,
+                                     '*' ),
+               "****ABCDEF" );
+    
+    ASSERT_EQ( UTILS::Format_String( "ABCDEF", 
+                                     10,
+                                     UTILS::StringAlignment::LEFT,
+                                     '*' ),
+               "ABCDEF****" );
+
+    ASSERT_EQ( UTILS::Format_String( "ABCDEF", 
+                                     10,
+                                     UTILS::StringAlignment::CENTER,
+                                     '*' ),
+               "**ABCDEF**" );
+
 
 }
+
 

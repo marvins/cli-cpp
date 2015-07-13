@@ -18,7 +18,7 @@ namespace RENDER{
 /*          Constructor          */
 /*********************************/
 A_Main_Window::A_Main_Window( A_Render_Driver_Context_ASCII::ptr_t render_driver,
-                              CMD::A_Command_History::ptr_t             command_history )
+                              CMD::A_Command_History::ptr_t        command_history )
     : An_ASCII_Render_Window_Base(render_driver),
       m_class_name("A_Main_Window"),
       m_command_history(command_history)
