@@ -55,7 +55,7 @@ TEST( A_Command, Parameterized_Constructor_No_Arguments )
     ASSERT_EQ( command01.Get_Name(), command_name);
     ASSERT_EQ( command01.Get_Description(), command_desc);
     ASSERT_EQ( command01.Response_Expected(), response_expected );
-    ASSERT_EQ( command01.Get_Argument_List().size(), 0);
+    ASSERT_EQ( (int)command01.Get_Argument_List().size(), 0);
     
     // Test the Check Argument
     ASSERT_FALSE( command01.Check_Argument_Type(-1, "hello") );
@@ -104,7 +104,7 @@ TEST( A_Command, Parameterized_Constructor_With_Arguments )
     ASSERT_EQ( command01.Get_Name(), command_name);
     ASSERT_EQ( command01.Get_Description(), command_desc);
     ASSERT_EQ( command01.Response_Expected(), response_expected );
-    ASSERT_EQ( command01.Get_Argument_List().size(), 2);
+    ASSERT_EQ( (int)command01.Get_Argument_List().size(), 2);
     
     ASSERT_EQ( command01.Get_Command_Argument(0), command_arguments[0] );
     ASSERT_EQ( command01.Get_Command_Argument(1), command_arguments[1] );
@@ -134,4 +134,43 @@ TEST( A_Command, Parameterized_Constructor_With_Arguments )
     ASSERT_FALSE(command01.Is_Name_Match( "" ));
 
 }
+
+
+/*******************************************/
+/*       Test the Is Name Substring        */
+/*******************************************/
+TEST( A_Command, Is_Name_Substring ){
+
+    // Define the expected values
+    const std::string command_name = "pingSystem";
+    const std::string command_desc = "test_ping";
+    const bool response_expected = false;
+    std::vector<CMD::A_Command_Argument> command_arguments;
+
+    // Create the command arguments
+    command_arguments.push_back( CMD::A_Command_Argument("system_name",
+                                                         CMD::CommandArgumentType::STRING,
+                                                         "Hostname of system",
+                                                         true,
+                                                         "localhost"));
+    command_arguments.push_back( CMD::A_Command_Argument("max-attempts",
+                                                         CMD::CommandArgumentType::INTEGER,
+                                                         "max number of tries.",
+                                                         false,
+                                                         "2"));
+
+    // Use the Constructor
+    CMD::A_Command command01( command_name,
+                              command_desc,
+                              response_expected,
+                              command_arguments );
+
+    // Check the substring match
+    ASSERT_TRUE( command01.Is_Name_Substring( "p" ) );
+    ASSERT_TRUE( command01.Is_Name_Substring( "ping" ) );
+    ASSERT_FALSE( command01.Is_Name_Substring( "Ping" ) );
+
+
+}
+
 

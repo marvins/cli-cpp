@@ -136,3 +136,22 @@ TEST( String_Utilities, Format_String )
 }
 
 
+/********************************************/
+/*      Test the String Split Method        */
+/********************************************/
+TEST( String_Utilities, String_Split ){
+
+    // Create array with many spaces
+    const std::string test_input_01 = " hello there          world ";
+
+    // Test output
+    std::vector<std::string> output_01 = UTILS::String_Split( test_input_01 );
+
+    ASSERT_EQ( output_01.size(), 3 );
+    ASSERT_EQ( output_01[0], "hello" );
+    ASSERT_EQ( output_01[1], "there" );
+    ASSERT_EQ( output_01[2], "world" );
+
+}
+
+

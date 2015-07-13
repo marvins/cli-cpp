@@ -39,6 +39,7 @@ void A_System_Command_Response_Handler::Process_Command( CLI::CMD::A_Command_Res
 
     // Check for system shutdown
     if( response->Get_Command().Get_Name() == "system-shutdown" ){
+        std::cout << "System shutdown message received" << std::endl;
         m_state_manager.Signal_System_Shutdown();
         response->Set_System_Response("Shutting down system now!");
     }

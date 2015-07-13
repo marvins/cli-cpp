@@ -9,8 +9,9 @@
     -->
     <logging enabled="true" 
              log_path="cli.log"
-             log_level="debug" />
+             log_level="trace" />
 
+    
     <!-- Type of Connection 
           
           Supported Options:
@@ -26,7 +27,13 @@
         <listening-port value="12344" />
 
         <!-- Window Size -->
-        <window-size rows="30" cols="120" />
+        <window-size rows="40" cols="120" />
+
+        <!-- Read Timeout Sleep Time -->
+        <read-timeout-sleep-time microseconds="50000" />
+        
+        <!-- Max Number of Connections -->
+        <max-connections value="5" />
 
     </socket-configuration>
 
@@ -41,7 +48,39 @@
         
         <!-- Max size of the command queue (Basic history memorization). -->
         <command-queue max_size="100" />
+        
+        <!-- Flag if we want to redirect stdout and stderr to log. -->
+        <redirect stdout="false"
+                  stderr="false" />
+
+        <!-- Alias Configuration -->
+        <alias-support enable="true" >
+
+            <!-- Path to the alias list. Stored as an XML File. -->
+            <alias-list  pathname="../data/Command_Alias_List.xml" />
+             
+        </alias-support>
+
 
     </cli>
+
+    <!-- Event Manager Configuration -->
+    <event-manager>
+        
+        <!-- Max capacity of the Event Manager's event queue.
+            - More slots means you can back up more items.  If you fill
+              up the queue, doing a push will become a blocking operation until
+              room opens up on the queue.
+        -->
+        <event-queue-max-capacity value="10" />
+
+        <!-- Number of work queue threads.  More threads means you can process more jobs
+             in parallel.  This will prevent blocking when a particular job is taking
+             a large number of resources. Two is required so that when a CLI job is
+             running, refresh requests can still be made to the screen.
+        -->
+        <work-queue-thread-count value="2" />
+
+    </event-manager>
 
 </cli-manager-configuration>

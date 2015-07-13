@@ -22,6 +22,24 @@ add_subdirectory(cli)
 add_subdirectory(cmd)
 
 
+#-----------------------------------#
+#-      Load the Event Module      -#
+#-----------------------------------#
+add_subdirectory(event)
+
+
+#-----------------------------------#
+#-     Load the Handler Module     -#
+#-----------------------------------#
+add_subdirectory(handlers)
+
+
+#-------------------------------#
+#-     Load the IO Module      -#
+#-------------------------------#
+add_subdirectory(io)
+
+
 #------------------------------------#
 #-     Load the Render Module       -#
 #------------------------------------#

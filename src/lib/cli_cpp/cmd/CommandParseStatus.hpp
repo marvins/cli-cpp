@@ -9,6 +9,8 @@
 // C++ Standard Libraries
 #include <cinttypes>
 #include <string>
+#include <tuple>
+#include <vector>
 
 
 namespace CLI{
@@ -27,7 +29,16 @@ enum class CommandParseStatus : uint8_t {
     EXCESSIVE_ARGUMENTS = 6 /**< Too many arguments compared to matching command.*/,
     CLI_BACK            = 7 /**< Back command entered.*/,
     CLI_CLEAR           = 8 /**< Clear History Command Entered.*/,
+    CLI_LOG             = 9 /**< Show the log information.*/,
+    CLI_ALIAS_ADD       = 10 /**< Add an alias.*/,
+    CLI_ALIAS_REMOVE    = 11 /**< Remove an alias.*/,
+    CLI_ALIAS_LIST      = 12 /**< List all aliases.*/,
+    CLI_RUN_SCRIPT      = 13 /**< Run a script on the CLI.*/,
+    CLI_PAUSE           = 14 /**< Pause the CLI until user input provided.*/,
+    CLI_SLEEP           = 15 /**< Sleep for a specified number of seconds.*/,
+    CLI_RESIZE          = 16 /**< Resize the CLI Window.*/,
 }; // End of CommandParseStatus Enumeration
+
 
 /**
  * @brief Convert a CommandParseStatus to Color Code.
@@ -65,6 +76,13 @@ CommandParseStatus StringToCommandParseStatus( std::string const& status );
 */
 bool Is_Valid_CLI_Command( CommandParseStatus const& command );
 
+
+/**
+ * @brief Create a list which maps the CommandParseStatus items to their expected names.
+ *
+ * @return List of mappings between the CommandParseStatus and its name.
+ */
+std::vector<std::tuple<std::string,CommandParseStatus>> Get_CLI_Mode_To_Parse_Status_List();
 
 } // End of CMD Namespace
 } // End of CLI Namespace

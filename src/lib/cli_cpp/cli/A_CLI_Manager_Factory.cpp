@@ -7,8 +7,8 @@
 
 
 // CLI Libraries
-#include "A_CLI_Configuration_File_Parser.hpp"
 #include "A_CLI_Manager_Configuration.hpp"
+#include "../io/A_CLI_Configuration_File_Parser.hpp"
 
 // C++ Standard Libraries
 #include <memory>
@@ -31,7 +31,7 @@ A_CLI_Manager::ptr_t A_CLI_Manager_Factory::Initialize( const std::string& confi
 
     
     //  Parse the configuration file
-    A_CLI_Configuration_File_Parser   parser( config_pathname );
+    IO::CONFIG::A_CLI_Configuration_File_Parser   parser( config_pathname );
 
     // Check parser status
     if( parser.Is_Valid() != true ){

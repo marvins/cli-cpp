@@ -14,7 +14,8 @@
 // CLI Libraries
 #include "../cmd/A_Command_Queue.hpp"
 #include "../cmd/A_Command_Parser.hpp"
-#include "../render/A_Render_Manager_Base.hpp"
+#include "A_Connection_Manager_Base_Config.hpp"
+
 
 namespace CLI{
 
@@ -31,8 +32,10 @@ class A_Connection_Manager_Base{
 
         /**
          * @brief Default Constructor
+         *
+         * @param[in] configuration Connection-Manager Configuration items.
          */
-        A_Connection_Manager_Base( RENDER::A_Render_Manager_Base::ptr_t render_manager );
+        A_Connection_Manager_Base( A_Connection_Manager_Base_Config::ptr_t configuration );
 
 
         /**
@@ -58,36 +61,24 @@ class A_Connection_Manager_Base{
          */
         virtual void Wait_Shutdown();
 
-        
-        /**
-         * @brief Update the Registered Command Parser.
-         *
-         * @param[in] command_parser Parser to attach to connection manager.
-         */
-        inline virtual void Update_Command_Parser( CMD::A_Command_Parser::ptr_t command_parser )
-        {
-            m_command_parser = command_parser;
-        }
-        
-
-        /**
-         * @brief Update the Command Queue
-         *
-         * @param[in] command_queue Command queue to attach to connection manager.
-        */
-        inline virtual void Update_Command_Queue( CMD::A_Command_Queue::ptr_t command_queue )
-        {
-            m_command_queue = command_queue;
-            m_render_manager->Update_Command_Queue( command_queue );
-        }
-        
 
         /**
          * @brief Set the Is Connection Flag
+         *
+         * @param[in] instance_id Instance to set flag for.
+         * @param[in] is_connected Flag to set.
         */
-        inline virtual void Set_Is_Connected_Flag( const bool& is_connected ){
-            m_is_connected = is_connected;
-        }
+        virtual void Set_Is_Connected_Flag( const int& instance_id,
+                                            const bool& is_connected ) = 0;
+
+
+        /**
+         * @brief Refresh the screen.
+         *
+         * @param[in] instance Client instance to refresh.
+         */
+        virtual void Refresh_Screen( const int& instance ) = 0;
+
 
     protected:
         
@@ -100,15 +91,11 @@ class A_Connection_Manager_Base{
         /// Running Flag
         bool m_is_running;
 
-        /// Connected Flag
-        bool m_is_connected;
 
-        /// Render Manager
-        RENDER::A_Render_Manager_Base::ptr_t m_render_manager;
-        
         /// CLI Command Parser
         CMD::A_Command_Parser::ptr_t  m_command_parser;
 
+        
         /// CLI Command Queue
         CMD::A_Command_Queue::ptr_t    m_command_queue;
 
@@ -116,6 +103,9 @@ class A_Connection_Manager_Base{
         
         /// Class Name
         std::string m_class_name;
+        
+        /// Configuration 
+        A_Connection_Manager_Base_Config::ptr_t m_configuration;
 
         /// Thread
         std::thread m_connection_thread;

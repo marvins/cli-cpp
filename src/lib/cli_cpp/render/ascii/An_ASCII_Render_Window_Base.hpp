@@ -26,6 +26,16 @@ class An_ASCII_Render_Window_Base
     
         /// Pointer Type
         typedef std::shared_ptr<An_ASCII_Render_Window_Base> ptr_t;
+        
+
+        /**
+         * @brief Default Constructor
+         *
+         * This method should only be used for custom windows.  Until the render driver
+         * has been attached, this will fail.
+         */
+        An_ASCII_Render_Window_Base( );
+
 
         /**
          * @brief Constructor
@@ -40,7 +50,31 @@ class An_ASCII_Render_Window_Base
             return m_buffer_data;
         }
 
+        
+        /**
+         * @brief Update the current buffer data.
+         *
+         * @brief Note that this will do nothing unless implemented.
+         */
+        virtual void Update_Buffer_Data();
+        
 
+        /**
+         * @brief Set the driver context.
+         *
+         * @param[in] driver_context Driver context.
+        */
+        virtual void Set_Render_Driver_Context( A_Render_Driver_Context_ASCII::ptr_t render_driver );
+
+        
+        /**
+         * @brief Get the Window Title
+        */
+        inline virtual std::string  Get_Window_Title()const{
+            return m_class_name;
+        }
+
+    
     protected:
 
         /// Buffer Data

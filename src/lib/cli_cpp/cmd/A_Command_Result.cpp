@@ -10,6 +10,7 @@
 #include <string>
 
 // CLI Libraries
+#include "../event/Event_Manager.hpp"
 #include "../utility/Log_Utilities.hpp"
 
 namespace CLI{
@@ -20,7 +21,9 @@ namespace CMD{
 /*            Constructor            */
 /*************************************/
 A_Command_Result::A_Command_Result()
-  : m_parse_status( CommandParseStatus::UNKNOWN ),
+  : m_class_name("A_Command_Result"),
+    m_instance_id(-1),
+    m_parse_status( CommandParseStatus::UNKNOWN ),
     m_system_response_set(false),
     m_system_response_value("")
 {
@@ -30,9 +33,12 @@ A_Command_Result::A_Command_Result()
 /*************************************/
 /*            Constructor            */
 /*************************************/
-A_Command_Result::A_Command_Result( CommandParseStatus const&  parse_status,
-                                            A_Command const&          command)
-  : m_parse_status(parse_status),
+A_Command_Result::A_Command_Result( const int&                 instance_id,
+                                    CommandParseStatus const&  parse_status,
+                                    A_Command const&           command)
+  : m_class_name("A_Command_Result"),
+    m_instance_id(instance_id),
+    m_parse_status(parse_status),
     m_command(command)
 {
 }
@@ -41,10 +47,13 @@ A_Command_Result::A_Command_Result( CommandParseStatus const&  parse_status,
 /*************************************/
 /*            Constructor            */
 /*************************************/
-A_Command_Result::A_Command_Result( CommandParseStatus const&     parse_status,
-                                            A_Command const&             command,
-                                            std::vector<std::string> const&  argument_values )
-  : m_parse_status(parse_status),
+A_Command_Result::A_Command_Result( const int&                       instance_id,
+                                    CommandParseStatus const&        parse_status,
+                                    A_Command const&                 command,
+                                    std::vector<std::string> const&  argument_values )
+  : m_class_name("A_Command_Result"),
+    m_instance_id(instance_id),
+    m_parse_status(parse_status),
     m_command(command),
     m_argument_values(argument_values)
 {
@@ -61,7 +70,8 @@ std::string A_Command_Result::Get_Parse_Status_String()const
 
     // Check if we are waiting on a response
     if( m_command.Response_Expected() == true &&
-        Check_System_Response() == false )
+        Check_System_Response() == false &&
+        m_parse_status == CommandParseStatus::VALID )
     {
         return "Waiting on system response.";
     }
@@ -80,27 +90,62 @@ std::string A_Command_Result::Get_Parse_Status_String()const
 /*************************************/
 /*      Set the system response      */
 /*************************************/
-void A_Command_Result::Set_System_Response( const std::string& system_response ){
+void A_Command_Result::Set_System_Response( const std::string& system_response )
+{
+    // Set the system response value
     m_system_response_value = system_response;
+
+    // Signal that the system response has been received
     m_system_response_set = true;
+
+    // Process a CLI Refresh event.
+    EVT::Event_Manager::Process_Event( m_instance_id,
+                                       (int)CLI_Event_Type::CLI_REFRESH );
 }
 
 
 /**********************************************/
 /*          Process Command Arguments         */
 /**********************************************/
-A_Command_Result  A_Command_Result::Process_Arguments( const A_Command& command,    
-                                                               const std::vector<std::string>&  arguments )
+A_Command_Result  A_Command_Result::Process_Arguments( const int& instance_id,
+                                                       const A_Command& command,    
+                                                       const std::vector<std::string>&  arguments )
 {
+    // Log 
+    BOOST_LOG_TRIVIAL(trace) << "Start of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
+    
+    // Check for no arguments
+    if( arguments.size() <= 0 ){
+        
+        // If we have no arguments passed in, yet the first argument
+        // in the comparison command has a required argument, then throw an error.
+        if( command.Get_Argument_List().size() > 0 &&
+            command.Get_Command_Argument(0).Is_Required() == true )
+        {
+            return A_Command_Result( instance_id,
+                                     CommandParseStatus::INVALID_ARGUMENTS,
+                                     command,
+                                     arguments );
+        }
+
+        // Otherwise, we are fine.
+        else{
+            return A_Command_Result( instance_id,
+                                     CommandParseStatus::VALID,
+                                     command,
+                                     arguments );
+        }
+    }
     
     // Check for enough arguments
     for( int i=(int)arguments.size(); i<(int)command.Get_Argument_List().size(); i++ ){
         
         // Validate missing argument is not required
         if( command.Get_Command_Argument(i).Is_Required() == true ){
-            return A_Command_Result( CommandParseStatus::INVALID_ARGUMENTS,
-                                         command,
-                                         arguments );
+            return A_Command_Result( instance_id,
+                                     CommandParseStatus::INVALID_ARGUMENTS,
+                                     command,
+                                     arguments );
         }
     }
 
@@ -109,24 +154,103 @@ A_Command_Result  A_Command_Result::Process_Arguments( const A_Command& command,
     {
         // Check the types
         if( command.Check_Argument_Type( arg, arguments[arg] ) == false ){
-            return A_Command_Result( CommandParseStatus::INVALID_ARGUMENTS,
-                                         command,
-                                         arguments );
+            return A_Command_Result( instance_id,
+                                     CommandParseStatus::INVALID_ARGUMENTS,
+                                     command,
+                                     arguments );
         }
     }
 
 
     // Check the excess arguments
     if( arguments.size() > command.Get_Argument_List().size() ){
-        return A_Command_Result( CommandParseStatus::EXCESSIVE_ARGUMENTS,
-                                     command,
-                                     arguments );
+        return A_Command_Result( instance_id,
+                                 CommandParseStatus::EXCESSIVE_ARGUMENTS,
+                                 command,
+                                 arguments );
     }
     
     // Return success
-    return A_Command_Result( CommandParseStatus::VALID,
-                                 command,
+    return A_Command_Result( instance_id,       
+                             CommandParseStatus::VALID,
+                             command,
+                             arguments );
+
+
+}
+
+
+/**********************************************/
+/*          Process Command Arguments         */
+/**********************************************/
+A_Command_Result  A_Command_Result::Process_CLI_Arguments( const int&                       instance_id,
+                                                           const A_CLI_Command&             command,    
+                                                           const std::vector<std::string>&  arguments )
+{
+    // Log 
+    BOOST_LOG_TRIVIAL(trace) << "Start of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
+    
+    // Check for no arguments
+    if( arguments.size() <= 0 ){
+        
+        // If we have no arguments passed in, yet the first argument
+        // in the comparison command has a required argument, then throw an error.
+        if( command.Get_Argument_List().size() > 0 &&
+            command.Get_Command_Argument(0).Is_Required() == true )
+        {
+            return A_Command_Result( instance_id,
+                                     CommandParseStatus::INVALID_ARGUMENTS,
+                                     command.To_Command(),
+                                     arguments );
+        }
+
+        // Otherwise, we are fine.
+        else{
+            return A_Command_Result( instance_id,
+                                     command.Get_Mode(),
+                                     command.To_Command(),
+                                     arguments );
+        }
+    }
+    
+    // Check for enough arguments
+    for( int i=(int)arguments.size(); i<(int)command.Get_Argument_List().size(); i++ ){
+        
+        // Validate missing argument is not required
+        if( command.Get_Command_Argument(i).Is_Required() == true ){
+            return A_Command_Result( instance_id,
+                                     CommandParseStatus::INVALID_ARGUMENTS,
+                                     command.To_Command(),
+                                     arguments );
+        }
+    }
+
+    //  Iterate over arguments
+    for( size_t arg=0; arg < arguments.size(); arg++ )
+    {
+        // Check the types
+        if( command.Check_Argument_Type( arg, arguments[arg] ) == false ){
+            return A_Command_Result( instance_id,
+                                     CommandParseStatus::INVALID_ARGUMENTS,
+                                     command.To_Command(),
+                                     arguments );
+        }
+    }
+
+
+    // Check the excess arguments
+    if( arguments.size() > command.Get_Argument_List().size() ){
+        return A_Command_Result( instance_id,
+                                 CommandParseStatus::EXCESSIVE_ARGUMENTS,
+                                 command.To_Command(),
                                  arguments );
+    }
+    
+    // Return success
+    return A_Command_Result( instance_id,
+                             command.Get_Mode(),
+                             command.To_Command(),
+                             arguments );
 
 
 }
@@ -149,6 +273,7 @@ std::string A_Command_Result::To_Debug_String( const int& offset )const
     sin << gap << "    Command Name: " << m_command.Get_Name() << "\n";
     sin << gap << "    Command Desc: " << m_command.Get_Description() << "\n";
     sin << gap << "    Command Resp: " << std::boolalpha << m_command.Response_Expected() << "\n";
+    sin << gap << "    Parse Status: " << CommandParseStatusToString( m_parse_status ) << std::endl;
     sin << gap << "    Command Args:\n"; 
     for( size_t i=0; i<m_command.Get_Argument_List().size(); i++ ){
         sin << gap << "       Argument " << i << " : Name   : " << m_command.Get_Argument_List()[i].Get_Name() << "\n";

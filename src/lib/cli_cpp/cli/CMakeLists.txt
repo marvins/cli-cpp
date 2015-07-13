@@ -8,7 +8,6 @@
 #-      CLI Module Sources     -#
 #-------------------------------#
 set( LIB_CLI_CLI_MODULE_SOURCES
-     A_CLI_Configuration_File_Parser.cpp
      A_CLI_Manager.cpp
      A_CLI_Manager_Factory.cpp
      A_CLI_Manager_Configuration.cpp
@@ -18,6 +17,7 @@ set( LIB_CLI_CLI_MODULE_SOURCES
      A_Connection_Manager_Socket.cpp
      A_Connection_Manager_Socket_Config.cpp
      A_Connection_Manager_Factory.cpp
+     A_Socket_Connection_Instance.cpp
 )
 
 
@@ -25,7 +25,6 @@ set( LIB_CLI_CLI_MODULE_SOURCES
 #-      CLI Module Headers     -#
 #-------------------------------#
 set( LIB_CLI_CLI_MODULE_HEADERS
-     A_CLI_Configuration_File_Parser.hpp
      A_CLI_Manager.hpp
      A_CLI_Manager_Factory.hpp
      A_CLI_Manager_Configuration.hpp
@@ -35,6 +34,7 @@ set( LIB_CLI_CLI_MODULE_HEADERS
      A_Connection_Manager_Socket.hpp
      A_Connection_Manager_Socket_Config.hpp
      A_Connection_Manager_Factory.hpp
+     A_Socket_Connection_Instance.hpp
 )
 
 

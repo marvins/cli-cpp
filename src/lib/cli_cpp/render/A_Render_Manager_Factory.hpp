@@ -12,24 +12,110 @@
 #include "A_Render_Manager_Base.hpp"
 
 // C++ Standard Libraries
+#include <memory>
 #include <string>
 #include <vector>
 
 namespace CLI{
 namespace RENDER{
 
+
+/**
+ * @class A_Render_Manager_Factory
+*/
 class A_Render_Manager_Factory
 {
     public:
         
+                
         /**
-         * Initialize
+         * Initialize the Render-Manager Factory.
+         *
+         * @param[in] conn_type Connection Type used for rendering.
+         * @param[in] cli_title CLI Title to post to render-managers.
+         * @param[in] command_parser Command-Parser to process command information.
         */
-        static A_Render_Manager_Base::ptr_t  Initialize( CORE::ConnectionType const&             conn_type,
-                                                         const std::string&                      cli_title,
-                                                         CMD::A_Command_Parser::ptr_t            command_parser,
-                                                         A_Render_Driver_Context_Base::ptr_t     render_context );
+        static void Initialize( CORE::ConnectionType const&   conn_type,
+                                const std::string&            cli_title,
+                                CMD::A_Command_Parser::ptr_t  command_parser,
+                                CMD::A_Command_Queue::ptr_t   command_queue );
+        
 
+        /**
+         * @brief Get a Render-Manager Instance.
+         *
+         * @param[in] instance_id Instance of the render manager.
+        */
+        static A_Render_Manager_Base::ptr_t Instance_Of( const int& instance_id );
+        
+        
+        /**
+         * @brief Register a Custom Render Window
+         *
+         * @param[in] render_window Render window to add to the system.
+         */
+        static int Register_Custom_Render_Window( An_ASCII_Render_Window_Base::ptr_t render_window );
+        
+
+        /**
+         * @brief Check if Initialized.
+         * 
+         * @return True if initialized, false otherwise.
+        */
+        static bool Is_Initialized();
+
+    private:
+        
+        /**
+         * @brief Default Constructor
+        */
+        A_Render_Manager_Factory();
+
+                
+        /**
+         * @brief Get the global Factory Instance.
+        */
+        static A_Render_Manager_Factory& Get_Factory_Instance();
+
+
+        /**
+         * @brief Create a new instance.
+         *
+         * @param[in] instance_id ID to load into the render-manager.  Used for grabbing the driver and state.
+         */
+        A_Render_Manager_Base::ptr_t Create_Manager_Instance( const int& instance_id )const;
+        
+                
+        /// Class Name
+        std::string m_class_name;
+
+
+        /// Render Manager List
+        std::vector<A_Render_Manager_Base::ptr_t> m_render_managers;
+
+
+        /// Configuration Items
+        CORE::ConnectionType m_conn_type;
+
+
+        /// CLI Title
+        std::string m_cli_title;
+
+
+        /// Command Parser
+        CMD::A_Command_Parser::ptr_t m_command_parser;
+
+
+        /// Command Queue
+        CMD::A_Command_Queue::ptr_t m_command_queue;
+
+
+        /// Custom Window
+        std::vector<An_ASCII_Render_Window_Base::ptr_t> m_custom_render_windows;
+
+
+        /// Initialized Flag
+        bool m_is_initialized;
 
 }; // End of A_Render_Manager_Factory
 

@@ -12,10 +12,12 @@
 #include <string>
 #include <unistd.h>
 
+
 // Demo Libraries
-#include "cli/A_Ping_Command_Response_Handler.hpp"
-#include "cli/A_System_Command_Response_Handler.hpp"
 #include "core/State_Manager.hpp"
+#include "cli/A_System_Command_Response_Handler.hpp"
+#include "utils/Init_Utilities.hpp"
+
 
 // CLI Libraries
 #include <cli_cpp/cli/A_CLI_Manager_Factory.hpp>
@@ -23,11 +25,13 @@
 
 using namespace std;
 
+
 /**
  * @brief Main Program
  */
 int main( int argc, char* argv[] )
 {
+
     try{
     
         // Check args
@@ -43,30 +47,36 @@ int main( int argc, char* argv[] )
         State_Manager state_manager;
 
         // Create the CLI Manager
-        CLI::A_CLI_Manager::ptr_t manager = CLI::A_CLI_Manager_Factory::Initialize( config_pathname );
+        CLI::A_CLI_Manager::ptr_t cli_manager = CLI::A_CLI_Manager_Factory::Initialize( config_pathname );
 
         // Make sure it is not null
-        if( manager == nullptr ){
+        if( cli_manager == nullptr ){
             std::cerr << "Error: Returned null." << std::endl;
             return 1;
         }
 
-        // Register a Ping Command-Response Handler
-        A_Ping_Command_Response_Handler::ptr_t  ping_handler = std::make_shared<A_Ping_Command_Response_Handler>();
-        manager->Register_Command_Response_Handler( ping_handler );
+        // Register the Command-Response Handlers
+        Register_Command_Response_Handlers( cli_manager,
+                                            state_manager );
 
-        // Register a System Response Handler
-        A_System_Command_Response_Handler::ptr_t system_handler = std::make_shared<A_System_Command_Response_Handler>(state_manager);
-        manager->Register_Command_Response_Handler( system_handler );
 
+        // Register the Custom Windows
+        Register_Render_Windows( cli_manager,
+                                 state_manager );
+
+        
         // Initialize the CLI Manager
-        manager->Connect();
-
-        // Check the type of run and wait if necessary
+        cli_manager->Connect();
+        std::cout << "Finished Connect" << std::endl;
+        
+        // Wait for the system to be commanded to shut down.
         state_manager.Wait_On_System_Shutdown();
+        std::cout << "System Shutdown Detected" << std::endl;
+
 
         // Disconnect the CLI Manager
-        manager->Disconnect();
+        std::cout << "Starting to Disconnect" << std::endl;
+        cli_manager->Disconnect();
 
     } catch ( exception& e ){
         std::cerr << "exception caught What: " << e.what() << std::endl;

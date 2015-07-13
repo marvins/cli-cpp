@@ -12,6 +12,8 @@
 #include <vector>
 
 // CLI Libraries
+#include "A_Command.hpp"
+#include "A_Command_Argument.hpp"
 #include "CommandParseStatus.hpp"
 
 namespace CLI{
@@ -65,6 +67,14 @@ class A_CLI_Command{
          * @param[in] name Name to address command by.
          */
         void Add_Name( const std::string& name );
+        
+
+        /** 
+         * @brief Add a Command Argument to the list.
+         *
+         * @param[in] arg Argument to add to the list.
+        */
+        void Add_Argument( const A_Command_Argument& arg );
 
 
         /**
@@ -72,7 +82,28 @@ class A_CLI_Command{
          *
          * @param[in] name Name to compare against.
          */
-        bool Is_Match( const std::string& name )const;
+        bool Is_Name_Match( const std::string& name )const;
+        
+
+        /**
+         * @brief Check if name matches the substring
+         */
+        bool Is_Name_Substring( const std::string&  input_string,
+                                std::string&        match_result )const;
+        
+
+        /**
+         * @brief Check if the argument is a subset or matches the autocomplete set.
+         *
+         * @param[in] argument_index Specific argument to query.
+         * @param[in] argument_name  Argument name to test.
+         * @param[in] match_name     Matching name if one exists.
+         *
+         * @return True if subset, false otherwise.
+        */
+        bool Is_Argument_Substring( const int&         argument_index,
+                                    const std::string& argument_name,
+                                    std::string&       match_name ) const;
 
         
         /**
@@ -122,6 +153,60 @@ class A_CLI_Command{
             return m_names;
         }
 
+
+        /**
+         * @brief Get the argument list.
+         *
+         * @return Argument list
+        */
+        inline std::vector<A_Command_Argument> Get_Argument_List()const{
+            return m_command_argument_list;
+        }
+        
+        
+        /**
+         * @brief Check if response expected.
+         *
+         * @return True if expected, false otherwise.
+        */
+        inline bool Response_Expected()const{
+            return m_response_expected;
+        }
+
+
+        /**
+         * @brief Set the Response Expected Flag.
+         *
+         * @param[in] response_expected value of the flag.
+         */
+        inline void Set_Response_Expected( const bool& response_expected ){
+            m_response_expected = response_expected;
+        }
+
+
+        /**
+         * @brief Get the requested argument.
+         *
+         * @param[in] index Position to fetch.
+         *
+         * @return Desired command.
+         */
+        inline A_Command_Argument Get_Command_Argument( const int& index )const{
+            return m_command_argument_list[index];
+        }
+
+        
+        /**
+         * @brief Check an argument against the list to see if it is a valid type.
+         *
+         * @param[in] argument_id Index of argument to fetch.
+         * @param[in] test_argument_value Value of argument to check type against.
+         *
+         * @return True if the test value has a valid type (i.e. Int, Float, Str, etc). False otherwise.
+         */
+        bool Check_Argument_Type( const int& argument_idx,
+                                  const std::string& test_argument_value )const;
+
         
         /**
          * @brief Equivalent Operator
@@ -132,6 +217,22 @@ class A_CLI_Command{
         */
         bool operator == ( A_CLI_Command const& other )const;
         
+
+        /**
+         * @brief Write out as command.
+         *
+         * @return Command structure
+        */
+        A_Command To_Command()const;
+
+
+        /**
+         * @brief Print as debug string.
+         *
+         * @return Debugging data about the cli command.
+         */
+        std::string To_Debug_String()const;
+
     
     private:
         
@@ -149,6 +250,12 @@ class A_CLI_Command{
 
         /// Description
         std::string m_description;
+
+        /// List of arguments
+        std::vector<A_Command_Argument> m_command_argument_list;
+        
+        /// Response Expected Flag
+        bool m_response_expected;
 
 }; // End of A_CLI_Command Class
 

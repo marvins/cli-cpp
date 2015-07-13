@@ -10,16 +10,24 @@
 #include <cinttypes>
 
 namespace CLI{
-namespace CORE{
 
 /**
  * @enum CLI_Event_Type
+ *
+ * @brief Enumerates different events that may be registered or triggered within CLI-CPP.
 */
-enum class CLI_Event_Type : int32_t{
-    CLI_HELP             = -5,
-    CLI_BACK             = -4,
-    CLI_SHUTDOWN         = -3,
-    UNKNOWN              = -1,
+enum class CLI_Event_Type : int32_t
+{
+    CLI_NULL             = -11 /**< Treat a null or no-op value.*/,
+    CLI_PAUSE            = -10 /**< User requested to pause the CLI.*/,
+    CLI_SLEEP            = -9  /**< User requested to sleep for a period of time.*/,
+    CLI_REFRESH          = -8  /**< Event for refreshing the interface.*/,
+    CLI_ALIAS_LIST       = -7  /**< Event for showing the alias list screen.*/,
+    CLI_LOG              = -6  /**< Event for showing the log output screen.*/,
+    CLI_HELP             = -5  /**< Event for showing the help windows.*/,
+    CLI_BACK             = -4  /**< Event for returning to the main window.*/,
+    CLI_SHUTDOWN         = -3  /**< Event for disconnecting the CLI.*/,
+    UNKNOWN              = -1  /**< Unknown event.  Treat this as an error.*/,
     KEYBOARD_ENTER       = 13,
     KEYBOARD_A           = 'A',
     KEYBOARD_B           = 'B',
@@ -83,15 +91,25 @@ enum class CLI_Event_Type : int32_t{
     KEYBOARD_8           = '8',
     KEYBOARD_9           = '9',
     KEYBOARD_0           = '0',
+    KEYBOARD_TAB_KEY     =   9,
     KEYBOARD_BACKSPACE   = 127,
     KEYBOARD_DELETE_KEY  = 500,
     KEYBOARD_LEFT_ARROW  = 501,
     KEYBOARD_RIGHT_ARROW = 502,
     KEYBOARD_UP_ARROW    = 503,
     KEYBOARD_DOWN_ARROW  = 504,
+    KEYBOARD_F1          = 505,
+    KEYBOARD_F2          = 506,
+    KEYBOARD_F3          = 507,
+    KEYBOARD_F4          = 508,
+    KEYBOARD_F5          = 508,
+    KEYBOARD_PG_DN       = 509,
+    KEYBOARD_PG_UP       = 510,
+    KEYBOARD_INSERT      = 511,
+    KEYBOARD_HOME        = 512,
+    KEYBOARD_END         = 513,
 }; // End of event type enum
 
-} // End of CORE Namespace
 } // End of CLI  Namespace
 
 #endif

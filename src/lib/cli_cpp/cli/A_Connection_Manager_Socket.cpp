@@ -7,9 +7,11 @@
 
 // CLI Libraries
 #include "A_Connection_Manager_Socket_Config.hpp"
-#include "../core/Event_Manager.hpp"
+#include "../event/Event_Manager.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
+#include "../utility/ANSI_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
+#include "../utility/Telnet_Utilities.hpp"
 
 
 // C++ Standard Libraries
@@ -22,22 +24,14 @@
 #include <netinet/in.h>
 
 
-// Keyboard Delete Key Value
-const std::string KEYBOARD_DELETE_KEY = "\033\133\063\176";
-const std::string KEYBOARD_LEFT_KEY   = "\033\133\104";
-const std::string KEYBOARD_RIGHT_KEY  = "\033\133\103";
-const std::string KEYBOARD_UP_KEY     = "\033\133\101";
-const std::string KEYBOARD_DOWN_KEY   = "\033\133\102";
-
 namespace CLI{
 
 
 /*************************/
 /*      Constructor      */
 /*************************/
-A_Connection_Manager_Socket::A_Connection_Manager_Socket( A_Connection_Manager_Base_Config::ptr_t configuration,
-                                                          RENDER::A_Render_Manager_Base::ptr_t    render_manager )
-  : A_Connection_Manager_Base(render_manager),
+A_Connection_Manager_Socket::A_Connection_Manager_Socket( A_Connection_Manager_Base_Config::ptr_t configuration )
+  : A_Connection_Manager_Base(configuration),
     m_class_name("A_Connection_Manager_Socket")
 {
     // Cast the configuration
@@ -45,6 +39,7 @@ A_Connection_Manager_Socket::A_Connection_Manager_Socket( A_Connection_Manager_B
 
     // Configure the socket
     Setup_Socket();
+
 }
 
 
@@ -123,15 +118,6 @@ void A_Connection_Manager_Socket::Run_Handler()
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
-    
-    // Misc Variables
-    int key;
-
-    // Read the socket
-    char buffer[256];
-    int n;
-    std::string input;
-    
     // Get the length
     socklen_t clilen;
     struct sockaddr_in cli_addr;
@@ -140,126 +126,65 @@ void A_Connection_Manager_Socket::Run_Handler()
     //  Iteratively load connections
     while( m_is_running == true )
     {
+        // Spawn a new instance
+        int client_fd;
 
-        // Wait until a valid connection
-        while( true ){
-        
-            // Accept the socket
-            m_client_fd = accept( m_sock_fd, 
-                                  (struct sockaddr*)&cli_addr,
-                                  &clilen);
+        // Accept the socket
+        BOOST_LOG_TRIVIAL(debug) << "Waiting for connection.  (Socket FD: " << m_sock_fd << ")";
+        client_fd = accept( m_sock_fd, 
+                            (struct sockaddr*)&cli_addr,
+                            &clilen);
+        BOOST_LOG_TRIVIAL(debug) << "Accepting Connection";
             
-            // Check if we need to keep waiting
-            if( m_client_fd < 0 && m_is_running == true )
-            {
-                usleep(1000);
-                continue;
-            }
-
-            // Check the status
-            if( m_is_running != true || 
-                m_client_fd != EAGAIN )
-            {
-                break;
-            }
-        }
-
         // Check if we need to exit
         if( m_is_running != true ){
-            close(m_client_fd);
-            break;
+            close(client_fd);
+            continue;
+        }
+
+        // Check if the operation failed
+        if( client_fd < 0 ){
+            sleep(1);
+            continue;
         }
 
         // Make the socket non-blocking
-        fcntl( m_client_fd, F_SETFL, O_NONBLOCK );
-
-        // Write back
-        write( m_client_fd,"\377\375\042\377\373\001",6);
-        write( m_client_fd,"Welcome\n\0", 9);
-
-        // Set the connected flag
-        m_is_connected = true;
+        fcntl( client_fd, F_SETFL, O_NONBLOCK );
     
-        // run until time to quit
-        while( m_is_connected == true &&
-               m_is_running   == true )
-        {
-            // Check the manager
-            if( this->m_render_manager == nullptr ){
-                break;
-            }
-
         
-            // Check keyboard value
-            while( true ){
-                
-                // Read from socket
-                n = read( m_client_fd, buffer, 255 );
-                
-                // Check if the socket has closed
-                if( n == 0 ){
-                    break;
-                }
+        // Log
+        char host[NI_MAXHOST];
+        getnameinfo( (struct sockaddr *)&cli_addr, 
+                     sizeof(cli_addr), 
+                     host, 
+                     sizeof(host), 
+                     NULL, 
+                     0, 
+                     NI_NUMERICHOST);
+        BOOST_LOG_TRIVIAL(debug) << "Connection has been made by " << host;
 
-                // Check time to quit
-                else if ( m_is_running   == false || 
-                          m_is_connected == false )
-                {
-                    break;
-                }
 
-                // Check if valid data
-                else if( n != EAGAIN && n > 0 ){
-                    break;
-                }
-                else{
-                    usleep(500);
-                }
 
-            }
+        // Call the process method
+        int next_position = Get_Next_Client_Slot();
+        BOOST_LOG_TRIVIAL(debug) << "Starting the Socket Connection for ID " << next_position << ".";
+        m_connection_list[next_position] = std::make_shared<A_Socket_Connection_Instance>( next_position,
+                                                                                           client_fd,
+                                                                                           m_configuration->Get_Read_Timeout_Sleep_Microseconds()); 
 
-            // Check the buffer
-            input = std::string(buffer).substr(0,n);
-        
-            // Process the text
-            if( input.size() > 1 ){
-                key = this->Process_Special_Key( input );    
-            } else {
-                key = input[0];
-            }
-
-            // Process the command
-            BOOST_LOG_TRIVIAL(trace) << "Calling Event_Manager::Process_Event with Key = " << key;
-            CORE::Event_Manager::Process_Event( key );
-            BOOST_LOG_TRIVIAL(trace) << "Event_Manager::Process_Event returned.";
-        
-            // Render the screen
-            this->m_render_manager->Refresh();
-
-            // Get the buffer string
-            std::vector<std::string>& buffer_data = std::dynamic_pointer_cast<RENDER::A_Render_Manager_ASCII>(m_render_manager)->Get_Console_Buffer();
-       
-            // Write each line to the socket
-            for( size_t i=0; i<buffer_data.size(); i++ ){
-                write( m_client_fd, buffer_data[i].c_str(), buffer_data[i].size() );
-            }
-
-            // Check if time to exit
-            if( m_is_running == false || 
-                m_is_connected == false )
-            {
-                break;
-            }
-
-        }
-    
-        // Close the current session
-        close( m_client_fd );
-    }
-
+        // Start
+        m_connection_list[next_position]->Start();
+                                                                                           
+    } 
 
     // Set the running flag
     m_is_running = false;
+
+    // Stop each connection
+    for( size_t i=0; i<m_connection_list.size(); i++ ){
+        m_connection_list[i]->Set_Connection_Flag(false);
+        m_connection_list[i]->Join();
+    }
 
     // Close Socket
     Close_Socket();
@@ -269,49 +194,47 @@ void A_Connection_Manager_Socket::Run_Handler()
 }
 
 
-/**************************************/
-/*        Process Special Keys        */
-/**************************************/
-int A_Connection_Manager_Socket::Process_Special_Key( const std::string& input_str )const
+/*********************************/
+/*       Refresh the screen      */
+/*********************************/
+void A_Connection_Manager_Socket::Refresh_Screen( const int& instance_id )
 {
-    // Check Delete Key
-    if( input_str == KEYBOARD_DELETE_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_DELETE_KEY;
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    if( m_connection_list[instance_id] != nullptr && 
+        m_connection_list[instance_id]->Is_Running() ){
+        m_connection_list[instance_id]->Refresh_Screen(); 
     }
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+}
 
-    // Check Left Key
-    else if( input_str == KEYBOARD_LEFT_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_LEFT_ARROW;
-    }
 
-    // Check Right Key
-    else if( input_str == KEYBOARD_RIGHT_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_RIGHT_ARROW;
-    }
 
-    // Check Up Key
-    else if( input_str == KEYBOARD_UP_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_UP_ARROW;
-    }
+/*****************************************************/
+/*          Get the Next Open Client Slot            */
+/*****************************************************/
+int A_Connection_Manager_Socket::Get_Next_Client_Slot()
+{
 
-    // Check Down Key
-    else if( input_str == KEYBOARD_DOWN_KEY ){
-        return (int)CORE::CLI_Event_Type::KEYBOARD_DOWN_ARROW;
-    }
+    // Iterate over existing items
+    for( size_t i=0; i<m_connection_list.size(); i++ ){
 
-    // Otherwise, there was an error
-    else{
-        std::cerr << "Warning, data is larger than expected. Size: " << input_str.size() << std::endl;
-        for( size_t i=0; i<input_str.size(); i++ ){
-            std::cout << i << " : " << (int)input_str[i] << std::endl;
+        // Look for dead thread
+        if( m_connection_list[i] == nullptr ){
+            return i;
+        }
+        else if( m_connection_list[i]->Is_Running() == false ){
+            return i;
         }
     }
 
-
-    // otherwise, return failure
-    return -1;
+    // If we get here, push another open spot
+    m_connection_list.push_back(nullptr);
+    return (m_connection_list.size()-1);
 }
-
 
 } // End of CLI Namespacee
 

@@ -8,6 +8,7 @@
 
 // CLI Libraries
 #include "A_Command.hpp"
+#include "A_CLI_Command.hpp"
 #include "CommandParseStatus.hpp"
 #include "../utility/String_Utilities.hpp"
 
@@ -29,6 +30,7 @@ class A_Command_Result{
         /// Pointer Type
         typedef std::shared_ptr<A_Command_Result> ptr_t;
         
+
         /**
          * @brief Constructor
         */
@@ -38,25 +40,39 @@ class A_Command_Result{
         /**
          * @brief Constructor
          *
-         * @param[in] parse_status Parsing operation status.
-         * @param[in] command Command that was executed.
+         * @param[in] instance_id   Instance of client who issued command.
+         * @param[in] parse_status  Parsing operation status.
+         * @param[in] command       Command that was executed.
          */
-        A_Command_Result( CommandParseStatus const&    parse_status,
-                              A_Command const&            command );
+        A_Command_Result( const int&                  instance_id,
+                          CommandParseStatus const&   parse_status,
+                          A_Command const&            command );
        
 
         /**
          * @brief Constructor
          *
-         * @param[in] parse_status Parsing operation status.
-         * @param[in] command Command that was executed.
-         * @param[in] argument_values List of arguments provided to the command.
+         * @param[in] instance_id      Instance of client who issues command.
+         * @param[in] parse_status     Parsing operation status.
+         * @param[in] command          Command that was executed.
+         * @param[in] argument_values  List of arguments provided to the command.
          */
-        A_Command_Result( CommandParseStatus const&    parse_status,
-                              A_Command const&            command,
-                              std::vector<std::string> const& argument_values );
+        A_Command_Result( const int&                      instance_id,
+                          CommandParseStatus const&       parse_status,
+                          A_Command const&                command,
+                          std::vector<std::string> const& argument_values );
 
     
+        /**
+         * @brief Get the Instance ID.
+         *
+         * @return Instance-ID of the client.
+        */
+        inline int Get_Instance_ID()const{
+            return m_instance_id;
+        }
+
+
         /**
          * @brief Get the Parsing Status.
          *
@@ -86,12 +102,28 @@ class A_Command_Result{
         /**
          * @brief Process Command Results
          *
-         * @param[in] command Command that was executed.
-         * @param[in] arguments List of arguments to check for validity.
+         * @param[in] instance_id Instance of client who issue command.
+         * @param[in] command     Command that was executed.
+         * @param[in] arguments   List of arguments to check for validity.
          *
          * @return Result of the operation.
          */
-        static A_Command_Result  Process_Arguments( const A_Command&             command,
+        static A_Command_Result  Process_Arguments( const int&                       instance_id,
+                                                    const A_Command&                 command,
+                                                    const std::vector<std::string>&  arguments );
+
+
+        /**
+         * @brief Process CLI Command Results.
+         *
+         * @param[in] instance_id  Instance of Client who issued command.
+         * @param[in] command      CLI Command that was executed.
+         * @param[in] arguments    List of arguments to check for validity.
+         *
+         * @return Result of the operation.
+        */
+        static A_Command_Result  Process_CLI_Arguments( const int&                       instance_id,
+                                                        const A_CLI_Command&             command,
                                                         const std::vector<std::string>&  arguments );
 
         /**
@@ -125,6 +157,26 @@ class A_Command_Result{
          */
         inline bool Check_System_Response()const{
             return m_system_response_set;
+        }
+
+
+        /**
+         * @brief Get argument value count.
+         *
+         * @return number of arguments
+        */
+        inline int Get_Argument_Value_Count()const{
+            return m_argument_values.size();
+        }
+
+
+        /**
+         * @brief Get the argument value list.
+         *
+         * @returen Argument value list.
+        */
+        inline std::vector<std::string> Get_Argument_Value_List()const{
+            return m_argument_values;
         }
         
 
@@ -172,7 +224,14 @@ class A_Command_Result{
 
 
     private:
+
+        /// Class Name
+        std::string m_class_name;
+
     
+        /// Instance ID
+        int m_instance_id;
+
         /// Status
         CommandParseStatus m_parse_status;
 

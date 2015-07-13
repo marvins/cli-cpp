@@ -37,7 +37,7 @@ std::string ConnectionTypeToString( const ConnectionType& cli_type )
 {
     if( cli_type == ConnectionType::BASE  ){ return "BASE"; }
     if( cli_type == ConnectionType::SOCKET ){ return "SOCKET"; }
-    return "UNKONWN";
+    return "UNKNOWN";
 }
 
 } // End of CORE Namespace

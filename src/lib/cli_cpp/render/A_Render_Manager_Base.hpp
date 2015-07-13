@@ -10,6 +10,8 @@
 #include <deque>
 #include <memory>
 #include <string>
+#include <thread>
+
 
 // CLI Libraries
 #include "A_Render_Driver_Context_Base.hpp"
@@ -19,6 +21,7 @@
 #include "../cmd/A_Command_Result.hpp"
 #include "../cmd/A_Command_Parser.hpp"
 #include "../cmd/A_Command_Queue.hpp"
+#include "../render/ascii/An_ASCII_Render_Window_Base.hpp"
 
 
 namespace CLI{
@@ -42,55 +45,27 @@ class A_Render_Manager_Base
         
         /**
          * @brief Constructor
+         *
+         * @param[in] instance_id    ID to load into the manager.
+         * @param[in] command_parser Command parser to process cli results.
          */
-        A_Render_Manager_Base( CMD::A_Command_Parser::ptr_t command_parser );
+        A_Render_Manager_Base( const int&                   instance_id,
+                               CMD::A_Command_Parser::ptr_t command_parser,
+                               CMD::A_Command_Queue::ptr_t  command_queue );
         
 
         /**
-         * @brief Initialize
+         * @brief Initialize the Render-Manager
         */
         virtual void Initialize() = 0;
 
 
         /** 
-         * @brief Finalize
+         * @brief Finalize the Render-Manager.
         */
         virtual void Finalize() = 0;
 
-
-        /**
-         * @brief Refresh the Screen.
-         */
-        virtual void Refresh() = 0;
         
-
-        /**
-         * @brief Update the rendering driver context.
-         *
-         * @param[in] driver_context Rendering driver to register.
-         */
-        virtual void Update_Render_Driver_Context( A_Render_Driver_Context_Base::ptr_t driver_context ) = 0;
-
-        inline virtual void Update_Command_Queue( CMD::A_Command_Queue::ptr_t command_queue ){
-            m_command_queue = command_queue;
-        }
-
-        
-        /**
-         * @brief Append Command To History.
-         *
-         * @param[in] command_string String representing what the user typed in.
-         * @param[in] command_result Parsing and evaluation result.
-         */
-        inline virtual void Add_Command_History( const std::string&            command_string,
-                                                 CMD::A_Command_Result::ptr_t  command_result )
-        {
-            m_command_history->Add_Entry( CMD::A_Command_History_Entry( ++m_command_counter,
-                                                                        command_string,
-                                                                        command_result ));
-        } 
-
-
         /**
          * @brief Command the system to wait on the input command response.
          */
@@ -107,6 +82,8 @@ class A_Render_Manager_Base
 
         /**
          * @brief Process Keyboard Input
+         *
+         * @param[in] key Input key to handle.
          */
         virtual void Process_Keyboard_Input( const int& key );
         
@@ -120,33 +97,87 @@ class A_Render_Manager_Base
         /**
          * @brief Set the Current Window
         */
-        inline virtual void Set_Current_Window( const int& window_id ) = 0;
+        virtual void Set_Current_Window( const int& window_id ) = 0;
+
+
+        /**
+         * @brief Set the CLI Window Size
+         *
+         * @param[in] rows CLI Window Rows.
+         * @param[in] cols CLI Window Cols.
+         */
+        virtual void Set_CLI_Window_Size( const int& rows,
+                                          const int& cols );
+
+    
+        /**
+         * @brief Set the window to the appropriate Detailed Help ID.
+         *
+         * @param[in] command_name
+        */
+        virtual bool Set_CLI_Detailed_Help_Window( const std::string& command_name ) = 0;
+        
+
+        /**
+         * @brief Add a Custom Render Window.
+         *
+         * @param[in] render_window Render window to add.
+         *
+         * @return ID of the window.
+        */
+        virtual int Register_Custom_Render_Window( An_ASCII_Render_Window_Base::ptr_t render_window ) = 0;
 
 
     protected:
         
-        /// Command History
-        CMD::A_Command_History::ptr_t m_command_history;
+        
+        /**
+         * @brief Refresh the Screen.
+         */
+        virtual void Refresh() = 0;
+        
 
 
+        /**
+         * @brief Get the header status bar text.
+         *
+         * @return Header status bar text.
+        */
+        virtual std::string Get_Header_Status_Bar_Text()const = 0;
+        
+
+        /**
+         * @brief Get the header mode bar text.
+         *
+         * @return Header mode bar text.
+        */
+        virtual std::string Get_Header_Mode_Bar_Text()const = 0;
+
+        
         /// Command Queue
         CMD::A_Command_Queue::ptr_t m_command_queue;
 
 
-        /// Command Counter
-        int m_command_counter;
-        
-        /// Render State
-        A_Render_State::ptr_t m_render_state;
-        
         /// Command Parser
         CMD::A_Command_Parser::ptr_t m_command_parser;
 
+        
+        /// Render Driver Context
+        A_Render_Driver_Context_Base::ptr_t m_render_driver_context;
+        
+
+        /// Local Render State
+        A_Render_State::ptr_t m_render_state;
+
+
+        /// Instance ID
+        int m_instance_id;
 
     private:
 
         /// Class Name
         std::string m_class_name;
+
 
 }; // End of A_Render_Manager Class
 

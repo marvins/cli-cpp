@@ -3,19 +3,24 @@
  * @author  Marvin Smith
  * @date    5/18/2015
 */
-#ifndef __CLI_A_CLI_CONNECTION_HANDLER_SOCKET_HPP__
-#define __CLI_A_CLI_CONNECTION_HANDLER_SOCKET_HPP__
+#ifndef __CLI_A_CLI_CONNECTION_MANAGER_SOCKET_HPP__
+#define __CLI_A_CLI_CONNECTION_MANAGER_SOCKET_HPP__
 
 // CLI Libraries
 #include "A_Connection_Manager_Base.hpp"
 #include "A_Connection_Manager_Base_Config.hpp"
 #include "A_Connection_Manager_Socket_Config.hpp"
+#include "A_Socket_Connection_Instance.hpp"
 
 // C++ Standard Libraries
 #include <memory>
 #include <sys/socket.h>
+#include <mutex>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <tuple>
+#include <unistd.h>
+
 
 namespace CLI{
 
@@ -33,15 +38,34 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
         
         /**
          * @brief Constructor
+         *
+         * @param[in] configuration Connection manager configuration.
         */
-        A_Connection_Manager_Socket( A_Connection_Manager_Base_Config::ptr_t configuration,
-                                     RENDER::A_Render_Manager_Base::ptr_t    render_manager );
+        A_Connection_Manager_Socket( A_Connection_Manager_Base_Config::ptr_t configuration );
 
 
         /**
          * @brief Destructor
          */
-        ~A_Connection_Manager_Socket();
+        virtual ~A_Connection_Manager_Socket();
+        
+
+        /**
+         * @brief Refresh the Screen.
+         *
+         * @param[in] instance Client instance to refresh.
+         */
+        virtual void Refresh_Screen( const int& instance );
+        
+        
+        /**
+         * @brief Set the Is Connection Flag
+        */
+        inline virtual void Set_Is_Connected_Flag( int const& instance, 
+                                                   const bool& is_connected )
+        {
+            m_connection_list[instance]->Set_Connection_Flag( is_connected );
+        }
 
     
     protected:
@@ -64,16 +88,14 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
          * @brief Close the socket.
          */
         void Close_Socket();
-        
+
 
         /**
-         * @brief Check for special keys.
-         *
-         * @param[in]  key_str String of digits from system.
-         *
-         * @return Key value.  -1 if no key present.
-        */
-        int Process_Special_Key( std::string const& key_str ) const;
+         * @brief Get next open client slot.
+         */
+        int Get_Next_Client_Slot();
+        
+
         
         /// Class Name
         std::string m_class_name;
@@ -85,10 +107,10 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
 
         /// Socket File Descriptor
         int m_sock_fd;
-
-
-        /// Client File Description
-        int m_client_fd;
+       
+        
+        /// Socket Instance List
+        std::vector<A_Socket_Connection_Instance::ptr_t> m_connection_list;
 
 }; // End of A_Connection_Manager_Socket Class
 

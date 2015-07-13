@@ -67,6 +67,44 @@ bool A_Command::Is_Name_Match( const std::string& command_name )const
 }
 
 
+/************************************************/
+/*        Check if Name Substring Match         */
+/************************************************/
+bool A_Command::Is_Name_Substring( const std::string& command_name )const
+{
+    // Check if command name is less than or equal
+    if( command_name.size() > m_command_name.size() ){
+        return false;
+    }
+
+    // Check if the sizes are equal
+    if( command_name.size() == m_command_name.size() ){
+        return Is_Name_Match( command_name );
+    }
+
+    // Otherwise, check the substring
+    return (m_command_name.substr(0, command_name.size()) == command_name );
+}
+
+
+/********************************************/
+/*      Check if Argument is a Match        */
+/********************************************/
+bool A_Command::Is_Argument_Substring( const int&         argument_index,
+                                       const std::string& argument_name,
+                                       std::string&  match_name )const
+{
+    // Don't go over bounds
+    if( argument_index >= (int)m_command_argument_list.size() ){
+        return false;
+    }
+
+    // Pass to argument
+    return m_command_argument_list[argument_index].Is_Argument_Substring( argument_name,
+                                                                          match_name );
+
+}
+
 /************************************/
 /*         Check Arguments          */
 /************************************/
@@ -95,6 +133,37 @@ std::string A_Command::To_Debug_String()const
     sin << "   Desc: " << Get_Description() << "\n";
     
     return sin.str();
+}
+
+
+/********************************/
+/*      Equivalent Operator     */
+/********************************/
+bool A_Command::operator == ( A_Command const& other )const
+{
+    
+    // Check the command name
+    if( m_command_name != other.m_command_name ){
+        return false;
+    }
+
+    // Check the expect reponse
+    if( m_expect_response != other.m_expect_response ){
+        return false;
+    }
+
+    // Check the argument list
+    if( m_command_argument_list.size() != other.m_command_argument_list.size() ){
+        return false;
+    }
+
+    for( size_t i=0; i<m_command_argument_list.size(); i++ ){
+        if( m_command_argument_list[i] != other.m_command_argument_list[i] ){
+            return false;
+        }
+    }
+
+    return true;
 }
 
 

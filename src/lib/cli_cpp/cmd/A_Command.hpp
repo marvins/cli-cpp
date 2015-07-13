@@ -51,10 +51,10 @@ class A_Command{
          * @param[in] command_expect_response  Flag if the command should return a response.
          * @param[in] command_arguments        Command arguments.
          */
-        A_Command( const std::string&                         command_name,
-                   const std::string&                         command_description,
-                   const bool&                                command_expect_response,
-                   const std::vector<A_Command_Argument>& command_arguments );
+        A_Command( const std::string&                      command_name,
+                   const std::string&                      command_description,
+                   const bool&                             command_expect_response,
+                   const std::vector<A_Command_Argument>&  command_arguments );
 
 
         /**
@@ -129,9 +129,43 @@ class A_Command{
         
 
         /**
+         * @brief Check if name is a subset.
+         *
+         * @param[in] command_name Command name to test.
+         *
+         * @return True if subset, false otherwise.
+        */
+        bool Is_Name_Substring( const std::string& command_name )const;
+        
+
+        /**
+         * @brief Check if the argument is a subset or matches the autocomplete set.
+         *
+         * @param[in] argument_index Specific argument to query.
+         * @param[in] argument_name Argument name to test.
+         * @param[out] match_name Match if one exists.
+         * 
+         * @return True if subset, false otherwise.
+        */
+        bool Is_Argument_Substring( const int& argument_index,
+                                    const std::string& argument_name,
+                                    std::string&       match_name )const;
+
+
+        /**
          * @brief Print as a debug string.
          */
         std::string To_Debug_String()const;
+
+
+        /**
+         * @brief Equivalent Operator.
+         *
+         * @param[in] other Comparison object.
+         *
+         * @return True if equivalent, false otherwise.
+        */
+        bool operator == (const A_Command&  other) const;
 
 
     private:

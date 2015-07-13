@@ -15,9 +15,13 @@ set( LIB_CLI_RENDER_MODULE_SOURCES
     A_Render_Manager_Base.cpp
     A_Render_Manager_Factory.cpp
     A_Render_State.cpp
+    A_Render_State_Factory.cpp
+    ascii/A_CLI_Command_Detailed_Help_Window.cpp
+    ascii/A_Detailed_Help_Window.cpp
     ascii/A_General_Help_Window.cpp
     ascii/A_Log_Window.cpp
     ascii/A_Main_Window.cpp
+    ascii/An_Alias_List_Window.cpp
     ascii/An_ASCII_Help_Menu.cpp
     ascii/An_ASCII_History_Window.cpp
     ascii/An_ASCII_History_Window_Configuration.cpp
@@ -36,9 +40,13 @@ set( LIB_CLI_RENDER_MODULE_HEADERS
     A_Render_Manager_Base.hpp
     A_Render_Manager_Factory.hpp
     A_Render_State.hpp
+    A_Render_State_Factory.hpp
+    ascii/A_CLI_Command_Detailed_Help_Window.hpp
+    ascii/A_Detailed_Help_Window.hpp
     ascii/A_General_Help_Window.hpp
     ascii/A_Log_Window.hpp
     ascii/A_Main_Window.hpp
+    ascii/An_Alias_List_Window.hpp
     ascii/An_ASCII_Help_Menu.hpp
     ascii/An_ASCII_History_Window.hpp
     ascii/An_ASCII_History_Window_Configuration.hpp

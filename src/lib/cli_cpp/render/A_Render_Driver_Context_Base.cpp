@@ -18,8 +18,12 @@ namespace RENDER{
 /********************************/
 /*          Constructor         */
 /********************************/
-A_Render_Driver_Context_Base::A_Render_Driver_Context_Base( const std::string& cli_title )
+A_Render_Driver_Context_Base::A_Render_Driver_Context_Base( const std::string& cli_title,
+                                                            const bool&        redirect_stdout,
+                                                            const bool&        redirect_stderr )
   : m_cli_title(cli_title),
+    m_redirect_stdout(redirect_stdout),
+    m_redirect_stderr(redirect_stderr),
     m_class_name("A_Render_Driver_Context_Base"),
     m_waiting_command_response(false)
 {
@@ -47,7 +51,8 @@ void A_Render_Driver_Context_Base::Set_Waiting_Command_Response( const CMD::A_Co
 /**************************************************/
 /*      Check the waiting response flag value     */
 /**************************************************/
-bool A_Render_Driver_Context_Base::Check_Waiting_Command_Response(){
+bool A_Render_Driver_Context_Base::Check_Waiting_Command_Response()
+{
     
     // Log
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << ". Status: " << std::boolalpha << m_waiting_command_response;
@@ -70,11 +75,11 @@ bool A_Render_Driver_Context_Base::Check_Waiting_Command_Response(){
     }
 
     // Check if recieved
-    if( m_waiting_command_response_value->Check_System_Response() &&
+    if( m_waiting_command_response_value->Check_System_Response() == true &&
         m_waiting_command_response == true )
     {
         m_waiting_command_response = false;
-        return true;
+        return false;
     }
 
     else{

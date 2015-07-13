@@ -14,6 +14,21 @@ set( CMAKE_CXX_FLAGS "-std=c++11 -Wall -ldl" )
 SET( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin )
 SET( LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib )
 
+#-------------------------------------#
+#-     Find Boost C++ Libraries      -#
+#-------------------------------------#
+ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
+find_package( Boost REQUIRED
+                COMPONENTS
+                    system
+                    filesystem
+                    regex
+                    log
+                    thread
+)
+include_directories( ${Boost_INCLUDE_DIRS})
+
+
 
 
 #-------------------------------------------#
@@ -67,9 +82,18 @@ find_library( LIB_CLI_CPP
 set( CLI_CPP_TEST_SOURCES
      cmd/TEST_A_CLI_Command.cpp
      cmd/TEST_A_Command.cpp
+     cmd/TEST_A_Command_Alias.cpp
      cmd/TEST_A_Command_Argument.cpp
+     cmd/TEST_A_Command_Parser.cpp
+     cmd/TEST_A_Command_Parser_Factory.cpp
+     event/TEST_An_Event_Queue.cpp
+     event/TEST_Event_Manager.cpp
+     event/TEST_Event_Manager_Config.cpp
+     render/TEST_A_Render_State_Factory.cpp
      utility/TEST_An_ASCII_Print_Table.cpp
      utility/TEST_String_Utilities.cpp
+     UNIT_TEST_ONLY/Command_Parser.hpp
+     UNIT_TEST_ONLY/Command_Parser.cpp
 )
 
 

@@ -10,8 +10,7 @@
 #include "A_CLI_Manager_Configuration.hpp"
 #include "A_Command_Response_Handler_Base.hpp"
 #include "../cmd/A_Command_Queue.hpp"
-#include "../render/A_Render_Driver_Context_Base.hpp"
-#include "../render/A_Render_Manager_Base.hpp"
+#include "../handlers/A_Custom_Window_Command_Response_Handler.hpp"
 
 
 // C++ Standard Libraries
@@ -22,6 +21,8 @@ namespace CLI{
 
 /**
  * @class A_CLI_Manager
+ *
+ * @brief Primary CLI management interface.
  */
 class A_CLI_Manager{
 
@@ -75,8 +76,20 @@ class A_CLI_Manager{
 
         /**
          * @brief Register Command Response Handler.
+         *
+         * @param[in] handler Command-Response Handler to register with the system.
          */
         void Register_Command_Response_Handler( A_Command_Response_Handler_Base::ptr_t handler );
+
+        
+        /**
+         * @brief Register Custom Render Window
+         *
+         * @param[in] render_window   Custom window to register.
+         * @param[in] command         Command that will render the window.
+        */
+        void Register_Custom_Render_Window( RENDER::An_ASCII_Render_Window_Base::ptr_t  render_window,
+                                            CMD::A_Command const&                       command );
 
     private:
 
@@ -84,32 +97,52 @@ class A_CLI_Manager{
          * @brief Process Command Result Messages
         */
         void Process_Command_Results();
+        
+
+        /**
+         * @brief Register Internal Command Response Handlers.
+        */
+        void Register_Internal_Command_Response_Handlers();
+
+
+        /**
+         * @brief Register the Internal Event Handlers.
+        */
+        void Register_Internal_Event_Handlers();
+        
+
+        /**
+         * @brief Initialize the Connection Manager.
+        */
+        void Initialize_Connection_Manager();
 
         
         /// Class Name
         std::string m_class_name;
 
+        
         /// Configuration
         A_CLI_Manager_Configuration m_configuration;
 
-        /// Render Driver Context
-        RENDER::A_Render_Driver_Context_Base::ptr_t m_render_driver_context;
-
+        
         /// CLI Connection Handler
         A_Connection_Manager_Base::ptr_t m_connection_manager;
 
-        /// Render Manager
-        RENDER::A_Render_Manager_Base::ptr_t m_render_manager;
-
+        
         /// Handler Thread
         std::thread m_handler_thread;
         std::atomic<bool> m_handler_thread_running;
 
+        
         /// Handler Queue
         CMD::A_Command_Queue::ptr_t m_command_queue;
 
+        
         /// CLI Handler List
         std::vector<A_Command_Response_Handler_Base::ptr_t> m_command_handlers;
+
+        /// Custom Window Command Response Handler
+        HANDLER::A_Custom_Window_Command_Response_Handler::ptr_t m_custom_window_command_handler;
 
 
 }; // End of A_CLI_Manager Class

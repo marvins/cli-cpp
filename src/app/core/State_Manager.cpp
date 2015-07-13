@@ -5,16 +5,35 @@
 */
 #include "State_Manager.hpp"
 
+// C++ Libraries
+#include <iostream>
 
 /*******************************/
 /*        Constructor          */
 /*******************************/
 State_Manager::State_Manager( )
-  : m_shutdown_system(false)
+  : m_shutdown_system(false),
+    m_network_scanner(std::make_shared<Network_Scanner>())
 {
+    // Add some assets
+    m_network_scanner->Add_Network_Asset( "Google", "8.8.8.8", 10 );
+
+    // Start the scanner
+    m_network_scanner->Start_Scanner();
 
 }
 
+
+/*****************************/
+/*        Destructor         */
+/*****************************/
+State_Manager::~State_Manager()
+{
+
+    // Stop the server
+    m_network_scanner->Stop_Scanner();
+
+}
 
 /********************************************/
 /*          Signal System Shutdown          */
@@ -23,6 +42,7 @@ void State_Manager::Signal_System_Shutdown()
 {
 
     // Notify the condition variable
+    std::cout << "Signalling System Shutdown" << std::endl;
     m_shutdown_cv.notify_all();
 
     // Set flag
@@ -39,12 +59,17 @@ void State_Manager::Wait_On_System_Shutdown()
 
     // If shutdown already set, skip
     if( m_shutdown_system == true ){
+        std::cout << "System Shutdown Already Set." << std::endl;
         return;
     }
 
     // wait to exit
     std::unique_lock<std::mutex> ulock( m_shutdown_mutex );
-    m_shutdown_cv.wait( ulock );
+    std::cout << "Starting Wait" << std::endl;
+    while( m_shutdown_system == false ){
+        m_shutdown_cv.wait( ulock );
+    }
+    std::cout << "Finished Wait" << std::endl;
 
 }
 

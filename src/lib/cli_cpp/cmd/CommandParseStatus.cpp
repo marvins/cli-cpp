@@ -34,6 +34,36 @@ std::string CommandParseStatusToString( CommandParseStatus const& status )
         return "CLI_BACK";
     }
 
+    // Log
+    if( status == CommandParseStatus::CLI_LOG ){
+        return "CLI_LOG";
+    }
+
+    // Add Alias
+    if( status == CommandParseStatus::CLI_ALIAS_ADD ){
+        return "CLI_ALIAS_ADD";
+    }
+
+    // Remove Alias
+    if( status == CommandParseStatus::CLI_ALIAS_REMOVE ){
+        return "CLI_ALIAS_REMOVE";
+    }
+
+    // List Aliases
+    if( status == CommandParseStatus::CLI_ALIAS_LIST ){
+        return "CLI_ALIAS_LIST";
+    }
+
+    // Sleep
+    if( status == CommandParseStatus::CLI_SLEEP ){
+        return "CLI_SLEEP";
+    }
+
+    // Pause
+    if( status == CommandParseStatus::CLI_PAUSE ){
+        return "CLI_PAUSE";
+    }
+
     // Invalid arguments
     if( status == CommandParseStatus::INVALID_ARGUMENTS ){
         return "INVALID_ARGUMENTS";
@@ -52,6 +82,16 @@ std::string CommandParseStatusToString( CommandParseStatus const& status )
     // CLI Clear
     if( status == CommandParseStatus::CLI_CLEAR ){
         return "CLI_CLEAR";
+    }
+
+    // Run SCript
+    if( status == CommandParseStatus::CLI_RUN_SCRIPT ){
+        return "CLI_RUN_SCRIPT";
+    }
+
+    // Resize CLI
+    if( status == CommandParseStatus::CLI_RESIZE ){
+        return "CLI_RESIZE";
     }
 
     // UNKNOWN
@@ -88,6 +128,46 @@ std::string CommandParseStatusToHistoryString( CommandParseStatus const& status 
     // Clear
     if( status == CommandParseStatus::CLI_CLEAR ){
         return "Success";
+    }
+
+    // Log
+    if( status == CommandParseStatus::CLI_LOG ){
+        return "Success";
+    }
+
+    // Add Alias
+    if( status == CommandParseStatus::CLI_ALIAS_ADD ){
+        return "Success";
+    }
+
+    // Remove Alias
+    if( status == CommandParseStatus::CLI_ALIAS_REMOVE ){
+        return "Success";
+    }
+
+    // List Alias
+    if( status == CommandParseStatus::CLI_ALIAS_LIST ){
+        return "Success";
+    }
+
+    // CLI Resize
+    if( status == CommandParseStatus::CLI_RESIZE ){
+        return "Success";
+    }
+
+    // CLI Run Script
+    if( status == CommandParseStatus::CLI_RUN_SCRIPT ){
+        return "Starting Script";
+    }
+
+    // CLI Sleep
+    if( status == CommandParseStatus::CLI_SLEEP ){
+        return "Starting Sleep";
+    }
+
+    // CLI Pause
+    if( status == CommandParseStatus::CLI_PAUSE ){
+        return "Press any key to continue.";
     }
 
     // Invalid arguments
@@ -135,8 +215,48 @@ int CommandParseStatusToColorCode( CommandParseStatus const& status )
         return 0;
     }
 
+    // Log Help
+    if( status == CommandParseStatus::CLI_LOG ){
+        return 0;
+    }
+
     // CLI Clear
     if( status == CommandParseStatus::CLI_CLEAR ){
+        return 0;
+    }
+
+    // Add Alias
+    if( status == CommandParseStatus::CLI_ALIAS_ADD ){
+        return 0;
+    }
+    
+    // Remove Alias
+    if( status == CommandParseStatus::CLI_ALIAS_REMOVE ){
+        return 0;
+    }
+    
+    // List Alias
+    if( status == CommandParseStatus::CLI_ALIAS_LIST ){
+        return 0;
+    }
+
+    // Run Script
+    if( status == CommandParseStatus::CLI_RUN_SCRIPT ){
+        return 0;
+    }
+
+    // Sleep
+    if( status == CommandParseStatus::CLI_SLEEP ){
+        return 0;
+    }
+
+    // Pause
+    if( status == CommandParseStatus::CLI_PAUSE ){
+        return 0;
+    }
+
+    // Resize
+    if( status == CommandParseStatus::CLI_RESIZE ){
         return 0;
     }
 
@@ -186,6 +306,47 @@ CommandParseStatus StringToCommandParseStatus( const std::string& status )
         return CommandParseStatus::CLI_CLEAR;
     }
 
+    // CLI Log
+    if( status == "CLI_LOG" ){
+        return CommandParseStatus::CLI_LOG;
+    }
+    
+    // Add Alias
+    if( status == "CLI_ALIAS_ADD" ){
+        return CommandParseStatus::CLI_ALIAS_ADD;
+    }
+
+    // Remove Alias
+    if( status == "CLI_ALIAS_REMOVE" ){
+        return CommandParseStatus::CLI_ALIAS_REMOVE;
+    }
+
+    // Alias List
+    if( status == "CLI_ALIAS_LIST" ){
+        return CommandParseStatus::CLI_ALIAS_LIST;
+    }
+
+    // CLI Run Script
+    if( status == "CLI_RUN_SCRIPT" ){
+        return CommandParseStatus::CLI_RUN_SCRIPT;
+    }
+
+    // CLI Sleep
+    if( status == "CLI_SLEEP" ){
+        return CommandParseStatus::CLI_SLEEP;
+    }
+
+    // CLI Pause
+    if( status == "CLI_PAUSE" ){
+        return CommandParseStatus::CLI_PAUSE;
+    }
+
+    // CLI Resize
+    if( status == "CLI_RESIZE" ){
+        return CommandParseStatus::CLI_RESIZE;
+    }
+
+
     // Invalid ARguments
     if( status == "INVALID_ARGUMENTS" ){
         return CommandParseStatus::INVALID_ARGUMENTS;
@@ -224,6 +385,13 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
         case CommandParseStatus::CLI_HELP:
         case CommandParseStatus::CLI_SHUTDOWN:
         case CommandParseStatus::CLI_CLEAR:
+        case CommandParseStatus::CLI_LOG:
+        case CommandParseStatus::CLI_ALIAS_ADD:
+        case CommandParseStatus::CLI_ALIAS_REMOVE:
+        case CommandParseStatus::CLI_ALIAS_LIST:
+        case CommandParseStatus::CLI_RUN_SCRIPT:
+        case CommandParseStatus::CLI_PAUSE:
+        case CommandParseStatus::CLI_SLEEP:
             return true;
         
         case CommandParseStatus::VALID:
@@ -231,10 +399,41 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
         case CommandParseStatus::EXCESSIVE_ARGUMENTS:
         case CommandParseStatus::INVALID_ARGUMENTS:
         case CommandParseStatus::UNKNOWN:
+        case CommandParseStatus::CLI_RESIZE: ///<  This is done to allow CLI Resize Commands to be pushed to the handlers
             return false;
     }
     return false;
 }
+
+
+/****************************************************/
+/*         Map Command Parse Status to String       */
+/****************************************************/
+std::vector<std::tuple<std::string,CommandParseStatus>> Get_CLI_Mode_To_Parse_Status_List()
+{
+    // Create output list
+    std::vector<std::tuple<std::string,CommandParseStatus>> output;
+
+
+    // Add each cli command
+    output.push_back( std::make_tuple("shutdown",     CommandParseStatus::CLI_SHUTDOWN)     );
+    output.push_back( std::make_tuple("back",         CommandParseStatus::CLI_BACK)         );
+    output.push_back( std::make_tuple("clear",        CommandParseStatus::CLI_CLEAR)        );
+    output.push_back( std::make_tuple("log",          CommandParseStatus::CLI_LOG)          );
+    output.push_back( std::make_tuple("alias-add",    CommandParseStatus::CLI_ALIAS_ADD)    );
+    output.push_back( std::make_tuple("alias-remove", CommandParseStatus::CLI_ALIAS_REMOVE) );
+    output.push_back( std::make_tuple("alias-list",   CommandParseStatus::CLI_ALIAS_LIST)   );
+    output.push_back( std::make_tuple("run-script",   CommandParseStatus::CLI_RUN_SCRIPT)   );
+    output.push_back( std::make_tuple("pause",        CommandParseStatus::CLI_PAUSE)        );
+    output.push_back( std::make_tuple("sleep",        CommandParseStatus::CLI_SLEEP)        );
+    output.push_back( std::make_tuple("help",         CommandParseStatus::VALID)            ); ///<  CLI Help Commands should be treated like normal commands.
+    output.push_back( std::make_tuple("cli-resize",   CommandParseStatus::VALID)            ); ///<  CLI Resize Commands should be treated like normal commands.
+
+
+    // return output
+    return output;
+}
+
 
 } // End of CMD Namespace
 } // End of CLI Namespace

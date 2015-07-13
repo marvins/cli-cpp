@@ -29,6 +29,11 @@ std::string CommandArgumentTypeToString( CommandArgumentType const& arg_type )
     if( arg_type == CommandArgumentType::FLOAT ){
         return "FLOAT";
     }
+    
+    // File
+    if( arg_type == CommandArgumentType::PATH ){
+        return "PATH";
+    }
 
     return "UNKNOWN";
 }
@@ -60,7 +65,13 @@ CommandArgumentType  StringToCommandArgumentType( const std::string& arg_type )
     {
         return CommandArgumentType::FLOAT;
     }
-
+    
+    // Path
+    if( arg_type == "path" ||
+        arg_type == "PATH" )
+    {
+        return CommandArgumentType::PATH;
+    }
 
     return CommandArgumentType::UNKNOWN;
 }

@@ -74,10 +74,10 @@ int Netstat( const int& port_number,
     // Format the command string
     std::string command = "netstat -an | grep ";
     
-    if( protocol == "tcp" | protocol == "TCP" ){
+    if( protocol == "tcp" || protocol == "TCP" ){
         command += "tcp";
     }
-    if( protocol == "udp" | protocol == "UD" ){
+    if( protocol == "udp" || protocol == "UD" ){
         command += "udp";
     }
 

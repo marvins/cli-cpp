@@ -33,16 +33,19 @@ class A_Main_Window : public An_ASCII_Render_Window_Base
          * @brief Retrieve the buffer data
         */
         virtual std::vector<std::string>& Get_Buffer_Data();
+        
 
+        /**
+         * @brief Get the Window Title.
+         *
+         * @return Window Title.
+        */
+        inline virtual std::string Get_Window_Title()const{
+            return "Command History Window";
+        }
 
     protected:
         
-        /**
-         * @brief Print the Header
-        */
-        void Print_Header();
-        
-
         /**
          * @brief Print the Main Content.
          */
@@ -59,6 +62,10 @@ class A_Main_Window : public An_ASCII_Render_Window_Base
 
         /// History Window
         An_ASCII_History_Window::ptr_t m_history_window;
+
+        /// Shortcut print line
+        std::string m_shortcut_print_line;
+
 
 }; // End of A_Main_Window Class
 

@@ -32,14 +32,14 @@ TEST( A_CLI_Command, Parameterized_Constructor_Mode )
     ASSERT_EQ( command03.Get_Description(), "");
     ASSERT_EQ( command04.Get_Description(), "");
     
-    ASSERT_EQ( command01.Get_Command_Name_List().size(), 0);
-    ASSERT_EQ( command02.Get_Command_Name_List().size(), 0);
-    ASSERT_EQ( command03.Get_Command_Name_List().size(), 0);
-    ASSERT_EQ( command04.Get_Command_Name_List().size(), 0);
+    ASSERT_EQ( (int)command01.Get_Command_Name_List().size(), 0);
+    ASSERT_EQ( (int)command02.Get_Command_Name_List().size(), 0);
+    ASSERT_EQ( (int)command03.Get_Command_Name_List().size(), 0);
+    ASSERT_EQ( (int)command04.Get_Command_Name_List().size(), 0);
 
     // Check the name list
     command01.Add_Name("Hello");
-    ASSERT_EQ( command01.Get_Command_Name_List().size(), 1);
+    ASSERT_EQ( (int)command01.Get_Command_Name_List().size(), 1);
     ASSERT_EQ( command01.Get_Command_Name_List()[0], "Hello");
 
     // Test == Operators
@@ -165,10 +165,10 @@ TEST( A_CLI_Command, Parameterized_Constructor_Full )
     ASSERT_EQ( cli_command04.Get_Description(), description04 );
 
     // Check the command list
-    ASSERT_EQ( cli_command01.Get_Command_Name_List().size(), 1 );
-    ASSERT_EQ( cli_command02.Get_Command_Name_List().size(), 1 );
-    ASSERT_EQ( cli_command03.Get_Command_Name_List().size(), 1 );
-    ASSERT_EQ( cli_command04.Get_Command_Name_List().size(), 2 );
+    ASSERT_EQ( (int)cli_command01.Get_Command_Name_List().size(), 1 );
+    ASSERT_EQ( (int)cli_command02.Get_Command_Name_List().size(), 1 );
+    ASSERT_EQ( (int)cli_command03.Get_Command_Name_List().size(), 1 );
+    ASSERT_EQ( (int)cli_command04.Get_Command_Name_List().size(), 2 );
 
     // Check the command list values
     ASSERT_EQ( cli_command01.Get_Command_Name_List()[0], "hello");
@@ -176,6 +176,18 @@ TEST( A_CLI_Command, Parameterized_Constructor_Full )
     ASSERT_EQ( cli_command03.Get_Command_Name_List()[0], "Hello");
     ASSERT_EQ( cli_command04.Get_Command_Name_List()[0], "Hello");
     ASSERT_EQ( cli_command04.Get_Command_Name_List()[1], "test" );
+
+    // Test the IsName Substr function
+    std::string act_match_result;
+    
+    // Since two entries will start with H, just H should come back
+    cli_command04.Add_Name("HELLO");
+    ASSERT_TRUE( cli_command04.Is_Name_Substring("H", act_match_result) );
+    ASSERT_EQ( act_match_result, "H");
+
+    // Since only HELLO has HE, the whole thing should work.
+    ASSERT_TRUE( cli_command04.Is_Name_Substring("HE", act_match_result) );
+    ASSERT_EQ( act_match_result, "HELLO");
 
 }
 

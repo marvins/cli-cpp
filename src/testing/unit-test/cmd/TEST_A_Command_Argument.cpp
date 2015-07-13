@@ -72,9 +72,23 @@ TEST( A_Command_Argument, Parameterized_Constructor )
     const std::string arg_default03 = "123.3";
 
     // Create Command Arguments
-    CMD::A_Command_Argument command_argument01( arg_name01, arg_type01, arg_description01, arg_required01, arg_default01 );
-    CMD::A_Command_Argument command_argument02( arg_name02, arg_type02, arg_description02, arg_required02, arg_default02 );
-    CMD::A_Command_Argument command_argument03( arg_name03, arg_type03, arg_description03, arg_required03, arg_default03 );
+    CMD::A_Command_Argument command_argument01( arg_name01, 
+                                                arg_type01, 
+                                                arg_description01, 
+                                                arg_required01, 
+                                                arg_default01 );
+
+    CMD::A_Command_Argument command_argument02( arg_name02, 
+                                                arg_type02, 
+                                                arg_description02, 
+                                                arg_required02, 
+                                                arg_default02 );
+    
+    CMD::A_Command_Argument command_argument03( arg_name03, 
+                                                arg_type03, 
+                                                arg_description03, 
+                                                arg_required03, 
+                                                arg_default03 );
 
     // Test the getters
     ASSERT_EQ( command_argument01.Get_Name(), arg_name01 );

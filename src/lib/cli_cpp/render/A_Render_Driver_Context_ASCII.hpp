@@ -36,12 +36,18 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
          *
          * @param[in] window_rows Number of window rows.
          * @param[in] window_cols Number of window columns.
+         * @param[in] min_content_row Minimum row at which content can appear.
+         * @param[in] min_content_col Minimum column at which content can appear.
+         * @param[in] redirect_stdout Flag if we want to redirect standard output.
+         * @param[in] redirect_stderr Flag if we want ot redirect standard error output.
         */
         A_Render_Driver_Context_ASCII( const std::string&  cli_title,
                                        const int&          window_rows,   
                                        const int&          window_cols,
                                        const int&          min_content_row,
-                                       const int&          min_content_col);
+                                       const int&          min_content_col,
+                                       const bool&         redirect_stdout,
+                                       const bool&         redirect_stderr );
 
     
         /**
@@ -49,7 +55,7 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
          * 
          * @return Window rows.
         */
-        inline int Get_Window_Rows()const{
+        inline virtual int Get_Window_Rows()const{
             return m_window_rows;
         }
 
@@ -59,7 +65,7 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
          *
          * @return Window columns.
         */
-        inline int Get_Window_Cols()const{
+        inline virtual int Get_Window_Cols()const{
             return m_window_cols;
         }
 
@@ -67,7 +73,7 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
         /**
          * @brief Get the min content row.
          */
-        inline int Get_Min_Content_Row()const{
+        inline virtual int Get_Min_Content_Row()const{
             return m_min_content_row;
         }
 
@@ -75,9 +81,34 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
         /**
          * @brief Get the min content column.
         */
-        inline int Get_Min_Content_Col()const{
+        inline virtual int Get_Min_Content_Col()const{
             return m_min_content_col;
         }
+
+
+        /**
+         * @brief Set CLI Window Size
+         *
+         * @param[in] rows Number of rows.
+         * @param[in] cols Number of columns.
+         *
+         *  This operation will also reset the Max content bounds
+         *  to match the CLI window size to avoid the user going out of
+         *  bounds on the CLI window.
+         */
+        virtual void Set_CLI_Window_Size( const int& rows,
+                                          const int& cols );
+
+
+        /**
+         * @brief Set CLI Window Min Content Bounds
+         *
+         * @param[in] row Minimum row for data.
+         * @param[in] col Minimum column for data.
+         */
+        virtual void Set_CLI_Window_Min_Content_Bounds( const int& row,
+                                                        const int& col );
+
 
 
     private:
