@@ -99,6 +99,9 @@ void Event_Manager::Initialize( Event_Manager_Config const& config )
         instance = Event_Manager::ptr_t(new Event_Manager( config ));
     }
 
+    // Set the init flag
+    instance->m_is_initialized = true;
+
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
 }
@@ -114,6 +117,7 @@ void Event_Manager::Finalize()
     
     // Check the singleton instance
     if( instance != nullptr ){
+        instance->m_is_initialized = false;
         instance.reset();
         instance = nullptr;
     }
@@ -135,8 +139,9 @@ bool Event_Manager::Is_Initialized()
     // Check the singleton instance
     if( instance == nullptr ){
         return false;
+    } else {
+        return instance->m_is_initialized;
     }
-    return true;
 }
 
 

@@ -13,6 +13,8 @@ namespace CLI{
 
 /**
  * @class A_CLI_Manager_Factory
+ *
+ * @brief Constructs CLI-Manager given a configuration file.
  */
 class A_CLI_Manager_Factory{
 

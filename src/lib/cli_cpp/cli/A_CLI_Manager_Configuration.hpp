@@ -24,6 +24,8 @@ namespace CLI{
 
 /**
  * @class A_CLI_Manager_Configuration
+ *
+ * @brief Configuration parameters required for the CLI-Manager.
  */
 class A_CLI_Manager_Configuration{
 

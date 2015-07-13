@@ -130,6 +130,10 @@ class Event_Manager{
         
         // Running flag
         std::vector<bool> m_is_running;
+        
+
+        // Initialized 
+        std::atomic<bool> m_is_initialized;
 
 }; // End of Event_Manager Class
 

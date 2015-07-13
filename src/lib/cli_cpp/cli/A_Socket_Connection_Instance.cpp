@@ -54,6 +54,17 @@ A_Socket_Connection_Instance::A_Socket_Connection_Instance( const int& instance,
 }
 
 
+/********************************/
+/*         Destructor           */
+/********************************/
+A_Socket_Connection_Instance::~A_Socket_Connection_Instance()
+{
+    // Join
+    if( m_thread.joinable() == true ){
+        m_thread.join();
+    }
+}
+
 /************************************/
 /*          Run Instance            */
 /************************************/

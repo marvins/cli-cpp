@@ -38,6 +38,12 @@ class A_Socket_Connection_Instance
         A_Socket_Connection_Instance( const int& instance,
                                       const int& client_fd,
                                       const int& read_sleep_timeout_usec );
+        
+
+        /**
+         * @brief Destructor
+        */
+        virtual ~A_Socket_Connection_Instance();
 
         
         /**
