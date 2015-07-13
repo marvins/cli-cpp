@@ -78,3 +78,9 @@ file for arguments with tab-complete support.
 ### CLI Ping Command Complete ###
 ![CLI Ping Command](docs/images/CLI_PING_COMPLETE.png "CLI Ping Command Complete")
 
+### Pause Command ###
+![CLI Pause Command](docs/image/cli-pause.png "CLI Pause Command")
+
+### Sleep Command ###
+![CLI Sleep Command](docs/image/cli-sleep.png "CLI Sleep Command")
+
