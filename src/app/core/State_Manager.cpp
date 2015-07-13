@@ -42,7 +42,6 @@ void State_Manager::Signal_System_Shutdown()
 {
 
     // Notify the condition variable
-    std::cout << "Signalling System Shutdown" << std::endl;
     m_shutdown_cv.notify_all();
 
     // Set flag
@@ -59,17 +58,14 @@ void State_Manager::Wait_On_System_Shutdown()
 
     // If shutdown already set, skip
     if( m_shutdown_system == true ){
-        std::cout << "System Shutdown Already Set." << std::endl;
         return;
     }
 
     // wait to exit
     std::unique_lock<std::mutex> ulock( m_shutdown_mutex );
-    std::cout << "Starting Wait" << std::endl;
     while( m_shutdown_system == false ){
         m_shutdown_cv.wait( ulock );
     }
-    std::cout << "Finished Wait" << std::endl;
 
 }
 

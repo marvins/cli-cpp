@@ -67,15 +67,12 @@ int main( int argc, char* argv[] )
         
         // Initialize the CLI Manager
         cli_manager->Connect();
-        std::cout << "Finished Connect" << std::endl;
         
         // Wait for the system to be commanded to shut down.
         state_manager.Wait_On_System_Shutdown();
-        std::cout << "System Shutdown Detected" << std::endl;
 
 
         // Disconnect the CLI Manager
-        std::cout << "Starting to Disconnect" << std::endl;
         cli_manager->Disconnect();
 
     } catch ( exception& e ){

@@ -130,11 +130,10 @@ void A_Connection_Manager_Socket::Run_Handler()
         int client_fd;
 
         // Accept the socket
-        BOOST_LOG_TRIVIAL(debug) << "Waiting for connection.  (Socket FD: " << m_sock_fd << ")";
+        BOOST_LOG_TRIVIAL(trace) << "Waiting for connection.  (Socket FD: " << m_sock_fd << ")";
         client_fd = accept( m_sock_fd, 
                             (struct sockaddr*)&cli_addr,
                             &clilen);
-        BOOST_LOG_TRIVIAL(debug) << "Accepting Connection";
             
         // Check if we need to exit
         if( m_is_running != true ){
@@ -167,6 +166,14 @@ void A_Connection_Manager_Socket::Run_Handler()
 
         // Call the process method
         int next_position = Get_Next_Client_Slot();
+        
+        // Make sure we are not past the max number
+        if( next_position < 0 ){
+            BOOST_LOG_TRIVIAL(debug) << "Connection is rejected as max number of connections reached.";
+            continue;
+        }
+
+
         BOOST_LOG_TRIVIAL(debug) << "Starting the Socket Connection for ID " << next_position << ".";
         m_connection_list[next_position] = std::make_shared<A_Socket_Connection_Instance>( next_position,
                                                                                            client_fd,
@@ -229,6 +236,11 @@ int A_Connection_Manager_Socket::Get_Next_Client_Slot()
         else if( m_connection_list[i]->Is_Running() == false ){
             return i;
         }
+    }
+    
+    // Make sure we are not past the max number of connections
+    if( m_connection_list.size() > m_configuration->Get_Max_Connections() ){
+        return -1;
     }
 
     // If we get here, push another open spot
