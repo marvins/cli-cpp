@@ -15,6 +15,20 @@ set( CMAKE_CXX_FLAGS "-std=c++11 -Wall" )
 SET( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin )
 SET( LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib )
 
+#-------------------------------------#
+#-     Find Boost C++ Libraries      -#
+#-------------------------------------#
+ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
+find_package( Boost REQUIRED
+                COMPONENTS
+                    system
+                    filesystem
+                    regex
+                    log
+                    thread
+)
+include_directories( ${Boost_INCLUDE_DIRS})
+
 
 #----------------------------------#
 #-    Define our demo sources     -#

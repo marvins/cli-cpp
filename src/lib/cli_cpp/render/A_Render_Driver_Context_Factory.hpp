@@ -43,6 +43,11 @@ class A_Render_Driver_Context_Factory
                                 const int&                  window_cols,
                                 const bool&                 redirect_stdout,
                                 const bool&                 redirect_stderr );
+        
+        /**
+         * @brief Finalize the Factory.
+        */
+        static void Finalize();
 
         
         /**

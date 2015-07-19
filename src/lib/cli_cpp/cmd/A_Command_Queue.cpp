@@ -66,6 +66,10 @@ A_Command_Queue::A_Command_Queue( const A_Command_Queue_Config& configuration )
 /*********************************/
 A_Command_Queue::~A_Command_Queue()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
+
     // Delete the queue
     delete [] m_command_queue;
 
@@ -93,6 +97,9 @@ A_Command_Queue::~A_Command_Queue()
         delete m_pop_semaphore;
     }
 #endif
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     
 }
 

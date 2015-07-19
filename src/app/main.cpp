@@ -75,6 +75,13 @@ int main( int argc, char* argv[] )
         // Disconnect the CLI Manager
         cli_manager->Disconnect();
 
+        
+        // Destroy the CLI Manager
+        std::cout << "Start Destructor" << std::endl;
+        cli_manager.reset();
+        std::cout << "Stop Destructor" << std::endl;
+
+
     } catch ( exception& e ){
         std::cerr << "exception caught What: " << e.what() << std::endl;
     } catch (...){

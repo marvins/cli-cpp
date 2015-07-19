@@ -72,6 +72,26 @@ void A_Render_Driver_Context_Factory::Initialize( const CORE::ConnectionType& co
 }
 
 
+/*******************************/
+/*          Finalize           */
+/*******************************/
+void A_Render_Driver_Context_Factory::Finalize()
+{
+    
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " Method. File: " << __FILE__ << ", Line: " << __LINE__;
+
+    // Get the instance
+    A_Render_Driver_Context_Factory& context_factory = Get_Factory_Instance();
+
+    // Reset
+    context_factory = A_Render_Driver_Context_Factory();
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " Method. File: " << __FILE__ << ", Line: " << __LINE__;
+}
+
+
 /******************************************/
 /*          Create an Instance            */
 /******************************************/

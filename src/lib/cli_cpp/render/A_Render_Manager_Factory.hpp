@@ -29,7 +29,7 @@ class A_Render_Manager_Factory
         
                 
         /**
-         * Initialize the Render-Manager Factory.
+         * @brief Initialize the Render-Manager Factory.
          *
          * @param[in] conn_type Connection Type used for rendering.
          * @param[in] cli_title CLI Title to post to render-managers.
@@ -40,6 +40,12 @@ class A_Render_Manager_Factory
                                 CMD::A_Command_Parser::ptr_t  command_parser,
                                 CMD::A_Command_Queue::ptr_t   command_queue );
         
+
+        /**
+         * @brief Finalize the Render-Manager Factory instance.
+         */
+        static void Finalize();
+
 
         /**
          * @brief Get a Render-Manager Instance.

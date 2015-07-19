@@ -88,6 +88,25 @@ A_CLI_Manager::~A_CLI_Manager()
     // Disconnect
     Disconnect();
 
+
+    // Clear the render manager factory
+    RENDER::A_Render_Manager_Factory::Finalize();
+
+
+    // Clear the render state factory
+    RENDER::A_Render_State_Factory::Finalize();
+    
+    
+    // Clear the context factory
+    RENDER::A_Render_Driver_Context_Factory::Finalize();
+
+
+    // Finalize the Event Manager
+    EVT::Event_Manager::Finalize();
+
+    // Destroy the command queue
+    m_command_queue.reset();
+
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }

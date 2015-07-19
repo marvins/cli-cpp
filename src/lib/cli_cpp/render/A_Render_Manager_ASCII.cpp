@@ -200,7 +200,6 @@ void A_Render_Manager_ASCII::Refresh()
 
 
     // Update the buffer data
-    std::cout << "Current Window: " << m_current_window << std::endl;
     ref->Update_Buffer_Data();
 
 

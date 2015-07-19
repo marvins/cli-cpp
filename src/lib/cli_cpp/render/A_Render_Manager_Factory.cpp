@@ -53,6 +53,27 @@ void  A_Render_Manager_Factory::Initialize( CORE::ConnectionType const&         
 }
 
 
+/*********************************/
+/*           Finalize            */
+/*********************************/
+void A_Render_Manager_Factory::Finalize()
+{
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: A_Render_Manager_Factory, File: " << __FILE__ << ", Line: " << __LINE__;
+    
+    // Get instance
+    A_Render_Manager_Factory& factory_instance = Get_Factory_Instance();
+
+    // Reset
+    factory_instance = A_Render_Manager_Factory();
+    
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: A_Render_Manager_Factory, File: " << __FILE__ << ", Line: " << __LINE__;
+
+}
+
+
 /**********************************/
 /*        Get an Instance         */
 /**********************************/

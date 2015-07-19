@@ -11,6 +11,9 @@
 // Demo Libraries
 #include "System_Utilities.hpp"
 
+// CLI Libraries
+#include <cli_cpp/utility/Log_Utilities.hpp>
+
 
 /***************************/
 /*      Network Asset      */
@@ -136,6 +139,9 @@ void Network_Scanner::Start_Scanner()
 void Network_Scanner::Stop_Scanner()
 {
 
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    
     // Set the flag
     m_is_running = false;
 
@@ -144,6 +150,8 @@ void Network_Scanner::Stop_Scanner()
         m_scan_thread.join();
     }
 
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -152,6 +160,8 @@ void Network_Scanner::Stop_Scanner()
 /************************************/
 void Network_Scanner::Scan_Runner()
 {
+    // Log Entry
+    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
     // Scan while the flag is valid
     while( m_is_running == true )
@@ -165,6 +175,10 @@ void Network_Scanner::Scan_Runner()
         // Sleep
         sleep(2);
     }
+    
+    
+    // Log Exit
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
