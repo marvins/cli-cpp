@@ -16,6 +16,7 @@
 #include "A_Command.hpp"
 #include "A_Command_Alias.hpp"
 #include "A_Command_Result.hpp"
+#include "A_Command_Variable.hpp"
 
 
 namespace CLI{
@@ -140,6 +141,9 @@ class A_Command_Parser {
 
         /// CLI Command List
         std::vector<A_CLI_Command> m_cli_command_list;
+        
+        /// CLI Variable List
+        std::vector<A_Command_Variable> m_variable_list;
 
         /// Alias List
         std::vector<A_Command_Alias> m_alias_list;

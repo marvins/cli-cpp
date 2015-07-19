@@ -62,6 +62,9 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const int&          instan
     } else{
         components.clear();
     }
+
+    // Process potential variable names
+    A_Command_Variable::Process_Variables( m_variable_list, components );
     
     // Iterate over aliases
     for( size_t idx=0; idx < m_alias_list.size(); idx++ )
