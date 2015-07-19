@@ -78,7 +78,6 @@ void Push_Event_Queue_After_Timeout( CLI::EVT::An_Event_Queue& event_queue,
     usleep( timeout_usec );
 
     // Add each event
-    std::cout << "Starting Push." << std::endl;
     for( size_t i=0; i<event_list.size(); i++ ){
         event_queue.Push_Event( instance, event_list[i] );
     }

@@ -47,7 +47,7 @@ void A_Command_Variable::Process_Variables( std::vector<A_Command_Variable> cons
         for( size_t vidx=0; vidx<variable_list.size(); vidx++ )
         {
             // Check if the item is a variable in the list
-            if( components[cidx] == variable_list[vidx].Get_Name() ){
+            if( components[cidx].substr(1) == variable_list[vidx].Get_Name() ){
                 components[cidx] = variable_list[vidx].Get_Value();
                 break;
             }
@@ -87,6 +87,17 @@ bool A_Command_Variable::Is_Valid_Candidate( const std::string& candidate )
     }
 
     return false;
+}
+
+
+/********************************/
+/*      Equivalent Operator     */
+/********************************/
+bool A_Command_Variable::operator ==( A_Command_Variable const& other )const
+{
+    if( m_name  != other.m_name ){ return false; }
+    if( m_value != other.m_value){ return false; }
+    return true;
 }
 
 

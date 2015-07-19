@@ -46,6 +46,12 @@ class A_Command_Variable
         inline std::string Get_Value()const{
             return m_value;
         }
+        
+        
+        /**
+         * @brief Equivalent Operator
+        */
+        bool operator ==( A_Command_Variable const& other )const;
 
 
         /**
