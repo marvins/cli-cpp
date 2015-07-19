@@ -21,3 +21,8 @@ add_subdirectory(app)
 #---------------------------------#
 add_subdirectory(testing)
 
+#--------------------------------#
+#-     Add the Utility Code     -#
+#--------------------------------#
+add_subdirectory(utilities)
+

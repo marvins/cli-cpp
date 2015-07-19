@@ -67,6 +67,12 @@ class A_CLI_Configuration_File_Parser{
         }
 
 
+        /**
+         * @brief Update the Configuration File
+        */
+        void Write();
+
+
     private:
 
         /**

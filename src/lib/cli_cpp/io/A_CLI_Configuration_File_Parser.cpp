@@ -51,7 +51,6 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     /// List of queries
     const std::string CONNECTION_TYPE_QUERY   = "connection-type";
     const std::string COMMAND_CONFIG_NODE     = "command-configuration";
-    const std::string LOGGING_QUERY           = "logging";
     const std::string CLI_CONFIG_QUERY        = "cli";
     const std::string CLI_TITLE_QUERY         = "title";
     const std::string CLI_COMMAND_QUEUE_QUERY = "command-queue"; 
@@ -69,8 +68,8 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
 
     if( result == false ){
         std::stringstream sin;
-        sin << "error: " << __FILE__ << ", Line: " << __LINE__ << ". CLI Configuration File parsed with errors. Details: " << result.description();
-        std::cerr << sin.str() << std::endl;
+        sin << "File: " << __FILE__ << ", Line: " << __LINE__ << ". CLI Configuration File parsed with errors. Details: " << result.description();
+        BOOST_LOG_TRIVIAL(error) << sin.str();
         return;
     }
 
@@ -82,12 +81,14 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     if( root_node == pugi::xml_node() ){ return; }
 
     // Get the logging node
-    pugi::xml_node log_node = root_node.child(LOGGING_QUERY.c_str());
+    bool        log_enabled;
+    std::string log_path, log_severity;
+    if( XML::Load_Logging_Config_XML_Node( root_node, false, log_enabled, log_path, log_severity ) != true )
+    {
+        // Error
+        BOOST_LOG_TRIVIAL(error) << "File: " << __FILE__ << ", Line: " << __LINE__ << ". Unable to load the logging config node.";
+    }
 
-    // Get the parameters
-    bool        log_enabled = log_node.attribute("enabled").as_bool(false);
-    std::string log_path    = log_node.attribute("log_path").as_string();
-    std::string log_severity = log_node.attribute("log_level").as_string("info");
 
     if( log_enabled == true ){
         UTILS::Initialize_Logger( log_severity, log_path );
@@ -202,6 +203,60 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     
     // Set valid
     m_is_valid = true;
+}
+
+
+/**************************************************/
+/*          Write the Configuration File          */
+/**************************************************/
+void A_CLI_Configuration_File_Parser::Write()
+{
+    // Create XML Document
+    pugi::xml_document xmldoc;
+    
+    // Check if the configuration file exists
+    if( boost::filesystem::exists( boost::filesystem::path(m_config_pathname)) == true )
+    {
+        // Load it if it does
+        pugi::xml_parse_result result = xmldoc.load_file( m_config_pathname.c_str() );
+
+
+        if( result == false ){
+            std::stringstream sin;
+            sin << "error: " << __FILE__ << ", Line: " << __LINE__ << ". CLI Configuration File parsed with errors. Details: " << result.description();
+            std::cerr << sin.str() << std::endl;
+            return;
+        }
+
+    }
+    
+    // Check the root node
+    pugi::xml_node root_node = xmldoc.child("cli-manager-configuration");
+
+    // make sure the root node exists
+    if( root_node == pugi::xml_node() ){
+        root_node = xmldoc.append_child(pugi::xml_node_type::node_element);
+        root_node.set_name("cli-manager-configuration");
+    }
+
+    // Construct the Logging Node
+    bool default_logging_enabled = true;
+    std::string default_log_path = "log.log";
+    std::string default_log_severity = "info";
+    if( XML::Load_Logging_Config_XML_Node( root_node, true,
+                                           default_logging_enabled,
+                                           default_log_path,
+                                           default_log_severity )          != true )
+    {
+        BOOST_LOG_TRIVIAL(error) << "Unable to load the Logging XML Node.";
+    }
+
+    // Save the file
+    bool result = xmldoc.save_file( m_config_pathname.c_str() );
+    std::cout << result << std::endl;
+    if( result != true ){
+        BOOST_LOG_TRIVIAL(error) << "Unable to save file.";
+    }
 }
 
 

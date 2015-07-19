@@ -61,6 +61,71 @@ EVT::Event_Manager_Config  Load_Event_Manager_Config_XML_Node( pugi::xml_node& e
 
 }
 
+/***************************************************/
+/*          Load the Logging Config Node           */
+/***************************************************/
+bool Load_Logging_Config_XML_Node( pugi::xml_node&    root_node,
+                                   bool const&        create_if_missing,
+                                   bool&              logging_enabled,
+                                   std::string&       log_path,
+                                   std::string&       log_severity )
+{
+    // Grab log node
+    pugi::xml_node log_node = root_node.child("logging");
+
+    // Default inputs
+    bool def_log_enabled;
+    std::string def_log_path;
+    std::string def_log_sev;
+
+    // If the create if missing flag is present, then create
+    if( create_if_missing == true )
+    {
+        def_log_enabled = logging_enabled;
+        def_log_path    = log_path;
+        def_log_sev     = log_severity;
+
+        // Check if exists
+        if( log_node == pugi::xml_node() ){
+            log_node = root_node.append_child(pugi::xml_node_type::node_element);
+            log_node.set_name("logging");
+        }
+    }
+    // otherwise, if the node does not exist, then return false
+    else if( create_if_missing == false &&
+             log_node == pugi::xml_node() )
+    {
+        return false;
+    }
+
+    // Finally, if false, just continue
+    else{
+        def_log_enabled = false;
+        def_log_path    = "";
+        def_log_sev     = "info";
+    }
+
+    logging_enabled  = log_node.attribute("enabled").as_bool(def_log_enabled);
+    log_path         = log_node.attribute("log_path").as_string(def_log_path.c_str());
+    log_severity     = log_node.attribute("log_level").as_string(def_log_sev.c_str());
+
+    // Check if the nodes exist and we need to create if missing
+    if( create_if_missing == true )
+    {
+        if( log_node.attribute("enabled") == pugi::xml_attribute() ){
+            log_node.append_attribute("enabled").set_value(def_log_enabled);
+        }
+        if( log_node.attribute("log_path") == pugi::xml_attribute() ){
+            log_node.append_attribute("log_path").set_value(def_log_path.c_str());
+        }
+        if( log_node.attribute("log_level") == pugi::xml_attribute() ){
+            log_node.append_attribute("log_level").set_value(def_log_sev.c_str());
+        }
+    }
+    // Return success
+    return true;
+}
+
 
 } // End of XML    Namespace
 } // End of CONFIG Namespace
