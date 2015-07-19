@@ -11,6 +11,9 @@
 #include <unistd.h>
 
 
+// CLI Libraries
+#include "../cli/A_Connection_Manager_Socket_Config.hpp"
+
 namespace CLI{
 namespace IO{
 namespace CONFIG{
@@ -123,6 +126,135 @@ bool Load_Logging_Config_XML_Node( pugi::xml_node&    root_node,
         }
     }
     // Return success
+    return true;
+}
+
+
+/*********************************************************/
+/*      Load the Connection Configuration XML Nodes      */
+/*********************************************************/
+bool Load_Connection_Config_XML_Nodes( pugi::xml_node&                          root_node,
+                                       bool const&                              create_if_missing,
+                                       CORE::ConnectionType&                    cli_conn_type,
+                                       A_Connection_Manager_Base_Config::ptr_t& connection_manager_config,
+                                       int&                                     window_rows,
+                                       int&                                     window_cols )
+{
+    // Get the connection type node
+    pugi::xml_node connection_type_node = root_node.child("connection-type");
+
+    // If missing, check if we should create
+    if( create_if_missing == true &&
+        connection_type_node == pugi::xml_node() )
+    {
+        // Create the node
+        connection_type_node = root_node.append_child("connection-type");
+
+    }
+
+    else if( create_if_missing == false &&
+             connection_type_node == pugi::xml_node() )
+    {
+        return false;
+    }
+
+    // If not missing, continue
+    else{
+
+    }
+    
+    // Get the Connection Type
+    CORE::ConnectionType def_cli_conn_type = CORE::ConnectionType::SOCKET;
+    if( create_if_missing == true && 
+        connection_type_node.attribute("value") == pugi::xml_attribute())
+    {
+        // Create node
+        connection_type_node.append_attribute("value").set_value(CORE::ConnectionTypeToString(cli_conn_type).c_str());
+    }
+    else{
+        cli_conn_type = CORE::StringToConnectionType(connection_type_node.attribute("value").as_string(CORE::ConnectionTypeToString(def_cli_conn_type).c_str()));
+    }
+    
+    
+    // Process the socket connection information 
+    if( cli_conn_type == CORE::ConnectionType::SOCKET ){
+
+        // Socket Config
+        pugi::xml_node socket_config_node = root_node.child("socket-configuration");
+
+        // Check if we need to create the node
+        if( create_if_missing == true &&
+            socket_config_node == pugi::xml_node() )
+        {
+            socket_config_node = root_node.append_child("socket-configuration");
+            socket_config_node.append_attribute("value").set_value("SOCKET");
+            
+        }
+        else if( create_if_missing == false &&
+                 socket_config_node == pugi::xml_node() )
+        {
+            return false;
+        }
+        else{
+        
+        }
+        
+        
+        // Check if the internal nodes are valid and the input config is not null
+        if( create_if_missing == true &&
+            connection_manager_config != nullptr )
+        {
+        
+            // Create socket config
+            A_Connection_Manager_Socket_Config::ptr_t socket_config = std::dynamic_pointer_cast<A_Connection_Manager_Socket_Config>(connection_manager_config);
+                
+            // Listening Port Configuration
+            if( socket_config_node.child("listening-port") == pugi::xml_node() ){
+                socket_config_node.append_child("listening-port").append_attribute("value").set_value(socket_config->Get_Port());
+            }
+            if( socket_config_node.child("listening-port").attribute("value") == pugi::xml_attribute() ){
+                socket_config_node.child("listening-port").append_attribute("value").set_value(socket_config->Get_Port());
+            }
+
+            // Window Size
+            if( socket_config_node.child("window-size") == pugi::xml_node() ){
+                socket_config_node.append_child("window-size").append_attribute("rows").set_value(window_rows);
+                socket_config_node.child("window-size").append_attribute("cols").set_value(window_cols);
+            }
+            if( socket_config_node.child("window-size").attribute("rows") == pugi::xml_attribute()){
+                socket_config_node.child("window-size").append_attribute("rows").set_value(window_rows);
+            }
+            if( socket_config_node.child("window-size").attribute("cols") == pugi::xml_attribute()){
+                socket_config_node.child("window-size").append_attribute("cols").set_value(window_cols);
+            }
+
+            // Read Timeout Sleep Time
+            if( socket_config_node.child("read-timeout-sleep-time") == pugi::xml_node() ){
+                socket_config_node.append_child("read-timeout-sleep-time").append_attribute("microseconds").set_value(socket_config->Get_Read_Timeout_Sleep_Microseconds());
+            }
+            if( socket_config_node.child("read-timeout-sleep-time").attribute("microseconds") == pugi::xml_attribute() ){
+                socket_config_node.child("read-timeout-sleep-time").append_attribute("microseconds").set_value(socket_config->Get_Read_Timeout_Sleep_Microseconds());
+            }
+        }
+
+        // Get the port number
+        int portno = socket_config_node.child("listening-port").attribute("value").as_int();
+        
+        // Get the timeout time
+        int64_t sleep_time  = socket_config_node.child("read-timeout-sleep-time").attribute("microseconds").as_int(500000);
+        int max_connections = socket_config_node.child("max-connections").attribute("value").as_int(1); 
+        
+        // Create the configuration
+        connection_manager_config = std::make_shared<A_Connection_Manager_Socket_Config>( portno,
+                                                                                          sleep_time,
+                                                                                          max_connections );
+        
+
+    
+
+    }
+
+
     return true;
 }
 

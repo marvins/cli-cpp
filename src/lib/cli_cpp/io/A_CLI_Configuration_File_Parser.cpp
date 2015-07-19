@@ -95,8 +95,21 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     }
 
 
+    // Configure the connection information
+    CORE::ConnectionType cli_conn_type;
+    int window_rows, window_cols;
+    if( XML::Load_Connection_Config_XML_Nodes( root_node, false,
+                                               cli_conn_type,
+                                               m_connection_manager_config,
+                                               window_rows,
+                                               window_cols ) != true )
+    {
+        BOOST_LOG_TRIVIAL(error) << "unable to load the Connection-Manager Configuration.";
+        return;
+    }
+        
+
     // Check the connection type
-    CORE::ConnectionType cli_conn_type = CORE::StringToConnectionType( root_node.child(CONNECTION_TYPE_QUERY.c_str()).attribute("value").as_string());
     if( cli_conn_type == CORE::ConnectionType::UNKNOWN ){
         std::stringstream sin;
         sin << "error: " << __FILE__ << ", Line: " << __LINE__ << ". CLI Connection Type value is invalid.";
@@ -104,37 +117,16 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
         return;
     }
     m_current_configuration.Set_Connection_Type( cli_conn_type );
-
-
-   // Process the socket connection information 
-   if( cli_conn_type == CORE::ConnectionType::SOCKET ){
-
-        // Socket Config
-        pugi::xml_node socket_config_node = root_node.child("socket-configuration");
-
-        // Get the port number
-        int portno = socket_config_node.child("listening-port").attribute("value").as_int();
-        
-        // Get the timeout time
-        int64_t sleep_time  = socket_config_node.child("read-timeout-sleep-time").attribute("microseconds").as_int(500000);
-        int max_connections = socket_config_node.child("max-connections").attribute("value").as_int(1); 
-        
-        // Create the configuration
-        m_connection_manager_config = std::make_shared<A_Connection_Manager_Socket_Config>( portno,
-                                                                                            sleep_time,
-                                                                                            max_connections );
-        
-        // Set the connection manager config inside the CLI configuration
-        m_current_configuration.Set_Connection_Manager_Config( m_connection_manager_config );
-
-        // set the window size
-        m_current_configuration.Set_Socket_Window_Cols( socket_config_node.child("window-size").attribute("cols").as_int(100));
-        m_current_configuration.Set_Socket_Window_Rows( socket_config_node.child("window-size").attribute("rows").as_int(20));
     
+        
+    // Set the connection manager config inside the CLI configuration
+    m_current_configuration.Set_Connection_Manager_Config( m_connection_manager_config );
+    
+    // set the window size
+    m_current_configuration.Set_Socket_Window_Cols( window_rows );
+    m_current_configuration.Set_Socket_Window_Rows( window_cols );
 
-    }
-    
-    
+
     // Grab the CLI Node
     pugi::xml_node cli_node = root_node.child(CLI_CONFIG_QUERY.c_str());
 
@@ -250,6 +242,26 @@ void A_CLI_Configuration_File_Parser::Write()
     {
         BOOST_LOG_TRIVIAL(error) << "Unable to load the Logging XML Node.";
     }
+
+        
+   // Define our default connection manager configuration
+   int def_portno = 12344;
+   int def_sleep_time = 50000;
+   int def_max_connections = 1;
+   A_Connection_Manager_Base_Config::ptr_t connection_manager_config = std::make_shared<A_Connection_Manager_Socket_Config>( def_portno,
+                                                                                                                             def_sleep_time,
+                                                                                                                             def_max_connections );
+
+    // Construct the Connection Type Node
+    CORE::ConnectionType cli_conn_type = CORE::ConnectionType::SOCKET;
+    int window_rows = 40, window_cols = 100;
+    if( XML::Load_Connection_Config_XML_Nodes( root_node, true, cli_conn_type,
+                                               connection_manager_config,
+                                               window_rows,
+                                               window_cols ) != true ){
+        BOOST_LOG_TRIVIAL(error) << "Unable to load the Connection XML Nodes.";
+    }
+                                       
 
     // Save the file
     bool result = xmldoc.save_file( m_config_pathname.c_str() );

@@ -7,6 +7,8 @@
 #define __CLI_CPP_IO_CONFIGURATION_FILE_PARSER_UTILITIES_HPP__
 
 // CLI Libraries
+#include "../cli/A_Connection_Manager_Base_Config.hpp"
+#include "../core/ConnectionType.hpp"
 #include "../event/Event_Manager_Config.hpp"
 #include "../thirdparty/pugixml.hpp"
 
@@ -47,6 +49,25 @@ bool Load_Logging_Config_XML_Node( pugi::xml_node& root_node,
                                    std::string&    log_path,
                                    std::string&    log_severity );
                                    
+
+/**
+ * @brief Load the Connection XML Node
+ *
+ * @param[in/out] root_node         Base node to get connection information for.
+ * @param[in]     create_if_missing Create the nodes in the xml node if missing.
+ * @param[in/out] cli_conn_type     CLI Connection Type value.
+ * @param[in/out] connection_manager_config Connection-Manager configuration options.
+ * @param[in/out] window_rows       Number of CLI Window Rows.
+ * @param[in/out] window_cols       Number of CLI Window Columns.
+ *
+ * @return True if successful, false otherwise.
+*/
+bool Load_Connection_Config_XML_Nodes( pugi::xml_node&                          root_node,
+                                       bool const&                              create_if_missing,
+                                       CORE::ConnectionType&                    cli_conn_type,
+                                       A_Connection_Manager_Base_Config::ptr_t& connection_manager_config,
+                                       int&                                     window_rows,
+                                       int&                                     window_cols);
 
 
 } // End of XML    Namespace
