@@ -43,13 +43,15 @@ A_Command_Queue::A_Command_Queue( const A_Command_Queue_Config& configuration )
         throw std::runtime_error(std::string("Unable to initialize pop semaphore. Details: ") + strerror(errno));
     }
 #else
+    // Create Semaphores
     m_push_semaphore = new sem_t;
     m_pop_semaphore = new sem_t;
     
-    if( sem_init( &m_push_semaphore, 0, m_configuration.Get_Max_Queue_Size()) != 0 ){
+    //Initialized
+    if( sem_init( m_push_semaphore, 0, m_configuration.Get_Max_Queue_Size()) != 0 ){
         throw std::runtime_error(std::string("Unable to initialize push semaphore. Details: ") + strerror(errno));
     }
-    if( sem_init( &m_pop_semaphore, 0, 0) != 0 ){
+    if( sem_init( m_pop_semaphore, 0, 0) != 0 ){
         throw std::runtime_error(std::string("Unable to initialize pop semaphore. Details: ") + strerror(errno));
     }
 #endif

@@ -230,10 +230,10 @@ bool Load_Connection_Config_XML_Nodes( pugi::xml_node&                          
 
             // Read Timeout Sleep Time
             if( socket_config_node.child("read-timeout-sleep-time") == pugi::xml_node() ){
-                socket_config_node.append_child("read-timeout-sleep-time").append_attribute("microseconds").set_value(socket_config->Get_Read_Timeout_Sleep_Microseconds());
+                socket_config_node.append_child("read-timeout-sleep-time").append_attribute("microseconds").set_value((unsigned long long)socket_config->Get_Read_Timeout_Sleep_Microseconds());
             }
             if( socket_config_node.child("read-timeout-sleep-time").attribute("microseconds") == pugi::xml_attribute() ){
-                socket_config_node.child("read-timeout-sleep-time").append_attribute("microseconds").set_value(socket_config->Get_Read_Timeout_Sleep_Microseconds());
+                socket_config_node.child("read-timeout-sleep-time").append_attribute("microseconds").set_value((unsigned long long)socket_config->Get_Read_Timeout_Sleep_Microseconds());
             }
         }
 
