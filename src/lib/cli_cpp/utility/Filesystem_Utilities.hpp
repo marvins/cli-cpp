@@ -26,6 +26,20 @@ std::vector<std::string> Get_Contents( const std::string& dir_path,
                                        bool const& basenames_only = true );
 
 
+/**
+ * @brief Check if File Exists.
+ *
+ * @param[in] pathname Path to evaluate.
+ *
+ * @return True if exists, false otherwise.
+ *
+ * The main use of this method is to abstract out my use of boost
+ * filesystem so that users won't have to include the header file 
+ * in their own applications.
+*/
+bool Path_Exists( const std::string& pathname );
+
+
 } // End of FS  Namespace
 } // End of CLI Namespace
 

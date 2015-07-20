@@ -158,3 +158,15 @@ TEST( A_Command_Variable, Process_Variables )
 }
 
 
+/********************************************************/
+/*      Test the Load Variable Config File Command      */
+/********************************************************/
+TEST( A_Command_Variable, Load_Variable_Configuration_File )
+{
+
+
+
+
+}
+
+

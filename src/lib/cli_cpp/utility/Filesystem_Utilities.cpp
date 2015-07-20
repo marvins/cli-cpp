@@ -47,5 +47,21 @@ std::vector<std::string> Get_Contents( const std::string&  dir_path,
 }
 
 
+/**********************************************/
+/*          Check if the File Exists          */
+/**********************************************/
+bool Path_Exists( const std::string& pathname )
+{
+
+    // Run boost filesystem
+    if( bf::exists( bf::path(pathname) ) == true ){
+        return true;
+    }
+    return false;
+}
+
+
+
+
 } // End of FS  Namespace
 } // End of CLI Namespace

@@ -41,6 +41,14 @@ Documentation can be constructed using Doxygen with
     doxygen docs/Doxyfile
 
 
+###  Unit-Tests ###
+
+Unit-tests require some test data in order to fully checkout the library.  As a result, you need to 
+run the unit tests from the project's base directory.  To run, 
+
+    ./scripts/run-unit-tests.sh [options]
+
+
 ###  Test Application ###
 
 CLI-CPP comes with a basic test application to demonstrate core capabilities.  To run...

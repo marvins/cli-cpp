@@ -77,9 +77,7 @@ int main( int argc, char* argv[] )
 
         
         // Destroy the CLI Manager
-        std::cout << "Start Destructor" << std::endl;
         cli_manager.reset();
-        std::cout << "Stop Destructor" << std::endl;
 
 
     } catch ( exception& e ){

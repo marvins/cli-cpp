@@ -251,6 +251,7 @@ int CommandParseStatusToColorCode( CommandParseStatus const& status )
         case CommandParseStatus::INVALID_ARGUMENTS:
         case CommandParseStatus::EXCESSIVE_ARGUMENTS:
         case CommandParseStatus::NO_COMMAND_FOUND:
+        case CommandParseStatus::UNKNOWN:
             return 1;
     }
 

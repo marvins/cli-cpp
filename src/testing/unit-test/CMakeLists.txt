@@ -92,6 +92,7 @@ set( CLI_CPP_TEST_SOURCES
      event/TEST_Event_Manager_Config.cpp
      render/TEST_A_Render_State_Factory.cpp
      utility/TEST_An_ASCII_Print_Table.cpp
+     utility/TEST_Filesystem_Utilities.cpp
      utility/TEST_String_Utilities.cpp
      UNIT_TEST_ONLY/Command_Parser.hpp
      UNIT_TEST_ONLY/Command_Parser.cpp
