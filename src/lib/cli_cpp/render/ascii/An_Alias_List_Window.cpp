@@ -85,7 +85,7 @@ void An_Alias_List_Window::Update_Alias_List_Table()
     int max_row = m_render_driver->Get_Window_Rows();
 
     // Update the sizes
-    int col0_width = 45;
+    int col0_width = m_render_driver->Get_Window_Cols() * 0.5;
     int col1_width = m_render_driver->Get_Window_Cols() - col0_width - m_render_driver->Get_Min_Content_Col();
 
     // Process Parser Command List

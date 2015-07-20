@@ -45,7 +45,10 @@ class A_Command_Parser {
                           const std::vector<A_Command>&        command_list,
                           const std::vector<A_Command_Alias>&  alias_list,
                           const std::string&                   alias_pathname,
-                          const bool&                          alias_list_write_access );
+                          const bool&                          alias_list_write_access,
+                          const std::vector<A_Command_Variable>& variable_list,
+                          const std::string&                   variable_pathname,
+                          const bool&                          variable_list_write_access );
 
         
         /**
@@ -95,6 +98,16 @@ class A_Command_Parser {
         inline std::vector<A_Command_Alias> Get_Alias_List()const{
             return m_alias_list;
         }
+
+
+        /**
+         * @brief Get the Command-Variable List.
+         *
+         * @return Command-Variable List.
+        */
+        inline std::vector<A_Command_Variable> Get_Variable_List()const{
+            return m_variable_list;
+        }
         
 
         /**
@@ -126,9 +139,25 @@ class A_Command_Parser {
         /**
          * @brief Remove Command Alias.
          *
-         * @brief old_alias
+         * @param[in] old_alias Alias to remove.
          */
         void Remove_Command_Alias( const A_Command_Alias& old_alias );
+        
+
+        /**
+         * @brief Add Command Variable
+         *
+         * @param[in] new_var New variable to add.
+        */
+        void Add_Command_Variable( const A_Command_Variable& new_var );
+
+        
+        /**
+         * @brief Remove Command Variable.
+         *
+         * @param[in] old_var Old variable to remove.
+        */
+        void Remove_Command_Variable( const A_Command_Variable& old_var );
 
     
     private:
@@ -144,6 +173,12 @@ class A_Command_Parser {
         
         /// CLI Variable List
         std::vector<A_Command_Variable> m_variable_list;
+        
+        /// Variable Pathname
+        std::string m_variable_pathname;
+
+        /// Variable Support
+        bool m_variable_list_write_access;
 
         /// Alias List
         std::vector<A_Command_Alias> m_alias_list;

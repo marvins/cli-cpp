@@ -68,6 +68,30 @@ class A_Command_Variable
          * @brief Check if variable is a valid candidate
         */
         static bool Is_Valid_Candidate( const std::string& candidate );
+        
+        
+        /**
+         * @brief Load a Variable Configuration File
+         *
+         * @param[in] pathname Path to load from.
+         *
+         * @return List of variables.
+         */
+        static std::vector<A_Command_Variable> Load_Variable_Configuration_File( const std::string& pathname );
+        
+
+        /**
+         * @brief Write a Variable Configuration File.
+         *
+         * @param[in] pathname Path to write to.
+         * @param[in] variable_list List of variables to write.
+         * 
+         * @return Status. True if successful, false otherwise.
+        */
+        static bool Write_Variable_Configuration_File( const std::string& pathname,
+                                                       const std::vector<A_Command_Variable>& variable_list );
+        
+
 
     private:
         

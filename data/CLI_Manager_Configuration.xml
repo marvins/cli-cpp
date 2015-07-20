@@ -41,6 +41,7 @@
     <!-- Command Configuration -->
     <command-configuration path="../data/Command_Configuration.xml" />
 
+
     <!-- CLI Configuration -->
     <cli>
         <!-- CLI Title String -->
@@ -60,7 +61,15 @@
             <alias-list  pathname="../data/Command_Alias_List.xml" />
              
         </alias-support>
+    
+    
+        <!-- Variable Configuration -->
+        <variable-support enable="true" >
 
+            <!-- Command-Variable Path -->
+            <variable-list pathname="../data/Command_Variable_List.xml" />
+    
+        </variable-support>
 
     </cli>
 

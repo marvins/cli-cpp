@@ -18,6 +18,9 @@ namespace CLI{
 */
 enum class CLI_Event_Type : int32_t
 {
+    CLI_VARIABLE_SHOW    = -14 /**< Event for Print the Variable List.*/,
+    CLI_VARIABLE_ADD     = -13 /**< Event for Adding a Variable to the Command-Parser.*/,
+    CLI_VARIABLE_RM      = -12 /**< Event for Removing a Variable from the Command-Parser.*/,
     CLI_NULL             = -11 /**< Treat a null or no-op value.*/,
     CLI_PAUSE            = -10 /**< User requested to pause the CLI.*/,
     CLI_SLEEP            = -9  /**< User requested to sleep for a period of time.*/,

@@ -107,7 +107,6 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
         BOOST_LOG_TRIVIAL(error) << "unable to load the Connection-Manager Configuration.";
         return;
     }
-        
 
     // Check the connection type
     if( cli_conn_type == CORE::ConnectionType::UNKNOWN ){
@@ -120,11 +119,15 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     
         
     // Set the connection manager config inside the CLI configuration
+    if( m_connection_manager_config == nullptr ){
+        BOOST_LOG_TRIVIAL(error) << "Unable to load the connection manager configuration. Currently null.";
+        return;
+    }
     m_current_configuration.Set_Connection_Manager_Config( m_connection_manager_config );
     
     // set the window size
-    m_current_configuration.Set_Socket_Window_Cols( window_rows );
-    m_current_configuration.Set_Socket_Window_Rows( window_cols );
+    m_current_configuration.Set_Socket_Window_Rows( window_rows );
+    m_current_configuration.Set_Socket_Window_Cols( window_cols );
 
 
     // Grab the CLI Node
@@ -157,9 +160,14 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     // Grab the alias parameters
     pugi::xml_node alias_node = cli_node.child("alias-support");
 
-    bool alias_support = alias_node.attribute("enable").as_bool(false);
+    bool alias_support     = alias_node.attribute("enable").as_bool(false);
     std::string alias_path = alias_node.child("alias-list").attribute("pathname").as_string("");
    
+    // Grab the Command Variable Parameters
+    pugi::xml_node variable_node = cli_node.child("variable-support");
+
+    bool variable_support     = variable_node.attribute("enable").as_bool(false);
+    std::string variable_path = variable_node.child("variable-list").attribute("pathname").as_string("");
 
     // Get the Command Parser config file
     temp_str = root_node.child(COMMAND_CONFIG_NODE.c_str()).attribute("path").as_string();
@@ -172,7 +180,9 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     }
 
     // Parse the command file
-    CMD::A_Command_Parser::ptr_t command_parser = CMD::A_Command_Parser_Factory::Initialize( temp_str, alias_support, alias_path );
+    CMD::A_Command_Parser::ptr_t command_parser = CMD::A_Command_Parser_Factory::Initialize( temp_str, 
+                                                                                             alias_support, alias_path,
+                                                                                             variable_support, variable_path );
 
     // Make sure the parser is not null
     if( command_parser == nullptr ){
@@ -265,7 +275,6 @@ void A_CLI_Configuration_File_Parser::Write()
 
     // Save the file
     bool result = xmldoc.save_file( m_config_pathname.c_str() );
-    std::cout << result << std::endl;
     if( result != true ){
         BOOST_LOG_TRIVIAL(error) << "Unable to save file.";
     }

@@ -27,10 +27,16 @@ A_Command_Parser::A_Command_Parser( const std::string&                   regex_s
                                     const std::vector<A_Command>&        command_list,
                                     const std::vector<A_Command_Alias>&  alias_list,
                                     const std::string&                   alias_pathname,
-                                    const bool&                          alias_list_write_access )
+                                    const bool&                          alias_list_write_access,
+                                    const std::vector<A_Command_Variable>& variable_list,
+                                    const std::string&                   variable_pathname,
+                                    const bool&                          variable_list_write_access )
   : m_class_name("A_Command_Parser"),
     m_command_list(command_list),
     m_cli_command_list(cli_command_list),
+    m_variable_list(variable_list),
+    m_variable_pathname(variable_pathname),
+    m_variable_list_write_access(variable_list_write_access),
     m_alias_list(alias_list),
     m_alias_pathname(alias_pathname),
     m_alias_list_write_access(alias_list_write_access),
@@ -288,6 +294,58 @@ void A_Command_Parser::Remove_Command_Alias( const A_Command_Alias& alias )
 
 }
 
+
+/*************************/
+/*      Add Variable     */
+/*************************/
+void A_Command_Parser::Add_Command_Variable( A_Command_Variable const& new_var )
+{
+    // Make sure the variable does not already exist.
+    for( size_t i=0; i<m_variable_list.size(); i++ ){
+        if( m_variable_list[i].Get_Name() == new_var.Get_Name() ){
+            return;
+        }
+    }
+
+    // Add the variable to the list
+    m_variable_list.push_back(new_var);
+
+    // Open the file and write the variable out
+    if( m_variable_list_write_access == true ){
+        A_Command_Variable::Write_Variable_Configuration_File( m_variable_pathname, 
+                                                               m_variable_list );
+    }
+
+
+}
+
+
+/*****************************/
+/*      Remove Variable      */
+/*****************************/
+void A_Command_Parser::Remove_Command_Variable( A_Command_Variable const& old_var )
+{
+    // Modify flag
+    bool modified = false;
+
+    //  Make sure the variable does exist in the list
+    for( int i=0; i<(int)m_variable_list.size(); i++ ){
+        if( m_variable_list[i].Get_Name() == old_var.Get_Name() ){
+            m_variable_list.erase( m_variable_list.begin() + i );
+            i--;
+            modified = true;
+        }
+    }
+
+    // Write the list
+    if( m_variable_list_write_access == true && modified == true ){
+        A_Command_Variable::Write_Variable_Configuration_File( m_variable_pathname, 
+                                                               m_variable_list );
+    }
+
+
+
+}
 
 } // End of CMD Namespace
 } // End of CLI Namespace

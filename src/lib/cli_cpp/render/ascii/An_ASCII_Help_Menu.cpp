@@ -96,8 +96,8 @@ void An_ASCII_Help_Menu::Initialize_CLI_Command_Table()
 {
 
     // Update the sizes
-    int col0_width = 15;
-    int col1_width = 25;
+    int col0_width = m_window_cols * 0.25;
+    int col1_width = m_window_cols * 0.5;
     int col2_width = m_window_cols - col0_width - col1_width - m_min_col;
 
     // Process Parser Command List
@@ -144,11 +144,11 @@ void An_ASCII_Help_Menu::Initialize_Command_Table()
 {
 
     // Process Command List
-    int col0_width = 25;
-    int col1_width = 15;
-    int col2_width = 10;
-    int col3_width = 10;
-    int col4_width = 10;
+    int col0_width = m_window_cols * 0.5;
+    int col1_width = m_window_cols * 0.1;
+    int col2_width = m_window_cols * 0.1;
+    int col3_width = m_window_cols * 0.1;
+    int col4_width = m_window_cols * 0.05;
     int col5_width = m_window_cols - col0_width - col1_width - col2_width - col3_width - col4_width - m_min_col;
     
     std::vector<int>  widths;

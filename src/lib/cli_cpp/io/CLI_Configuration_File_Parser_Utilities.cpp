@@ -6,6 +6,7 @@
 #include "CLI_Configuration_File_Parser_Utilities.hpp"
 
 // C++ Standard Libraries
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <unistd.h>
@@ -236,6 +237,10 @@ bool Load_Connection_Config_XML_Nodes( pugi::xml_node&                          
                 socket_config_node.child("read-timeout-sleep-time").append_attribute("microseconds").set_value(socket_config->Get_Read_Timeout_Sleep_Microseconds());
             }
         }
+
+        // Grab the window rows
+        window_rows = socket_config_node.child("window-size").attribute("rows").as_int();
+        window_cols = socket_config_node.child("window-size").attribute("cols").as_int();
 
         // Get the port number
         int portno = socket_config_node.child("listening-port").attribute("value").as_int();

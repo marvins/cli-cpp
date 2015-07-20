@@ -10,6 +10,8 @@
 #include "../../utility/ANSI_Utilities.hpp"
 #include "../../utility/String_Utilities.hpp"
 
+// C++ Libraries
+#include <iostream>
 
 namespace CLI{
 namespace RENDER{
@@ -117,8 +119,8 @@ void A_General_Help_Window::Update_CLI_Command_Table()
 {
 
     // Update the sizes
-    int col0_width = 15;
-    int col1_width = 25;
+    int col0_width = m_render_driver->Get_Window_Cols() * 0.25;
+    int col1_width = m_render_driver->Get_Window_Cols() * 0.25;
     int col2_width = m_render_driver->Get_Window_Cols() - col0_width - col1_width - m_render_driver->Get_Min_Content_Col();
 
     // Process Parser Command List
@@ -166,11 +168,11 @@ void A_General_Help_Window::Update_Command_Table()
 {
 
     // Process Command List
-    int col0_width = 25;
-    int col1_width = 15;
-    int col2_width = 10;
-    int col3_width = 10;
-    int col4_width = 10;
+    int col0_width = m_render_driver->Get_Window_Cols() * 0.2;
+    int col1_width = m_render_driver->Get_Window_Cols() * 0.13;
+    int col2_width = m_render_driver->Get_Window_Cols() * 0.1;
+    int col3_width = m_render_driver->Get_Window_Cols() * 0.07;
+    int col4_width = m_render_driver->Get_Window_Cols() * 0.1;
     int col5_width = m_render_driver->Get_Window_Cols() - col0_width - col1_width - col2_width - col3_width - col4_width - m_render_driver->Get_Min_Content_Col();
 
     std::vector<int>  widths;

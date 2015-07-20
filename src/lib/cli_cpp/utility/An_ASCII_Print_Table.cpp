@@ -70,6 +70,7 @@ bool An_ASCII_Print_Table::Print_Table( std::vector<std::string>&  print_data,
     std::string header_line_row = "+";
     std::string header_data_row = "|";
     std::string blank_line_row  = "|";
+
     
     // Iterate over each column
     for( int tcol=0; tcol < (int)m_column_titles.size(); tcol++ ){
