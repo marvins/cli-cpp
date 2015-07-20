@@ -33,6 +33,9 @@ TEST( A_Command_Parser, Constructors )
                                       cli_cmd_names01,
                                       "Hello",
                                       "Yo.");
+    
+    // Create the variable list
+    std::vector<CMD::A_Command_Variable> variable_list;
 
     // Create the parser
     std::vector<CMD::A_Command> commands;
@@ -40,7 +43,15 @@ TEST( A_Command_Parser, Constructors )
     std::vector<CMD::A_CLI_Command> cli_commands;
     cli_commands.push_back(cli_command01);
 
-    CMD::A_Command_Parser parser(" ", cli_commands, commands, alias_list, "", false);
+    CMD::A_Command_Parser parser( " ", 
+                                  cli_commands, 
+                                  commands, 
+                                  alias_list, 
+                                  "", 
+                                  false,
+                                  variable_list,
+                                  "",
+                                  false);
 
     // Check the command list
     std::vector<CMD::A_Command> cmd_out = parser.Get_Command_List();
@@ -76,6 +87,9 @@ TEST( A_Command_Parser, Update_Autocomplete_String )
                                       "Hello",
                                       "Yo.");
 
+    // Create the variable list
+    std::vector<CMD::A_Command_Variable> variable_list;
+
     // Create the parser
     std::vector<CMD::A_Command> commands;
     commands.push_back(command01);
@@ -84,7 +98,15 @@ TEST( A_Command_Parser, Update_Autocomplete_String )
     std::vector<CMD::A_CLI_Command> cli_commands;
     cli_commands.push_back(cli_command01);
 
-    CMD::A_Command_Parser parser(" ", cli_commands, commands, alias_list, "", false);
+    CMD::A_Command_Parser parser( " ", 
+                                  cli_commands, 
+                                  commands, 
+                                  alias_list, 
+                                  "", 
+                                  false,
+                                  variable_list,
+                                  "",
+                                  false );
 
     
     // Test the update

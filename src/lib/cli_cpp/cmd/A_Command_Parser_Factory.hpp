@@ -30,12 +30,16 @@ class A_Command_Parser_Factory{
          * @param[in] configuration_path Path to the command configuration XML file.
          * @param[in] alias_support Flag if we want to allow alias shortcuts.
          * @param[in] alias_path Path to alias list.
+         * @param[in] variable_support  Flag if we want to allow variables.
+         * @param[in] variable_path     Path to the variable list file.
          *
          * @return Command parser pointer.  Null if there was an issue.
          */
         static A_Command_Parser::ptr_t  Initialize( const std::string&  configuration_path,
                                                     const bool&         alias_support,
-                                                    const std::string&  alias_path );
+                                                    const std::string&  alias_path,
+                                                    const bool&         variable_support,
+                                                    const std::string&  variable_path );
     
 }; // End of A_Command_Parser_Factory Class
 

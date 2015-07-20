@@ -74,6 +74,11 @@ void A_Render_Manager_ASCII::Initialize()
         BOOST_LOG_TRIVIAL(error) << "driver-context is currently null. Expect a big seg fault.";
     }
 
+    // Make sure the command-parser is not null
+    if( m_command_parser == nullptr ){
+        BOOST_LOG_TRIVIAL(fatal) << "Command-Parser is null. Expect a seg fault. File: " << __FILE__ << ", Line: " << __LINE__;
+    }
+
     // Add the main window
     m_window_list.push_back(std::make_shared<A_Main_Window>( driver_context,
                                                              m_render_state->Get_Command_History()));

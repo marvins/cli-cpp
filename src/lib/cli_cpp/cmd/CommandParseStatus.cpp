@@ -94,6 +94,21 @@ std::string CommandParseStatusToString( CommandParseStatus const& status )
         return "CLI_RESIZE";
     }
 
+    // Add Command Variable
+    if( status == CommandParseStatus::CLI_VARIABLE_ADD ){
+        return "CLI_VARIABLE_ADD";
+    }
+
+    // Remove Command Variable
+    if( status == CommandParseStatus::CLI_VARIABLE_RM ){
+        return "CLI_VARIABLE_RM";
+    }
+
+    // Show Command Variables
+    if( status == CommandParseStatus::CLI_VARIABLE_SHOW ){
+        return "CLI_VARIABLE_SHOW";
+    }
+
     // UNKNOWN
     return "UNKNOWN";
 }
@@ -154,6 +169,21 @@ std::string CommandParseStatusToHistoryString( CommandParseStatus const& status 
     if( status == CommandParseStatus::CLI_RESIZE ){
         return "Success";
     }
+    
+    // CLI Variable Add
+    if( status == CommandParseStatus::CLI_VARIABLE_ADD ){
+        return "Success";
+    }
+
+    // CLI Variable RM
+    if( status == CommandParseStatus::CLI_VARIABLE_RM ){
+        return "Success";
+    }
+
+    // CLI Variable Show
+    if( status == CommandParseStatus::CLI_VARIABLE_SHOW ){
+        return "Success";
+    }
 
     // CLI Run Script
     if( status == CommandParseStatus::CLI_RUN_SCRIPT ){
@@ -195,84 +225,33 @@ std::string CommandParseStatusToHistoryString( CommandParseStatus const& status 
 int CommandParseStatusToColorCode( CommandParseStatus const& status )
 {
 
-    // Valid
-    if( status == CommandParseStatus::VALID ){
-        return 0;
-    }
+    // Case
+    switch( status ){
+        
+        // Color 0 - Default
+        case CommandParseStatus::VALID:
+        case CommandParseStatus::CLI_SHUTDOWN:
+        case CommandParseStatus::CLI_HELP:
+        case CommandParseStatus::CLI_BACK:
+        case CommandParseStatus::CLI_LOG:
+        case CommandParseStatus::CLI_CLEAR:
+        case CommandParseStatus::CLI_ALIAS_LIST:
+        case CommandParseStatus::CLI_ALIAS_ADD:
+        case CommandParseStatus::CLI_ALIAS_REMOVE:
+        case CommandParseStatus::CLI_RUN_SCRIPT:
+        case CommandParseStatus::CLI_SLEEP:
+        case CommandParseStatus::CLI_PAUSE:
+        case CommandParseStatus::CLI_VARIABLE_ADD:
+        case CommandParseStatus::CLI_VARIABLE_RM:
+        case CommandParseStatus::CLI_VARIABLE_SHOW:
+        case CommandParseStatus::CLI_RESIZE:
+            return 0;
 
-    // Valid Shutdown
-    if( status == CommandParseStatus::CLI_SHUTDOWN ){
-        return 0;
-    }
-
-    // Valid help
-    if( status == CommandParseStatus::CLI_HELP ){
-        return 0;
-    }
-
-    // Back help
-    if( status == CommandParseStatus::CLI_BACK ){
-        return 0;
-    }
-
-    // Log Help
-    if( status == CommandParseStatus::CLI_LOG ){
-        return 0;
-    }
-
-    // CLI Clear
-    if( status == CommandParseStatus::CLI_CLEAR ){
-        return 0;
-    }
-
-    // Add Alias
-    if( status == CommandParseStatus::CLI_ALIAS_ADD ){
-        return 0;
-    }
-    
-    // Remove Alias
-    if( status == CommandParseStatus::CLI_ALIAS_REMOVE ){
-        return 0;
-    }
-    
-    // List Alias
-    if( status == CommandParseStatus::CLI_ALIAS_LIST ){
-        return 0;
-    }
-
-    // Run Script
-    if( status == CommandParseStatus::CLI_RUN_SCRIPT ){
-        return 0;
-    }
-
-    // Sleep
-    if( status == CommandParseStatus::CLI_SLEEP ){
-        return 0;
-    }
-
-    // Pause
-    if( status == CommandParseStatus::CLI_PAUSE ){
-        return 0;
-    }
-
-    // Resize
-    if( status == CommandParseStatus::CLI_RESIZE ){
-        return 0;
-    }
-
-    // Invalid arguments
-    if( status == CommandParseStatus::INVALID_ARGUMENTS ){
-        return 1;
-    }
-
-    // Excessive Arguments
-    if( status == CommandParseStatus::EXCESSIVE_ARGUMENTS ){
-        return 1;
-    }
-
-    // No Command Found
-    if( status == CommandParseStatus::NO_COMMAND_FOUND ){
-        return 1;
+        // Color 0 - ERROR
+        case CommandParseStatus::INVALID_ARGUMENTS:
+        case CommandParseStatus::EXCESSIVE_ARGUMENTS:
+        case CommandParseStatus::NO_COMMAND_FOUND:
+            return 1;
     }
 
     // UNKNOWN
@@ -345,7 +324,21 @@ CommandParseStatus StringToCommandParseStatus( const std::string& status )
     if( status == "CLI_RESIZE" ){
         return CommandParseStatus::CLI_RESIZE;
     }
-
+    
+    // CLI Variable Add
+    if( status == "CLI_VARIABLE_ADD" ){
+        return CommandParseStatus::CLI_VARIABLE_ADD;
+    }
+    
+    // CLI Variable RM
+    if( status == "CLI_VARIABLE_RM" ){
+        return CommandParseStatus::CLI_VARIABLE_RM;
+    }
+    
+    // CLI Variable Show
+    if( status == "CLI_VARIABLE_SHOW" ){
+        return CommandParseStatus::CLI_VARIABLE_SHOW;
+    }
 
     // Invalid ARguments
     if( status == "INVALID_ARGUMENTS" ){
@@ -392,6 +385,9 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
         case CommandParseStatus::CLI_RUN_SCRIPT:
         case CommandParseStatus::CLI_PAUSE:
         case CommandParseStatus::CLI_SLEEP:
+        case CommandParseStatus::CLI_VARIABLE_ADD:
+        case CommandParseStatus::CLI_VARIABLE_RM:
+        case CommandParseStatus::CLI_VARIABLE_SHOW:
             return true;
         
         case CommandParseStatus::VALID:
@@ -426,6 +422,9 @@ std::vector<std::tuple<std::string,CommandParseStatus>> Get_CLI_Mode_To_Parse_St
     output.push_back( std::make_tuple("run-script",   CommandParseStatus::CLI_RUN_SCRIPT)   );
     output.push_back( std::make_tuple("pause",        CommandParseStatus::CLI_PAUSE)        );
     output.push_back( std::make_tuple("sleep",        CommandParseStatus::CLI_SLEEP)        );
+    output.push_back( std::make_tuple("var-add",      CommandParseStatus::CLI_VARIABLE_ADD) );
+    output.push_back( std::make_tuple("var-rm",       CommandParseStatus::CLI_VARIABLE_RM)  );
+    output.push_back( std::make_tuple("var-show",     CommandParseStatus::CLI_VARIABLE_SHOW));
     output.push_back( std::make_tuple("help",         CommandParseStatus::VALID)            ); ///<  CLI Help Commands should be treated like normal commands.
     output.push_back( std::make_tuple("cli-resize",   CommandParseStatus::VALID)            ); ///<  CLI Resize Commands should be treated like normal commands.
 

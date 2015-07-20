@@ -18,7 +18,7 @@ TEST( A_Command_Parser_Factory, Initialize_invalid_config_path )
     std::string config_path = "path_that_doesnt_exist.xml";
 
     // Create the parser
-    CLI::CMD::A_Command_Parser::ptr_t parser = CLI::CMD::A_Command_Parser_Factory::Initialize( config_path, false, "" );
+    CLI::CMD::A_Command_Parser::ptr_t parser = CLI::CMD::A_Command_Parser_Factory::Initialize( config_path, false, "", false, "" );
 
     // Make sure it is null
     ASSERT_EQ( parser, nullptr );

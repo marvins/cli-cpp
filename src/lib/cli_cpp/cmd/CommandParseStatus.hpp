@@ -37,6 +37,9 @@ enum class CommandParseStatus : uint8_t {
     CLI_PAUSE           = 14 /**< Pause the CLI until user input provided.*/,
     CLI_SLEEP           = 15 /**< Sleep for a specified number of seconds.*/,
     CLI_RESIZE          = 16 /**< Resize the CLI Window.*/,
+    CLI_VARIABLE_ADD    = 17 /**< Add a Variable to the Command-Parser.*/,
+    CLI_VARIABLE_RM     = 18 /**< Remove a variable from the Command-Parser.*/,
+    CLI_VARIABLE_SHOW   = 19 /**< Show the Command-Parser variable list.*/,
 }; // End of CommandParseStatus Enumeration
 
 
