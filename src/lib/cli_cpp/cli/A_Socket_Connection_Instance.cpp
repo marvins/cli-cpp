@@ -233,9 +233,11 @@ void A_Socket_Connection_Instance::Refresh_Screen()
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
 
+    // Lock the mutex
+    m_refresh_lock.lock();
+
     // Get the buffer string
     std::vector<std::string> buffer_data = std::dynamic_pointer_cast<RENDER::A_Render_Manager_ASCII>(m_render_manager)->Get_Console_Buffer();
-
 
     // Write each line to the socket
     for( size_t i=0; i<buffer_data.size(); i++ ){

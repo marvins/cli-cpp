@@ -30,7 +30,7 @@
         <window-size rows="40" cols="140" />
 
         <!-- Read Timeout Sleep Time -->
-        <read-timeout-sleep-time microseconds="10000" />
+        <read-timeout-sleep-time microseconds="5000" />
         
         <!-- Max Number of Connections -->
         <max-connections value="5" />
