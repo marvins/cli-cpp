@@ -32,7 +32,7 @@ const std::string KEYBOARD_F1_KEY     = "\033\117\120";
 const std::string KEYBOARD_F2_KEY     = "\033\117\121";
 const std::string KEYBOARD_F3_KEY     = "\033\117\122";
 const std::string KEYBOARD_F4_KEY     = "\033\117\123";
-const std::string KEYBOARD_F5_KEY     = "\033\117\124";
+const std::string KEYBOARD_F5_KEY     = "\033\133\061\065\176";
 
 
 /************************************/
@@ -90,6 +90,7 @@ void A_Socket_Connection_Instance::Run()
     m_is_running = true;
 
     // Write to the client
+    // IAC DO linemode IAC WILL eacho
     write( m_client_fd,"\377\375\042\377\373\001",6);
 
 
@@ -146,8 +147,8 @@ void A_Socket_Connection_Instance::Run()
 
         // Check the buffer
         input = std::string(buffer).substr(0,n);
-
-
+        
+        
         // Process the text
         if( input.size() > 1 ){
 

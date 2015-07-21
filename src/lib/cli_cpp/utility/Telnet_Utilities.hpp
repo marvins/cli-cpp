@@ -21,14 +21,14 @@ const char cols      = 8;
 const char lines     = 9;
 const char term_type = 24;
 const char term_size = 31;
-const char linemode  = 34; 
+const char linemode  = 34; // \042 (oct)
 const char SE   = 240;
 const char SB   = 250;
-const char WILL = 251; // -5
-const char WONT = 252; // -4
-const char DO   = 253; // -3
+const char WILL = 251; // -5 (char), \373 Oct
+const char WONT = 252; // -4 (char), \374
+const char DO   = 253; // -3 (char), \375 Oct
 const char DONT = 254; // -2
-const char IAC  = 255; // -1 
+const char IAC  = 255; // -1 (char), \377 Oct
 
 /**
  * @brief Convert input characters into Telnet Command

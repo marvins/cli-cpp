@@ -244,6 +244,7 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
             
         // Log result    
         BOOST_LOG_TRIVIAL(trace) << "Popped event (" << temp_event << "), Event queue size: " << m_event_queue->Get_Current_Size();
+        BOOST_LOG_TRIVIAL(info) << "Popped event (" << temp_event << "), Event queue size: " << m_event_queue->Get_Current_Size();
 
         // Skip null events
         if( temp_event == (int)CLI_Event_Type::CLI_NULL ){

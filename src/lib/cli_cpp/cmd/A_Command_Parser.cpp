@@ -145,6 +145,11 @@ void A_Command_Parser::Update_Autocomplete_String( const std::string&    input_s
     std::vector<std::string> match_list;
     std::string matching_value;
 
+    // Make sure there is at least one component
+    if( components.size() <= 0 ){
+        return;
+    }
+
     
     // use the last element
     int idx = components.size()-1;

@@ -21,6 +21,7 @@ set( LIB_CLI_RENDER_MODULE_SOURCES
     ascii/A_General_Help_Window.cpp
     ascii/A_Log_Window.cpp
     ascii/A_Main_Window.cpp
+    ascii/A_Variable_List_Window.cpp
     ascii/An_Alias_List_Window.cpp
     ascii/An_ASCII_Help_Menu.cpp
     ascii/An_ASCII_History_Window.cpp
@@ -46,6 +47,7 @@ set( LIB_CLI_RENDER_MODULE_HEADERS
     ascii/A_General_Help_Window.hpp
     ascii/A_Log_Window.hpp
     ascii/A_Main_Window.hpp
+    ascii/A_Variable_List_Window.hpp
     ascii/An_Alias_List_Window.hpp
     ascii/An_ASCII_Help_Menu.hpp
     ascii/An_ASCII_History_Window.hpp

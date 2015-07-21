@@ -17,6 +17,7 @@
 #include "ascii/A_General_Help_Window.hpp"
 #include "ascii/A_Log_Window.hpp"
 #include "ascii/A_Main_Window.hpp"
+#include "ascii/A_Variable_List_Window.hpp"
 #include "ascii/An_Alias_List_Window.hpp"
 #include "../utility/ANSI_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
@@ -79,21 +80,26 @@ void A_Render_Manager_ASCII::Initialize()
         BOOST_LOG_TRIVIAL(fatal) << "Command-Parser is null. Expect a seg fault. File: " << __FILE__ << ", Line: " << __LINE__;
     }
 
-    // Add the main window
+    // Add the main window [0]
     m_window_list.push_back(std::make_shared<A_Main_Window>( driver_context,
                                                              m_render_state->Get_Command_History()));
     
-    // Add the help window
+    // Add the help window [1]
     m_window_list.push_back(std::make_shared<A_General_Help_Window>( driver_context,
                                                                      m_command_parser ));
 
-    // Add the log window
+    // Add the log window [2]
     m_window_list.push_back(std::make_shared<A_Log_Window>( driver_context ));
     
     
-    // Add the alias list window
+    // Add the alias list window [3]
     m_window_list.push_back(std::make_shared<An_Alias_List_Window>( driver_context, 
                                                                     m_command_parser ));
+
+    // Add the variable list window [4]
+    m_window_list.push_back(std::make_shared<A_Variable_List_Window>( driver_context,
+                                                                      m_command_parser ));
+
     
     // Create the CLI Man Pages
     for( size_t i=0; i<m_command_parser->Get_CLI_Command_List().size(); i++ ){

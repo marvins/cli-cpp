@@ -60,13 +60,15 @@ void A_CLI_Detailed_Help_Command_Response_Handler::Process_Command( CLI::CMD::A_
         return;
     }
 
+
     // Check the number of arguments
     int nargs = response->Get_Argument_Value_Count();
     
+
     // If there are no arguments, just set the help window
     if( nargs == 0 ){
         render_manager->Set_Current_Window(1);
-        response->Set_System_Response( "Success" );
+        response->Set_System_Response( "Opening General Help Window" );
         return;
     }
 

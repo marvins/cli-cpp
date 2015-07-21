@@ -100,6 +100,13 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& instance,
         render_manager->Set_Current_Window( 3 );
     }
 
+    // If we have a command for CLI_VARIABLE_SHOW, set the current window to the variable list
+    else if( event == (int)CLI_Event_Type::CLI_VARIABLE_SHOW ||
+             event == (int)CLI_Event_Type::KEYBOARD_F5 )
+    {
+        render_manager->Set_Current_Window( 4 );
+    }
+
     // Otherwise, Process the Keyboard Input
     else{
         render_manager->Process_Keyboard_Input( event );

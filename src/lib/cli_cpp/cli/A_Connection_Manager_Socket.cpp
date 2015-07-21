@@ -239,7 +239,7 @@ int A_Connection_Manager_Socket::Get_Next_Client_Slot()
     }
     
     // Make sure we are not past the max number of connections
-    if( m_connection_list.size() > m_configuration->Get_Max_Connections() ){
+    if( (int)m_connection_list.size() > m_configuration->Get_Max_Connections() ){
         return -1;
     }
 

@@ -39,12 +39,16 @@ class An_ASCII_Render_Window_Base
 
         /**
          * @brief Constructor
+         *
+         * @param[in] render_driver Rendering driver used to set window size and other parameters.
         */
         An_ASCII_Render_Window_Base( A_Render_Driver_Context_ASCII::ptr_t render_driver );
 
 
         /**
          * @brief Retrieve the buffer data
+         *
+         * @return Buffer data list.
         */
         inline virtual std::vector<std::string>& Get_Buffer_Data(){
             return m_buffer_data;
@@ -69,9 +73,23 @@ class An_ASCII_Render_Window_Base
         
         /**
          * @brief Get the Window Title
+         *
+         * @return Window Title String
         */
         inline virtual std::string  Get_Window_Title()const{
             return m_class_name;
+        }
+
+
+        /**
+         * @brief Check if Event is Mapped to this method. 
+         *
+         * @param[in] event_id ID of the event.
+         * 
+         * @return False unless implemented by child class.
+         */
+        inline virtual bool Event_Registered( const int32_t& event_id ){
+            return false;
         }
 
     
