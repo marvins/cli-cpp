@@ -27,7 +27,7 @@
         <listening-port value="12344" />
 
         <!-- Window Size -->
-        <window-size rows="50" cols="140" />
+        <window-size rows="40" cols="140" />
 
         <!-- Read Timeout Sleep Time -->
         <read-timeout-sleep-time microseconds="10000" />

@@ -114,7 +114,37 @@
                 <argument name="cols" type="INTEGER" description="CLI Window Columns." required="false" default="120" />
             </arguments>
         </command>
+        
+        <!-- Add Variable -->
+        <command mode="var-add">
+            <name value="var-add" />
+            <description value="Add a CLI Variable." />
+            <task-name value="Add Variable." />
+            <expect_response value="false" />
+            <arguments>
+            </arguments>
+        </command>
 
+        <!-- Remove Variable -->
+        <command mode="var-rm">
+            <name value="var-rm" />
+            <description value="Remove a CLI Variable." />
+            <task-name value="Remove Variable." />
+            <expect_response value="false" />
+            <arguments>
+            </arguments>
+        </command>
+
+
+        <!-- Show Variables -->
+        <command mode="var-show">
+            <name value="var-show" />
+            <description value="Show the variable list." />
+            <task-name value="Show Variable List." />
+            <expect_response value="false" />
+            <arguments>
+            </arguments>
+        </command>
 
     </cli-commands>
 
