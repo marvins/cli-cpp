@@ -93,8 +93,8 @@ TEST( A_Command_Variable, Process_Variables )
 
     CMD::A_Command_Variable::Process_Variables( variable_list01, component_list01);
 
-    ASSERT_EQ( variable_list01.size(), 0 );
-    ASSERT_EQ( component_list01.size(), 0 );
+    ASSERT_EQ( (int)variable_list01.size(), 0 );
+    ASSERT_EQ( (int)component_list01.size(), 0 );
 
     ////////////////////////////////////////////////////////////
     // Test 02 (Empty Variable List, Valid Component List)
@@ -105,8 +105,8 @@ TEST( A_Command_Variable, Process_Variables )
 
     CMD::A_Command_Variable::Process_Variables( variable_list02, component_list02);
 
-    ASSERT_EQ( variable_list02.size(), 0 );
-    ASSERT_EQ( component_list02.size(), 2 );
+    ASSERT_EQ( (int)variable_list02.size(), 0 );
+    ASSERT_EQ( (int)component_list02.size(), 2 );
     ASSERT_EQ( component_list02[0], "Hello" );
     ASSERT_EQ( component_list02[1], "World" );
 
@@ -118,8 +118,8 @@ TEST( A_Command_Variable, Process_Variables )
 
     CMD::A_Command_Variable::Process_Variables( variable_list03, component_list03);
 
-    ASSERT_EQ( variable_list03.size(), 1 );
-    ASSERT_EQ( component_list03.size(), 0 );
+    ASSERT_EQ( (int)variable_list03.size(), 1 );
+    ASSERT_EQ( (int)component_list03.size(), 0 );
     ASSERT_EQ( variable_list03[0], CMD::A_Command_Variable("Hello","World") );
     
     
@@ -141,8 +141,8 @@ TEST( A_Command_Variable, Process_Variables )
 
     CMD::A_Command_Variable::Process_Variables( variable_list04, component_list04);
 
-    ASSERT_EQ( variable_list04.size(), 2 );
-    ASSERT_EQ( component_list04.size(), 8 );
+    ASSERT_EQ( (int)variable_list04.size(), 2 );
+    ASSERT_EQ( (int)component_list04.size(), 8 );
     ASSERT_EQ( variable_list04[0], CMD::A_Command_Variable("Hello","World") );
     ASSERT_EQ( variable_list04[1], CMD::A_Command_Variable("Foo","Bar"));
 

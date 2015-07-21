@@ -58,7 +58,6 @@ void A_Network_Status_Render_Window::Print_Main_Content()
 
     // Compute the width
     int width  = max_col - min_col;
-    int height = max_row - min_row;
     int sum = 0;
 
 

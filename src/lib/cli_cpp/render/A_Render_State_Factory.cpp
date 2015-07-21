@@ -41,7 +41,7 @@ A_Render_State::ptr_t A_Render_State_Factory::Instance_Of( const int& instance )
 
 
     // Otherwise, make sure the instance is not over the max
-    if( instance >= factory.m_instances.size() ){
+    if( instance >= (int)factory.m_instances.size() ){
         factory.m_instances.resize( instance+1, nullptr );
     }
 

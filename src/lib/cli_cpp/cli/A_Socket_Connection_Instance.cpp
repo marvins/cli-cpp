@@ -91,8 +91,11 @@ void A_Socket_Connection_Instance::Run()
 
     // Write to the client
     // IAC DO linemode IAC WILL eacho
-    write( m_client_fd,"\377\375\042\377\373\001",6);
-
+    int res = write( m_client_fd,"\377\375\042\377\373\001",6);
+    if( res < 0 ){
+        m_is_running = false;
+        return;
+    }
 
     // Set the connected flag
     m_is_connected = true;
@@ -204,10 +207,13 @@ void A_Socket_Connection_Instance::Run()
     // Before we close the socket, write out the vis string to
     // remove the effects of hiding the cursor
     std::string close_socket_str = UTILS::ANSI_CLEARSCREEN +  UTILS::ANSI_CURSORVIS;
-    write( m_client_fd, 
-           close_socket_str.c_str(), 
-           close_socket_str.size() );
+    res = write( m_client_fd, 
+                 close_socket_str.c_str(), 
+                 close_socket_str.size() );
 
+    if( res < 0 ){
+        BOOST_LOG_TRIVIAL(error) << "Unable to write. File: " << __FILE__ << ", Line: " << __LINE__;
+    }
 
     // Close the current session
     close( m_client_fd );
@@ -233,7 +239,10 @@ void A_Socket_Connection_Instance::Refresh_Screen()
 
     // Write each line to the socket
     for( size_t i=0; i<buffer_data.size(); i++ ){
-        write( m_client_fd, buffer_data[i].c_str(), buffer_data[i].size() );   
+        int res = write( m_client_fd, buffer_data[i].c_str(), buffer_data[i].size() );   
+        if( res < 0 ){
+            BOOST_LOG_TRIVIAL(error) << "Unable to write to socket.";
+        }
     }
 
     // Unlock the mutex

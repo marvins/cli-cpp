@@ -147,7 +147,7 @@ TEST( String_Utilities, String_Split ){
     // Test output
     std::vector<std::string> output_01 = UTILS::String_Split( test_input_01 );
 
-    ASSERT_EQ( output_01.size(), 3 );
+    ASSERT_EQ( (int)output_01.size(), 3 );
     ASSERT_EQ( output_01[0], "hello" );
     ASSERT_EQ( output_01[1], "there" );
     ASSERT_EQ( output_01[2], "world" );

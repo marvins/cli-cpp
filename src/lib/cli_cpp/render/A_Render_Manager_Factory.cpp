@@ -119,7 +119,7 @@ int A_Render_Manager_Factory::Register_Custom_Render_Window( An_ASCII_Render_Win
     render_factory.m_custom_render_windows.push_back(render_window);
 
     // Add to existing windows
-    int id;
+    int id = -1;
     for( size_t i=0; i<render_factory.m_render_managers.size(); i++ ){
         id = render_factory.m_render_managers[i]->Register_Custom_Render_Window( render_window );
     }
