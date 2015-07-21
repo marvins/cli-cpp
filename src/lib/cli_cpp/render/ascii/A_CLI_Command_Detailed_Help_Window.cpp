@@ -65,7 +65,6 @@ void A_CLI_Command_Detailed_Help_Window::Update_Buffer_Lines()
     // Define the min row and col
     int min_row = m_render_driver->Get_Min_Content_Row();
     int min_col = m_render_driver->Get_Min_Content_Col();
-    int max_row = m_render_driver->Get_Window_Rows();
 
     std::string offset(min_col,' ');
 

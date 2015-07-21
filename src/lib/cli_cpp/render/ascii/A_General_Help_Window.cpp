@@ -48,8 +48,8 @@ void A_General_Help_Window::Update_Buffer_Data()
 
     // Check if the buffer size changed or the history changed
     if( (int)m_buffer_data.size()       != original_row_count ||
-        m_current_command_list_size     != m_command_parser->Get_Command_List().size() ||
-        m_current_cli_command_list_size != m_command_parser->Get_CLI_Command_List().size() )
+        m_current_command_list_size     != (int)m_command_parser->Get_Command_List().size() ||
+        m_current_cli_command_list_size != (int)m_command_parser->Get_CLI_Command_List().size() )
     {
         Update_Buffer_Lines();
     }

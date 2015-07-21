@@ -88,7 +88,7 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Instance_Of( const int& i
     A_Render_Manager_Factory& render_factory = Get_Factory_Instance();
 
     // Make sure the instance exists
-    if( render_factory.m_render_managers.size() <= instance_id ){
+    if( (int)render_factory.m_render_managers.size() <= instance_id ){
         render_factory.m_render_managers.resize( instance_id+1, nullptr );
     }
 
