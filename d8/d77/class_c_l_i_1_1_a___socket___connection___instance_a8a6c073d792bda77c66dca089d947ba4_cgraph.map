@@ -1,0 +1,12 @@
+<map id="CLI::A_Socket_Connection_Instance::Start" name="CLI::A_Socket_Connection_Instance::Start">
+<area shape="rect" id="node2" href="$d8/d77/class_c_l_i_1_1_a___socket___connection___instance.html#add1cd31e4e9502e48a23c516cf9311f1" title="Run. " alt="" coords="235,177,416,218"/>
+<area shape="rect" id="node3" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#afa53bd663b212dd8a6ada7827904a704" title="Get a Render&#45;Manager Instance. " alt="" coords="467,78,676,119"/>
+<area shape="rect" id="node7" href="$d8/d77/class_c_l_i_1_1_a___socket___connection___instance.html#a6ff0100204c99eff9afba80f53f5a9cb" title="Check for special keys. " alt="" coords="464,143,679,185"/>
+<area shape="rect" id="node8" href="$d3/d50/class_c_l_i_1_1_e_v_t_1_1_event___manager.html#aa1a3dde690eacc0255f8c9badf265354" title="Process_Event. " alt="" coords="483,209,659,250"/>
+<area shape="rect" id="node11" href="$d8/d77/class_c_l_i_1_1_a___socket___connection___instance.html#adc72659509d6ded015ffafe62b20ca3a" title="Refresh the Screen. " alt="" coords="481,274,662,315"/>
+<area shape="rect" id="node4" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#ab6f737e039d0428c3b2505d11b587139" title="Check if Initialized. " alt="" coords="728,5,903,61"/>
+<area shape="rect" id="node5" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#acb3e0a32906878bb543326fd27f13625" title="Get the global Factory Instance. " alt="" coords="953,39,1127,95"/>
+<area shape="rect" id="node6" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#ab5bb60343bed765dd501f64a17a06da2" title="Create a new instance. " alt="" coords="727,136,904,192"/>
+<area shape="rect" id="node9" href="$d3/d50/class_c_l_i_1_1_e_v_t_1_1_event___manager.html#acd555ed865d72a4b1e4c67eac675df90" title="Check if initialized. " alt="" coords="952,238,1128,279"/>
+<area shape="rect" id="node10" href="$d3/d50/class_c_l_i_1_1_e_v_t_1_1_event___manager.html#ad7e0279be5abad09b91234367c274c73" title="Get Instance of the event manager. " alt="" coords="727,267,903,309"/>
+</map>

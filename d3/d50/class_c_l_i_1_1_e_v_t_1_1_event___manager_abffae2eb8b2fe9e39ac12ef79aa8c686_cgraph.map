@@ -1,0 +1,6 @@
+<map id="CLI::EVT::Event_Manager::Initialize" name="CLI::EVT::Event_Manager::Initialize">
+<area shape="rect" id="node2" href="$d3/d50/class_c_l_i_1_1_e_v_t_1_1_event___manager.html#a360da64df8a732766d04ec29d2f85b6b" title="Constructor. " alt="" coords="229,93,405,134"/>
+<area shape="rect" id="node3" href="$da/d66/class_c_l_i_1_1_e_v_t_1_1_event___manager___config.html#ad255d2b32fb7ec217ceaf0c9088c8e28" title="Get the Event Queue Max Capacity. " alt="" coords="453,5,636,61"/>
+<area shape="rect" id="node4" href="$da/d66/class_c_l_i_1_1_e_v_t_1_1_event___manager___config.html#a52314ec8161b23c10b12fc4b1e25af0d" title="get the Event Work Queue Thread Count. " alt="" coords="457,85,633,141"/>
+<area shape="rect" id="node5" href="$d3/d50/class_c_l_i_1_1_e_v_t_1_1_event___manager.html#a78243e433c05587adcb1297846dd84ea" title="Event process thread runner. " alt="" coords="457,165,633,206"/>
+</map>

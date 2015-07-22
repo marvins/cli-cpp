@@ -1,0 +1,10 @@
+<map id="CLI::RENDER::An_ASCII_Render_Window_Base" name="CLI::RENDER::An_ASCII_Render_Window_Base">
+<area shape="rect" id="node2" href="$dc/d07/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___detailed___help___window.html" title="CLI::RENDER::A_Detailed\l_Help_Window" alt="" coords="229,49,411,90"/>
+<area shape="rect" id="node5" href="$d6/d44/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___general___help___window.html" title="CLI::RENDER::A_General\l_Help_Window" alt="" coords="231,114,409,155"/>
+<area shape="rect" id="node6" href="$d2/d66/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___log___window.html" title="CLI::RENDER::A_Log\l_Window" alt="" coords="243,179,397,221"/>
+<area shape="rect" id="node7" href="$de/da9/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___main___window.html" title="CLI::RENDER::A_Main\l_Window" alt="" coords="239,245,401,286"/>
+<area shape="rect" id="node8" href="$d4/d42/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___variable___list___window.html" title="CLI::RENDER::A_Variable\l_List_Window" alt="" coords="230,310,410,351"/>
+<area shape="rect" id="node9" href="$d9/d13/class_c_l_i_1_1_r_e_n_d_e_r_1_1_an___alias___list___window.html" title="CLI::RENDER::An_Alias\l_List_Window" alt="" coords="235,375,405,417"/>
+<area shape="rect" id="node3" href="$db/daf/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___c_l_i___command___detailed___help___window.html" title="CLI::RENDER::A_CLI\l_Command_Detailed_Help\l_Window" alt="" coords="466,5,645,61"/>
+<area shape="rect" id="node4" href="$dc/db2/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___command___detailed___help___window.html" title="CLI::RENDER::A_Command\l_Detailed_Help_Window" alt="" coords="459,85,652,126"/>
+</map>

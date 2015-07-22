@@ -1,0 +1,5 @@
+<map id="CLI::EVT::Event_Manager::Event_Manager" name="CLI::EVT::Event_Manager::Event_Manager">
+<area shape="rect" id="node2" href="$da/d66/class_c_l_i_1_1_e_v_t_1_1_event___manager___config.html#ad255d2b32fb7ec217ceaf0c9088c8e28" title="Get the Event Queue Max Capacity. " alt="" coords="229,5,412,61"/>
+<area shape="rect" id="node3" href="$da/d66/class_c_l_i_1_1_e_v_t_1_1_event___manager___config.html#a52314ec8161b23c10b12fc4b1e25af0d" title="get the Event Work Queue Thread Count. " alt="" coords="233,85,409,141"/>
+<area shape="rect" id="node4" href="$d3/d50/class_c_l_i_1_1_e_v_t_1_1_event___manager.html#a78243e433c05587adcb1297846dd84ea" title="Event process thread runner. " alt="" coords="233,165,409,206"/>
+</map>

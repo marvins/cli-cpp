@@ -1,0 +1,6 @@
+<map id="CLI::A_CLI_Manager::Register_Custom_Render_Window" name="CLI::A_CLI_Manager::Register_Custom_Render_Window">
+<area shape="rect" id="node2" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#a4d3c7e9015246899885cf15c9dd09d2b" title="Register a Custom Render Window. " alt="" coords="235,37,421,93"/>
+<area shape="rect" id="node5" href="$de/db1/class_c_l_i_1_1_a___c_l_i___manager___configuration.html#a3d7d62181accc6e8e7fa694a29547ac7" title="Get the Command Parser. " alt="" coords="255,117,401,173"/>
+<area shape="rect" id="node3" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#ab6f737e039d0428c3b2505d11b587139" title="Check if Initialized. " alt="" coords="469,5,644,61"/>
+<area shape="rect" id="node4" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#acb3e0a32906878bb543326fd27f13625" title="Get the global Factory Instance. " alt="" coords="692,39,867,95"/>
+</map>

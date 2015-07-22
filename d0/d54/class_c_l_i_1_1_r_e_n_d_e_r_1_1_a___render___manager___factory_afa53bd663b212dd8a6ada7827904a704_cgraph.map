@@ -1,0 +1,5 @@
+<map id="CLI::RENDER::A_Render_Manager_Factory::Instance_Of" name="CLI::RENDER::A_Render_Manager_Factory::Instance_Of">
+<area shape="rect" id="node2" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#ab6f737e039d0428c3b2505d11b587139" title="Check if Initialized. " alt="" coords="264,5,439,61"/>
+<area shape="rect" id="node3" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#acb3e0a32906878bb543326fd27f13625" title="Get the global Factory Instance. " alt="" coords="488,39,663,95"/>
+<area shape="rect" id="node4" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#ab5bb60343bed765dd501f64a17a06da2" title="Create a new instance. " alt="" coords="263,136,440,192"/>
+</map>

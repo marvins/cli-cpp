@@ -1,0 +1,9 @@
+<map id="CLI::EVT::A_Render_Manager_Event_Handler::Process_Event" name="CLI::EVT::A_Render_Manager_Event_Handler::Process_Event">
+<area shape="rect" id="node2" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#afa53bd663b212dd8a6ada7827904a704" title="Get a Render&#45;Manager Instance. " alt="" coords="225,111,435,153"/>
+<area shape="rect" id="node6" href="$d3/d50/class_c_l_i_1_1_e_v_t_1_1_event___manager.html#aa1a3dde690eacc0255f8c9badf265354" title="Process_Event. " alt="" coords="242,209,418,250"/>
+<area shape="rect" id="node3" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#ab6f737e039d0428c3b2505d11b587139" title="Check if Initialized. " alt="" coords="484,5,659,61"/>
+<area shape="rect" id="node4" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#acb3e0a32906878bb543326fd27f13625" title="Get the global Factory Instance. " alt="" coords="709,39,883,95"/>
+<area shape="rect" id="node5" href="$d0/d54/class_c_l_i_1_1_r_e_n_d_e_r_1_1_a___render___manager___factory.html#ab5bb60343bed765dd501f64a17a06da2" title="Create a new instance. " alt="" coords="483,136,660,192"/>
+<area shape="rect" id="node7" href="$d3/d50/class_c_l_i_1_1_e_v_t_1_1_event___manager.html#acd555ed865d72a4b1e4c67eac675df90" title="Check if initialized. " alt="" coords="708,238,884,279"/>
+<area shape="rect" id="node8" href="$d3/d50/class_c_l_i_1_1_e_v_t_1_1_event___manager.html#ad7e0279be5abad09b91234367c274c73" title="Get Instance of the event manager. " alt="" coords="483,267,659,309"/>
+</map>
