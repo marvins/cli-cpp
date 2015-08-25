@@ -301,7 +301,7 @@ int A_Socket_Connection_Instance::Process_Special_Key( const std::string& input_
     for( size_t i=0; i<input_str.size(); i++ ){
         sin << i << " : " << (int)input_str[i] << std::endl;
     }
-    BOOST_LOG_TRIVIAL(warning) << sin.str();
+    BOOST_LOG_TRIVIAL(debug) << sin.str();
 
     // otherwise, return failure
     return (int)CLI_Event_Type::UNKNOWN;
