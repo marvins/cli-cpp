@@ -33,6 +33,11 @@ std::vector<std::string> Get_Contents( const std::string&  dir_path,
         return output;
     }
 
+    // Check if file
+    if( bf::is_regular_file(temp_path) == true ){
+        return output;
+    }
+
     // Create the directory iterators
     bf::directory_iterator it(temp_path);
     for( ; it != bf::directory_iterator(); it++ )
