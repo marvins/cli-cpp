@@ -13,7 +13,9 @@
 #include "../utility/String_Utilities.hpp"
 
 // C++ Standard Libraries
+#include <condition_variable>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <type_traits>
 
@@ -46,7 +48,8 @@ class A_Command_Result{
          */
         A_Command_Result( const int&                  instance_id,
                           CommandParseStatus const&   parse_status,
-                          A_Command const&            command );
+                          A_Command const&            command,
+                          const bool&                 refresh_screen_on_response = false );
        
 
         /**
@@ -60,7 +63,18 @@ class A_Command_Result{
         A_Command_Result( const int&                      instance_id,
                           CommandParseStatus const&       parse_status,
                           A_Command const&                command,
-                          std::vector<std::string> const& argument_values );
+                          std::vector<std::string> const& argument_values,
+                          const bool&                     refresh_screen_on_response = false );
+       
+
+        /**
+         * @brief Constructor 
+         *
+         * @param[in] argument_values  List of arguments provided to the command.
+         */
+        A_Command_Result( std::string const&                request_id,
+                          std::vector<std::string> const&   argument_values,
+                          const bool&                       refresh_screen_on_response = false );
 
     
         /**
@@ -72,7 +86,17 @@ class A_Command_Result{
             return m_instance_id;
         }
 
-
+        
+        /**
+         * @brief Get the Request ID.
+         * 
+         * @return Request ID for the request
+         */
+        inline std::string  Get_Request_ID()const {
+            return m_request_id;
+        }
+        
+        
         /**
          * @brief Get the Parsing Status.
          *
@@ -108,9 +132,9 @@ class A_Command_Result{
          *
          * @return Result of the operation.
          */
-        static A_Command_Result  Process_Arguments( const int&                       instance_id,
-                                                    const A_Command&                 command,
-                                                    const std::vector<std::string>&  arguments );
+        static A_Command_Result::ptr_t  Process_Arguments( const int&                       instance_id,
+                                                           const A_Command&                 command,
+                                                           const std::vector<std::string>&  arguments );
 
 
         /**
@@ -122,9 +146,9 @@ class A_Command_Result{
          *
          * @return Result of the operation.
         */
-        static A_Command_Result  Process_CLI_Arguments( const int&                       instance_id,
-                                                        const A_CLI_Command&             command,
-                                                        const std::vector<std::string>&  arguments );
+        static A_Command_Result::ptr_t  Process_CLI_Arguments( const int&                       instance_id,
+                                                               const A_CLI_Command&             command,
+                                                               const std::vector<std::string>&  arguments );
 
         /**
          * @brief Print to a debug string.
@@ -159,6 +183,17 @@ class A_Command_Result{
             return m_system_response_set;
         }
 
+        
+        inline void Set_Response_Timeout_Msec(int       timeout_msec) {
+            m_response_timeout_msec = timeout_msec;
+        }
+
+        
+        /**
+         * @brief Wait For a Response
+         */
+        void        Wait_For_Response();
+        
 
         /**
          * @brief Get argument value count.
@@ -225,6 +260,11 @@ class A_Command_Result{
 
     private:
 
+
+        A_Command_Result( A_Command_Result const& ) = delete;
+
+        void operator = ( A_Command_Result const& ) = delete;
+
         /// Class Name
         std::string m_class_name;
 
@@ -241,12 +281,27 @@ class A_Command_Result{
         /// Argument Values
         std::vector<std::string> m_argument_values;
 
+        /// Request ID
+        std::string     m_request_id;
+        
         /// System response
         bool m_system_response_set = false;
 
         /// Response 
         std::string m_system_response_value;
+        
+        /// Flag if we want to refresh screen on set system response
+        bool m_refresh_screen_on_response = false;
+        
+        /// Mutex for protecting response
+        std::mutex                  m_response_mutex;
 
+        /// Condition Variable for announcing changes to response
+        std::condition_variable     m_response_event;
+        
+        /// Response wait timeout in milliseconds
+        int                         m_response_timeout_msec = 2000000000;
+        
 }; // End of A_Command_Result Class
 
 } // End of CMD Namespace

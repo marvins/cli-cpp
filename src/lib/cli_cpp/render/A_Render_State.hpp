@@ -92,7 +92,7 @@ class A_Render_State{
          *
          * @param[in] command Command to process.
          */
-        void Process_Command_Result( CMD::A_Command_Result const& result );
+        void Process_Command_Result( CMD::A_Command_Result::ptr_t result );
         
 
         /**

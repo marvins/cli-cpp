@@ -245,7 +245,7 @@ void A_CLI_Manager::Process_Command_Results()
         for( size_t i=0; i<m_command_handlers.size(); i++ ){
             if( m_command_handlers[i]->Is_Supported( *command_result ) == true )
             {
-                m_command_handlers[i]->Process_Command( command_result );
+                m_command_handlers[i]->Process_Command( command_result, false );
             }
         }
     }

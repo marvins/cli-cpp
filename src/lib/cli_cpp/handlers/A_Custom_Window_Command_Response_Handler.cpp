@@ -46,7 +46,8 @@ bool A_Custom_Window_Command_Response_Handler::Is_Supported( CLI::CMD::A_Command
 /****************************************/
 /*          Process the Command         */
 /****************************************/
-void A_Custom_Window_Command_Response_Handler::Process_Command( CLI::CMD::A_Command_Result::ptr_t response )
+void A_Custom_Window_Command_Response_Handler::Process_Command( CLI::CMD::A_Command_Result::ptr_t response,
+                                                                const bool&                       wait_on_response )
 {
     
     // Get the instance ID

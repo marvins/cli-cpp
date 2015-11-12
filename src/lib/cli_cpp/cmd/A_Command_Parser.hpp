@@ -64,9 +64,9 @@ class A_Command_Parser {
          *
          * @return Command result.
          */
-        A_Command_Result Evaluate_Command( const int&          instance_id,
-                                           const std::string&  test_str,
-                                           const bool&         ignore_alias = false ) const;
+        A_Command_Result::ptr_t Evaluate_Command( const int&          instance_id,
+                                                  const std::string&  test_str,
+                                                  const bool&         ignore_alias = false ) const;
         
 
         /**

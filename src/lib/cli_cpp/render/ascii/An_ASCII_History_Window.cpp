@@ -110,7 +110,7 @@ bool An_ASCII_History_Window::Print_Table( std::vector<std::string>& buffer_data
         //  Build the print data
         print_buffers[0] = UTILS::num2str<int>(m_command_history->Get_Entry(row_id).Get_Command_ID());
         print_buffers[1] = " " + m_command_history->Get_Entry( row_id ).Get_Command_String();
-        print_buffers[2] = " " + m_command_history->Get_Entry( row_id ).Get_Command_Result().Get_Parse_Status_String();
+        print_buffers[2] = " " + m_command_history->Get_Entry( row_id ).Get_Command_Result()->Get_Parse_Status_String();
 
 
         // Compute max number of rows required for printing

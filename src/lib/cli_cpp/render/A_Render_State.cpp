@@ -339,7 +339,7 @@ void A_Render_State::Apply_Tab_Key()
 /********************************************/
 /*      Process a CLI Command Result        */
 /********************************************/
-void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result )
+void A_Render_State::Process_Command_Result( CMD::A_Command_Result::ptr_t result )
 {
 
     // Log Entry
@@ -347,31 +347,31 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
 
 
     // If help
-    if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_HELP ){
+    if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_HELP ){
         EVT::Event_Manager::Process_Event( m_instance_id,
                                            (int)CLI_Event_Type::CLI_HELP );
     }
 
 
     // If back
-    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_BACK ){
+    else if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_BACK ){
         EVT::Event_Manager::Process_Event( m_instance_id,
                                            (int)CLI_Event_Type::CLI_BACK );
     }
 
 
     // If Log
-    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_LOG ){
+    else if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_LOG ){
         EVT::Event_Manager::Process_Event( m_instance_id,
                                            (int)CLI_Event_Type::CLI_LOG );
     }
 
     
     // If adding an alias
-    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_ADD ){
+    else if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_ADD ){
         
         bool valid_alias;
-        CMD::A_Command_Alias temp_alias = CMD::A_Command_Alias::From_CLI_Input( UTILS::String_Merge( result.Get_Argument_Value_List() ),
+        CMD::A_Command_Alias temp_alias = CMD::A_Command_Alias::From_CLI_Input( UTILS::String_Merge( result->Get_Argument_Value_List() ),
                                                                                 valid_alias);
         if( valid_alias == true ){
             m_command_parser->Add_Command_Alias( temp_alias );
@@ -380,9 +380,9 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
 
 
     // If removing an alias
-    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_REMOVE ){
+    else if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_REMOVE ){
         bool valid_alias;
-        CMD::A_Command_Alias temp_alias = CMD::A_Command_Alias::From_CLI_Input( UTILS::String_Merge( result.Get_Argument_Value_List() ),
+        CMD::A_Command_Alias temp_alias = CMD::A_Command_Alias::From_CLI_Input( UTILS::String_Merge( result->Get_Argument_Value_List() ),
                                                                                 valid_alias);
         if( valid_alias == true ){
             BOOST_LOG_TRIVIAL(debug) << "Removing Command Alias: " << temp_alias.Get_Alias_Name() << std::endl;
@@ -395,23 +395,23 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
 
 
     // If listing aliases
-    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_LIST ){
+    else if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_LIST ){
         EVT::Event_Manager::Process_Event( m_instance_id,
                                            (int)CLI_Event_Type::CLI_ALIAS_LIST );
     }
 
 
     // If clear
-    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_CLEAR )
+    else if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_CLEAR )
     {
         m_command_history->Clear();
     }
 
     // If sleep mode
-    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_SLEEP ){
+    else if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_SLEEP ){
         
         // Get the number of seconds to sleep
-        float sleep_seconds = result.Get_Argument_Value<float>(0);
+        float sleep_seconds = result->Get_Argument_Value<float>(0);
 
         // Make sure its above zero
         if( sleep_seconds <= 0 ){
@@ -437,10 +437,10 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
     }
 
     // If We are running a CLI Run Script
-    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_RUN_SCRIPT ){
+    else if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_RUN_SCRIPT ){
 
         // Get the path
-        std::string cli_script = result.Get_Argument_Value_List()[0];
+        std::string cli_script = result->Get_Argument_Value_List()[0];
 
         // Load the entries
         m_active_command_queue = IO::Load_CLI_Script( cli_script );
@@ -449,7 +449,7 @@ void A_Render_State::Process_Command_Result( const CMD::A_Command_Result& result
 
 
     // If Pause
-    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_PAUSE ){
+    else if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_PAUSE ){
 
         // Set the flag
         BOOST_LOG_TRIVIAL(trace) << "Setting CLI_PAUSE Flag";

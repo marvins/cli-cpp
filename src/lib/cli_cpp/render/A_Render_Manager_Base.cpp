@@ -81,48 +81,44 @@ void A_Render_Manager_Base::Process_Command()
 
     
     // Check the command
-    CMD::A_Command_Result result = m_command_parser->Evaluate_Command( m_instance_id,
-                                                                       m_render_state->Get_Cursor_Text() );
+    CMD::A_Command_Result::ptr_t result = m_command_parser->Evaluate_Command( m_instance_id,
+                                                                              m_render_state->Get_Cursor_Text() );
 
     
-    // Create shared pointer
-    CMD::A_Command_Result::ptr_t result_ptr = std::make_shared<CMD::A_Command_Result>( result );
-    
-    
     // Log 
-    BOOST_LOG_TRIVIAL(trace) << "File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ << ", Command Result: " << result.To_Debug_String();
+    BOOST_LOG_TRIVIAL(trace) << "File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ << ", Command Result: " << result->To_Debug_String();
 
     
     // Add to history
     m_render_state->Add_Command_History( m_render_state->Get_Cursor_Text(), 
-                                         result_ptr );
+                                         result );
 
     
     //  Look for CLI Shutdown
-    if( result.Get_Parse_Status() == CMD::CommandParseStatus::CLI_SHUTDOWN ){
+    if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_SHUTDOWN ){
         EVT::Event_Manager::Process_Event( m_instance_id,
                                            (int)CLI_Event_Type::CLI_SHUTDOWN );
     }
     
 
     // Look for other CLI Command
-    else if( CMD::Is_Valid_CLI_Command( result.Get_Parse_Status() ) == true ){
+    else if( CMD::Is_Valid_CLI_Command( result->Get_Parse_Status() ) == true ){
         m_render_state->Process_Command_Result( result );
     }
 
 
     // Otherwise, handle command
-    else if( result.Get_Parse_Status() == CMD::CommandParseStatus::VALID ){
+    else if( result->Get_Parse_Status() == CMD::CommandParseStatus::VALID ){
 
         // Add the command to the queue
-        m_command_queue->Push_Command( result_ptr );
+        m_command_queue->Push_Command( result );
     
         // Wait for a completed response if response required
-        if( result.Get_Command().Response_Expected() == true )
+        if( result->Get_Command().Response_Expected() == true )
         {
             
             // Publish the notice
-            Set_Waiting_Command_Response( result_ptr );
+            Set_Waiting_Command_Response( result );
         
             // Refresh
             EVT::Event_Manager::Process_Event( m_instance_id,

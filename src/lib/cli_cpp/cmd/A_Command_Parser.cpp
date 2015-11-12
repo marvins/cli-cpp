@@ -48,9 +48,9 @@ A_Command_Parser::A_Command_Parser( const std::string&                   regex_s
 /***************************************/
 /*          Evaluate Command           */
 /***************************************/
-A_Command_Result  A_Command_Parser::Evaluate_Command( const int&          instance_id,
-                                                      const std::string&  test_str,
-                                                      const bool&         ignore_alias )const
+A_Command_Result::ptr_t  A_Command_Parser::Evaluate_Command( const int&          instance_id,
+                                                             const std::string&  test_str,
+                                                             const bool&         ignore_alias )const
 {
     // Log 
     BOOST_LOG_TRIVIAL(trace) << "Start of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
@@ -117,10 +117,10 @@ A_Command_Result  A_Command_Parser::Evaluate_Command( const int&          instan
     BOOST_LOG_TRIVIAL(trace) << "End of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
 
     // return the result
-    return A_Command_Result( instance_id,
-                             CommandParseStatus::NO_COMMAND_FOUND,
-                             A_Command( command_name, "", false),
-                             components);
+    return std::make_shared<A_Command_Result>( instance_id,
+                                               CommandParseStatus::NO_COMMAND_FOUND,
+                                               A_Command( command_name, "", false),
+                                               components);
 
 }
 

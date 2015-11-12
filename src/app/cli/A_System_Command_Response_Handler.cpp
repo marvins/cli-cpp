@@ -35,7 +35,9 @@ bool A_System_Command_Response_Handler::Is_Supported( CLI::CMD::A_Command_Result
 /****************************************/
 /*          Process the Command         */
 /****************************************/
-void A_System_Command_Response_Handler::Process_Command( CLI::CMD::A_Command_Result::ptr_t response ){
+void A_System_Command_Response_Handler::Process_Command( CLI::CMD::A_Command_Result::ptr_t response,
+                                                         const bool&                       wait_on_response )
+{
 
     // Check for system shutdown
     if( response->Get_Command().Get_Name() == "system-shutdown" ){

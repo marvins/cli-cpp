@@ -36,7 +36,8 @@ class A_Netstat_Command_Response_Handler : public CLI::A_Command_Response_Handle
         /**
          * @brief Process the Command
          */
-        virtual void Process_Command( CLI::CMD::A_Command_Result::ptr_t command );
+        virtual void Process_Command( CLI::CMD::A_Command_Result::ptr_t command,
+                                      const bool&                       wait_on_response );
 
 
 }; // End of A_Netstat_Command_Response_Handler Class

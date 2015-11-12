@@ -16,6 +16,8 @@
 namespace CLI{
 namespace CMD{
 
+typedef std::chrono::time_point<std::chrono::steady_clock>  TimePoint;
+
 
 /*************************************/
 /*            Constructor            */
@@ -24,6 +26,7 @@ A_Command_Result::A_Command_Result()
   : m_class_name("A_Command_Result"),
     m_instance_id(-1),
     m_parse_status( CommandParseStatus::UNKNOWN ),
+    m_request_id(""),
     m_system_response_set(false),
     m_system_response_value("")
 {
@@ -35,11 +38,14 @@ A_Command_Result::A_Command_Result()
 /*************************************/
 A_Command_Result::A_Command_Result( const int&                 instance_id,
                                     CommandParseStatus const&  parse_status,
-                                    A_Command const&           command)
+                                    A_Command const&           command,
+                                    const bool&                refresh_screen_on_response )
   : m_class_name("A_Command_Result"),
     m_instance_id(instance_id),
     m_parse_status(parse_status),
-    m_command(command)
+    m_command(command),
+    m_request_id(""),
+    m_refresh_screen_on_response(refresh_screen_on_response)
 {
 }
 
@@ -50,13 +56,34 @@ A_Command_Result::A_Command_Result( const int&                 instance_id,
 A_Command_Result::A_Command_Result( const int&                       instance_id,
                                     CommandParseStatus const&        parse_status,
                                     A_Command const&                 command,
-                                    std::vector<std::string> const&  argument_values )
+                                    std::vector<std::string> const&  argument_values,
+                                    const bool&                      refresh_screen_on_response )
   : m_class_name("A_Command_Result"),
     m_instance_id(instance_id),
     m_parse_status(parse_status),
     m_command(command),
-    m_argument_values(argument_values)
+    m_argument_values(argument_values),
+    m_request_id(""),
+    m_refresh_screen_on_response(refresh_screen_on_response)
 {
+}
+
+
+/*************************************/
+/*            Constructor            */
+/*************************************/
+A_Command_Result::A_Command_Result( std::string const&                  request_id,
+                                    std::vector<std::string> const&     argument_values,
+                                    const bool&                         refresh_screen_on_response )
+  : m_class_name("A_Command_Result"),
+    m_instance_id(-1),
+    m_parse_status(CommandParseStatus::VALID),
+    m_argument_values(argument_values),
+    m_request_id(request_id),       
+    m_refresh_screen_on_response(refresh_screen_on_response)
+{
+    A_Command   command("message", "CollectionControlCommand", false);
+    m_command = command;
 }
 
 
@@ -92,24 +119,56 @@ std::string A_Command_Result::Get_Parse_Status_String()const
 /*************************************/
 void A_Command_Result::Set_System_Response( const std::string& system_response )
 {
-    // Set the system response value
-    m_system_response_value = system_response;
+    {
+        std::lock_guard<std::mutex> lock(m_response_mutex);
+        
+        // Set the system response value
+        m_system_response_value = system_response;
 
-    // Signal that the system response has been received
-    m_system_response_set = true;
+        // Signal that the system response has been received
+        m_system_response_set = true;
+        
+        // Wake up threads that are waiting on the response
+        m_response_event.notify_all();
+    }
 
-    // Process a CLI Refresh event.
-    EVT::Event_Manager::Process_Event( m_instance_id,
-                                       (int)CLI_Event_Type::CLI_REFRESH );
+    // make sure initialized
+    if( EVT::Event_Manager::Is_Initialized() == true &&
+        m_refresh_screen_on_response == true )
+    {
+        // Process a CLI Refresh event.
+        EVT::Event_Manager::Process_Event( m_instance_id,
+                                           (int)CLI_Event_Type::CLI_REFRESH );
+    }
+
+}
+
+
+/*************************************/
+/*      Wait for a response          */
+/*************************************/
+void    A_Command_Result::Wait_For_Response() {
+    TimePoint   end_time = std::chrono::steady_clock::now() +
+                           std::chrono::milliseconds(m_response_timeout_msec);
+    std::unique_lock<std::mutex>    lock(m_response_mutex);
+    while (!m_system_response_set && std::chrono::steady_clock::now() < end_time) {
+        m_response_event.wait_until(lock, end_time);
+    }
+    
+//    // If we don't have a response, then a timeout occurred
+//    if (!m_system_response_set) {
+//        m_system_response_set = true;
+//        m_system_response_value = "Command Timeout";
+//    }
 }
 
 
 /**********************************************/
 /*          Process Command Arguments         */
 /**********************************************/
-A_Command_Result  A_Command_Result::Process_Arguments( const int& instance_id,
-                                                       const A_Command& command,    
-                                                       const std::vector<std::string>&  arguments )
+A_Command_Result::ptr_t  A_Command_Result::Process_Arguments( const int& instance_id,
+                                                              const A_Command& command,    
+                                                              const std::vector<std::string>&  arguments )
 {
     // Log 
     BOOST_LOG_TRIVIAL(trace) << "Start of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
@@ -122,18 +181,20 @@ A_Command_Result  A_Command_Result::Process_Arguments( const int& instance_id,
         if( command.Get_Argument_List().size() > 0 &&
             command.Get_Command_Argument(0).Is_Required() == true )
         {
-            return A_Command_Result( instance_id,
-                                     CommandParseStatus::INVALID_ARGUMENTS,
-                                     command,
-                                     arguments );
+            return std::make_shared<A_Command_Result>( instance_id,
+                                                       CommandParseStatus::INVALID_ARGUMENTS,
+                                                       command,
+                                                       arguments,
+                                                       true );
         }
 
         // Otherwise, we are fine.
         else{
-            return A_Command_Result( instance_id,
-                                     CommandParseStatus::VALID,
-                                     command,
-                                     arguments );
+            return std::make_shared<A_Command_Result>( instance_id,
+                                                       CommandParseStatus::VALID,
+                                                       command,
+                                                       arguments,
+                                                       true );
         }
     }
     
@@ -142,10 +203,11 @@ A_Command_Result  A_Command_Result::Process_Arguments( const int& instance_id,
         
         // Validate missing argument is not required
         if( command.Get_Command_Argument(i).Is_Required() == true ){
-            return A_Command_Result( instance_id,
-                                     CommandParseStatus::INVALID_ARGUMENTS,
-                                     command,
-                                     arguments );
+            return std::make_shared<A_Command_Result>( instance_id,
+                                                       CommandParseStatus::INVALID_ARGUMENTS,
+                                                       command,
+                                                       arguments,
+                                                       true );
         }
     }
 
@@ -154,27 +216,30 @@ A_Command_Result  A_Command_Result::Process_Arguments( const int& instance_id,
     {
         // Check the types
         if( command.Check_Argument_Type( arg, arguments[arg] ) == false ){
-            return A_Command_Result( instance_id,
-                                     CommandParseStatus::INVALID_ARGUMENTS,
-                                     command,
-                                     arguments );
+            return std::make_shared<A_Command_Result>( instance_id,
+                                                       CommandParseStatus::INVALID_ARGUMENTS,
+                                                       command,
+                                                       arguments,
+                                                       true );
         }
     }
 
 
     // Check the excess arguments
     if( arguments.size() > command.Get_Argument_List().size() ){
-        return A_Command_Result( instance_id,
-                                 CommandParseStatus::EXCESSIVE_ARGUMENTS,
-                                 command,
-                                 arguments );
+        return std::make_shared<A_Command_Result>( instance_id,
+                                                   CommandParseStatus::EXCESSIVE_ARGUMENTS,
+                                                   command,
+                                                   arguments,
+                                                   true );
     }
     
     // Return success
-    return A_Command_Result( instance_id,       
-                             CommandParseStatus::VALID,
-                             command,
-                             arguments );
+    return std::make_shared<A_Command_Result>( instance_id,       
+                                               CommandParseStatus::VALID,
+                                               command,
+                                               arguments,
+                                               true );
 
 
 }
@@ -183,9 +248,9 @@ A_Command_Result  A_Command_Result::Process_Arguments( const int& instance_id,
 /**********************************************/
 /*          Process Command Arguments         */
 /**********************************************/
-A_Command_Result  A_Command_Result::Process_CLI_Arguments( const int&                       instance_id,
-                                                           const A_CLI_Command&             command,    
-                                                           const std::vector<std::string>&  arguments )
+A_Command_Result::ptr_t  A_Command_Result::Process_CLI_Arguments( const int&                       instance_id,
+                                                                  const A_CLI_Command&             command,    
+                                                                  const std::vector<std::string>&  arguments )
 {
     // Log 
     BOOST_LOG_TRIVIAL(trace) << "Start of Method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ ;
@@ -198,18 +263,20 @@ A_Command_Result  A_Command_Result::Process_CLI_Arguments( const int&           
         if( command.Get_Argument_List().size() > 0 &&
             command.Get_Command_Argument(0).Is_Required() == true )
         {
-            return A_Command_Result( instance_id,
-                                     CommandParseStatus::INVALID_ARGUMENTS,
-                                     command.To_Command(),
-                                     arguments );
+            return std::make_shared<A_Command_Result>( instance_id,
+                                                       CommandParseStatus::INVALID_ARGUMENTS,
+                                                       command.To_Command(),
+                                                       arguments,
+                                                       true );
         }
 
         // Otherwise, we are fine.
         else{
-            return A_Command_Result( instance_id,
-                                     command.Get_Mode(),
-                                     command.To_Command(),
-                                     arguments );
+            return std::make_shared<A_Command_Result>( instance_id,
+                                                       command.Get_Mode(),
+                                                       command.To_Command(),
+                                                       arguments,
+                                                       true );
         }
     }
     
@@ -218,10 +285,11 @@ A_Command_Result  A_Command_Result::Process_CLI_Arguments( const int&           
         
         // Validate missing argument is not required
         if( command.Get_Command_Argument(i).Is_Required() == true ){
-            return A_Command_Result( instance_id,
-                                     CommandParseStatus::INVALID_ARGUMENTS,
-                                     command.To_Command(),
-                                     arguments );
+            return std::make_shared<A_Command_Result>( instance_id,
+                                                       CommandParseStatus::INVALID_ARGUMENTS,
+                                                       command.To_Command(),
+                                                       arguments,
+                                                       true );
         }
     }
 
@@ -230,27 +298,30 @@ A_Command_Result  A_Command_Result::Process_CLI_Arguments( const int&           
     {
         // Check the types
         if( command.Check_Argument_Type( arg, arguments[arg] ) == false ){
-            return A_Command_Result( instance_id,
-                                     CommandParseStatus::INVALID_ARGUMENTS,
-                                     command.To_Command(),
-                                     arguments );
+            return std::make_shared<A_Command_Result>( instance_id,
+                                                       CommandParseStatus::INVALID_ARGUMENTS,
+                                                       command.To_Command(),
+                                                       arguments,
+                                                       true );
         }
     }
 
 
     // Check the excess arguments
     if( arguments.size() > command.Get_Argument_List().size() ){
-        return A_Command_Result( instance_id,
-                                 CommandParseStatus::EXCESSIVE_ARGUMENTS,
-                                 command.To_Command(),
-                                 arguments );
+        return std::make_shared<A_Command_Result>( instance_id,
+                                                   CommandParseStatus::EXCESSIVE_ARGUMENTS,
+                                                   command.To_Command(),
+                                                   arguments,
+                                                   true );
     }
     
     // Return success
-    return A_Command_Result( instance_id,
-                             command.Get_Mode(),
-                             command.To_Command(),
-                             arguments );
+    return std::make_shared<A_Command_Result>( instance_id,
+                                               command.Get_Mode(),
+                                               command.To_Command(),
+                                               arguments,
+                                               true );
 
 
 }

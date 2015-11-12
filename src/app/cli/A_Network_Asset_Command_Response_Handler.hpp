@@ -46,7 +46,8 @@ class A_Network_Asset_Command_Response_Handler : public CLI::A_Command_Response_
         /**
          * @brief Process the Command
          */
-        virtual void Process_Command( CLI::CMD::A_Command_Result::ptr_t command );
+        virtual void Process_Command( CLI::CMD::A_Command_Result::ptr_t command,
+                                      const bool&                       wait_command_response );
 
     private:
 

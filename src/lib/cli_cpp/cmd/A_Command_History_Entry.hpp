@@ -62,8 +62,8 @@ class A_Command_History_Entry{
         /**
          * @brief Get the command result
          */
-        inline CMD::A_Command_Result Get_Command_Result(){
-            return (*m_command_result);
+        inline CMD::A_Command_Result::ptr_t Get_Command_Result(){
+            return m_command_result;
         }
 
 
