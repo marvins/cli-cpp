@@ -164,13 +164,24 @@ void An_Event_Queue::Clear()
 /*****************************/
 /*        Push Command       */
 /*****************************/
-void An_Event_Queue::Push_Event( int const& instance,
-                                 int const& event )
+void An_Event_Queue::Push_Event( const int&  instance,
+                                 const int&  event,
+                                 const bool& filter )
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
-    
-    
+   
+    // Check if we need to filter
+    m_active_mutex.lock();
+    if( filter == true && Has_Event( event ) == true )
+    {
+        BOOST_LOG_TRIVIAL(debug) << "Filtering Instance: " << instance << ", Event-ID: " << event;
+        m_active_mutex.unlock();
+        return;
+    }
+    m_active_mutex.unlock();
+
+
     // Decrement the push semaphore
     if( sem_wait( m_push_semaphore ) < 0 ){
         std::stringstream sin;
@@ -182,6 +193,9 @@ void An_Event_Queue::Push_Event( int const& instance,
     // Lock the mutex
     m_mtx.lock();
 
+
+    // Register the Event
+    Register_Event( event );
     
     // Set the value
     m_event_queue[m_head] = std::make_tuple(instance, event);
@@ -245,6 +259,9 @@ void An_Event_Queue::Pop_Event( int& instance,
     std::get<0>(m_event_queue[m_tail]) = (int)CLI_Event_Type::CLI_NULL;
     std::get<1>(m_event_queue[m_tail]) = -1;
 
+    
+    // Unregister the Event
+    Unregister_Event( event );
 
     // Update the size
     m_current_size--;
@@ -270,6 +287,46 @@ void An_Event_Queue::Pop_Event( int& instance,
     
     // return command
 }
+
+
+/************************************/
+/*          Register Event          */
+/************************************/
+void An_Event_Queue::Register_Event( const int& event_id )
+{
+    m_active_mutex.lock();
+
+    // Check to see if ID exists
+    if( m_active_events.find(event_id) == m_active_events.end() )
+    {
+        m_active_events[event_id] = 1;
+    }
+    else{
+        m_active_events[event_id]++;
+    }
+
+    m_active_mutex.unlock();
+}
+
+
+/**************************************/
+/*          Unregister Event          */
+/**************************************/
+void An_Event_Queue::Unregister_Event( const int& event_id )
+{
+    m_active_mutex.lock();
+    
+    if( m_active_events.find(event_id) == m_active_events.end() )
+    {
+        BOOST_LOG_TRIVIAL(error) << "Attempting to remove event-id (" << event_id << ") despite not being registered.";
+        return;
+    }
+
+    m_active_events[event_id]--;
+    
+    m_active_mutex.unlock();
+}
+
 
 } // End of EVT Namespace
 } // End of CLI Namespace

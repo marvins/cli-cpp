@@ -12,6 +12,8 @@
 
 // CLI Libraries
 #include "../utility/Log_Utilities.hpp"
+#include "../utility/Stopwatch.hpp"
+
 
 namespace CLI{
 namespace EVT{
@@ -219,7 +221,18 @@ void Event_Manager::Process_Event( const int& instance,
         BOOST_LOG_TRIVIAL(trace) << "Event queue is currently null.";
         return;
     }
-    inst->m_event_queue->Push_Event( instance, event );
+    
+    // Check if the event should be added
+    bool filter =  inst->m_config.Filter_Event( event );
+
+    if( filter == true ){
+        std::cout << "Filtering " << event << std::endl;
+    }
+    
+    // Push the event into the queue
+    inst->m_event_queue->Push_Event( instance, 
+                                     event,
+                                     filter );
 
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
@@ -233,15 +246,20 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
 {
     // Misc variables
     int temp_event, temp_instance;
+    Stopwatch<double> event_stopwatch;
+    Stopwatch<double> wait_stopwatch;
 
     // Run while the flag is valid
     while( m_is_running[thread_id] == true )
     {
         
         // Get the next event
+        wait_stopwatch.Start();
         m_event_queue->Pop_Event( temp_instance, 
                                   temp_event);
-            
+        wait_stopwatch.Stop();
+        event_stopwatch.Start();    
+
         // Log result    
         BOOST_LOG_TRIVIAL(trace) << "Popped event (" << temp_event << "), Event queue size: " << m_event_queue->Get_Current_Size();
 
@@ -268,6 +286,10 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
                                                     temp_event);
             }
         }
+
+        // Log
+        event_stopwatch.Stop();    
+        BOOST_LOG_TRIVIAL(trace) << std::fixed << "Finished processing event (" << temp_event << ")  Time Waiting: " << std::fixed << wait_stopwatch.Get_Duration().count() << " seconds, Time Processing: " << event_stopwatch.Get_Duration().count() << " seconds";
 
     }
 

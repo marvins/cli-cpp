@@ -8,6 +8,8 @@
 
 // C++ Standard Libraries
 #include <cinttypes>
+#include <string>
+
 
 namespace CLI{
 
@@ -116,6 +118,17 @@ enum class CLI_Event_Type : int32_t
     KEYBOARD_HOME        = 515,
     KEYBOARD_END         = 516,
 }; // End of event type enum
+
+
+/**
+ * @brief Convert CLI Event Type to String
+ *
+ * @param[in] event_id
+ *
+ * @return String Format
+*/
+std::string CLI_Event_Type_To_String( const int& event_id );
+
 
 } // End of CLI  Namespace
 

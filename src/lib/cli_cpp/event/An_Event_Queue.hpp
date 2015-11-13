@@ -8,6 +8,7 @@
 
 // C++ Standard Libraries
 #include <atomic>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <semaphore.h>
@@ -50,10 +51,13 @@ class An_Event_Queue
         /**
          * @brief Add Event to Queue.
          *
+         * @param[in] id    ID of the connection.
          * @param[in] event Event to push onto the queue.
+         * @param[in] filter Flag if we should filter if the flag already exists.
          */
-        void Push_Event( int const& id,
-                         int const& event );
+        void Push_Event( const int&  id,
+                         const int&  event,
+                         const bool& filter = false );
 
 
         /**
@@ -89,9 +93,40 @@ class An_Event_Queue
         inline int Get_Max_Size()const{
             return m_max_queue_size;
         }
-
+        
 
     private:
+
+
+        /**
+         * @brief Has Event
+         *
+         * @param[in] event_id
+         *
+         * @return True if event inside, false otherwise.
+        */
+        inline bool Has_Event( const int& event_id )const
+        {
+            return (m_active_events.find(event_id) != m_active_events.end() &&
+                    m_active_events.find(event_id)->second > 0 );
+        }
+
+
+        /**
+         * @brief Register Event
+         *
+         * @param[in] event_id
+        */
+        void Register_Event( const int& event_id );
+
+
+        /**
+         * @brief Unregister Event
+         *
+         * @param[in] event_id
+        */
+        void Unregister_Event( const int& event_id );
+
 
         /// Class Name
         std::string m_class_name;
@@ -119,6 +154,10 @@ class An_Event_Queue
 
         /// Current size
         int m_current_size;
+
+        /// Active Events
+        std::map<int,int> m_active_events;
+        std::mutex        m_active_mutex;
 
 }; // End of An_Event_Queue Class
 

@@ -8,6 +8,7 @@
 #-      Core Module Sources     -#
 #--------------------------------#
 set( LIB_CLI_CORE_MODULE_SOURCES
+     CLI_Event_Type.cpp
      ConnectionType.cpp
 )
 

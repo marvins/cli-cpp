@@ -25,6 +25,7 @@ set( LIB_CLI_UTILITY_MODULE_HEADERS
      ANSI_Utilities.hpp
      Filesystem_Utilities.hpp
      Log_Utilities.hpp
+     Stopwatch.hpp
      String_Utilities.hpp
      System_Utilities.hpp
      Telnet_Utilities.hpp

@@ -132,6 +132,11 @@ class A_Socket_Connection_Instance
         /// Refresh Screen Mutex Lock
         std::mutex m_refresh_lock;
 
+        /// Skip the Rendering
+        bool m_skip_render;
+
+        bool m_first_command_received;
+
 }; // End of A_Socket_Connection_Instance_Class
 
 

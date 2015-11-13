@@ -14,7 +14,9 @@
 #include "../event/Event_Manager.hpp"
 #include "../utility/ANSI_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
+#include "../utility/Stopwatch.hpp"
 #include "../utility/String_Utilities.hpp"
+
 
 namespace CLI{
 namespace RENDER{
@@ -147,7 +149,9 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Key: " << key << ", File: " << __FILE__ << ", Line: " << __LINE__;
-    
+    Stopwatch<double> process_stopwatch;
+    process_stopwatch.Start();
+
     // Make sure the instance is not null
     if( m_render_state == nullptr ){
         BOOST_LOG_TRIVIAL(error) << "Render-State for instance " << m_instance_id << " is null.";
@@ -238,7 +242,8 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
 
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    process_stopwatch.Stop();
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Time to process: " << std::fixed << process_stopwatch.Get_Duration().count() << " seconds";
 }
 
 
