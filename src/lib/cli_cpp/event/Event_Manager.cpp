@@ -225,9 +225,6 @@ void Event_Manager::Process_Event( const int& instance,
     // Check if the event should be added
     bool filter =  inst->m_config.Filter_Event( event );
 
-    if( filter == true ){
-        std::cout << "Filtering " << event << std::endl;
-    }
     
     // Push the event into the queue
     inst->m_event_queue->Push_Event( instance, 
@@ -293,6 +290,8 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
 
     }
 
+    // Log Completion
+    BOOST_LOG_TRIVIAL(trace) << std::fixed << "End of Event_Manger::" << __func__ << " method.";
 }
 
 } // End of EVT Namespace

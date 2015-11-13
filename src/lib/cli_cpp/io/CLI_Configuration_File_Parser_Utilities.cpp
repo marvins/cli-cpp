@@ -54,8 +54,8 @@ EVT::Event_Manager_Config  Load_Event_Manager_Config_XML_Node( pugi::xml_node& e
         throw std::runtime_error("work-queue-thread-count node was not found.");
     }
     int thread_count = event_work_queue_node.attribute("value").as_int(-1);
-    if( thread_count < 2 ){
-        throw std::runtime_error("work-queue-thread-count @value cannot be less than 2.");
+    if( thread_count < 1 ){
+        throw std::runtime_error("work-queue-thread-count @value cannot be less than 1.");
     }
 
 

@@ -11,6 +11,7 @@
 #include <deque>
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <vector>
@@ -281,6 +282,8 @@ class A_Render_State{
         /// Instance ID
         int m_instance_id;
 
+
+        std::mutex m_process_mutex;
 
 }; // End of A_Render_State Class
 

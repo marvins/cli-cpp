@@ -89,12 +89,14 @@ void A_Render_State::Process_Input( const int& input )
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
     BOOST_LOG_TRIVIAL(trace) << "Input Value: " << input;
 
+
     // SKip if < 0
     if( input < 0 ){ 
         BOOST_LOG_TRIVIAL(trace) << "Invalid Input Value.";
         return; 
     }
 
+    m_process_mutex.lock();
 
     // Check if pause mode is set
     if( Get_Pause_Mode() == true ){
@@ -151,9 +153,14 @@ void A_Render_State::Process_Input( const int& input )
 
     }
     
+    m_process_mutex.unlock();
+    
     // Refresh the screen
     EVT::Event_Manager::Process_Event( m_instance_id,
                                        (int)CLI_Event_Type::CLI_REFRESH );
+    
+    
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
