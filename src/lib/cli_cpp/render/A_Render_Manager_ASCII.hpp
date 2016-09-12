@@ -86,7 +86,8 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         /**
          * @brief Set the Current Window
          */
-        inline virtual void Set_Current_Window( const int& window_id ){
+        inline virtual void Set_Current_Window( const int& window_id )
+        {
             m_current_window = window_id;
             m_help_window_mode = false;
         }
@@ -118,6 +119,11 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base {
         */
         virtual int Register_Custom_Render_Window( An_ASCII_Render_Window_Base::ptr_t render_window );
 
+        
+        /**
+         * @brief Find a Window-ID by Command
+         */
+        virtual int Find_Window_ID_By_Trigger_Command( const CMD::A_Command& command )const; 
 
     protected:
        

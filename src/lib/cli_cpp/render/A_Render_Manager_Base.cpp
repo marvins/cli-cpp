@@ -148,12 +148,14 @@ void A_Render_Manager_Base::Process_Command()
 void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Key: " << key << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS( trace,
+                   "Start of Method.  Key: " + std::to_string(key));
     Stopwatch<double> process_stopwatch;
     process_stopwatch.Start();
 
     // Make sure the instance is not null
-    if( m_render_state == nullptr ){
+    if( m_render_state == nullptr )
+    {
         BOOST_LOG_TRIVIAL(error) << "Render-State for instance " << m_instance_id << " is null.";
         return;
     }

@@ -115,7 +115,8 @@ void Event_Manager::Initialize( Event_Manager_Config const& config )
 void Event_Manager::Finalize()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    const std::string m_class_name = "Event_Manager";
+    CLI_LOG_CLASS_ENTRY();
     
     // Check the singleton instance
     if( instance != nullptr ){
@@ -126,7 +127,7 @@ void Event_Manager::Finalize()
     
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -135,9 +136,6 @@ void Event_Manager::Finalize()
 /*************************************************************/
 bool Event_Manager::Is_Initialized()
 {
-    // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
-    
     // Check the singleton instance
     if( instance == nullptr ){
         return false;
@@ -153,17 +151,19 @@ bool Event_Manager::Is_Initialized()
 Event_Manager::ptr_t Event_Manager::Instance_Of()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    const std::string m_class_name = "Event_Manager";
+    CLI_LOG_CLASS_ENTRY();
     
     // Check if we are initialized
     if( Is_Initialized() == false ){
-        BOOST_LOG_TRIVIAL(warning) << "Event_Manager has not been initialized while calling method " << __func__;
+        CLI_LOG_CLASS( warning,
+                       "Event_Manager has not been initialized.");
         return nullptr;
     }
     
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 
     // Otherwise, return instance
     return instance;
@@ -176,7 +176,8 @@ Event_Manager::ptr_t Event_Manager::Instance_Of()
 void Event_Manager::Register_CLI_Event_Handler( A_CLI_Event_Handler_Base::ptr_t handler )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    const std::string m_class_name = "Event_Manager";
+    CLI_LOG_CLASS_ENTRY();
     
     
     // Make sure we are initialized

@@ -118,7 +118,7 @@ A_CLI_Manager::~A_CLI_Manager()
 void A_CLI_Manager::Connect()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_ENTRY();
     
 
     // Do not connect if thread is already running
@@ -133,15 +133,16 @@ void A_CLI_Manager::Connect()
 
     
     // For giggles, make sure the connection manager is not null
-    if( m_connection_manager == nullptr ){
+    if( m_connection_manager == nullptr )
+    {
         throw std::runtime_error("Connection Manager was null.");
-     }
+    }
 
     // Kick off the communication thread
     m_connection_manager->Start_Handler();
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -274,34 +275,49 @@ void A_CLI_Manager::Register_Command_Response_Handler( A_Command_Response_Handle
 /************************************************/
 /*        Register Custom Render Window         */
 /************************************************/
-void A_CLI_Manager::Register_Custom_Render_Window( RENDER::An_ASCII_Render_Window_Base::ptr_t render_window,
+bool A_CLI_Manager::Register_Custom_Render_Window( RENDER::An_ASCII_Render_Window_Base::ptr_t render_window,
                                                    CMD::A_Command const&                      command )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of method. File: " << __FILE__ << ", Class: " << m_class_name << ", Method: " << __func__ << ", Line: " << __LINE__;
-    
+    CLI_LOG_CLASS_ENTRY();
+
+    // Misc Vars
+    bool result = true;
+
     // Make sure the window is valid
     if( render_window == nullptr ){
-        BOOST_LOG_TRIVIAL(error) << "Render window is null. Ignoring.  File: " << __FILE__ << ", Class: " << m_class_name << ", Line: " << __LINE__;
-        return;
-    }
-    if( m_custom_window_command_handler == nullptr ){
-        BOOST_LOG_TRIVIAL(error) << "Custom Window Command Handler is null. Ignoring.  File: " << __FILE__ << ", Class: " << m_class_name << ", Line: " << __LINE__;
-        return;
+        CLI_LOG_CLASS( error,
+                       "Render window is null. Ignoring.");
+        result = false;
     }
 
-    // Attach the window
-    int window_id = RENDER::A_Render_Manager_Factory::Register_Custom_Render_Window( render_window );
+    // Make sure the window command handler was created
+    else if( m_custom_window_command_handler == nullptr )
+    {
+        CLI_LOG_CLASS( error,
+                       "Custom Window Command Handler is null. Ignoring.");
+        result = false;
+    }
 
-    // Add to the custom window handler
-    m_custom_window_command_handler->Register_Trigger_Command( command, window_id );
+    // Otherwise, handle
+    else
+    {
 
-    // Add to the command parser
-    m_configuration.Get_Command_Parser()->Add_Command( command ); 
+        // Attach the window
+        int window_id = RENDER::A_Render_Manager_Factory::Register_Custom_Render_Window( render_window );
+
+        // Add to the custom window handler
+        m_custom_window_command_handler->Register_Trigger_Command( command, window_id );
+
+        // Add to the command parser
+        m_configuration.Get_Command_Parser()->Add_Command( command ); 
     
-    
-    // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of method. File: " << __FILE__ << ", Class: " << m_class_name << ", Method: " << __func__ << ", Line: " << __LINE__;
+    }
+
+    // Log Exit and return
+    CLI_LOG_CLASS_EXIT();
+
+    return result;    
 }
 
 /******************************************************************/

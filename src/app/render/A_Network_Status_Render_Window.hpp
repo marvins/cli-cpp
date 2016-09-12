@@ -60,7 +60,14 @@ class A_Network_Status_Render_Window : public CLI::RENDER::An_ASCII_Render_Windo
         inline virtual std::string  Get_Window_Title()const{
             return "Network Status Window";
         }
-    
+        
+        
+        /**
+         * @brief Check if a Command is supported for enabling window.
+         */
+        virtual bool Is_Trigger_Command( const CLI::CMD::A_Command& command )const;
+   
+
     protected:
         
         /**

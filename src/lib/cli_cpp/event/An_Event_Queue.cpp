@@ -35,7 +35,7 @@ An_Event_Queue::An_Event_Queue( const int& max_queue_size )
 {
 
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << m_class_name << "::" << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_ENTRY();
     
     
     // Create the queue
@@ -90,7 +90,7 @@ An_Event_Queue::An_Event_Queue( const int& max_queue_size )
     
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -169,7 +169,11 @@ void An_Event_Queue::Push_Event( const int&  instance,
                                  const bool& filter )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS( trace,
+                   "Start of Method. Inst-ID: " + std::to_string(instance) 
+                   + ", Event-ID: " + std::to_string(event) 
+                   + ", Filter-Flag: " + std::to_string(filter));
+
    
     // Check if we need to filter
     m_active_mutex.lock();
@@ -218,7 +222,7 @@ void An_Event_Queue::Push_Event( const int&  instance,
     
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 /*****************************/
@@ -228,7 +232,9 @@ void An_Event_Queue::Pop_Event( int& instance,
                                 int& event )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS( trace,
+                   "Start of Method. Inst-ID: " + std::to_string(instance) 
+                   + ", Event-ID: " + std::to_string(event));
     
     // Decrement the pop semaphore
     if( sem_wait( m_pop_semaphore ) != 0 ){

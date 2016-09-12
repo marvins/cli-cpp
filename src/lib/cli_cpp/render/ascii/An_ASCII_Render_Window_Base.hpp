@@ -91,7 +91,15 @@ class An_ASCII_Render_Window_Base
         inline virtual bool Event_Registered( const int32_t& event_id ){
             return false;
         }
+        
 
+        /**
+         * @brief Check if a Command is supported for enabling window.
+         */
+        inline virtual bool Is_Trigger_Command( const CMD::A_Command& command )const
+        {
+            return false;
+        }
     
     protected:
 

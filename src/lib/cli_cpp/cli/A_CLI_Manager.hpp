@@ -88,7 +88,7 @@ class A_CLI_Manager{
          * @param[in] render_window   Custom window to register.
          * @param[in] command         Command that will render the window.
         */
-        void Register_Custom_Render_Window( RENDER::An_ASCII_Render_Window_Base::ptr_t  render_window,
+        bool Register_Custom_Render_Window( RENDER::An_ASCII_Render_Window_Base::ptr_t  render_window,
                                             CMD::A_Command const&                       command );
 
     private:

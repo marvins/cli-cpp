@@ -23,6 +23,7 @@
 #include "../utility/Log_Utilities.hpp"
 #include "../utility/String_Utilities.hpp"
 
+
 namespace CLI{
 namespace RENDER{
 
@@ -198,12 +199,17 @@ void A_Render_Manager_ASCII::Set_CLI_Window_Size( const int& rows,
 void A_Render_Manager_ASCII::Refresh()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS( trace, 
+                   "Start of Method. Current-Window-ID: " + std::to_string(m_current_window));
     
+    std::cout << "MANAGER INFO" << std::endl;
+    std::cout << "HELP WINS: " << m_help_windows.size() << std::endl;
+    std::cout << "WINDOWS  : " << m_window_list.size() << std::endl;
 
     // Pick the right window
     An_ASCII_Render_Window_Base::ptr_t ref;
-    if( m_help_window_mode == true ){
+    if( m_help_window_mode == true )
+    {
         ref = m_help_windows[m_current_window];
     } else {
         ref = m_window_list[m_current_window];
@@ -223,7 +229,7 @@ void A_Render_Manager_ASCII::Refresh()
 
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -473,20 +479,83 @@ bool A_Render_Manager_ASCII::Set_CLI_Detailed_Help_Window( const std::string& co
 /*********************************************/
 int A_Render_Manager_ASCII::Register_Custom_Render_Window( An_ASCII_Render_Window_Base::ptr_t render_window )
 {
+    // Log Entry
+    CLI_LOG_CLASS_ENTRY();
+
+    // Misc Variables
+    int window_id = -1;
+
     // Make sure the driver context is not null
-    if( m_render_driver_context == nullptr ){
-        BOOST_LOG_TRIVIAL(error) << "Render-Driver Context is null. Expect a seg fault.  File: " << __FILE__ << ", Class: " << m_class_name << ", Method: " << __func__ << ", Line: " << __LINE__;
+    if( m_render_driver_context == nullptr )
+    {
+        CLI_LOG_CLASS( error,
+                       "Render-Driver Context is null. Expect a seg fault.");
     }
 
-    // Attach the driver
-    render_window->Set_Render_Driver_Context( std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(m_render_driver_context) );
+    // Otherwise, Process window
+    else
+    {
+        // Attach the driver
+        render_window->Set_Render_Driver_Context( std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(m_render_driver_context) );
     
-    // Add to the window
-    m_window_list.push_back( render_window );
+        // Add to the window
+        m_window_list.push_back( render_window );
+        
+        window_id = m_window_list.size()-1;
+
+        // Log
+        CLI_LOG_CLASS( trace, 
+                   "Adding new Render-Window to window-list.  ID: " + std::to_string(window_id));
+    
+    }
+
+    // Log Exit
+    CLI_LOG_CLASS_EXIT();
 
     // return the id
-    return (m_window_list.size()-1);
+    return window_id;
 
+}
+
+
+/***************************************************************/
+/*          Check registered windows by testing command        */
+/***************************************************************/
+int A_Render_Manager_ASCII::Find_Window_ID_By_Trigger_Command( const CMD::A_Command& command )const
+{
+    // Log Entry
+    CLI_LOG_CLASS_ENTRY();
+
+    // Misc Variables
+    int result = -1;
+
+
+    // Iterate over help windows
+    for( int x=0; x<m_help_windows.size() && result < 0; x++ )
+    {
+        if( m_help_windows[x]->Is_Trigger_Command( command ) )
+        {
+            result = x;
+        }
+    }
+
+    // Iterate over main windows
+    if( result < 0 )
+    {
+        for( int x=0; x<m_window_list.size() && result < 0; x++ )
+        {
+            if( m_window_list[x]->Is_Trigger_Command( command ) )
+            {
+                result = x;
+            }
+        }
+    }
+
+
+    // Log Exit
+    CLI_LOG_CLASS_EXIT();
+    
+    return result;
 }
 
 

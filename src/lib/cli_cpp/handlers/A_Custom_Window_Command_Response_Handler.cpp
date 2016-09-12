@@ -49,7 +49,9 @@ bool A_Custom_Window_Command_Response_Handler::Is_Supported( CLI::CMD::A_Command
 void A_Custom_Window_Command_Response_Handler::Process_Command( CLI::CMD::A_Command_Result::ptr_t response,
                                                                 const bool&                       wait_on_response )
 {
-    
+    // Log Entry
+    CLI_LOG_CLASS_ENTRY();
+
     // Get the instance ID
     int instance = response->Get_Instance_ID();
 
@@ -58,25 +60,53 @@ void A_Custom_Window_Command_Response_Handler::Process_Command( CLI::CMD::A_Comm
 
     // Make sure the render manager is valid
     if( render_manager == nullptr ){
-        BOOST_LOG_TRIVIAL(error) << "Render-Manager returned for instance " << instance << " is null.";
-        return;
+        CLI_LOG_CLASS( error,
+                       "Render-Manager returned for instance " << instance << " is null.");
     }
 
-    // Check the name
-    std::map<int,CMD::A_Command>::iterator it = m_trigger_commands.begin();
-    for( ; it != m_trigger_commands.end(); it++ ){
+    // If so, then finish
+    else
+    {
+        // Check the name
+        bool exit_loop = false;
+        std::map<int,CMD::A_Command>::iterator it = m_trigger_commands.begin();
+        for( ; it != m_trigger_commands.end() && !exit_loop; it++ ){
         
-        // Check if the commands match
-        if( it->second == response->Get_Command() ){
+            // Check if the commands match
+            if( it->second == response->Get_Command() )
+            {
+                
+                // Get the window id
+                int old_win_id = it->first;
+                int new_win_id = it->first;
+
+                // If the window-ID is less than 0, we need to find it or throw an error
+                if( it->first < 0 )
+                {
+                    new_win_id = render_manager->Find_Window_ID_By_Trigger_Command( response->Get_Command() );
+                }
+
+                if( old_win_id < 0 && new_win_id >= 0 )
+                {
+                    m_trigger_commands[new_win_id] = m_trigger_commands[old_win_id];
+                    m_trigger_commands.erase(old_win_id);
+                }
+                
+                CLI_LOG_CLASS( trace,
+                               "Setting Render-Manager to ID: " + std::to_string(new_win_id));
+
+                // If the commands match, then set the window
+                render_manager->Set_Current_Window( new_win_id );
             
-            // If the commands match, then set the window
-            render_manager->Set_Current_Window( it->first );
-            
-            // Done
-            return;
+                // Done
+                exit_loop = true;
+            }
         }
     }
 
+
+    // Log Exit
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -86,6 +116,13 @@ void A_Custom_Window_Command_Response_Handler::Process_Command( CLI::CMD::A_Comm
 void A_Custom_Window_Command_Response_Handler::Register_Trigger_Command( CMD::A_Command const&  command,
                                                                          int const&             window_id )
 {
+    
+    // Log Error if ID is negative
+    if( window_id < 0 )
+    {
+        CLI_LOG_CLASS( error,
+                       "Window-ID must be greater than zero. Actual: " + std::to_string(window_id));
+    }
 
     // Trigger commands
     m_trigger_commands[window_id] = command;

@@ -126,7 +126,16 @@ class A_Render_Manager_Base
          * @return ID of the window.
         */
         virtual int Register_Custom_Render_Window( An_ASCII_Render_Window_Base::ptr_t render_window ) = 0;
+        
 
+        /**
+         * @brief Find a Window-ID by a requested trigger command.
+         *
+         * @param[in] command  Command to query against.
+         *
+         * @return Window-ID.  -1 if no matching window found.
+         */
+        virtual int Find_Window_ID_By_Trigger_Command( const CMD::A_Command& command )const = 0; 
 
     protected:
         

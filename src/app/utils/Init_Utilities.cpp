@@ -43,7 +43,7 @@ void Register_Command_Response_Handlers( CLI::A_CLI_Manager::ptr_t  cli_manager,
 /*************************************/
 /*      Register Render Windows      */
 /*************************************/
-void Register_Render_Windows( CLI::A_CLI_Manager::ptr_t   cli_manager,
+bool Register_Render_Windows( CLI::A_CLI_Manager::ptr_t   cli_manager,
                               State_Manager&              state_manager )
 {
     // Create a render window
@@ -55,7 +55,7 @@ void Register_Render_Windows( CLI::A_CLI_Manager::ptr_t   cli_manager,
                                          false );
 
     // Register the render window
-    cli_manager->Register_Custom_Render_Window( render_window, trigger_command );
+    return cli_manager->Register_Custom_Render_Window( render_window, trigger_command );
 }
 
 

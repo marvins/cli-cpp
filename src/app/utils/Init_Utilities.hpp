@@ -30,7 +30,7 @@ void Register_Command_Response_Handlers( CLI::A_CLI_Manager::ptr_t  cli_manager,
  * @param[in/out] cli_manager   CLI Manager
  * @param[in]     state_manager State Manager.
 */
-void Register_Render_Windows( CLI::A_CLI_Manager::ptr_t  cli_manager,
+bool Register_Render_Windows( CLI::A_CLI_Manager::ptr_t  cli_manager,
                               State_Manager&             state_manager );
 
 

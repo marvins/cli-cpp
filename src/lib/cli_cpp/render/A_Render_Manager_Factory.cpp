@@ -77,52 +77,105 @@ void A_Render_Manager_Factory::Finalize()
 /**********************************/
 /*        Get an Instance         */
 /**********************************/
-A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Instance_Of( const int& instance_id ){
+A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Instance_Of( const int& instance_id )
+{
+    // Log Entry
+    const std::string m_class_name = "A_Render_Manager_Factory";
+    CLI_LOG_CLASS(trace, "Start of Method.  Instance-ID: " + std::to_string(instance_id));
     
+    // Misc Variables
+    A_Render_Manager_Base::ptr_t result = nullptr;
+
+
     // Check the factory
-    if( Is_Initialized() == false ){
-        return nullptr;
+    if( Is_Initialized() == false )
+    {
+        CLI_LOG_CLASS( error,
+                       "Render-Manager Factory is uninitialized.");
+    }
+    else
+    {
+        
+        // Get the instance
+        A_Render_Manager_Factory& render_factory = Get_Factory_Instance();
+
+        // Make sure the instance exists
+        if( (int)render_factory.m_render_managers.size() <= instance_id )
+        {
+            render_factory.m_render_managers.resize( instance_id+1, nullptr );
+        }
+
+        // Make sure the instance is not null
+        if( render_factory.m_render_managers[instance_id] == nullptr )
+        {
+            render_factory.m_render_managers[instance_id] = render_factory.Create_Manager_Instance( instance_id );
+        }
+
+        // Return the instance
+        result = render_factory.m_render_managers[instance_id];
     }
 
-    // Get the instance
-    A_Render_Manager_Factory& render_factory = Get_Factory_Instance();
 
-    // Make sure the instance exists
-    if( (int)render_factory.m_render_managers.size() <= instance_id ){
-        render_factory.m_render_managers.resize( instance_id+1, nullptr );
-    }
-
-    // Make sure the instance is not null
-    if( render_factory.m_render_managers[instance_id] == nullptr ){
-        render_factory.m_render_managers[instance_id] = render_factory.Create_Manager_Instance( instance_id );
-    }
-
-    // Return the instance
-    return render_factory.m_render_managers[instance_id];
+    return result;
 }
 
 
 /*********************************************/
 /*      Register a Custom Render Window      */
 /*********************************************/
-int A_Render_Manager_Factory::Register_Custom_Render_Window( An_ASCII_Render_Window_Base::ptr_t render_window ){
+int A_Render_Manager_Factory::Register_Custom_Render_Window( An_ASCII_Render_Window_Base::ptr_t render_window )
+{
+    // Log Entry
+    const std::string m_class_name = "A_Render_Manager_Factory";
+    CLI_LOG_CLASS_ENTRY();
+
+    // Misc Variables
+    int id = -1;
 
     // Make sure the factory exists
-    if( Is_Initialized() == false ){
-        return -1;
+    if( Is_Initialized() == false )
+    {
+        CLI_LOG_CLASS( error, 
+                       "Unable to add window as Render-Manager Factory is uninitialized."); 
     }
 
-    // Get the factory instance
-    A_Render_Manager_Factory& render_factory = Get_Factory_Instance();
+    // Otherwise, continue
+    else
+    {
+        // Get the factory instance
+        A_Render_Manager_Factory& render_factory = Get_Factory_Instance();
 
-    // Add to the render list
-    render_factory.m_custom_render_windows.push_back(render_window);
+        // Add to the render list
+        render_factory.m_custom_render_windows.push_back(render_window);
 
-    // Add to existing windows
-    int id = -1;
-    for( size_t i=0; i<render_factory.m_render_managers.size(); i++ ){
-        id = render_factory.m_render_managers[i]->Register_Custom_Render_Window( render_window );
+        // Make sure we have at least one render manager
+        if( render_factory.m_render_managers.size() <= 0 )
+        {
+            CLI_LOG_CLASS( warning,
+                           "No render-managers available in render-factory.");
+        }
+
+        // Otherwise, continue
+        else
+        {
+
+            // Add to existing windows
+            bool exit_loop = false;
+            for( size_t i=0; i<render_factory.m_render_managers.size() && !exit_loop; i++ )
+            {
+                id = render_factory.m_render_managers[i]->Register_Custom_Render_Window( render_window );
+                exit_loop = true;
+            }
+        }
     }
+
+    // Check for error
+    if( id < 0 )
+    {
+        CLI_LOG_CLASS( error,
+                       "Problem registering window. Window-ID: " + std::to_string(id));
+    }
+
 
     return id;
 }
@@ -157,18 +210,24 @@ A_Render_Manager_Factory::A_Render_Manager_Factory()
 /********************************/
 A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Create_Manager_Instance( const int& instance_id )const
 {
+    // Log Entry
+    const std::string m_class_name = "A_Render_Manager_Factory";
+    CLI_LOG_CLASS( trace,
+                   "Start of Method.  Instance-ID: " + std::to_string(instance_id));
 
     // Create the pointer
     RENDER::A_Render_Manager_Base::ptr_t render_manager = nullptr;
  
     // Check the parser
-    if( m_command_parser == nullptr ){
-        BOOST_LOG_TRIVIAL(error) << "Command-Parser is currently null. File: " << __FILE__ << ", Line: " << __LINE__ << ".";
-        return nullptr;
+    if( m_command_parser == nullptr )
+    {
+        CLI_LOG_CLASS( error,
+                       "Command-Parser is currently null.");
     }
-
+    
     // Create the ASCII Render
-    if( m_conn_type == CORE::ConnectionType::SOCKET ){
+    else if( m_conn_type == CORE::ConnectionType::SOCKET )
+    {
         render_manager = std::make_shared<RENDER::A_Render_Manager_ASCII>( instance_id,
                                                                            m_command_parser,
                                                                            m_command_queue );
@@ -176,18 +235,26 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Create_Manager_Instance( 
 
 
     // Return Null
-    else{
-        return nullptr;
+    else
+    {
+        CLI_LOG_CLASS( error,
+                       "Unknown Connection-Type.");
     }
 
-    // Initialize
-    render_manager->Initialize();
-    
-    // Register the custom windows
-    for( size_t i=0; i<m_custom_render_windows.size(); i++ ){
-        render_manager->Register_Custom_Render_Window( m_custom_render_windows[i] );
-    }
+    // Continue only if render-manager is not null
+    if( render_manager != nullptr )
+    {
+        // Initialize
+        render_manager->Initialize();
+        int wid;
 
+        // Register the custom windows
+        for( size_t i=0; i<m_custom_render_windows.size(); i++ )
+        {
+            wid = render_manager->Register_Custom_Render_Window( m_custom_render_windows[i] );
+        }
+
+    }
 
     // Return the manager
     return render_manager;

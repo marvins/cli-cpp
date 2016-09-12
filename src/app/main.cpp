@@ -21,6 +21,7 @@
 
 // CLI Libraries
 #include <cli_cpp/cli/A_CLI_Manager_Factory.hpp>
+#include <cli_cpp/utility/Log_Utilities.hpp>
 #include <cli_cpp/utility/System_Utilities.hpp>
 
 using namespace std;
@@ -39,6 +40,9 @@ int main( int argc, char* argv[] )
             std::cerr << "usage: " << argv[0] << " <config-path>" << std::endl;
             return 1;
         }
+
+        // Misc Vars
+        bool response;
 
         // Define the configuration file path
         std::string config_pathname = argv[1];
@@ -59,14 +63,22 @@ int main( int argc, char* argv[] )
         Register_Command_Response_Handlers( cli_manager,
                                             state_manager );
 
-
-        // Register the Custom Windows
-        Register_Render_Windows( cli_manager,
-                                 state_manager );
-
         
         // Initialize the CLI Manager
         cli_manager->Connect();
+
+
+        // Register the Custom Windows
+        response = Register_Render_Windows( cli_manager,
+                                            state_manager );
+
+        if( !response )
+        {
+            std::cerr << "CLI-Manager unable to register custom window." << std::endl;
+            std::exit(-1);
+        }
+
+        
         
         // Wait for the system to be commanded to shut down.
         state_manager.Wait_On_System_Shutdown();

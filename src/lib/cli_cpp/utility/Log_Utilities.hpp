@@ -27,6 +27,20 @@
 
 using namespace boost::log::trivial;
 
+
+/**
+ * @brief Boost-Log Macros
+ */
+
+/// General Purpose Log String Marker
+#define CLI_CLASS_LOG_STR  (m_class_name + "::" + std::string(__func__) + ":" + std::to_string(__LINE__))
+
+#define CLI_LOG_CLASS( severity, message ) BOOST_LOG_TRIVIAL(severity) << "SRC=" << CLI_CLASS_LOG_STR << ", MSG=" << message 
+
+#define CLI_LOG_CLASS_ENTRY() CLI_LOG_CLASS( trace, "Start of Method.")
+#define CLI_LOG_CLASS_EXIT()  CLI_LOG_CLASS( trace, "End of Method.")
+
+
 namespace CLI{
 namespace UTILS{
 

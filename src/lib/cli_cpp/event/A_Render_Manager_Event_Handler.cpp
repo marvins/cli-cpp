@@ -54,13 +54,17 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& instance,
                                                     int const& event )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Event: " << event << ", File: " << __FILE__ << ", Line: " << __LINE__;
-    
+    CLI_LOG_CLASS( trace,
+                   "Start of Method. Instance-ID: " + std::to_string(instance)
+                   + ", Event-ID: " + std::to_string(event));
+   
+
     // Get the render manager
     RENDER::A_Render_Manager_Base::ptr_t render_manager = RENDER::A_Render_Manager_Factory::Instance_Of( instance );
 
     // Make sure the render manager is not null
-    if( render_manager == nullptr ){
+    if( render_manager == nullptr )
+    {
         BOOST_LOG_TRIVIAL(error) << "Render-Manager requested for instance " << instance << " return null.";
         return;
     }

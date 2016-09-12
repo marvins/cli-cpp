@@ -45,6 +45,26 @@ std::vector<std::string>& A_Network_Status_Render_Window::Get_Buffer_Data()
 }
 
 
+/*********************************************************/
+/*          Authorize a default trigger command          */
+/*********************************************************/
+bool A_Network_Status_Render_Window::Is_Trigger_Command( const CLI::CMD::A_Command& command )const
+{
+    // Log Entry
+    
+    // Misc Variables
+    bool result = false;
+
+    // Check command name
+    if( command.Get_Name() == "network-status" )
+    {
+        result = true;
+    }
+
+    return result;
+}
+        
+
 /*******************************************/
 /*         Print the Main Content          */
 /*******************************************/

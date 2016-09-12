@@ -29,6 +29,10 @@ find_package( Boost REQUIRED
 )
 include_directories( ${Boost_INCLUDE_DIRS})
 
+if( Boost_FOUND )
+    message("Boost Found")
+    message("Boost Include Dirs: ${Boost_INCLUDE_DIRS}")
+endif()
 
 #----------------------------------#
 #-    Define our demo sources     -#
