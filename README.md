@@ -8,7 +8,7 @@ The purpose of this project is to provide C++ programmers with a Command-Line In
 tie into their existing projects.  This seeks to allow connecting to your application via the local 
 process or via a TCP socket.  
 
-All arguments are controlled via a configuration file which consists of several CLI commands plus the user-defined
+All arguments are controlled via a configuration file which consists of several internal CLI commands plus the user-defined
 commands.  The command name, arguments, types, and response expectations can be provided.
 
 ## Building ##
@@ -19,22 +19,22 @@ tested this on Linux (Ubuntu/Fedora) and MacOS X with MacPorts
 ### Dependencies ###
  - Boost
  - pthreads (`std::thread`)
- 
+ - pugixml
 
 ### Compiling ###
 
-CLI-CPP is constructed using the CMake build system.  Just do the following.
+First, you must pull the pugixml dependencies.  From the project directory, call the following...
+    
+    git submodule update --init src/lib/cli_cpp/thirdparty/pugixml
+
+
+CLI-CPP is constructed using the CMake build system.  Do the following.
 
     mkdir -p release
     pushd release
     cmake ..
     make 
     popd
-
-Note that it will probably fail the first time due to pugixml missing.  To initialize from the base
-directory...
-
-    git submodule update --init src/lib/cli_cpp/thirdparty/pugixml
 
 Documentation can be constructed using Doxygen with 
 
