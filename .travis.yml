@@ -15,7 +15,8 @@ script:
     - popd
 
 before_install:
-    - sudo apt-cache search cmake 
-    - sudo apt-get install -y libboost-all-dev cmake doxygen g++
+    - apt-cache search cmake 
+    - apt-cache search boost
+    - apt-get install -y libboost-all-dev cmake doxygen g++
     - git submodule update --init src/lib/cli_cpp/thirdparty/pugixml
 
