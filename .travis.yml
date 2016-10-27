@@ -6,6 +6,11 @@ compiler:
     - gcc
     - clang
 
+addons:
+  apt:
+      packages:
+            - libboost-all-dev
+
 script: 
     - mkdir -p release
     - pushd release
