@@ -39,16 +39,14 @@ endif()
 #----------------------------------#
 set( CLI_MULTIUSER_APP_SOURCES
      main.cpp
+     core/State_Manager.cpp
+     render/A_User_Status_Render_Window.cpp
+     utils/Init_Utilities.cpp
 )     
 #     cli/A_Netstat_Command_Response_Handler.cpp
 #     cli/A_Network_Asset_Command_Response_Handler.cpp
 #     cli/A_Ping_Command_Response_Handler.cpp
 #     cli/A_System_Command_Response_Handler.cpp
-#     core/State_Manager.cpp
-#     render/A_Network_Status_Render_Window.cpp
-#     utils/Init_Utilities.cpp
-#     utils/Network_Scanner.cpp
-#     utils/System_Utilities.cpp
 #)
 
 
@@ -56,16 +54,14 @@ set( CLI_MULTIUSER_APP_SOURCES
 #-    Define our demo headers     -#
 #----------------------------------#
 set( CLI_MULTIUSER_APP_HEADERS
+     core/State_Manager.hpp
+     render/A_User_Status_Render_Window.hpp
+     utils/Init_Utilities.hpp
 )
 #    cli/A_Netstat_Command_Response_Handler.hpp
 #     cli/A_Network_Asset_Command_Response_Handler.hpp
 #     cli/A_Ping_Command_Response_Handler.hpp
 #     cli/A_System_Command_Response_Handler.hpp
-#     core/State_Manager.hpp
-#     render/A_Network_Status_Render_Window.hpp
-#     utils/Init_Utilities.hpp
-#     utils/Network_Scanner.hpp
-#     utils/System_Utilities.hpp
 #)
 
 
