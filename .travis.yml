@@ -19,7 +19,7 @@ script:
     - pushd release
     - cmake ..
     - make
-    ./bin/cli_cpp_unit_tests
+    - ./bin/cli_cpp_unit_tests
     - popd
 
 before_install:
