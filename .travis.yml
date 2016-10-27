@@ -17,9 +17,8 @@ addons:
 script: 
     - mkdir -p release
     - pushd release
-    - cmake --version
     - cmake ..
-    - make
+    - make -j
     - popd
 
 before_install:
