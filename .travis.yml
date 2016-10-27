@@ -10,6 +10,8 @@ addons:
   apt:
       packages:
             - libboost-all-dev
+            - cmake
+            - doxygen
 
 script: 
     - mkdir -p release
@@ -22,6 +24,5 @@ script:
 before_install:
     - apt-cache search cmake 
     - apt-cache search boost
-    - apt-get install -y libboost-all-dev cmake doxygen g++
     - git submodule update --init src/lib/cli_cpp/thirdparty/pugixml
 
