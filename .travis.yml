@@ -22,6 +22,7 @@ script:
     - popd
 
 before_install:
+    - uname -a
     - apt-cache search cmake 
     - apt-cache search boost
     - git submodule update --init src/lib/cli_cpp/thirdparty/pugixml
