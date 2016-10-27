@@ -18,13 +18,10 @@ script:
     - mkdir -p release
     - pushd release
     - cmake ..
-    - make -j
+    - make
+    ./bin/cli_cpp_unit_tests
     - popd
 
 before_install:
-    - uname -a
-    - lsb_release -a
-    - apt-cache search cmake 
-    - apt-cache search boost
     - git submodule update --init src/lib/cli_cpp/thirdparty/pugixml
 
