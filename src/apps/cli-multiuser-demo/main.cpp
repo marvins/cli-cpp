@@ -6,6 +6,8 @@
 
 // C++ Libraries
 #include <iostream>
+#include <string>
+
 
 // CLI Libraries
 #include <cli_cpp/cli/A_CLI_Manager_Factory.hpp>
@@ -21,7 +23,7 @@ int main( int argc, char* argv[] )
 {
 
     // Parse the Command-Line Options
-
+    std::string config_pathname = argv[1];
 
 
     // Create a CLI-Manager
