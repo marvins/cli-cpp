@@ -70,7 +70,6 @@ bool A_User_Status_Render_Window::Is_Trigger_Command( const CLI::CMD::A_Command&
 /*******************************************/
 void A_User_Status_Render_Window::Print_Main_Content()
 {
-    /*
     // Compute the rendering bounds
     int max_col = m_render_driver->Get_Window_Cols()-3;
     int max_row = m_render_driver->Get_Window_Rows()-4;
@@ -82,6 +81,7 @@ void A_User_Status_Render_Window::Print_Main_Content()
     int sum = 0;
 
 
+    /*
     // Build the Table Widths and Titles
     std::vector<int> table_widths;
     std::vector<std::string> titles;

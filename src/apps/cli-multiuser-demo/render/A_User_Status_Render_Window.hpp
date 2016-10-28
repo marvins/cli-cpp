@@ -90,7 +90,7 @@ class A_User_Status_Render_Window : public CLI::RENDER::An_ASCII_Render_Window_B
         State_Manager& m_state_manager;
         
         /// CLI Print Table Utility
-        //CLI::UTILS::An_ASCII_Print_Table::ptr_t  m_network_print_table;
+        CLI::UTILS::An_ASCII_Print_Table::ptr_t  m_active_print_table;
 
 }; // End of A_User_Status_Render_Window_Base
 
