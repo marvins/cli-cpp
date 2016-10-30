@@ -23,3 +23,8 @@ project(libcli-cpp)
 add_subdirectory( src )
 
 
+#-------------------------------------#
+#-     Configure the RPM Builder     -#
+#-------------------------------------#
+include( cmake/Scripts/BuildRPM.cmake )
+
