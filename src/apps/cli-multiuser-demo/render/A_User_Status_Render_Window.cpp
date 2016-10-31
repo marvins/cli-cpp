@@ -15,7 +15,24 @@ A_User_Status_Render_Window::A_User_Status_Render_Window( State_Manager& state_m
     m_window_title("User Status Window"),
     m_state_manager(state_manager)
 {
+    // Create Table Data
+    m_active_table_widths.clear();
+    m_active_table_labels.clear();
 
+    m_active_table_labels.push_back("User");
+    m_active_table_widths.push_back(10);
+
+    m_event_table_widths.clear();
+    m_event_table_labels.clear();
+
+    m_event_table_labels.push_back("Session-ID");
+    m_event_table_widths.push_back(15);
+    
+    m_event_table_labels.push_back("Event-Type");
+    m_event_table_widths.push_back(12);
+    
+    m_event_table_labels.push_back("Message");
+    m_event_table_widths.push_back(40);
 }
 
 
@@ -80,41 +97,33 @@ void A_User_Status_Render_Window::Print_Main_Content()
     int width  = max_col - min_col;
     int sum = 0;
 
-
-    /*
-    // Build the Table Widths and Titles
-    std::vector<int> table_widths;
-    std::vector<std::string> titles;
-    table_widths.push_back(25); sum += 25;  titles.push_back("Asset Name");
-    table_widths.push_back(25); sum += 25;  titles.push_back("Asset Address");
-    table_widths.push_back(25); sum += 25;  titles.push_back("Status");
-    table_widths.push_back(width - sum);    titles.push_back("Last Scan");
-
-    // Build the network print table
-    m_network_print_table = std::make_shared<CLI::UTILS::An_ASCII_Print_Table>( titles, table_widths, 
-                                                                                CLI::UTILS::An_ASCII_Print_Table_Config(false,false));
     
-    // Get the network asset list
-    std::vector<Network_Asset> assets = m_state_manager.Get_Network_Scanner()->Get_Network_Assets();
+    /// CLI Print Table Utility
+    CLI::UTILS::An_ASCII_Print_Table active_print_table( m_active_table_labels,
+                                                         m_active_table_widths );
+        
     
-    // Iterate over assets
-    for( size_t i=0; i<assets.size(); i++ )
+    /// CLI Event Table Utility
+    CLI::UTILS::An_ASCII_Print_Table event_print_table( m_event_table_labels,
+                                                        m_event_table_widths );
+
+
+    // Build the Event List
+    int counter = 0;
+    auto event_list = m_state_manager.Get_Session_Event_List();
+    for( auto event : event_list )
     {
-        // Add the name
-        m_network_print_table->Add_Entry( i, 0, " " + assets[i].Get_Name() );
-    
-        // Add the address
-        m_network_print_table->Add_Entry( i, 1, " " + assets[i].Get_Address() );
-
-        // Add the status
-        m_network_print_table->Add_Entry( i, 2, " " + assets[i].Get_Status_String() );
-
-        // Add the timestamp
-        m_network_print_table->Add_Entry( i, 3, " " + assets[i].Get_Last_Scan_Time_String() );
+        event_print_table.Add_Entry( 0, counter, " " + std::to_string(event.Get_Session().Get_Session_ID()));
+        event_print_table.Add_Entry( 2, counter, " " + event.Get_Message());
+        
+        // Increment Counter
+        counter++;
     }
-    
+
     // Print
-    m_network_print_table->Print_Table( m_buffer_data, min_row, max_row, min_col );
-    */
+    active_print_table.Print_Table( m_buffer_data, min_row, max_row/2-1, min_col );
+    
+    event_print_table.Print_Table( m_buffer_data, max_row/2+1, max_row, min_col );
+
 }
 

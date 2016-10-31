@@ -135,7 +135,6 @@ void A_Socket_Connection_Instance::Run()
                 break;
             }
 
-            BOOST_LOG_TRIVIAL(trace) << "Read " << n << " Bytes: " << std::string(buffer).substr(0,n);
 
             // Otherwise, check if valid
             if( n > 0 ){

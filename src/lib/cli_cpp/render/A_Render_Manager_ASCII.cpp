@@ -202,10 +202,6 @@ void A_Render_Manager_ASCII::Refresh()
     CLI_LOG_CLASS( trace, 
                    "Start of Method. Current-Window-ID: " + std::to_string(m_current_window));
     
-    std::cout << "MANAGER INFO" << std::endl;
-    std::cout << "HELP WINS: " << m_help_windows.size() << std::endl;
-    std::cout << "WINDOWS  : " << m_window_list.size() << std::endl;
-
     // Pick the right window
     An_ASCII_Render_Window_Base::ptr_t ref;
     if( m_help_window_mode == true )
@@ -426,7 +422,7 @@ void A_Render_Manager_ASCII::Set_Waiting_Command_Response( const CMD::A_Command_
     m_refresh_mutex.unlock();
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 

@@ -6,6 +6,8 @@
 #include "Init_Utilities.hpp"
 
 // App Libraries
+#include "../handlers/A_System_Command_Response_Handler.hpp"
+#include "../handlers/A_User_Session_Event_Handler.hpp"
 #include "../render/A_User_Status_Render_Window.hpp"
 
 
@@ -15,6 +17,21 @@
 void Register_Command_Response_Handlers( CLI::A_CLI_Manager::ptr_t  cli_manager,
                                          State_Manager&             state_manager )
 {
+    // Register a System Response Handler
+    A_System_Command_Response_Handler::ptr_t system_handler = std::make_shared<A_System_Command_Response_Handler>(state_manager);
+    cli_manager->Register_Command_Response_Handler( system_handler );
+}
+
+
+/************************************************/
+/*      Register Session Response Handlers      */
+/************************************************/
+void Register_Session_Response_Handlers( CLI::A_CLI_Manager::ptr_t cli_manager,
+                                         State_Manager&            state_manager )
+{
+
+
+
 }
 
 

@@ -205,7 +205,9 @@ void Event_Manager::Process_Event( const int& instance,
 {
 
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Event ID: " << event << ",  File: " << __FILE__ << ", Line: " << __LINE__;
+    const std::string m_class_name = "Event_Manager";
+    CLI_LOG_CLASS( trace, 
+                   "Start of method. Event-ID: " + std::to_string(event) + ", Instance: " + std::to_string(instance));
     
     // Make sure we are initialized
     if( Is_Initialized() == false ){
@@ -233,7 +235,8 @@ void Event_Manager::Process_Event( const int& instance,
                                      filter );
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS( trace, 
+                   "End of method. Event-ID: " + std::to_string(event) + ", Instance: " + std::to_string(instance));
 }
 
 
@@ -271,7 +274,8 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
         for( size_t i=0; i<m_event_handlers.size(); i++ ){
             
             // Log
-            BOOST_LOG_TRIVIAL(trace) << "Processing event " << temp_event << " through handler " << i << std::endl;
+            CLI_LOG_CLASS( trace,
+                           "Processing Event: " + std::to_string(temp_event) + ", Handler: " + std::to_string(i));
 
             // Check if null
             if( m_event_handlers[i] == nullptr ){

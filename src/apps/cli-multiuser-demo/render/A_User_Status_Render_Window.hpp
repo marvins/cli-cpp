@@ -88,10 +88,16 @@ class A_User_Status_Render_Window : public CLI::RENDER::An_ASCII_Render_Window_B
 
         /// State Manager
         State_Manager& m_state_manager;
-        
-        /// CLI Print Table Utility
-        CLI::UTILS::An_ASCII_Print_Table::ptr_t  m_active_print_table;
 
+        /// User Table Info
+        std::vector<std::string> m_active_table_labels;
+        std::vector<int>         m_active_table_widths;
+
+        /// Event Table Info
+        std::vector<std::string> m_event_table_labels;
+        std::vector<int>         m_event_table_widths;
+
+        
 }; // End of A_User_Status_Render_Window_Base
 
 

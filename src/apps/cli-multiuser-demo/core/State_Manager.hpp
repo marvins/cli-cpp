@@ -11,6 +11,7 @@
 #include <mutex>
 
 // Application Libraries
+#include <cli_cpp.hpp>
 
 
 /**
@@ -31,8 +32,16 @@ class State_Manager
          * @brief Destructor
         */
         ~State_Manager();
-
         
+
+        /**
+         * @brief Set the CLI-Manager
+         */
+        void Set_CLI_Manager( CLI::A_CLI_Manager::ptr_t cli_manager ){
+            m_cli_manager = cli_manager;
+        }
+
+
         /**
          * @brief Signal System Shutdown
          */
@@ -43,8 +52,22 @@ class State_Manager
          * @brief Wait on system shutdown.
          */
         void Wait_On_System_Shutdown();
-
         
+
+        /**
+         * @brief Signal Session Update
+         */
+        void Notify_Session_Event( const CLI::CORE::Session_Event& event );
+        
+
+        /**
+         * @brief Get Session Event LIst
+         */
+        inline std::deque<CLI::CORE::Session_Event> Get_Session_Event_List()const{
+            return m_session_events;
+        }
+
+
     private:
         
         /// Shutdown Variables 
@@ -53,6 +76,12 @@ class State_Manager
     
         /// Shutdown System State
         bool m_shutdown_system;
+        
+        /// CLI-Manager
+        CLI::A_CLI_Manager::ptr_t m_cli_manager;
+
+        /// Session Events
+        std::deque<CLI::CORE::Session_Event> m_session_events;
 
 }; // End of State_Manager Class
 

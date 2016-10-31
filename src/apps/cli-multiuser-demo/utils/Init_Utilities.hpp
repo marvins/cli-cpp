@@ -22,6 +22,16 @@
 void Register_Command_Response_Handlers( CLI::A_CLI_Manager::ptr_t  cli_manager,
                                          State_Manager&             state_manager  );
 
+
+/**
+ * @brief Register Session Response Handlers.
+ *
+ * @param[in/out] cli_manager
+ * @param[in]     state_manager
+ *
+ */
+void Register_Session_Response_Handlers( CLI::A_CLI_Manager::ptr_t cli_manager,
+                                         State_Manager&            state_manager );
         
 
 /**

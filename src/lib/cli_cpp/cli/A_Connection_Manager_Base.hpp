@@ -14,6 +14,7 @@
 // CLI Libraries
 #include "../cmd/A_Command_Queue.hpp"
 #include "../cmd/A_Command_Parser.hpp"
+#include "../core/A_Session.hpp"
 #include "A_Connection_Manager_Base_Config.hpp"
 
 

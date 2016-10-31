@@ -62,3 +62,12 @@ void State_Manager::Wait_On_System_Shutdown()
 }
 
 
+/******************************************/
+/*      Notify of a CLI Session Event     */
+/******************************************/
+void State_Manager::Notify_Session_Event( const CLI::CORE::Session_Event& session_event )
+{
+    m_session_events.push_back(session_event);
+
+}
+

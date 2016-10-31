@@ -40,18 +40,26 @@ int main( int argc, char* argv[] )
         // Create a CLI-Manager
         CLI::A_CLI_Manager::ptr_t cli_manager = CLI::A_CLI_Manager_Factory::Initialize( config_pathname );
     
-    
         // Make sure the cli-manager is not null
         if( cli_manager == nullptr )
         {
             std::cerr << "error: CLI-Manager Factory returned null instance." << std::endl;
             return 1;
         }
+        
+        
+        // Set the CLI-Manager in the State-Manager
+        state_manager.Set_CLI_Manager( cli_manager );
+
 
         // Register the Command-Response Handlers
         Register_Command_Response_Handlers( cli_manager,
                                             state_manager );
 
+        
+        // Register the Session-Response Handlers
+        Register_Session_Response_Handlers( cli_manager, 
+                                            state_manager );
         
         // Initialize the CLI Manager
         cli_manager->Connect();

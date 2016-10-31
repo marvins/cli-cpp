@@ -9,6 +9,7 @@
 // CLI Libraries
 #include "A_CLI_Manager_Configuration.hpp"
 #include "A_Command_Response_Handler_Base.hpp"
+#include "A_Session_Event_Handler_Base.hpp"
 #include "../cmd/A_Command_Queue.hpp"
 #include "../handlers/A_Custom_Window_Command_Response_Handler.hpp"
 
@@ -80,6 +81,14 @@ class A_CLI_Manager{
          * @param[in] handler Command-Response Handler to register with the system.
          */
         void Register_Command_Response_Handler( A_Command_Response_Handler_Base::ptr_t handler );
+        
+
+        /**
+         * @brief Register a Session Response Handler.
+         *
+         * @param[in] handler Session-Response Handler to register with the system
+         */
+        void Register_Session_Event_Handler( A_Session_Event_Handler_Base::ptr_t handler );
 
         
         /**

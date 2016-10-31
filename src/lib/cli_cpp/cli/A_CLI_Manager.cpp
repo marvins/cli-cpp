@@ -272,6 +272,17 @@ void A_CLI_Manager::Register_Command_Response_Handler( A_Command_Response_Handle
 }
 
 
+/******************************************************/
+/*          Register Session Response Handler         */
+/******************************************************/
+void A_CLI_Manager::Register_Session_Event_Handler( A_Session_Event_Handler_Base::ptr_t handler )
+{
+
+
+
+}
+
+
 /************************************************/
 /*        Register Custom Render Window         */
 /************************************************/
