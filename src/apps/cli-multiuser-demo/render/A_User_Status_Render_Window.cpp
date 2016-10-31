@@ -19,8 +19,13 @@ A_User_Status_Render_Window::A_User_Status_Render_Window( State_Manager& state_m
     m_active_table_widths.clear();
     m_active_table_labels.clear();
 
-    m_active_table_labels.push_back("User");
+    m_active_table_labels.push_back("Session-ID");
     m_active_table_widths.push_back(10);
+    m_active_table_labels.push_back("Connection-Type");
+    m_active_table_widths.push_back(20);
+    m_active_table_labels.push_back("Information");
+    m_active_table_widths.push_back(50);
+
 
     m_event_table_widths.clear();
     m_event_table_labels.clear();
@@ -95,7 +100,6 @@ void A_User_Status_Render_Window::Print_Main_Content()
 
     // Compute the width
     int width  = max_col - min_col;
-    int sum = 0;
 
     
     /// CLI Print Table Utility
@@ -108,13 +112,28 @@ void A_User_Status_Render_Window::Print_Main_Content()
                                                         m_event_table_widths );
 
 
-    // Build the Event List
+    // Build the Active List
     int counter = 0;
+    auto session_list = m_state_manager.Get_CLI_Manager()->Get_Active_Session_List();
+    for( auto session : session_list )
+    {
+        
+        // Add to table
+        active_print_table.Add_Entry( counter, 0, " " + std::to_string(session.Get_Session_ID()) );
+        active_print_table.Add_Entry( counter, 1, " " + CLI::CORE::ConnectionTypeToString(session.Get_Connection_Type()));
+        
+        // Increment Counter
+        counter++;
+    }
+
+    
+    // Build the Event List
+    counter = 0;
     auto event_list = m_state_manager.Get_Session_Event_List();
     for( auto event : event_list )
     {
-        event_print_table.Add_Entry( 0, counter, " " + std::to_string(event.Get_Session().Get_Session_ID()));
-        event_print_table.Add_Entry( 2, counter, " " + event.Get_Message());
+        event_print_table.Add_Entry( counter, 0, " " + std::to_string(event.Get_Session().Get_Session_ID()));
+        event_print_table.Add_Entry( counter, 2, " " + event.Get_Message());
         
         // Increment Counter
         counter++;

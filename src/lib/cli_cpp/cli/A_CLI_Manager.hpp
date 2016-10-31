@@ -99,6 +99,15 @@ class A_CLI_Manager{
         */
         bool Register_Custom_Render_Window( RENDER::An_ASCII_Render_Window_Base::ptr_t  render_window,
                                             CMD::A_Command const&                       command );
+        
+        
+        /**
+         * @brief Get list of active sessions.
+         *
+         * @return List of session instances.
+         */
+        std::vector<CORE::Session> Get_Active_Session_List()const;
+
 
     private:
 

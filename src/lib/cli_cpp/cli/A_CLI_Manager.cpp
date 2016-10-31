@@ -331,6 +331,22 @@ bool A_CLI_Manager::Register_Custom_Render_Window( RENDER::An_ASCII_Render_Windo
     return result;    
 }
 
+
+/************************************************/
+/*          Get Active Session List             */
+/************************************************/
+std::vector<CORE::Session> A_CLI_Manager::Get_Active_Session_List()const
+{
+    // Make sure we have been connected
+    if( m_connection_manager == nullptr ){
+        return std::vector<CORE::Session>();
+    }
+
+    // Otherwise, continue
+    return m_connection_manager->Get_Active_Session_List();
+}
+
+
 /******************************************************************/
 /*          Register Internal Command Response Handlers           */
 /******************************************************************/

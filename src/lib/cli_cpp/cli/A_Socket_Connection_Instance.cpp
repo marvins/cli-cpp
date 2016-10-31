@@ -39,11 +39,13 @@ const std::string KEYBOARD_F5_KEY     = "\033\133\061\065\176";
 /************************************/
 /*           Constructor            */
 /************************************/
-A_Socket_Connection_Instance::A_Socket_Connection_Instance( const int& instance, 
-                                                            const int& client_fd,
-                                                            const int& read_sleep_timeout_usec)
+A_Socket_Connection_Instance::A_Socket_Connection_Instance( const int&           instance, 
+                                                            const CORE::Session& session,
+                                                            const int&           client_fd,
+                                                            const int&           read_sleep_timeout_usec)
   : m_class_name("A_Socket_Connection_Instance"),
     m_instance_id(instance),
+    m_session(session),
     m_client_fd(client_fd),
     m_read_sleep_timeout_usec(read_sleep_timeout_usec),
     m_is_running(false),

@@ -12,6 +12,7 @@
 #include <string>
 
 // CLI Libraries
+#include "../core/A_Session.hpp"
 #include "../render/A_Render_Manager_Base.hpp"
 
 
@@ -35,9 +36,10 @@ class A_Socket_Connection_Instance
          * @param[in] instance Instance ID of the client.
          * @param[in] client_fd Socket File Descriptor of Client.
          */
-        A_Socket_Connection_Instance( const int& instance,
-                                      const int& client_fd,
-                                      const int& read_sleep_timeout_usec );
+        A_Socket_Connection_Instance( const int&            instance,
+                                      const CORE::Session&  session,
+                                      const int&            client_fd,
+                                      const int&            read_sleep_timeout_usec );
         
 
         /**
@@ -82,6 +84,14 @@ class A_Socket_Connection_Instance
          * @brief Refresh the Screen
         */
         void Refresh_Screen();
+        
+
+        /**
+         * @brief Get Session Info
+         */
+        inline CORE::Session Get_Session_Info()const{
+            return m_session;
+        }
 
 
     private:
@@ -110,6 +120,9 @@ class A_Socket_Connection_Instance
 
         /// Instance ID
         int m_instance_id;
+        
+        /// Session Info
+        CORE::Session m_session;
 
         /// Client File Descriptor
         int m_client_fd;

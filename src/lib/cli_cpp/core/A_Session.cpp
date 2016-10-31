@@ -18,9 +18,20 @@ Session::Session( const int&             session_id,
     m_session_id(session_id),
     m_connection_type(connection_type)
 {
+}
 
 
-
+/**********************************/
+/*          Constructor           */
+/**********************************/
+Session::Session( const int&                                session_id,
+                  const ConnectionType&                     connection_type,
+                  const std::map<std::string,std::string>&  connection_data )
+  : m_class_name("Session"),
+    m_session_id(session_id),
+    m_connection_type(connection_type),
+    m_connection_data(connection_data)
+{
 }
 
 

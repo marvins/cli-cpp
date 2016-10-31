@@ -79,6 +79,14 @@ class A_Connection_Manager_Base{
          * @param[in] instance Client instance to refresh.
          */
         virtual void Refresh_Screen( const int& instance ) = 0;
+        
+
+        /**
+         * @brief Get a list of active connections.
+         *
+         * @return session list.
+         */
+        virtual std::vector<CORE::Session> Get_Active_Session_List()const = 0;
 
 
     protected:

@@ -33,6 +33,14 @@ class State_Manager
         */
         ~State_Manager();
         
+        
+        /**
+         * @brief Get the CLI-Manager
+         */
+        inline CLI::A_CLI_Manager::ptr_t Get_CLI_Manager()const{
+            return m_cli_manager;
+        }
+
 
         /**
          * @brief Set the CLI-Manager
@@ -66,7 +74,7 @@ class State_Manager
         inline std::deque<CLI::CORE::Session_Event> Get_Session_Event_List()const{
             return m_session_events;
         }
-
+        
 
     private:
         

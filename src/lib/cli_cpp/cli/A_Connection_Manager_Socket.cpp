@@ -182,14 +182,21 @@ void A_Connection_Manager_Socket::Run_Handler()
         BOOST_LOG_TRIVIAL(debug) << "Starting the Socket Connection for ID " << next_position << ".";
         
         // Add new Connection Instance
+        CORE::Session session( next_position, 
+                               CORE::ConnectionType::SOCKET );
+        
         m_connection_list[next_position] = std::make_shared<A_Socket_Connection_Instance>( next_position,
+                                                                                           session,
                                                                                            client_fd,
                                                                                            m_configuration->Get_Read_Timeout_Sleep_Microseconds()); 
 
         
         // Process Event
-         
-
+        //CORE::SessionEvent new_session_event( session,
+        //                                      CORE::SessionEventType::CONNECT );
+        //EVT::Event_Manager::Process_Event( 
+        
+        
         // Start
         m_connection_list[next_position]->Start();
                                                                                            
@@ -199,7 +206,8 @@ void A_Connection_Manager_Socket::Run_Handler()
     m_is_running = false;
 
     // Stop each connection
-    for( size_t i=0; i<m_connection_list.size(); i++ ){
+    for( size_t i=0; i<m_connection_list.size(); i++ )
+    {
         m_connection_list[i]->Set_Connection_Flag(false);
         m_connection_list[i]->Join();
     }
@@ -218,7 +226,8 @@ void A_Connection_Manager_Socket::Run_Handler()
 void A_Connection_Manager_Socket::Refresh_Screen( const int& instance_id )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS( trace,
+                   "Start of Method. Instance-ID: " + std::to_string(instance_id));
     
     if( m_connection_list[instance_id] != nullptr && 
         m_connection_list[instance_id]->Is_Running() ){
@@ -226,9 +235,37 @@ void A_Connection_Manager_Socket::Refresh_Screen( const int& instance_id )
     }
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS( trace,
+                   "End of Method. Instance-ID: " + std::to_string(instance_id));
 }
 
+
+/*************************************************/
+/*          Get list of active sessions          */
+/*************************************************/
+std::vector<CORE::Session> A_Connection_Manager_Socket::Get_Active_Session_List()const
+{
+    // Create output list
+    std::vector<CORE::Session> output;
+    
+    for( size_t i=0; i<m_connection_list.size(); i++ ){
+        
+        // Check if null
+        if( m_connection_list[i] == nullptr )
+        {
+
+        }
+
+        // Otherwise, continue
+        else
+        {
+            output.push_back(m_connection_list[i]->Get_Session_Info());
+        }
+    }
+
+    // Return session info
+    return output;
+}
 
 
 /*****************************************************/

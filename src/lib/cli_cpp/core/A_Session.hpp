@@ -8,6 +8,9 @@
 
 // C++ Libraries
 #include <cinttypes>
+#include <map>
+#include <string>
+
 
 // CLI Libraries
 #include "ConnectionType.hpp"
@@ -39,6 +42,18 @@ class Session
          */
         Session( const int&                   session_id,
                  const CORE::ConnectionType&  connection_type );
+        
+        
+        /**
+         * @brief Constructor
+         *
+         * @param[in] session_id
+         * @param[in] connection_type
+         * @param[in] connection_data
+         */
+        Session( const int&                               session_id,
+                 const CORE::ConnectionType&              connection_type,
+                 const std::map<std::string,std::string>& connection_data );
 
 
         /**
@@ -58,6 +73,15 @@ class Session
             return m_connection_type;
         }
 
+
+        /**
+         * @brief Get the Connection Data
+         */
+        inline std::map<std::string,std::string> Get_Connection_Data()const{
+            return m_connection_data;
+        }
+
+
     private:
         
         /// Class Name
@@ -68,6 +92,9 @@ class Session
 
         /// Connection Type
         CORE::ConnectionType m_connection_type;
+
+        /// Connection Info
+        std::map<std::string,std::string> m_connection_data;
 
 }; // End of Session class
 
