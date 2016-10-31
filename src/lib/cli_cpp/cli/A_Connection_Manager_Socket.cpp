@@ -160,16 +160,20 @@ void A_Connection_Manager_Socket::Run_Handler()
                      NULL, 
                      0, 
                      NI_NUMERICHOST);
-        BOOST_LOG_TRIVIAL(debug) << "Connection has been made by " << host;
 
+        // Log Connection
+        CLI_LOG_CLASS( debug,
+                       "Connection has been made by " + std::string(host));
 
 
         // Call the process method
         int next_position = Get_Next_Client_Slot();
         
         // Make sure we are not past the max number
-        if( next_position < 0 ){
-            BOOST_LOG_TRIVIAL(debug) << "Connection is rejected as max number of connections reached.";
+        if( next_position < 0 )
+        {
+            CLI_LOG_CLASS( debug,
+                           "Connection is rejected as max number of connections reached.");
             continue;
         }
 

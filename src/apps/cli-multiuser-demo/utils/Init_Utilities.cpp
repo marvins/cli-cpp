@@ -30,7 +30,9 @@ void Register_Session_Response_Handlers( CLI::A_CLI_Manager::ptr_t cli_manager,
                                          State_Manager&            state_manager )
 {
 
-
+    // Create and register the user session response handler
+    A_User_Session_Event_Handler::ptr_t user_handler = std::make_shared<A_User_Session_Event_Handler>(state_manager);
+    cli_manager->Register_Session_Event_Handler( user_handler );
 
 }
 

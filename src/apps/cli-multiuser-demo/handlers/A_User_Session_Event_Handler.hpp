@@ -10,6 +10,9 @@
 // CLI Libraries
 #include <cli_cpp/cli/A_Session_Event_Handler_Base.hpp>
 
+// Demo Libraries
+#include "../core/State_Manager.hpp"
+
 
 /**
  * @class A_User_Session_Event_Handler
@@ -35,7 +38,7 @@ class A_User_Session_Event_Handler : public CLI::A_Session_Event_Handler_Base
         std::string m_class_name;
 
         /// Internal State Manager
-        State_Manager& state_manager;
+        State_Manager& m_state_manager;
 
 }; // End of A_User_Session_Event_Handler Class
 

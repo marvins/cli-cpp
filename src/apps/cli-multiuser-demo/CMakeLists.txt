@@ -40,6 +40,7 @@ endif()
 set( CLI_MULTIUSER_APP_SOURCES
      main.cpp
      core/State_Manager.cpp
+     handlers/A_User_Session_Event_Handler.cpp
      handlers/A_System_Command_Response_Handler.cpp
      render/A_User_Status_Render_Window.cpp
      utils/Init_Utilities.cpp
@@ -51,6 +52,7 @@ set( CLI_MULTIUSER_APP_SOURCES
 #----------------------------------#
 set( CLI_MULTIUSER_APP_HEADERS
      core/State_Manager.hpp
+     handlers/A_User_Session_Event_Handler.hpp
      handlers/A_System_Command_Response_Handler.hpp
      render/A_User_Status_Render_Window.hpp
      utils/Init_Utilities.hpp

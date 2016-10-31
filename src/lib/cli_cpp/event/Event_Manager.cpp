@@ -42,7 +42,8 @@ Event_Manager::Event_Manager( Event_Manager_Config const& config )
 
     // Start the threads
     m_event_process_threads.clear();
-    for( int i=0; i<m_config.Get_Event_Work_Queue_Thread_Count(); i++ ){
+    for( int i=0; i<m_config.Get_Event_Work_Queue_Thread_Count(); i++ )
+    {
         m_event_process_threads.push_back( std::thread( &Event_Manager::Event_Process_Runner,
                                                         this,
                                                         i ) );
@@ -62,23 +63,27 @@ Event_Manager::~Event_Manager()
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
 
     // Stop the thread
-    for( size_t i=0; i<m_event_process_threads.size(); i++ ){
+    for( size_t i=0; i<m_event_process_threads.size(); i++ )
+    {
         m_is_running[i] = false;
         m_event_queue->Push_Event(-1, (int)CLI_Event_Type::CLI_NULL);
     }
     
     
-    // Clear the event queue
-    m_event_queue->Clear();
-
-    
     // Wait to join the threads
-    for( size_t i=0; i<m_event_process_threads.size(); i++ ){
-        if( m_event_process_threads[i].joinable() ){
+    for( size_t i=0; i<m_event_process_threads.size(); i++ )
+    {
+        if( m_event_process_threads[i].joinable() )
+        {
+            std::cout << "Closing Thread: " << i << std::endl;
             m_event_process_threads[i].join();
         }
     }
     m_event_process_threads.clear();
+    
+    
+    // Clear the event queue
+    m_event_queue->Clear();
 
     // Reset
     m_event_queue.reset();
@@ -119,7 +124,8 @@ void Event_Manager::Finalize()
     CLI_LOG_CLASS_ENTRY();
     
     // Check the singleton instance
-    if( instance != nullptr ){
+    if( instance != nullptr )
+    {
         instance->m_is_initialized = false;
         instance.reset();
         instance = nullptr;
@@ -210,7 +216,8 @@ void Event_Manager::Process_Event( const int& instance,
                    "Start of method. Event-ID: " + std::to_string(event) + ", Instance: " + std::to_string(instance));
     
     // Make sure we are initialized
-    if( Is_Initialized() == false ){
+    if( Is_Initialized() == false )
+    {
         BOOST_LOG_TRIVIAL(error) << "Event-Manager is not initialized. Method: " << __func__ << ", Class: Event_Manager,  File: " << __FILE__ << ", Line: " << __LINE__;
         return;
     }
@@ -245,6 +252,10 @@ void Event_Manager::Process_Event( const int& instance,
 /*********************************/
 void Event_Manager::Event_Process_Runner( const int& thread_id )
 {
+    // Log Entry
+    const std::string m_class_name = "Event_Manager";
+    CLI_LOG_CLASS_ENTRY();
+
     // Misc variables
     int temp_event, temp_instance;
     Stopwatch<double> event_stopwatch;
@@ -254,6 +265,10 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
     while( m_is_running[thread_id] == true )
     {
         
+        // Log wait
+        CLI_LOG_CLASS( trace,
+                       "Event-Thread: " + std::to_string(thread_id) + ", Starting Event-Queue Pop.");
+        
         // Get the next event
         wait_stopwatch.Start();
         m_event_queue->Pop_Event( temp_instance, 
@@ -262,7 +277,9 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
         event_stopwatch.Start();    
 
         // Log result    
-        BOOST_LOG_TRIVIAL(trace) << "Popped event (" << temp_event << "), Event queue size: " << m_event_queue->Get_Current_Size();
+        CLI_LOG_CLASS( trace,
+                       "Event-Thread: " + std::to_string(thread_id) + ", Popped event (" + std::to_string(temp_event) 
+                       + "), Event queue size: " + std::to_string(m_event_queue->Get_Current_Size()));
 
         // Skip null events
         if( temp_event == (int)CLI_Event_Type::CLI_NULL ){
@@ -275,28 +292,39 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
             
             // Log
             CLI_LOG_CLASS( trace,
-                           "Processing Event: " + std::to_string(temp_event) + ", Handler: " + std::to_string(i));
+                           "Event-Thread: " + std::to_string(thread_id) + ", Processing Event: " 
+                           + std::to_string(temp_event) + ", Handler: " + std::to_string(i));
 
             // Check if null
-            if( m_event_handlers[i] == nullptr ){
-                BOOST_LOG_TRIVIAL(warning) << "Event handler at position " << i << " is currently nullptr. Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+            if( m_event_handlers[i] == nullptr )
+            {
+                CLI_LOG_CLASS( warning,
+                               "Event-Thread: " + std::to_string(thread_id) + ", Event handler at position " 
+                               + std::to_string(i) + " is currently nullptr.");
             }
 
             // Check if supported
-            else if( m_event_handlers[i]->Is_Supported_Event( temp_event ) == true ){
+            else if( m_event_handlers[i]->Is_Supported_Event( temp_event ) == true )
+            {
                 m_event_handlers[i]->Process_Event( temp_instance, 
                                                     temp_event);
             }
         }
 
         // Log
-        event_stopwatch.Stop();    
-        BOOST_LOG_TRIVIAL(trace) << std::fixed << "Finished processing event (" << temp_event << ")  Time Waiting: " << std::fixed << wait_stopwatch.Get_Duration().count() << " seconds, Time Processing: " << event_stopwatch.Get_Duration().count() << " seconds";
+        event_stopwatch.Stop();
+        {
+            std::stringstream ssin;
+            ssin << std::fixed << "Finished processing event (" << temp_event << ")  Time Waiting: " 
+                 << std::fixed << wait_stopwatch.Get_Duration().count() << " seconds, Time Processing: " 
+                 << event_stopwatch.Get_Duration().count() << " seconds";
+            CLI_LOG_CLASS( trace, ssin.str() ); 
+        }
 
     }
 
     // Log Completion
-    BOOST_LOG_TRIVIAL(trace) << std::fixed << "End of Event_Manger::" << __func__ << " method.";
+    CLI_LOG_CLASS_EXIT();
 }
 
 } // End of EVT Namespace
