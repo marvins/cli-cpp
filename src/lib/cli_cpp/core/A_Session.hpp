@@ -82,6 +82,22 @@ class Session
         }
 
 
+        /**
+         * @brief Add data to a session
+         */
+        inline void Add_Connection_Data_Entry( const std::string& key,
+                                               const std::string& value )
+        {
+            m_connection_data[key] = value;
+        }
+
+
+        /**
+         * @brief Format to Log String
+         */
+        std::string To_Log_String( const int& offset = 0)const;
+
+
     private:
         
         /// Class Name

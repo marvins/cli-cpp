@@ -5,6 +5,9 @@
  */
 #include "A_Session.hpp"
 
+// C++ Libraries
+#include <sstream>
+
 namespace CLI{
 namespace CORE{
 
@@ -34,6 +37,22 @@ Session::Session( const int&                                session_id,
 {
 }
 
+
+/********************************/
+/*      Format to Log String    */
+/********************************/
+std::string Session::To_Log_String( const int& offset )const
+{
+    // Create gap
+    const std::string gap( offset, ' ');
+
+    // Stream
+    std::stringstream sin;
+
+    sin << "Session, ID: " + std::to_string(m_session_id);
+
+    return sin.str();
+}
 
 /*************************/
 /*      Constructor      */

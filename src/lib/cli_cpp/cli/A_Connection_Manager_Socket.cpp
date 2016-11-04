@@ -184,7 +184,8 @@ void A_Connection_Manager_Socket::Run_Handler()
         // Add new Connection Instance
         CORE::Session session( next_position, 
                                CORE::ConnectionType::SOCKET );
-        
+        session.Add_Connection_Data_Entry("IP_ADDRESS", std::string(host));
+
         m_connection_list[next_position] = std::make_shared<A_Socket_Connection_Instance>( next_position,
                                                                                            session,
                                                                                            client_fd,
