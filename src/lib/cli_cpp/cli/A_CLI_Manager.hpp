@@ -11,6 +11,7 @@
 #include "A_Command_Response_Handler_Base.hpp"
 #include "A_Session_Event_Handler_Base.hpp"
 #include "../cmd/A_Command_Queue.hpp"
+#include "../core/A_Session.hpp"
 #include "../handlers/A_Custom_Window_Command_Response_Handler.hpp"
 
 

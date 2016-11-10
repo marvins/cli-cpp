@@ -8,7 +8,9 @@
 
 // C++ Standard Libraries
 #include <condition_variable>
+#include <deque>
 #include <mutex>
+
 
 // Application Libraries
 #include <cli_cpp.hpp>
@@ -31,7 +33,7 @@ class State_Manager
         /**
          * @brief Destructor
         */
-        ~State_Manager();
+        virtual ~State_Manager();
         
         
         /**
@@ -45,7 +47,7 @@ class State_Manager
         /**
          * @brief Set the CLI-Manager
          */
-        void Set_CLI_Manager( CLI::A_CLI_Manager::ptr_t cli_manager ){
+        inline void Set_CLI_Manager( CLI::A_CLI_Manager::ptr_t cli_manager ){
             m_cli_manager = cli_manager;
         }
 
