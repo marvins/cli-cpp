@@ -38,11 +38,11 @@ class A_Render_Manager_Base
 
     public:
 
-        
+
         /// Pointer Type
         typedef std::shared_ptr<A_Render_Manager_Base> ptr_t;
-        
-        
+
+
         /**
          * @brief Constructor
          *
@@ -52,7 +52,7 @@ class A_Render_Manager_Base
         A_Render_Manager_Base( const int&                   instance_id,
                                CMD::A_Command_Parser::ptr_t command_parser,
                                CMD::A_Command_Queue::ptr_t  command_queue );
-        
+
 
         /**
          * @brief Initialize the Render-Manager
@@ -60,12 +60,12 @@ class A_Render_Manager_Base
         virtual void Initialize() = 0;
 
 
-        /** 
+        /**
          * @brief Finalize the Render-Manager.
         */
         virtual void Finalize() = 0;
 
-        
+
         /**
          * @brief Command the system to wait on the input command response.
          */
@@ -78,7 +78,7 @@ class A_Render_Manager_Base
          * @return True if waiting on command result response.
          */
         virtual bool Check_Waiting_Command_Response() = 0;
-        
+
 
         /**
          * @brief Process Keyboard Input
@@ -86,14 +86,14 @@ class A_Render_Manager_Base
          * @param[in] key Input key to handle.
          */
         virtual void Process_Keyboard_Input( const int& key );
-        
+
 
         /**
          * @brief Process the current command text.
         */
         virtual void Process_Command();
-        
-        
+
+
         /**
          * @brief Set the Current Window
         */
@@ -109,14 +109,14 @@ class A_Render_Manager_Base
         virtual void Set_CLI_Window_Size( const int& rows,
                                           const int& cols );
 
-    
+
         /**
          * @brief Set the window to the appropriate Detailed Help ID.
          *
          * @param[in] command_name
         */
         virtual bool Set_CLI_Detailed_Help_Window( const std::string& command_name ) = 0;
-        
+
 
         /**
          * @brief Add a Custom Render Window.
@@ -126,7 +126,7 @@ class A_Render_Manager_Base
          * @return ID of the window.
         */
         virtual int Register_Custom_Render_Window( An_ASCII_Render_Window_Base::ptr_t render_window ) = 0;
-        
+
 
         /**
          * @brief Find a Window-ID by a requested trigger command.
@@ -135,16 +135,26 @@ class A_Render_Manager_Base
          *
          * @return Window-ID.  -1 if no matching window found.
          */
-        virtual int Find_Window_ID_By_Trigger_Command( const CMD::A_Command& command )const = 0; 
+        virtual int Find_Window_ID_By_Trigger_Command( const CMD::A_Command& command )const = 0;
+
+
+        /**
+         * Send an Asynchronous Message.
+         *
+         * @param[in] topic_name
+         * @param[in] message
+        */
+        virtual void Send_Asynchronous_Message( const std::string& topic_name,
+                                                const std::string& message ) = 0;
 
     protected:
-        
-        
+
+
         /**
          * @brief Refresh the Screen.
          */
         virtual void Refresh() = 0;
-        
+
 
 
         /**
@@ -153,7 +163,7 @@ class A_Render_Manager_Base
          * @return Header status bar text.
         */
         virtual std::string Get_Header_Status_Bar_Text()const = 0;
-        
+
 
         /**
          * @brief Get the header mode bar text.
@@ -162,7 +172,7 @@ class A_Render_Manager_Base
         */
         virtual std::string Get_Header_Mode_Bar_Text()const = 0;
 
-        
+
         /// Command Queue
         CMD::A_Command_Queue::ptr_t m_command_queue;
 
@@ -170,10 +180,10 @@ class A_Render_Manager_Base
         /// Command Parser
         CMD::A_Command_Parser::ptr_t m_command_parser;
 
-        
+
         /// Render Driver Context
         A_Render_Driver_Context_Base::ptr_t m_render_driver_context;
-        
+
 
         /// Local Render State
         A_Render_State::ptr_t m_render_state;

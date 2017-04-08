@@ -26,8 +26,8 @@ namespace RENDER{
 class A_Render_Manager_Factory
 {
     public:
-        
-                
+
+
         /**
          * @brief Initialize the Render-Manager Factory.
          *
@@ -39,7 +39,7 @@ class A_Render_Manager_Factory
                                 const std::string&            cli_title,
                                 CMD::A_Command_Parser::ptr_t  command_parser,
                                 CMD::A_Command_Queue::ptr_t   command_queue );
-        
+
 
         /**
          * @brief Finalize the Render-Manager Factory instance.
@@ -53,31 +53,41 @@ class A_Render_Manager_Factory
          * @param[in] instance_id Instance of the render manager.
         */
         static A_Render_Manager_Base::ptr_t Instance_Of( const int& instance_id );
-        
-        
+
+
         /**
          * @brief Register a Custom Render Window
          *
          * @param[in] render_window Render window to add to the system.
          */
         static int Register_Custom_Render_Window( An_ASCII_Render_Window_Base::ptr_t render_window );
-        
+
 
         /**
          * @brief Check if Initialized.
-         * 
+         *
          * @return True if initialized, false otherwise.
         */
         static bool Is_Initialized();
 
+
+        /**
+         * @brief Send Asynchronous Message to Rendering Windows.
+         *
+         * @param[in] topic_name
+         * @param[in] message
+        */
+        static void Send_Asynchronous_Message( const std::string& topic_name,
+                                               const std::string& message );
+
     private:
-        
+
         /**
          * @brief Default Constructor
         */
         A_Render_Manager_Factory();
 
-                
+
         /**
          * @brief Get the global Factory Instance.
         */
@@ -90,8 +100,8 @@ class A_Render_Manager_Factory
          * @param[in] instance_id ID to load into the render-manager.  Used for grabbing the driver and state.
          */
         A_Render_Manager_Base::ptr_t Create_Manager_Instance( const int& instance_id )const;
-        
-                
+
+
         /// Class Name
         std::string m_class_name;
 

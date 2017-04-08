@@ -28,7 +28,7 @@ A_Render_Manager_Factory& A_Render_Manager_Factory::Get_Factory_Instance()
     // Return the instance
     return factory_instance;
 }
-    
+
 
 /****************************/
 /*        Initialize        */
@@ -40,7 +40,7 @@ void  A_Render_Manager_Factory::Initialize( CORE::ConnectionType const&         
 {
     // Get the initial instance
     A_Render_Manager_Factory& factory_instance = Get_Factory_Instance();
-    
+
     // Update the internal values
     factory_instance.m_conn_type      = connection_type;
     factory_instance.m_cli_title      = cli_title;
@@ -59,18 +59,17 @@ void  A_Render_Manager_Factory::Initialize( CORE::ConnectionType const&         
 void A_Render_Manager_Factory::Finalize()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: A_Render_Manager_Factory, File: " << __FILE__ << ", Line: " << __LINE__;
-    
+    const std::string m_class_name = "A_Render_Manager_Factory";
+    CLI_LOG_CLASS_ENTRY();
+
     // Get instance
     A_Render_Manager_Factory& factory_instance = Get_Factory_Instance();
 
     // Reset
     factory_instance = A_Render_Manager_Factory();
-    
-    
-    // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: A_Render_Manager_Factory, File: " << __FILE__ << ", Line: " << __LINE__;
 
+    // Log Exit
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -81,8 +80,10 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Instance_Of( const int& i
 {
     // Log Entry
     const std::string m_class_name = "A_Render_Manager_Factory";
-    CLI_LOG_CLASS(trace, "Start of Method.  Instance-ID: " + std::to_string(instance_id));
-    
+    CLI_LOG_CLASS( trace,
+                   "Start of Method.  Instance-ID: "
+                   + std::to_string(instance_id));
+
     // Misc Variables
     A_Render_Manager_Base::ptr_t result = nullptr;
 
@@ -95,7 +96,7 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Instance_Of( const int& i
     }
     else
     {
-        
+
         // Get the instance
         A_Render_Manager_Factory& render_factory = Get_Factory_Instance();
 
@@ -135,8 +136,8 @@ int A_Render_Manager_Factory::Register_Custom_Render_Window( An_ASCII_Render_Win
     // Make sure the factory exists
     if( Is_Initialized() == false )
     {
-        CLI_LOG_CLASS( error, 
-                       "Unable to add window as Render-Manager Factory is uninitialized."); 
+        CLI_LOG_CLASS( error,
+                       "Unable to add window as Render-Manager Factory is uninitialized.");
     }
 
     // Otherwise, continue
@@ -182,6 +183,56 @@ int A_Render_Manager_Factory::Register_Custom_Render_Window( An_ASCII_Render_Win
 
 
 /****************************************/
+/*       Send Asynchronous Message      */
+/****************************************/
+void A_Render_Manager_Factory::Send_Asynchronous_Message( const std::string& topic_name,
+                                                          const std::string& message )
+{
+    // Log Entry
+    const std::string m_class_name = "A_Render_Manager_Factory";
+    CLI_LOG_CLASS_ENTRY();
+
+
+    // Make sure the factory exists
+    if( Is_Initialized() == false )
+    {
+        CLI_LOG_CLASS( error,
+                       "Unable to Send-Message as Render-Manager Factory is uninitialized.");
+    }
+
+    // Otherwise, continue
+    else
+    {
+        // Get the factory instance
+        A_Render_Manager_Factory& render_factory = Get_Factory_Instance();
+
+
+        // Make sure we have at least one render manager
+        if( render_factory.m_render_managers.size() <= 0 )
+        {
+            CLI_LOG_CLASS( warning,
+                           "No render-managers available in render-factory.");
+        }
+
+        // Otherwise, continue
+        else
+        {
+
+            // Send message to each render-manager.
+            for( size_t i=0; i<render_factory.m_render_managers.size(); i++ )
+            {
+                render_factory.m_render_managers[i]->Send_Asynchronous_Message( topic_name,
+                                                                                message );
+            }
+        }
+    }
+
+    // Log Exit
+    CLI_LOG_CLASS_EXIT();
+}
+
+
+/****************************************/
 /*        Check if Initialized          */
 /****************************************/
 bool A_Render_Manager_Factory::Is_Initialized()
@@ -217,14 +268,14 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Create_Manager_Instance( 
 
     // Create the pointer
     RENDER::A_Render_Manager_Base::ptr_t render_manager = nullptr;
- 
+
     // Check the parser
     if( m_command_parser == nullptr )
     {
         CLI_LOG_CLASS( error,
                        "Command-Parser is currently null.");
     }
-    
+
     // Create the ASCII Render
     else if( m_conn_type == CORE::ConnectionType::SOCKET )
     {
@@ -262,4 +313,3 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Create_Manager_Instance( 
 
 } // End of RENDER Namespace
 } // End of CLI    Namespace
-

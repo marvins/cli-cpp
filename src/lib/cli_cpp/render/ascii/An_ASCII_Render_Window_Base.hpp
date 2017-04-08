@@ -100,6 +100,20 @@ class An_ASCII_Render_Window_Base
         {
             return false;
         }
+
+
+        /**
+         * @brief Send Asynchronous Message to Window.
+         *
+         * @param[in] topic_name
+         * @param[in] message
+        */
+        virtual inline void Send_Asynchronous_Message( const std::string& topic_name,
+                                                       const std::string& message )
+        {
+            // Do nothing for base types.
+        }
+
     
     protected:
 

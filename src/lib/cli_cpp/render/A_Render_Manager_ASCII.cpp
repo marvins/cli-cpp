@@ -45,7 +45,7 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int&                    in
     // Cast the driver
     A_Render_Driver_Context_Base::ptr_t render_driver = A_Render_Driver_Context_Factory::Create_Instance();
     m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(render_driver);
-    
+
     // Local Rendering State
     m_render_state = A_Render_State_Factory::Instance_Of( instance_id );
 
@@ -70,7 +70,7 @@ void A_Render_Manager_ASCII::Initialize()
 
     // Cast the driver
     A_Render_Driver_Context_ASCII::ptr_t driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>( m_render_driver_context);
-    
+
     // Make sure it is not null
     if( driver_context == nullptr ){
         BOOST_LOG_TRIVIAL(error) << "driver-context is currently null. Expect a big seg fault.";
@@ -84,33 +84,33 @@ void A_Render_Manager_ASCII::Initialize()
     // Add the main window [0]
     m_window_list.push_back(std::make_shared<A_Main_Window>( driver_context,
                                                              m_render_state->Get_Command_History()));
-    
+
     // Add the help window [1]
     m_window_list.push_back(std::make_shared<A_General_Help_Window>( driver_context,
                                                                      m_command_parser ));
 
     // Add the log window [2]
     m_window_list.push_back(std::make_shared<A_Log_Window>( driver_context ));
-    
-    
+
+
     // Add the alias list window [3]
-    m_window_list.push_back(std::make_shared<An_Alias_List_Window>( driver_context, 
+    m_window_list.push_back(std::make_shared<An_Alias_List_Window>( driver_context,
                                                                     m_command_parser ));
 
     // Add the variable list window [4]
     m_window_list.push_back(std::make_shared<A_Variable_List_Window>( driver_context,
                                                                       m_command_parser ));
 
-    
+
     // Create the CLI Man Pages
     for( size_t i=0; i<m_command_parser->Get_CLI_Command_List().size(); i++ ){
         m_help_windows.push_back(std::make_shared<A_CLI_Command_Detailed_Help_Window>( driver_context,
                                                                                         m_command_parser->Get_CLI_Command_List()[i] ));
     }
 
-    
 
-    
+
+
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
@@ -126,7 +126,7 @@ void A_Render_Manager_ASCII::Finalize()
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+
     // Clear out the windows
     m_window_list.clear();
     m_help_windows.clear();
@@ -143,15 +143,15 @@ std::vector<std::string> A_Render_Manager_ASCII::Get_Console_Buffer()
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+
     // Lock the mutex
     m_refresh_mutex.lock();
-    
-    
+
+
     // Refresh
     Refresh();
 
-    
+
     // Get the data
     std::vector<std::string> output;
     if( m_help_window_mode == false ){
@@ -160,13 +160,13 @@ std::vector<std::string> A_Render_Manager_ASCII::Get_Console_Buffer()
     else {
         output = m_help_windows[m_current_window]->Get_Buffer_Data();
     }
-    
+
     // Unlock the mutex
     m_refresh_mutex.unlock();
-    
+
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+
     // Return the current window
     return output;
 }
@@ -181,11 +181,11 @@ void A_Render_Manager_ASCII::Set_CLI_Window_Size( const int& rows,
     // Lock the mutex
     m_refresh_mutex.lock();
 
-    
+
     // Update Driver
     m_render_driver_context->Set_CLI_Window_Size( rows, cols );
 
-    
+
     // Unlock the mutex
     m_refresh_mutex.unlock();
 
@@ -199,9 +199,9 @@ void A_Render_Manager_ASCII::Set_CLI_Window_Size( const int& rows,
 void A_Render_Manager_ASCII::Refresh()
 {
     // Log Entry
-    CLI_LOG_CLASS( trace, 
+    CLI_LOG_CLASS( trace,
                    "Start of Method. Current-Window-ID: " + std::to_string(m_current_window));
-    
+
     std::cout << "MANAGER INFO" << std::endl;
     std::cout << "HELP WINS: " << m_help_windows.size() << std::endl;
     std::cout << "WINDOWS  : " << m_window_list.size() << std::endl;
@@ -227,7 +227,7 @@ void A_Render_Manager_ASCII::Refresh()
     // Print the CLI Onto the Current Buffer Data
     Print_CLI(ref->Get_Buffer_Data());
 
-    
+
     // Log Exit
     CLI_LOG_CLASS_EXIT();
 }
@@ -238,7 +238,7 @@ void A_Render_Manager_ASCII::Refresh()
 /*******************************/
 void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffer )
 {
-    
+
     // Pick the right window
     An_ASCII_Render_Window_Base::ptr_t ref;
     if( m_help_window_mode == true ){
@@ -246,35 +246,35 @@ void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffe
     } else {
         ref = m_window_list[m_current_window];
     }
-    
+
     // Get the CLI Title
     std::string cli_title = "   " + m_render_driver_context->Get_CLI_Title();
-    
-    
+
+
     // Status Code String
     std::string status_code_string = Get_Header_Status_Bar_Text();
 
     // Status Mode String
     std::string status_mode_string = Get_Header_Mode_Bar_Text();
 
-    
+
     // Find the title length
     int title_length = std::min((int)cli_title.size(), m_render_driver_context->Get_Window_Cols() * 3/8);
     int title_width  = m_render_driver_context->Get_Window_Cols() * 3 / 8;
-    
+
     // Define the first title part
     std::string title_header = cli_title.substr( 0, title_length);
     title_header.resize(title_width, ' ');
 
     // Append the status text
     title_header += status_mode_string + UTILS::ANSI_RESET + "  " + status_code_string + UTILS::ANSI_RESET;
-    
+
     // Set the header
     print_buffer[0] = UTILS::ANSI_CLEARSCREEN + UTILS::ANSI_RESETCURSOR + title_header + UTILS::ANSI_NEWLINE;
-    
+
     // Set the titlebar
     print_buffer[1] = "   " + UTILS::ANSI_BLUE + ref->Get_Window_Title() + UTILS::ANSI_RESET + UTILS::ANSI_NEWLINE;
-    
+
 }
 
 
@@ -287,7 +287,7 @@ std::string A_Render_Manager_ASCII::Get_Header_Status_Bar_Text()const
     // Make sure the driver is not null
     if( m_render_state == nullptr ){
         BOOST_LOG_TRIVIAL(error) << "Render-State is currently null. Expect a seg fault. Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
-    } 
+    }
     if( m_render_driver_context == nullptr ){
         BOOST_LOG_TRIVIAL(error) << "Render-Driver Context is null. Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
     }
@@ -316,14 +316,14 @@ std::string A_Render_Manager_ASCII::Get_Header_Status_Bar_Text()const
     else if( m_render_driver_context->Check_Waiting_Command_Response() == true ){
          output = UTILS::ANSI_BACK_RED + UTILS::ANSI_WHITE + UTILS::Format_String("Waiting for Command Response",
                                                                                   status_bar_width);
-    } 
-    
+    }
+
     // Otherwise, we are in a standard configuration
     else {
-        output = UTILS::ANSI_BACK_WHITE + UTILS::ANSI_BLACK + UTILS::Format_String( "Ready", 
+        output = UTILS::ANSI_BACK_WHITE + UTILS::ANSI_BLACK + UTILS::Format_String( "Ready",
                                                                                     status_bar_width );
     }
-    
+
 
     // Return the output
     return output;
@@ -347,16 +347,16 @@ std::string A_Render_Manager_ASCII::Get_Header_Mode_Bar_Text()const
     // Check if we are currently in a script
     if( m_render_state->Get_Active_Command_Queue_Size() > 0 )
     {
-        output = UTILS::ANSI_BACK_BLUE + UTILS::ANSI_WHITE + UTILS::Format_String("CLI Script Mode", 
+        output = UTILS::ANSI_BACK_BLUE + UTILS::ANSI_WHITE + UTILS::Format_String("CLI Script Mode",
                                                                                   mode_bar_width );
     }
 
     // Otherwise, we are in a standard configuration
     else {
-        output = UTILS::ANSI_BACK_GREEN + UTILS::ANSI_BLACK + UTILS::Format_String( "CLI Text Input Mode", 
+        output = UTILS::ANSI_BACK_GREEN + UTILS::ANSI_BLACK + UTILS::Format_String( "CLI Text Input Mode",
                                                                                     mode_bar_width );
     }
-    
+
 
     // Return the output
     return output;
@@ -371,10 +371,10 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+
     // Set the buffer row
     int cli_row = m_render_driver_context->Get_Window_Rows() - 2;
-    
+
     // Get the cursor text
     const std::string cursor_text = m_render_state->Get_Cursor_Text();
     const int cli_prompt_pos = m_render_state->Get_Cursor_Pos();
@@ -382,7 +382,7 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
     // Write the Cursor Text
     std::string output = "   ";
     output += UTILS::ANSI_GREEN + std::string("cmd: ") + UTILS::ANSI_RESET;
-    
+
     // Don't do this if the cursor is at 0
     if( cli_prompt_pos > 0 ){
         output += cursor_text.substr(0,cli_prompt_pos);
@@ -415,16 +415,16 @@ void A_Render_Manager_ASCII::Set_Waiting_Command_Response( const CMD::A_Command_
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+
     // Lock the mutex
     m_refresh_mutex.lock();
-    
+
     // Set the flag
     m_render_driver_context->Set_Waiting_Command_Response( response );
-    
+
     // Unlock the mutex
     m_refresh_mutex.unlock();
-    
+
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
@@ -434,7 +434,7 @@ void A_Render_Manager_ASCII::Set_Waiting_Command_Response( const CMD::A_Command_
 /*      Check the waiting response flag value     */
 /**************************************************/
 bool A_Render_Manager_ASCII::Check_Waiting_Command_Response(){
-    
+
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
@@ -454,7 +454,7 @@ bool A_Render_Manager_ASCII::Check_Waiting_Command_Response(){
     // Return
     return output;
 }
-        
+
 /******************************************************/
 /*          Set the CLI Detailed Help Window          */
 /******************************************************/
@@ -462,7 +462,7 @@ bool A_Render_Manager_ASCII::Set_CLI_Detailed_Help_Window( const std::string& co
 {
     // Iterate over help windows, looking for a match
     for( size_t i=0; i<m_help_windows.size(); i++ ){
-        
+
         // Check the name match
         if( m_help_windows[i]->Is_Matching_Name( command_name ) == true ){
             m_help_window_mode = true;
@@ -497,16 +497,16 @@ int A_Render_Manager_ASCII::Register_Custom_Render_Window( An_ASCII_Render_Windo
     {
         // Attach the driver
         render_window->Set_Render_Driver_Context( std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(m_render_driver_context) );
-    
+
         // Add to the window
         m_window_list.push_back( render_window );
-        
+
         window_id = m_window_list.size()-1;
 
         // Log
-        CLI_LOG_CLASS( trace, 
+        CLI_LOG_CLASS( trace,
                    "Adding new Render-Window to window-list.  ID: " + std::to_string(window_id));
-    
+
     }
 
     // Log Exit
@@ -554,11 +554,46 @@ int A_Render_Manager_ASCII::Find_Window_ID_By_Trigger_Command( const CMD::A_Comm
 
     // Log Exit
     CLI_LOG_CLASS_EXIT();
-    
+
     return result;
+}
+
+
+/*****************************************************************/
+/*        Send Asynchronous Message to Rendering Windows         */
+/*****************************************************************/
+void A_Render_Manager_ASCII::Send_Asynchronous_Message( const std::string& topic_name,
+                                                        const std::string& message )
+{
+    // Log Entry
+    CLI_LOG_CLASS_ENTRY();
+    
+    // Iterate over main windows list
+    for( auto window : m_window_list )
+    {
+        // Check window
+        if( window != nullptr )
+        {
+            window->Send_Asynchronous_Message( topic_name,
+                                               message );
+        }
+    }
+
+    // Iterate over help windows
+    for( auto window : m_help_windows )
+    {
+        // Check window
+        if( window != nullptr )
+        {
+            window->Send_Asynchronous_Message( topic_name,
+                                               message );
+        }
+    }
+
+    // Log Exit
+    CLI_LOG_CLASS_EXIT();
 }
 
 
 } // End of RENDER Namespace
 } // End of CLI    Namespace
-

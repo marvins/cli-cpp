@@ -37,12 +37,12 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
     if( EVT::Event_Manager::Is_Initialized() != true ){
         EVT::Event_Manager::Initialize( configuration.Get_Event_Manager_Config() );
     }
-    
-    
+
+
     // Build the internal command queue
     m_command_queue = std::make_shared<CMD::A_Command_Queue>( m_configuration.Get_Command_Queue_Config() );
-    
-    
+
+
     // Initialize the Render-Driver Context Factory
     RENDER::A_Render_Driver_Context_Factory::Initialize( configuration.Get_Connection_Type(),
                                                          configuration.Get_CLI_Title(),
@@ -51,11 +51,11 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
                                                          configuration.Get_Redirect_stdout(),
                                                          configuration.Get_Redirect_stdout());
 
-    
+
     // Initialize the Render-State Factory
     RENDER::A_Render_State_Factory::Initialize( m_configuration.Get_Command_Parser() );
 
-    
+
     // Initialize the Render-Manager Factory
     RENDER::A_Render_Manager_Factory::Initialize( m_configuration.Get_Connection_Type(),
                                                   m_configuration.Get_CLI_Title(),
@@ -65,8 +65,8 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
 
     // Initialize the connection manager
     Initialize_Connection_Manager();
-    
-    
+
+
     // Add the Required Event Handlers
     Register_Internal_Event_Handlers();
 
@@ -84,7 +84,7 @@ A_CLI_Manager::~A_CLI_Manager()
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+
     // Disconnect
     Disconnect();
 
@@ -95,8 +95,8 @@ A_CLI_Manager::~A_CLI_Manager()
 
     // Clear the render state factory
     RENDER::A_Render_State_Factory::Finalize();
-    
-    
+
+
     // Clear the context factory
     RENDER::A_Render_Driver_Context_Factory::Finalize();
 
@@ -119,19 +119,19 @@ void A_CLI_Manager::Connect()
 {
     // Log Entry
     CLI_LOG_CLASS_ENTRY();
-    
+
 
     // Do not connect if thread is already running
     if( m_handler_thread_running == true ){
         BOOST_LOG_TRIVIAL(warning) << "CLI-Manager Handler thread already running.";
         return;
     }
-    
+
     // Kick off the handler thread
-    m_handler_thread = std::thread( &A_CLI_Manager::Process_Command_Results, 
+    m_handler_thread = std::thread( &A_CLI_Manager::Process_Command_Results,
                                     this );
 
-    
+
     // For giggles, make sure the connection manager is not null
     if( m_connection_manager == nullptr )
     {
@@ -140,7 +140,7 @@ void A_CLI_Manager::Connect()
 
     // Kick off the communication thread
     m_connection_manager->Start_Handler();
-    
+
     // Log Exit
     CLI_LOG_CLASS_EXIT();
 }
@@ -154,13 +154,13 @@ void A_CLI_Manager::Disconnect()
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+
     // Disable the Event Manager
     EVT::Event_Manager::Finalize();
 
     // Make sure the connection manager is not already de-allocated
     if( m_connection_manager != nullptr ){
-    
+
         // Stop the thread
         m_connection_manager->Signal_Shutdown();
 
@@ -172,23 +172,23 @@ void A_CLI_Manager::Disconnect()
 
     // Stop the handler thread
     if( m_handler_thread_running == true ){
-        
+
         // Set the running condition to false
         m_handler_thread_running = false;
 
-        
+
         // Clear the queue
         if( m_command_queue != nullptr ){
             m_command_queue->Clear();
         }
-        
+
         // Join the thread
         m_handler_thread.join();
     }
-    
+
     // Remove all command handlers
     m_command_handlers.clear();
-    
+
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 
@@ -202,12 +202,12 @@ void A_CLI_Manager::Wait_Shutdown()
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
-    
+
+
     // Wait for the connection handler to stop
     m_connection_manager->Wait_Shutdown();
-    
-    
+
+
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
@@ -218,19 +218,19 @@ void A_CLI_Manager::Wait_Shutdown()
 /************************************/
 void A_CLI_Manager::Process_Command_Results()
 {
-    
+
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
-    
+
+
     // Misc Variables
     CMD::A_Command_Result::ptr_t command_result;
 
-    
+
     // Set flag
     m_handler_thread_running = true;
 
-    
+
     // Run until it is time to quit
     while( m_handler_thread_running != false ){
 
@@ -253,8 +253,8 @@ void A_CLI_Manager::Process_Command_Results()
 
     // Set flag
     m_handler_thread_running = false;
-    
-    
+
+
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
@@ -310,26 +310,47 @@ bool A_CLI_Manager::Register_Custom_Render_Window( RENDER::An_ASCII_Render_Windo
         m_custom_window_command_handler->Register_Trigger_Command( command, window_id );
 
         // Add to the command parser
-        m_configuration.Get_Command_Parser()->Add_Command( command ); 
-    
+        m_configuration.Get_Command_Parser()->Add_Command( command );
+
     }
 
     // Log Exit and return
     CLI_LOG_CLASS_EXIT();
 
-    return result;    
+    return result;
+}
+
+
+/****************************************************/
+/*           Send an Asynchronous Message           */
+/****************************************************/
+void A_CLI_Manager::Send_Asynchronous_Message( const std::string& topic_name,
+                                               const std::string& message )
+{
+    // Log Entry
+    CLI_LOG_CLASS_ENTRY();
+
+
+    // Attach the window
+    RENDER::A_Render_Manager_Factory::Send_Asynchronous_Message( topic_name,
+                                                                 message );
+
+
+    // Log Exit and return
+    CLI_LOG_CLASS_EXIT();
+
 }
 
 /******************************************************************/
 /*          Register Internal Command Response Handlers           */
 /******************************************************************/
-void A_CLI_Manager::Register_Internal_Command_Response_Handlers() 
+void A_CLI_Manager::Register_Internal_Command_Response_Handlers()
 {
 
     // CLI Resize
     HANDLER::A_CLI_Resize_Command_Response_Handler::ptr_t cli_resize = std::make_shared<HANDLER::A_CLI_Resize_Command_Response_Handler>();
     Register_Command_Response_Handler( cli_resize );
-    
+
     // CLI Detailed Help
     HANDLER::A_CLI_Detailed_Help_Command_Response_Handler::ptr_t cli_help = std::make_shared<HANDLER::A_CLI_Detailed_Help_Command_Response_Handler>();
     Register_Command_Response_Handler( cli_help );
@@ -339,7 +360,7 @@ void A_CLI_Manager::Register_Internal_Command_Response_Handlers()
         m_custom_window_command_handler = std::make_shared<HANDLER::A_Custom_Window_Command_Response_Handler>();
     }
     Register_Command_Response_Handler( m_custom_window_command_handler );
-    
+
 
 }
 
@@ -364,13 +385,13 @@ void A_CLI_Manager::Register_Internal_Event_Handlers()
 /*****************************************************/
 void A_CLI_Manager::Initialize_Connection_Manager()
 {
-    
+
     // If we are socket, create the handler
     if( m_configuration.Get_Connection_Type() == CORE::ConnectionType::SOCKET )
     {
         m_connection_manager = std::make_shared<A_Connection_Manager_Socket>( m_configuration.Get_Connection_Manager_Config() );
     }
-    
+
     else{
         throw std::runtime_error("invalid connection type.");
     }
@@ -380,4 +401,3 @@ void A_CLI_Manager::Initialize_Connection_Manager()
 
 
 } // End of CLI Namespace
-

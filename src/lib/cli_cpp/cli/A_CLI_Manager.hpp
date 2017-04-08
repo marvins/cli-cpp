@@ -31,7 +31,7 @@ class A_CLI_Manager{
         /// Pointer Type
         typedef std::shared_ptr<A_CLI_Manager> ptr_t;
 
-        
+
         /**
          * @brief Constructor
          *
@@ -45,7 +45,7 @@ class A_CLI_Manager{
         */
         ~A_CLI_Manager();
 
-        
+
         /**
          * @brief Connect the CLI Manager
          */
@@ -81,7 +81,7 @@ class A_CLI_Manager{
          */
         void Register_Command_Response_Handler( A_Command_Response_Handler_Base::ptr_t handler );
 
-        
+
         /**
          * @brief Register Custom Render Window
          *
@@ -91,13 +91,23 @@ class A_CLI_Manager{
         bool Register_Custom_Render_Window( RENDER::An_ASCII_Render_Window_Base::ptr_t  render_window,
                                             CMD::A_Command const&                       command );
 
+
+        /**
+         * @brief Send Asynchronous Input
+         *
+         * @param[in] topic    Topic name.
+         * @param[in] message  Message to push.
+        */
+        void Send_Asynchronous_Message( const std::string& topic_name,
+                                        const std::string& message );
+
     private:
 
         /**
          * @brief Process Command Result Messages
         */
         void Process_Command_Results();
-        
+
 
         /**
          * @brief Register Internal Command Response Handlers.
@@ -109,35 +119,35 @@ class A_CLI_Manager{
          * @brief Register the Internal Event Handlers.
         */
         void Register_Internal_Event_Handlers();
-        
+
 
         /**
          * @brief Initialize the Connection Manager.
         */
         void Initialize_Connection_Manager();
 
-        
+
         /// Class Name
         std::string m_class_name;
 
-        
+
         /// Configuration
         A_CLI_Manager_Configuration m_configuration;
 
-        
+
         /// CLI Connection Handler
         A_Connection_Manager_Base::ptr_t m_connection_manager;
 
-        
+
         /// Handler Thread
         std::thread m_handler_thread;
         std::atomic<bool> m_handler_thread_running;
 
-        
+
         /// Handler Queue
         CMD::A_Command_Queue::ptr_t m_command_queue;
 
-        
+
         /// CLI Handler List
         std::vector<A_Command_Response_Handler_Base::ptr_t> m_command_handlers;
 
