@@ -49,7 +49,8 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
                                                          configuration.Get_Socket_Window_Rows(),
                                                          configuration.Get_Socket_Window_Cols(),
                                                          configuration.Get_Redirect_stdout(),
-                                                         configuration.Get_Redirect_stdout());
+                                                         configuration.Get_Redirect_stdout(),
+                                                         configuration.Get_Async_Message_Refresh_Time());
 
 
     // Initialize the Render-State Factory

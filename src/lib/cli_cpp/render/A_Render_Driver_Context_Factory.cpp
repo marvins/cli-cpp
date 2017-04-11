@@ -49,10 +49,12 @@ void A_Render_Driver_Context_Factory::Initialize( const CORE::ConnectionType& co
                                                   const int&                  window_rows,
                                                   const int&                  window_cols,
                                                   const bool&                 redirect_stdout,
-                                                  const bool&                 redirect_stderr )
+                                                  const bool&                 redirect_stderr,
+                                                  const std::chrono::milliseconds&  async_message_refresh_time )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " Method. File: " << __FILE__ << ", Line: " << __LINE__;
+    const std::string m_class_name = "A_Render_Driver_Context_Factory";
+    CLI_LOG_CLASS_ENTRY();
 
     // Get the instance
     A_Render_Driver_Context_Factory& context_factory = Get_Factory_Instance();
@@ -65,10 +67,11 @@ void A_Render_Driver_Context_Factory::Initialize( const CORE::ConnectionType& co
     context_factory.m_window_cols     = window_cols;
     context_factory.m_redirect_stdout = redirect_stdout;
     context_factory.m_redirect_stderr = redirect_stderr;
+    context_factory.m_async_message_refresh_time = async_message_refresh_time;
     context_factory.m_is_initialized  = true;
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " Method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -79,7 +82,8 @@ void A_Render_Driver_Context_Factory::Finalize()
 {
     
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " Method. File: " << __FILE__ << ", Line: " << __LINE__;
+    const std::string m_class_name = "A_Render_Driver_Context_Factory";
+    CLI_LOG_CLASS_ENTRY();
 
     // Get the instance
     A_Render_Driver_Context_Factory& context_factory = Get_Factory_Instance();
@@ -88,7 +92,7 @@ void A_Render_Driver_Context_Factory::Finalize()
     context_factory = A_Render_Driver_Context_Factory();
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " Method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -97,8 +101,13 @@ void A_Render_Driver_Context_Factory::Finalize()
 /******************************************/
 A_Render_Driver_Context_Base::ptr_t A_Render_Driver_Context_Factory::Create_Instance()
 {
+    
+    const std::string m_class_name = "A_Render_Driver_Context_Factory";
+    CLI_LOG_CLASS_ENTRY();
+    
     // Make sure the factory exists
-    if( Is_Initialized() == false ){
+    if( Is_Initialized() == false )
+    {
         BOOST_LOG_TRIVIAL(error) << "Render-Driver Context Factory is null.";
         return nullptr;
     }
@@ -118,7 +127,8 @@ A_Render_Driver_Context_Base::ptr_t A_Render_Driver_Context_Factory::Create_Inst
                                                                 min_content_row,
                                                                 min_content_col,
                                                                 context_factory.m_redirect_stdout,
-                                                                context_factory.m_redirect_stderr );
+                                                                context_factory.m_redirect_stderr,
+                                                                context_factory.m_async_message_refresh_time);
     }
 
     else{

@@ -71,6 +71,9 @@
     
         </variable-support>
 
+        <!-- Async Window Refresh Time -->
+        <async-message-refresh-time ms="1500" />
+
     </cli>
 
     <!-- Event Manager Configuration -->

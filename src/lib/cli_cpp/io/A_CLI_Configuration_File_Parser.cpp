@@ -169,6 +169,15 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     bool variable_support     = variable_node.attribute("enable").as_bool(false);
     std::string variable_path = variable_node.child("variable-list").attribute("pathname").as_string("");
 
+    // Parse the Async Message Timeout
+    int async_refresh_time = cli_node.child("async-message-refresh-time").attribute("ms").as_int(-1);
+    if( async_refresh_time < 0 )
+    {
+        async_refresh_time = 2000;
+    }
+    // Set config object
+    m_current_configuration.Set_Async_Message_Refresh_Time(std::chrono::milliseconds(async_refresh_time));
+    
     // Get the Command Parser config file
     temp_str = root_node.child(COMMAND_CONFIG_NODE.c_str()).attribute("path").as_string();
    
@@ -278,6 +287,17 @@ void A_CLI_Configuration_File_Parser::Write()
     if( result != true ){
         BOOST_LOG_TRIVIAL(error) << "Unable to save file.";
     }
+}
+
+
+/**********************************/
+/*       Parse the CLI Node       */
+/**********************************/
+void A_CLI_Configuration_File_Parser::Parse_CLI_Node()
+{
+
+
+
 }
 
 

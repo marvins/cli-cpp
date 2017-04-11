@@ -47,7 +47,8 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
                                        const int&          min_content_row,
                                        const int&          min_content_col,
                                        const bool&         redirect_stdout,
-                                       const bool&         redirect_stderr );
+                                       const bool&         redirect_stderr,
+                                       const std::chrono::milliseconds& async_tab_refresh_ms );
 
     
         /**
@@ -109,7 +110,13 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
         virtual void Set_CLI_Window_Min_Content_Bounds( const int& row,
                                                         const int& col );
 
-
+        
+        /**
+         * @brief Get the Async Tab Refresh Time in MS
+         */
+        inline virtual std::chrono::milliseconds Get_Async_Tab_Refresh_Time_MS()const{
+            return m_async_tab_refresh_ms;
+        }
 
     private:
         
@@ -127,6 +134,9 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
 
         /// Min Content Column
         int m_min_content_col;
+
+        /// Async Message Tab Update Time
+        std::chrono::milliseconds m_async_tab_refresh_ms;
 
 }; // End of A_Render_Driver_Context_NCurses
 

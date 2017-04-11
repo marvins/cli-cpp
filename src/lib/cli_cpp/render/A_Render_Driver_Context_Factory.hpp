@@ -42,7 +42,8 @@ class A_Render_Driver_Context_Factory
                                 const int&                  window_rows,
                                 const int&                  window_cols,
                                 const bool&                 redirect_stdout,
-                                const bool&                 redirect_stderr );
+                                const bool&                 redirect_stderr,
+                                const std::chrono::milliseconds&  async_message_refresh_time );
         
         /**
          * @brief Finalize the Factory.
@@ -103,6 +104,9 @@ class A_Render_Driver_Context_Factory
 
         /// Initialized Flag
         bool m_is_initialized;
+
+        /// CLI Refresh Async Message Time
+        std::chrono::milliseconds m_async_message_refresh_time;
 
 }; // End of A_Render_Driver_Context_Factory Class
 

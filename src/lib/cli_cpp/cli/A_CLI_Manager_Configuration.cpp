@@ -28,7 +28,8 @@ A_CLI_Manager_Configuration::A_CLI_Manager_Configuration( CORE::ConnectionType c
     m_socket_window_rows(20),
     m_socket_window_cols(80),
     m_redirect_stdout(false),
-    m_redirect_stderr(false)
+    m_redirect_stderr(false),
+    m_async_message_refresh_time(500)
 {
 }
 

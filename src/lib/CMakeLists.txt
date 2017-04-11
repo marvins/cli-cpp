@@ -33,6 +33,8 @@ include_directories( ${Boost_INCLUDE_DIRS})
 #-     Define Global Headers     -#
 #---------------------------------#
 SET( GLOBAL_LIB_HEADERS
+     cli_cpp/cli.hpp
+     cli_cpp/core.hpp
      cli_cpp/handlers.hpp
 )
 

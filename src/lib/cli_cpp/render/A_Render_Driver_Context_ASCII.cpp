@@ -17,7 +17,8 @@ A_Render_Driver_Context_ASCII::A_Render_Driver_Context_ASCII( const std::string&
                                                               const int&   min_content_row,
                                                               const int&   min_content_col,
                                                               const bool&  redirect_stdout,
-                                                              const bool&  redirect_stderr )
+                                                              const bool&  redirect_stderr,
+                                                              const std::chrono::milliseconds& async_tab_refresh_ms )
   : A_Render_Driver_Context_Base( cli_title, 
                                   redirect_stdout,
                                   redirect_stderr ),
@@ -25,7 +26,8 @@ A_Render_Driver_Context_ASCII::A_Render_Driver_Context_ASCII( const std::string&
     m_window_rows(window_rows),
     m_window_cols(window_cols),
     m_min_content_row(min_content_row),
-    m_min_content_col(min_content_col)
+    m_min_content_col(min_content_col),
+    m_async_tab_refresh_ms(async_tab_refresh_ms)
 {
 }
 

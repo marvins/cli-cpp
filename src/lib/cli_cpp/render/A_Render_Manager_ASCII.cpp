@@ -19,6 +19,7 @@
 #include "ascii/A_Main_Window.hpp"
 #include "ascii/A_Variable_List_Window.hpp"
 #include "ascii/An_Alias_List_Window.hpp"
+#include "../event/Event_Manager.hpp"
 #include "../utility/ANSI_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
 #include "../utility/String_Utilities.hpp"
@@ -41,7 +42,8 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int&                    in
     m_class_name("A_Render_Manager_ASCII"),
     m_current_window(0),
     m_help_window_mode(false),
-    m_async_message_sent(false)
+    m_async_message_sent(false),
+    m_async_message_thread_running(false)
 {
     // Cast the driver
     A_Render_Driver_Context_Base::ptr_t render_driver = A_Render_Driver_Context_Factory::Create_Instance();
@@ -66,19 +68,22 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int&                    in
 void A_Render_Manager_ASCII::Initialize()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_ENTRY();
 
 
     // Cast the driver
     A_Render_Driver_Context_ASCII::ptr_t driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>( m_render_driver_context);
 
     // Make sure it is not null
-    if( driver_context == nullptr ){
-        BOOST_LOG_TRIVIAL(error) << "driver-context is currently null. Expect a big seg fault.";
+    if( driver_context == nullptr )
+    {
+        CLI_LOG_CLASS( error,
+                       "Driver-Context is null.  Expect seg fault.");
     }
 
     // Make sure the command-parser is not null
-    if( m_command_parser == nullptr ){
+    if( m_command_parser == nullptr )
+    {
         BOOST_LOG_TRIVIAL(fatal) << "Command-Parser is null. Expect a seg fault. File: " << __FILE__ << ", Line: " << __LINE__;
     }
 
@@ -109,15 +114,15 @@ void A_Render_Manager_ASCII::Initialize()
                                                                                         m_command_parser->Get_CLI_Command_List()[i] ));
     }
 
-
+    // Set the sleep time
+    m_async_message_sleep_time = driver_context->Get_Async_Tab_Refresh_Time_MS();
+    
+    // Start Timer Thread
+    m_async_message_thread = std::thread( &A_Render_Manager_ASCII::Listen_Async_Messages, this );
 
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-
-    // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-
+    CLI_LOG_CLASS_EXIT();
 }
 
 /********************************/
@@ -126,14 +131,23 @@ void A_Render_Manager_ASCII::Initialize()
 void A_Render_Manager_ASCII::Finalize()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 
     // Clear out the windows
     m_window_list.clear();
     m_help_windows.clear();
 
+    // Stop background threads
+    if( m_async_message_thread_running && m_async_message_thread.joinable() )
+    {
+        m_async_message_thread_running = false;
+        m_async_message_cv.notify_all();
+        m_async_message_thread.join();
+    }
+
+
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -143,7 +157,7 @@ void A_Render_Manager_ASCII::Finalize()
 std::vector<std::string> A_Render_Manager_ASCII::Get_Console_Buffer()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 
     // Lock the mutex
     m_refresh_mutex.lock();
@@ -200,29 +214,14 @@ bool A_Render_Manager_ASCII::Check_Async_Message_Sent()
 {
     // result
     bool result = false;
+    
+    // Lock the mutex
+    m_async_message_mtx.lock();
 
-    if( m_async_message_sent )
-    {
+    result = m_async_message_sent;
 
-        // get the current time
-        auto diff = std::chrono::steady_clock::now() - m_async_message_time;
-        auto diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff);
-        
-        std::cout << " --> Not Skipping (FLAG SET)" << std::endl;
-
-        if( diff_ms > std::chrono::milliseconds(2000) )
-        {
-            m_async_message_sent = false;   
-        }
-        else
-        {
-            result = true;
-        }
-    }
-    else
-    {
-        std::cout << " -->  Skipping as not set" << std::endl;
-    }
+    // Unlock the mutex
+    m_async_message_mtx.unlock();
 
     return result;
 }
@@ -481,7 +480,7 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
 void A_Render_Manager_ASCII::Set_Waiting_Command_Response( const CMD::A_Command_Result::ptr_t response )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_ENTRY();
 
     // Lock the mutex
     m_refresh_mutex.lock();
@@ -493,7 +492,7 @@ void A_Render_Manager_ASCII::Set_Waiting_Command_Response( const CMD::A_Command_
     m_refresh_mutex.unlock();
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -503,7 +502,7 @@ void A_Render_Manager_ASCII::Set_Waiting_Command_Response( const CMD::A_Command_
 bool A_Render_Manager_ASCII::Check_Waiting_Command_Response(){
 
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_ENTRY();
 
 
     // Lock the mutex
@@ -659,7 +658,56 @@ void A_Render_Manager_ASCII::Send_Asynchronous_Message( const std::string& topic
 
     // Mark message sent
     m_async_message_sent = true;
-    m_async_message_time = std::chrono::steady_clock::now();
+    m_async_message_cv.notify_one();
+
+    // Log Exit
+    CLI_LOG_CLASS_EXIT();
+}
+
+
+/************************************************/
+/*          Listen for Async Messages           */
+/************************************************/
+void A_Render_Manager_ASCII::Listen_Async_Messages()
+{
+    // Log Entry
+    CLI_LOG_CLASS_ENTRY();
+    
+    std::mutex loop_mtx;
+
+    m_async_message_thread_running = true;
+    while( m_async_message_thread_running )
+    {
+        // Wait on condition variable
+        if( !m_async_message_sent )
+        {
+            std::unique_lock<std::mutex> llck(loop_mtx);
+            m_async_message_cv.wait(llck);
+        }
+
+        // Wait 
+        std::unique_lock<std::mutex> lck(loop_mtx);
+        
+        // Check if wait timed out
+        if( m_async_message_cv.wait_for(lck, m_async_message_sleep_time) == std::cv_status::timeout )
+        {
+            std::cout << "--> Timed Out" << std::endl;
+            // set back to false
+            m_async_message_sent = false;
+
+            // Request Refresh of CLI
+            EVT::Event_Manager::Process_Event( -1,
+                                               (int)CLI_Event_Type::CLI_REFRESH );
+        }
+
+        // Otherwise, notified
+        else
+        {
+            // Try again
+            std::cout << "--> Notified" << std::endl;
+
+        }
+    }
 
     // Log Exit
     CLI_LOG_CLASS_EXIT();

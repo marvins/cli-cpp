@@ -238,6 +238,8 @@ class A_Render_State{
         void Run_Sleep_Mode( const double sleep_seconds );
 
 
+        /// Class Name
+        std::string m_class_name;
 
         /// CLI Text
         std::string m_cli_prompt_text;

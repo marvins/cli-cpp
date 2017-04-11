@@ -9,6 +9,9 @@
 // CLI Libraries
 #include "cli_cpp/cli.hpp"
 
+// CORE libraries
+#include "cli_cpp/core.hpp"
+
 // IO Libraries
 #include "cli_cpp/io.hpp"
 

@@ -22,7 +22,8 @@ namespace RENDER{
 /************************************/
 A_Render_State::A_Render_State( int const&                     instance_id,
                                 CMD::A_Command_Parser::ptr_t   command_parser )
-  : m_cli_prompt_text(""),
+  : m_class_name("A_Render_State"),
+    m_cli_prompt_text(""),
     m_cli_prompt_cursor_head(0),
     m_cli_prompt_cursor_tail(0),
     m_cli_prompt_cursor_at(0),
@@ -57,8 +58,9 @@ A_Render_State::~A_Render_State()
 /*******************************************/
 /*           Get the Pause Mode            */
 /*******************************************/
-bool A_Render_State::Get_Pause_Mode()const{
-    BOOST_LOG_TRIVIAL(trace) << "Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+bool A_Render_State::Get_Pause_Mode()const
+{
+    CLI_LOG_CLASS_ENTRY();
     return m_waiting_user_input;
 }
 
@@ -66,8 +68,9 @@ bool A_Render_State::Get_Pause_Mode()const{
 /***********************************************/
 /*          Reset the Pause Mode Value         */
 /***********************************************/
-void A_Render_State::Reset_Pause_Mode(){    
-    BOOST_LOG_TRIVIAL(trace) << "Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+void A_Render_State::Reset_Pause_Mode()
+{    
+    CLI_LOG_CLASS_ENTRY();
     m_waiting_user_input = false;
 }
 
@@ -86,8 +89,8 @@ bool A_Render_State::Get_Sleep_Mode()const{
 void A_Render_State::Process_Input( const int& input )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    BOOST_LOG_TRIVIAL(trace) << "Input Value: " << input;
+    CLI_LOG_CLASS( trace,
+                   "Start of Method.  Input: " + std::to_string(input));
 
 
     // SKip if < 0
@@ -160,7 +163,7 @@ void A_Render_State::Process_Input( const int& input )
                                        (int)CLI_Event_Type::CLI_REFRESH );
     
     
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 

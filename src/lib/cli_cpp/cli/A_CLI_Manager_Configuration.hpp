@@ -226,6 +226,22 @@ class A_CLI_Manager_Configuration{
         inline bool Get_Redirect_stderr()const{
             return m_redirect_stderr;
         }
+        
+
+        /**
+         * @brief Set the CLI Async Message Refresh Time
+         */
+        inline void Set_Async_Message_Refresh_Time( const std::chrono::milliseconds& async_message_refresh_time ){
+            m_async_message_refresh_time = async_message_refresh_time;
+        }
+
+
+        /**
+         * @brief Get the CLI Async Message Refresh Time
+         */
+        inline std::chrono::milliseconds Get_Async_Message_Refresh_Time()const{
+            return m_async_message_refresh_time;
+        }
 
 
     private:
@@ -265,6 +281,9 @@ class A_CLI_Manager_Configuration{
 
         /// Redirect stderr
         bool m_redirect_stderr;
+            
+        /// Async Message Refresh Time
+        std::chrono::milliseconds m_async_message_refresh_time;
 
 
 }; // End of A_CLI_Manager_Configuration Class

@@ -191,6 +191,12 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base
 
     private:
 
+        /**
+         * @brief Process Async Message Calls.
+         */
+        void Listen_Async_Messages();
+
+
         /// Class Name
         std::string m_class_name;
 
@@ -213,7 +219,14 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base
 
         /// Start Timer
         bool m_async_message_sent;
-        std::chrono::steady_clock::time_point m_async_message_time;
+        
+        std::thread m_async_message_thread;
+        bool m_async_message_thread_running;
+        std::condition_variable m_async_message_cv;
+        std::mutex m_async_message_mtx;
+
+        std::chrono::milliseconds m_async_message_sleep_time;
+
 
 }; // End of A_Render_Manager_ASCII Class
 

@@ -79,6 +79,12 @@ class A_CLI_Configuration_File_Parser{
          * @brief Parse the configuration file.
          */
         void Parse_Configuration_File();
+        
+
+        /**
+         * @brief Parse the CLI Node
+         */
+        void Parse_CLI_Node();
 
     
         /// Class Name
