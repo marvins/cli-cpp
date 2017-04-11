@@ -100,7 +100,7 @@ An_Event_Queue::An_Event_Queue( const int& max_queue_size )
 An_Event_Queue::~An_Event_Queue()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_ENTRY();
     
     
     // Delete the queue
@@ -136,7 +136,7 @@ An_Event_Queue::~An_Event_Queue()
 
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -146,7 +146,7 @@ An_Event_Queue::~An_Event_Queue()
 void An_Event_Queue::Clear()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_ENTRY();
     
     
     // Set close flag
@@ -157,7 +157,7 @@ void An_Event_Queue::Clear()
     sem_post( m_pop_semaphore );
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -237,61 +237,65 @@ void An_Event_Queue::Pop_Event( int& instance,
                    + ", Event-ID: " + std::to_string(event));
     
     // Decrement the pop semaphore
-    if( sem_wait( m_pop_semaphore ) != 0 ){
+    if( sem_wait( m_pop_semaphore ) != 0 )
+    {
         std::stringstream sin;
         sin << "sem_wait failed with error. Details: " << strerror(errno) << ", File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__;
         throw std::runtime_error(sin.str());
     }
 
 
-    // Return if the list is empty
-    if( m_close_flag == true ){
-        BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    // Return if the close flag requested
+    else if( m_close_flag == true )
+    {
+        CLI_LOG_CLASS( trace, "Close Event Queue Requested.");
         instance = -1;
         event = (int)CLI_Event_Type::CLI_NULL;
-        return; 
-    }
-
-
-    // Lock the mutex
-    m_mtx.lock();
-
-
-    // Get the value
-    instance = std::get<0>(m_event_queue[m_tail]);
-    event    = std::get<1>(m_event_queue[m_tail]);
-    
-    // set null
-    std::get<0>(m_event_queue[m_tail]) = (int)CLI_Event_Type::CLI_NULL;
-    std::get<1>(m_event_queue[m_tail]) = -1;
-
-    
-    // Unregister the Event
-    Unregister_Event( event );
-
-    // Update the size
-    m_current_size--;
-    
-    // Update the tail
-    m_tail = (m_tail+1) % m_max_queue_size;
-    
-    
-    // Unlock the mutex
-    m_mtx.unlock();
-
-    
-    // Increment the push semaphore
-    if( sem_post( m_push_semaphore ) < 0 ){
-        std::stringstream sin;
-        sin << "sem_push failed with error. Details: " << strerror(errno) << ", File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__;
-        throw std::runtime_error(sin.str());
     }
     
+    // Otherwise, 
+    else
+    {
+
+        // Lock the mutex
+        m_mtx.lock();
+
+
+        // Get the value
+        instance = std::get<0>(m_event_queue[m_tail]);
+        event    = std::get<1>(m_event_queue[m_tail]);
+    
+        // set null
+        std::get<0>(m_event_queue[m_tail]) = (int)CLI_Event_Type::CLI_NULL;
+        std::get<1>(m_event_queue[m_tail]) = -1;
+
+    
+        // Unregister the Event
+        Unregister_Event( event );
+
+        // Update the size
+        m_current_size--;
+    
+        // Update the tail
+        m_tail = (m_tail+1) % m_max_queue_size;
+    
+    
+        // Unlock the mutex
+        m_mtx.unlock();
+
+    
+        // Increment the push semaphore
+        if( sem_post( m_push_semaphore ) < 0 )
+        {
+            std::stringstream sin;
+            sin << "sem_push failed with error. Details: " << strerror(errno) << ", File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__;
+            throw std::runtime_error(sin.str());
+        }
+    
+    }
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
-    
-    // return command
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -320,16 +324,22 @@ void An_Event_Queue::Register_Event( const int& event_id )
 /**************************************/
 void An_Event_Queue::Unregister_Event( const int& event_id )
 {
+    // Lock on Entry
     m_active_mutex.lock();
     
+    // Check if the event is unregistered
     if( m_active_events.find(event_id) == m_active_events.end() )
     {
         BOOST_LOG_TRIVIAL(error) << "Attempting to remove event-id (" << event_id << ") despite not being registered.";
-        return;
     }
 
-    m_active_events[event_id]--;
-    
+    // Otherwise, unregister
+    else
+    {
+        m_active_events[event_id]--;
+    }
+
+    // Unlock on exit
     m_active_mutex.unlock();
 }
 

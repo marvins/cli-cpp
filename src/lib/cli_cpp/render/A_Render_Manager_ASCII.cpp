@@ -40,7 +40,8 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int&                    in
                            command_queue ),
     m_class_name("A_Render_Manager_ASCII"),
     m_current_window(0),
-    m_help_window_mode(false)
+    m_help_window_mode(false),
+    m_async_message_sent(false)
 {
     // Cast the driver
     A_Render_Driver_Context_Base::ptr_t render_driver = A_Render_Driver_Context_Factory::Create_Instance();
@@ -192,6 +193,41 @@ void A_Render_Manager_ASCII::Set_CLI_Window_Size( const int& rows,
 }
 
 
+/**********************************/
+/*      Refresh The Screen        */
+/**********************************/
+bool A_Render_Manager_ASCII::Check_Async_Message_Sent()
+{
+    // result
+    bool result = false;
+
+    if( m_async_message_sent )
+    {
+
+        // get the current time
+        auto diff = std::chrono::steady_clock::now() - m_async_message_time;
+        auto diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff);
+        
+        std::cout << " --> Not Skipping (FLAG SET)" << std::endl;
+
+        if( diff_ms > std::chrono::milliseconds(2000) )
+        {
+            m_async_message_sent = false;   
+        }
+        else
+        {
+            result = true;
+        }
+    }
+    else
+    {
+        std::cout << " -->  Skipping as not set" << std::endl;
+    }
+
+    return result;
+}
+
+
 
 /********************************/
 /*      Refresh the screen      */
@@ -201,10 +237,6 @@ void A_Render_Manager_ASCII::Refresh()
     // Log Entry
     CLI_LOG_CLASS( trace,
                    "Start of Method. Current-Window-ID: " + std::to_string(m_current_window));
-
-    std::cout << "MANAGER INFO" << std::endl;
-    std::cout << "HELP WINS: " << m_help_windows.size() << std::endl;
-    std::cout << "WINDOWS  : " << m_window_list.size() << std::endl;
 
     // Pick the right window
     An_ASCII_Render_Window_Base::ptr_t ref;
@@ -257,6 +289,9 @@ void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffe
     // Status Mode String
     std::string status_mode_string = Get_Header_Mode_Bar_Text();
 
+    // Input Mode String
+    std::string status_async_string = Get_Header_Async_Bar_Text();
+
 
     // Find the title length
     int title_length = std::min((int)cli_title.size(), m_render_driver_context->Get_Window_Cols() * 3/8);
@@ -268,6 +303,7 @@ void A_Render_Manager_ASCII::Print_Header( std::vector<std::string>& print_buffe
 
     // Append the status text
     title_header += status_mode_string + UTILS::ANSI_RESET + "  " + status_code_string + UTILS::ANSI_RESET;
+    title_header += "  " +  status_async_string + UTILS::ANSI_RESET;
 
     // Set the header
     print_buffer[0] = UTILS::ANSI_CLEARSCREEN + UTILS::ANSI_RESETCURSOR + title_header + UTILS::ANSI_NEWLINE;
@@ -286,10 +322,13 @@ std::string A_Render_Manager_ASCII::Get_Header_Status_Bar_Text()const
 
     // Make sure the driver is not null
     if( m_render_state == nullptr ){
-        BOOST_LOG_TRIVIAL(error) << "Render-State is currently null. Expect a seg fault. Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+        CLI_LOG_CLASS( error,
+                       "Render-State is currently null. Expect seg fault!");
     }
-    if( m_render_driver_context == nullptr ){
-        BOOST_LOG_TRIVIAL(error) << "Render-Driver Context is null. Method: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    if( m_render_driver_context == nullptr )
+    {
+        CLI_LOG_CLASS( error,
+                       "Render-Driver is currently null. Expect seg fault!");
     }
 
 
@@ -297,7 +336,7 @@ std::string A_Render_Manager_ASCII::Get_Header_Status_Bar_Text()const
     std::string output;
 
     // Define the window size
-    int status_bar_width = m_render_driver_context->Get_Window_Cols()/4;
+    int status_bar_width = m_render_driver_context->Get_Window_Cols()/5;
 
 
     // Check if we are currently sleeping
@@ -341,7 +380,7 @@ std::string A_Render_Manager_ASCII::Get_Header_Mode_Bar_Text()const
     std::string output;
 
     // Define the window size
-    int mode_bar_width = m_render_driver_context->Get_Window_Cols()/4;
+    int mode_bar_width = m_render_driver_context->Get_Window_Cols()/5;
 
 
     // Check if we are currently in a script
@@ -363,6 +402,34 @@ std::string A_Render_Manager_ASCII::Get_Header_Mode_Bar_Text()const
 }
 
 
+/********************************************************/
+/*          Get the Async Mode Header Bar Text          */
+/********************************************************/
+std::string A_Render_Manager_ASCII::Get_Header_Async_Bar_Text()
+{
+
+    // Create output
+    std::string output;
+
+    // Define window size
+    int mode_bar_width = m_render_driver_context->Get_Window_Cols()/5;
+
+    // Check if we are currently receiving a message
+    if( Check_Async_Message_Sent() )
+    {
+        output = UTILS::ANSI_BACK_RED + UTILS::ANSI_WHITE + UTILS::Format_String("Async MSG Rcv'd",
+                                                                                 mode_bar_width );
+        std::cout << "Async Message Sent" << std::endl;
+    }
+    else
+    {
+        output = UTILS::Format_String(" ", mode_bar_width );
+        std::cout << "Async Message Not Sent" << std::endl;
+    }
+
+    return output;
+
+}
 
 /********************************/
 /*          Print the CLI       */
@@ -426,7 +493,7 @@ void A_Render_Manager_ASCII::Set_Waiting_Command_Response( const CMD::A_Command_
     m_refresh_mutex.unlock();
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
 }
 
 
@@ -589,6 +656,10 @@ void A_Render_Manager_ASCII::Send_Asynchronous_Message( const std::string& topic
                                                message );
         }
     }
+
+    // Mark message sent
+    m_async_message_sent = true;
+    m_async_message_time = std::chrono::steady_clock::now();
 
     // Log Exit
     CLI_LOG_CLASS_EXIT();

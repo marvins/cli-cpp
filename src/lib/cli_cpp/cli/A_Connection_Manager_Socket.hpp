@@ -59,6 +59,12 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
         
         
         /**
+         * @brief Refresh all Instances
+        */
+        virtual void Refresh_Screens();
+
+        
+        /**
          * @brief Set the Is Connection Flag
         */
         inline virtual void Set_Is_Connected_Flag( int const& instance, 
@@ -67,7 +73,15 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
             m_connection_list[instance]->Set_Connection_Flag( is_connected );
         }
 
+        
+        /**
+         * @brief Get a list of active connections.
+         *
+         * @return session list.
+         */
+        virtual std::vector<CORE::Session> Get_Active_Session_List()const;
     
+
     protected:
         
         /**

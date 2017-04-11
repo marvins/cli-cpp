@@ -17,6 +17,18 @@ std::string CLI_Event_Type_To_String( const int& event_id )
     
     switch(event_id)
     {
+        // CLI Show Variable
+        case (int)CLI_Event_Type::CLI_VARIABLE_SHOW:
+            return "CLI_VARIABLE_SHOW";
+
+        // CLI Add Variable
+        case (int)CLI_Event_Type::CLI_VARIABLE_ADD:
+            return "CLI_VARIABLE_ADD";
+
+        // CLI RM Variable
+        case (int)CLI_Event_Type::CLI_VARIABLE_RM:
+            return "CLI_VARIABLE_RM";
+
         // CLI Shutdown
         case (int)CLI_Event_Type::CLI_SHUTDOWN:
             return "CLI_SHUTDOWN";
@@ -25,14 +37,13 @@ std::string CLI_Event_Type_To_String( const int& event_id )
         case (int)CLI_Event_Type::CLI_REFRESH:
             return "CLI_REFRESH";
 
-        // Char
-        case (int)CLI_Event_Type::CLI_VARIABLE_SHOW:
-            return "CLI_VARIABLE_SHOW";
-
         // NULL
         case (int)CLI_Event_Type::CLI_NULL:
             return "CLI_NULL";
 
+        // SESSION_EVENT
+        case (int)CLI_Event_Type::CLI_SESSION_EVENT:
+            return "CLI_SESSION_EVENT";
     }
 
     // return unknown

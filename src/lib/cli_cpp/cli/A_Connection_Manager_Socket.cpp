@@ -160,25 +160,44 @@ void A_Connection_Manager_Socket::Run_Handler()
                      NULL, 
                      0, 
                      NI_NUMERICHOST);
-        BOOST_LOG_TRIVIAL(debug) << "Connection has been made by " << host;
 
+        // Log Connection
+        CLI_LOG_CLASS( debug,
+                       "Connection has been made by " + std::string(host));
 
 
         // Call the process method
         int next_position = Get_Next_Client_Slot();
         
         // Make sure we are not past the max number
-        if( next_position < 0 ){
-            BOOST_LOG_TRIVIAL(debug) << "Connection is rejected as max number of connections reached.";
+        if( next_position < 0 )
+        {
+            CLI_LOG_CLASS( debug,
+                           "Connection is rejected as max number of connections reached.");
             continue;
         }
 
-
+        
+        // Log the Creation
         BOOST_LOG_TRIVIAL(debug) << "Starting the Socket Connection for ID " << next_position << ".";
+        
+        // Add new Connection Instance
+        CORE::Session session( next_position, 
+                               CORE::ConnectionType::SOCKET );
+        session.Add_Connection_Data_Entry("IP_ADDRESS", std::string(host));
+
         m_connection_list[next_position] = std::make_shared<A_Socket_Connection_Instance>( next_position,
+                                                                                           session,
                                                                                            client_fd,
                                                                                            m_configuration->Get_Read_Timeout_Sleep_Microseconds()); 
 
+        
+        // Process Event
+        //CORE::SessionEvent new_session_event( session,
+        //                                      CORE::SessionEventType::CONNECT );
+        //EVT::Event_Manager::Process_Event( 
+        
+        
         // Start
         m_connection_list[next_position]->Start();
                                                                                            
@@ -188,7 +207,8 @@ void A_Connection_Manager_Socket::Run_Handler()
     m_is_running = false;
 
     // Stop each connection
-    for( size_t i=0; i<m_connection_list.size(); i++ ){
+    for( size_t i=0; i<m_connection_list.size(); i++ )
+    {
         m_connection_list[i]->Set_Connection_Flag(false);
         m_connection_list[i]->Join();
     }
@@ -201,23 +221,88 @@ void A_Connection_Manager_Socket::Run_Handler()
 }
 
 
+/************************************/
+/*       Refresh all Screens        */
+/************************************/
+void A_Connection_Manager_Socket::Refresh_Screens()
+{
+    // Iterate over each instance
+    for( size_t i=0; i<m_connection_list.size(); i++ )
+    {
+        if( m_connection_list[i] != nullptr &&
+            m_connection_list[i]->Is_Running() )
+        {
+            Refresh_Screen( i );
+        }
+    }
+
+}
+
+
 /*********************************/
 /*       Refresh the screen      */
 /*********************************/
 void A_Connection_Manager_Socket::Refresh_Screen( const int& instance_id )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS( trace,
+                   "Start of Method. Instance-ID: " + std::to_string(instance_id));
     
-    if( m_connection_list[instance_id] != nullptr && 
-        m_connection_list[instance_id]->Is_Running() ){
-        m_connection_list[instance_id]->Refresh_Screen(); 
+    // If Instance-ID is -1, then iterate
+    if( instance_id < 0 )
+    {
+        for( auto connection : m_connection_list )
+        {
+            if( connection != nullptr &&
+                connection->Is_Running() )
+            {
+                connection->Refresh_Screen();
+            }
+        }
+    }
+
+    // Otherwise, 
+    else
+    {
+        if( m_connection_list[instance_id] != nullptr && 
+            m_connection_list[instance_id]->Is_Running() )
+        {
+            m_connection_list[instance_id]->Refresh_Screen(); 
+        }
     }
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS( trace,
+                   "End of Method. Instance-ID: " + std::to_string(instance_id));
 }
 
+
+/*************************************************/
+/*          Get list of active sessions          */
+/*************************************************/
+std::vector<CORE::Session> A_Connection_Manager_Socket::Get_Active_Session_List()const
+{
+    // Create output list
+    std::vector<CORE::Session> output;
+    
+    for( size_t i=0; i<m_connection_list.size(); i++ ){
+        
+        // Check if null
+        if( m_connection_list[i] == nullptr )
+        {
+
+        }
+
+        // Otherwise, continue
+        else
+        {
+            output.push_back(m_connection_list[i]->Get_Session_Info());
+        }
+    }
+
+    // Return session info
+    return output;
+}
 
 
 /*****************************************************/

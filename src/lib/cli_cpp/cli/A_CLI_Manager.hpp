@@ -9,7 +9,9 @@
 // CLI Libraries
 #include "A_CLI_Manager_Configuration.hpp"
 #include "A_Command_Response_Handler_Base.hpp"
+#include "A_Session_Event_Handler_Base.hpp"
 #include "../cmd/A_Command_Queue.hpp"
+#include "../core/A_Session.hpp"
 #include "../handlers/A_Custom_Window_Command_Response_Handler.hpp"
 
 
@@ -80,6 +82,14 @@ class A_CLI_Manager{
          * @param[in] handler Command-Response Handler to register with the system.
          */
         void Register_Command_Response_Handler( A_Command_Response_Handler_Base::ptr_t handler );
+        
+
+        /**
+         * @brief Register a Session Response Handler.
+         *
+         * @param[in] handler Session-Response Handler to register with the system
+         */
+        void Register_Session_Event_Handler( A_Session_Event_Handler_Base::ptr_t handler );
 
 
         /**
@@ -90,6 +100,15 @@ class A_CLI_Manager{
         */
         bool Register_Custom_Render_Window( RENDER::An_ASCII_Render_Window_Base::ptr_t  render_window,
                                             CMD::A_Command const&                       command );
+        
+        
+        /**
+         * @brief Get list of active sessions.
+         *
+         * @return List of session instances.
+         */
+        std::vector<CORE::Session> Get_Active_Session_List()const;
+
 
 
         /**

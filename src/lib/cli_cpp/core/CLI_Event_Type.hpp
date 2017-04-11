@@ -20,6 +20,7 @@ namespace CLI{
 */
 enum class CLI_Event_Type : int32_t
 {
+    CLI_SESSION_EVENT    = -15 /**< Event caused by a CLI Session Change.*/,
     CLI_VARIABLE_SHOW    = -14 /**< Event for Print the Variable List.*/,
     CLI_VARIABLE_ADD     = -13 /**< Event for Adding a Variable to the Command-Parser.*/,
     CLI_VARIABLE_RM      = -12 /**< Event for Removing a Variable from the Command-Parser.*/,

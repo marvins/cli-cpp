@@ -7,6 +7,7 @@
 #define __CLI_A_CONSOLE_RENDER_MANAGER_ASCII_HPP__
 
 // C++ Standard Libraries
+#include <chrono>
 #include <deque>
 #include <memory>
 #include <mutex>
@@ -139,6 +140,12 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base
     protected:
 
         /**
+         * @brief Check the Async Message Flag
+        */
+        bool Check_Async_Message_Sent();
+
+
+        /**
          * @brief Refresh the Screen.
          */
         virtual void Refresh();
@@ -159,7 +166,12 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base
          * @return Header Mode bar text.
         */
         virtual std::string Get_Header_Mode_Bar_Text()const;
+        
 
+        /**
+         * @brief Get the header async message bar text
+        */
+        virtual std::string Get_Header_Async_Bar_Text();
 
         /**
          * @brief Print the header
@@ -198,6 +210,10 @@ class A_Render_Manager_ASCII : public A_Render_Manager_Base
 
         /// Refresh Mutex
         std::mutex m_refresh_mutex;
+
+        /// Start Timer
+        bool m_async_message_sent;
+        std::chrono::steady_clock::time_point m_async_message_time;
 
 }; // End of A_Render_Manager_ASCII Class
 

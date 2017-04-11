@@ -24,7 +24,7 @@
     <socket-configuration>
 
         <!-- Listening Port Number -->
-        <listening-port value="12344" />
+        <listening-port value="12345" />
 
         <!-- Window Size -->
         <window-size rows="40" cols="140" />

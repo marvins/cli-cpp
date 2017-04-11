@@ -14,6 +14,7 @@
 // CLI Libraries
 #include "../cmd/A_Command_Queue.hpp"
 #include "../cmd/A_Command_Parser.hpp"
+#include "../core/A_Session.hpp"
 #include "A_Connection_Manager_Base_Config.hpp"
 
 
@@ -78,6 +79,20 @@ class A_Connection_Manager_Base{
          * @param[in] instance Client instance to refresh.
          */
         virtual void Refresh_Screen( const int& instance ) = 0;
+
+
+        /**
+         * @brief Refresh all Instances
+        */
+        virtual void Refresh_Screens() = 0;
+        
+
+        /**
+         * @brief Get a list of active connections.
+         *
+         * @return session list.
+         */
+        virtual std::vector<CORE::Session> Get_Active_Session_List()const = 0;
 
 
     protected:

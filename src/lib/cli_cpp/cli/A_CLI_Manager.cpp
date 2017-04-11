@@ -272,6 +272,17 @@ void A_CLI_Manager::Register_Command_Response_Handler( A_Command_Response_Handle
 }
 
 
+/******************************************************/
+/*          Register Session Response Handler         */
+/******************************************************/
+void A_CLI_Manager::Register_Session_Event_Handler( A_Session_Event_Handler_Base::ptr_t handler )
+{
+
+
+
+}
+
+
 /************************************************/
 /*        Register Custom Render Window         */
 /************************************************/
@@ -334,12 +345,30 @@ void A_CLI_Manager::Send_Asynchronous_Message( const std::string& topic_name,
     // Attach the window
     RENDER::A_Render_Manager_Factory::Send_Asynchronous_Message( topic_name,
                                                                  message );
-
+    
+    // Refresh Screens
+    m_connection_manager->Refresh_Screens();
 
     // Log Exit and return
     CLI_LOG_CLASS_EXIT();
 
 }
+
+
+/************************************************/
+/*          Get Active Session List             */
+/************************************************/
+std::vector<CORE::Session> A_CLI_Manager::Get_Active_Session_List()const
+{
+    // Make sure we have been connected
+    if( m_connection_manager == nullptr ){
+        return std::vector<CORE::Session>();
+    }
+
+    // Otherwise, continue
+    return m_connection_manager->Get_Active_Session_List();
+}
+
 
 /******************************************************************/
 /*          Register Internal Command Response Handlers           */

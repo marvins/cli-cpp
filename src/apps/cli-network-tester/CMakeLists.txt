@@ -68,7 +68,7 @@ set( CLI_APP_HEADERS
 #----------------------------------#
 #-      Include the library       -#
 #----------------------------------#
-include_directories(../lib)
+include_directories(../../lib)
 
 #----------------------------------#
 #-      Build the Executable      -#

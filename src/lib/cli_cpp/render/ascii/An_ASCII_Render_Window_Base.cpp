@@ -71,7 +71,8 @@ void An_ASCII_Render_Window_Base::Set_Render_Driver_Context( A_Render_Driver_Con
     
     // Make sure the driver is not null
     if( render_driver == nullptr ){
-        BOOST_LOG_TRIVIAL(error) << "Render driver is currently null.  Expect a seg fault!. File: " << __FILE__ << ", Class: " << m_class_name << ", Method: " << __func__ << ", Line: " << __LINE__;
+        CLI_LOG_CLASS( error,
+                       "Render driver is currently null.  Expect seg fault!");
         return;
     }
 
