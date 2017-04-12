@@ -109,6 +109,11 @@ std::string CommandParseStatusToString( CommandParseStatus const& status )
         return "CLI_VARIABLE_SHOW";
     }
 
+    // Show Async Command History
+    if( status == CommandParseStatus::CLI_ASYNC_SHOW ){
+        return "CLI_ASYNC_SHOW";
+    }
+
     // UNKNOWN
     return "UNKNOWN";
 }
@@ -200,6 +205,11 @@ std::string CommandParseStatusToHistoryString( CommandParseStatus const& status 
         return "Press any key to continue.";
     }
 
+    // CLI Async Show
+    if( status == CommandParseStatus::CLI_ASYNC_SHOW ){
+        return "Success";
+    }
+
     // Invalid arguments
     if( status == CommandParseStatus::INVALID_ARGUMENTS ){
         return "Invalid arguments";
@@ -245,6 +255,7 @@ int CommandParseStatusToColorCode( CommandParseStatus const& status )
         case CommandParseStatus::CLI_VARIABLE_RM:
         case CommandParseStatus::CLI_VARIABLE_SHOW:
         case CommandParseStatus::CLI_RESIZE:
+        case CommandParseStatus::CLI_ASYNC_SHOW:
             return 0;
 
         // Color 0 - ERROR
@@ -341,6 +352,11 @@ CommandParseStatus StringToCommandParseStatus( const std::string& status )
         return CommandParseStatus::CLI_VARIABLE_SHOW;
     }
 
+    // CLI Async History
+    if( status == "CLI_ASYNC_SHOW" ){
+        return CommandParseStatus::CLI_ASYNC_SHOW;
+    }
+
     // Invalid ARguments
     if( status == "INVALID_ARGUMENTS" ){
         return CommandParseStatus::INVALID_ARGUMENTS;
@@ -389,6 +405,7 @@ bool Is_Valid_CLI_Command( CommandParseStatus const& command ){
         case CommandParseStatus::CLI_VARIABLE_ADD:
         case CommandParseStatus::CLI_VARIABLE_RM:
         case CommandParseStatus::CLI_VARIABLE_SHOW:
+        case CommandParseStatus::CLI_ASYNC_SHOW:
             return true;
         
         case CommandParseStatus::VALID:
@@ -426,9 +443,9 @@ std::vector<std::tuple<std::string,CommandParseStatus>> Get_CLI_Mode_To_Parse_St
     output.push_back( std::make_tuple("var-add",      CommandParseStatus::CLI_VARIABLE_ADD) );
     output.push_back( std::make_tuple("var-rm",       CommandParseStatus::CLI_VARIABLE_RM)  );
     output.push_back( std::make_tuple("var-show",     CommandParseStatus::CLI_VARIABLE_SHOW));
+    output.push_back( std::make_tuple("async-show",   CommandParseStatus::CLI_ASYNC_SHOW)   );
     output.push_back( std::make_tuple("help",         CommandParseStatus::VALID)            ); ///<  CLI Help Commands should be treated like normal commands.
     output.push_back( std::make_tuple("cli-resize",   CommandParseStatus::VALID)            ); ///<  CLI Resize Commands should be treated like normal commands.
-
 
     // return output
     return output;

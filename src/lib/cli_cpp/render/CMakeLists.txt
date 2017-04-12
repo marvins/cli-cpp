@@ -27,6 +27,7 @@ set( LIB_CLI_RENDER_MODULE_SOURCES
     ascii/An_ASCII_History_Window.cpp
     ascii/An_ASCII_History_Window_Configuration.cpp
     ascii/An_ASCII_Render_Window_Base.cpp
+    ascii/An_Async_Message_Window.cpp
 )
 
 
@@ -53,6 +54,7 @@ set( LIB_CLI_RENDER_MODULE_HEADERS
     ascii/An_ASCII_History_Window.hpp
     ascii/An_ASCII_History_Window_Configuration.hpp
     ascii/An_ASCII_Render_Window_Base.hpp
+    ascii/An_Async_Message_Window.hpp
 )
 
 

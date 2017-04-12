@@ -376,6 +376,11 @@ void A_Render_State::Process_Command_Result( CMD::A_Command_Result::ptr_t result
                                            (int)CLI_Event_Type::CLI_LOG );
     }
 
+    // If we want to show the Async Message History
+    else if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_ASYNC_SHOW ){
+        EVT::Event_Manager::Process_Event( m_instance_id,
+                                           (int)CLI_Event_Type::CLI_ASYNC_SHOW );
+    }
     
     // If adding an alias
     else if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_ALIAS_ADD ){

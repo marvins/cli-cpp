@@ -40,6 +40,7 @@ enum class CommandParseStatus : uint8_t {
     CLI_VARIABLE_ADD    = 17 /**< Add a Variable to the Command-Parser.*/,
     CLI_VARIABLE_RM     = 18 /**< Remove a variable from the Command-Parser.*/,
     CLI_VARIABLE_SHOW   = 19 /**< Show the Command-Parser variable list.*/,
+    CLI_ASYNC_SHOW      = 20 /**< Show the Async-Message History.*/,
 }; // End of CommandParseStatus Enumeration
 
 

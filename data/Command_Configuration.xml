@@ -145,6 +145,16 @@
             <arguments>
             </arguments>
         </command>
+        
+        <!--   Show Async History -->
+        <command mode="async-show">
+            <name value="async-show" />
+            <description value="Show the async message history." />
+            <task-name value="Show Async Message History." />
+            <expect_response value="false" />
+            <arguments>
+            </arguments>
+        </command>
 
     </cli-commands>
 

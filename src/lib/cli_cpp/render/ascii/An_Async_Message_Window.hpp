@@ -7,6 +7,7 @@
 
 // CLI Libraries
 #include "An_ASCII_Render_Window_Base.hpp"
+#include "../../utility/An_ASCII_Print_Table.hpp"
 
 namespace CLI{
 namespace RENDER{
@@ -39,7 +40,7 @@ class An_Async_Message_Window : public An_ASCII_Render_Window_Base
          * @return Window Title.
         */
         inline virtual std::string Get_Window_Title()const{
-            return "Command History Window";
+            return "Async Message History Window";
         }
 
         
@@ -52,12 +53,19 @@ class An_Async_Message_Window : public An_ASCII_Render_Window_Base
         virtual void Send_Asynchronous_Message( const std::string& topic_name,
                                                 const std::string& message );
 
+        
     protected:
         
         /**
          * @brief Print the Main Content.
          */
         void Print_Main_Content();
+
+
+        /**
+         * @brief Initialize the Print Table
+         */
+        void Initialize_Print_Table();
 
 
     private:
@@ -69,7 +77,10 @@ class An_Async_Message_Window : public An_ASCII_Render_Window_Base
         std::string m_shortcut_print_line;
 
         /// List of Async Messages
+        std::vector<std::tuple<std::string,std::string,std::string>> m_msg_history;
 
+        /// Print Table
+        UTILS::An_ASCII_Print_Table::ptr_t m_print_table;
 
 }; // End of A_Main_Window Class
 
@@ -77,4 +88,3 @@ class An_Async_Message_Window : public An_ASCII_Render_Window_Base
 } // End of CLI    Namespace
 
 
-#endif

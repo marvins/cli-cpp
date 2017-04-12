@@ -111,6 +111,13 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& instance,
         render_manager->Set_Current_Window( 4 );
     }
 
+    // If we have a command for CLI-Async Show, set window to 5
+    else if( event == (int)CLI_Event_Type::CLI_ASYNC_SHOW ||
+             event == (int)CLI_Event_Type::KEYBOARD_F6 )
+    {
+        render_manager->Set_Current_Window(5);
+    }
+
     // Otherwise, Process the Keyboard Input
     else{
         render_manager->Process_Keyboard_Input( event );

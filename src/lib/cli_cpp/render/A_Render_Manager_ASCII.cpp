@@ -19,6 +19,7 @@
 #include "ascii/A_Main_Window.hpp"
 #include "ascii/A_Variable_List_Window.hpp"
 #include "ascii/An_Alias_List_Window.hpp"
+#include "ascii/An_Async_Message_Window.hpp"
 #include "../event/Event_Manager.hpp"
 #include "../utility/ANSI_Utilities.hpp"
 #include "../utility/Log_Utilities.hpp"
@@ -107,6 +108,8 @@ void A_Render_Manager_ASCII::Initialize()
     m_window_list.push_back(std::make_shared<A_Variable_List_Window>( driver_context,
                                                                       m_command_parser ));
 
+    // Add the Async Message Window
+    m_window_list.push_back(std::make_shared<An_Async_Message_Window>( driver_context ));
 
     // Create the CLI Man Pages
     for( size_t i=0; i<m_command_parser->Get_CLI_Command_List().size(); i++ ){

@@ -44,6 +44,10 @@ std::string CLI_Event_Type_To_String( const int& event_id )
         // SESSION_EVENT
         case (int)CLI_Event_Type::CLI_SESSION_EVENT:
             return "CLI_SESSION_EVENT";
+
+        // CLI Async Show
+        case (int)CLI_Event_Type::CLI_ASYNC_SHOW:
+            return "CLI_ASYNC_SHOW";
     }
 
     // return unknown
