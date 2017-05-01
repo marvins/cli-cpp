@@ -14,6 +14,7 @@ set( CMAKE_CXX_FLAGS "-std=c++11 -Wall -ldl -fPIC" )
 SET( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin )
 SET( LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib )
 
+
 #-------------------------------------#
 #-     Find Boost C++ Libraries      -#
 #-------------------------------------#

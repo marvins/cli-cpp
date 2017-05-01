@@ -40,6 +40,7 @@ EVT::Event_Manager_Config  Load_Event_Manager_Config_XML_Node( pugi::xml_node& e
  * @param[in/out] logging_enabled   Flag if we want to allow logging.
  * @param[in/out] log_path          Path to log file.
  * @param[in/out] log_severity      Logging severity.
+ * @param[in/out] logfile_enabled   Flag if log file is allowed.
  *
  * @return True if successful, false if failed.
 */
@@ -47,7 +48,8 @@ bool Load_Logging_Config_XML_Node( pugi::xml_node& root_node,
                                    bool const&     create_if_missing,
                                    bool&           logging_enabled,
                                    std::string&    log_path,
-                                   std::string&    log_severity );
+                                   std::string&    log_severity,
+                                   bool&           logfile_enabled );
                                    
 
 /**

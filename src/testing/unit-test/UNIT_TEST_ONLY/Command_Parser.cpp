@@ -56,7 +56,7 @@ void Process_Command_Line( int argc, char* argv[] )
     }
             
     // Init Logger        
-    CLI::UTILS::Initialize_Logger( log_level, "");
+    CLI::UTILS::Initialize_Logger( log_level, "", false);
 
 }
 

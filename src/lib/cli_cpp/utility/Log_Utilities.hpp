@@ -51,7 +51,8 @@ namespace UTILS{
  * @param[in] log_path Path to logfile to write to.
  */
 void Initialize_Logger( const std::string& severity,
-                        const std::string& log_path );
+                        const std::string& log_path,
+                        const bool&        logfile_enabled );
 
 
 

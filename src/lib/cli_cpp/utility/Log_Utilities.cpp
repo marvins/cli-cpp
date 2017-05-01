@@ -47,7 +47,8 @@ logging::trivial::severity_level String_To_Level( const std::string& str ){
 /*              Initialize the Logger               */
 /****************************************************/
 void Initialize_Logger( const std::string& severity_string,
-                        const std::string& log_path )
+                        const std::string& log_path,
+                        const bool&        logfile_enabled )
 {
 
     // Convert the severity string to a level
@@ -57,7 +58,10 @@ void Initialize_Logger( const std::string& severity_string,
     logging::core::get()->set_filter(severity >= default_level);
 
     // Set the log path
-    //logging::add_file_log( log_path );
+    if( logfile_enabled )
+    {
+        logging::add_file_log( log_path );
+    }
 
     //logging::add_common_attributes();
 

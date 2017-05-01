@@ -72,7 +72,8 @@ bool Load_Logging_Config_XML_Node( pugi::xml_node&    root_node,
                                    bool const&        create_if_missing,
                                    bool&              logging_enabled,
                                    std::string&       log_path,
-                                   std::string&       log_severity )
+                                   std::string&       log_severity,
+                                   bool&              logfile_enabled )
 {
     // Grab log node
     pugi::xml_node log_node = root_node.child("logging");
@@ -81,6 +82,7 @@ bool Load_Logging_Config_XML_Node( pugi::xml_node&    root_node,
     bool def_log_enabled;
     std::string def_log_path;
     std::string def_log_sev;
+    logfile_enabled = false;
 
     // If the create if missing flag is present, then create
     if( create_if_missing == true )
@@ -126,6 +128,12 @@ bool Load_Logging_Config_XML_Node( pugi::xml_node&    root_node,
             log_node.append_attribute("log_level").set_value(def_log_sev.c_str());
         }
     }
+
+    // Check log path
+    if( log_path.size() > 0 ){
+        logfile_enabled = true;
+    }
+
     // Return success
     return true;
 }

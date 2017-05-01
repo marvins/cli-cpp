@@ -83,7 +83,8 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
     // Get the logging node
     bool        log_enabled;
     std::string log_path, log_severity;
-    if( XML::Load_Logging_Config_XML_Node( root_node, false, log_enabled, log_path, log_severity ) != true )
+    bool logfile_enabled;
+    if( XML::Load_Logging_Config_XML_Node( root_node, false, log_enabled, log_path, log_severity, logfile_enabled ) != true )
     {
         // Error
         BOOST_LOG_TRIVIAL(error) << "File: " << __FILE__ << ", Line: " << __LINE__ << ". Unable to load the logging config node.";
@@ -91,7 +92,7 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
 
 
     if( log_enabled == true ){
-        UTILS::Initialize_Logger( log_severity, log_path );
+        UTILS::Initialize_Logger( log_severity, log_path, logfile_enabled );
     }
 
 
@@ -254,10 +255,12 @@ void A_CLI_Configuration_File_Parser::Write()
     bool default_logging_enabled = true;
     std::string default_log_path = "log.log";
     std::string default_log_severity = "info";
-    if( XML::Load_Logging_Config_XML_Node( root_node, true,
+    bool default_logfile_enabled = false;
+    if( !XML::Load_Logging_Config_XML_Node( root_node, true,
                                            default_logging_enabled,
                                            default_log_path,
-                                           default_log_severity )          != true )
+                                           default_log_severity, 
+                                           default_logfile_enabled ))
     {
         BOOST_LOG_TRIVIAL(error) << "Unable to load the Logging XML Node.";
     }
