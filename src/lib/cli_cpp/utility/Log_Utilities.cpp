@@ -60,7 +60,8 @@ void Initialize_Logger( const std::string& severity_string,
     // Set the log path
     if( logfile_enabled )
     {
-        logging::add_file_log( log_path );
+        auto fs_sink = logging::add_file_log( log_path );
+        fs_sink->locked_backend()->auto_flush(true);
     }
 
     //logging::add_common_attributes();

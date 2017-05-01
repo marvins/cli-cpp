@@ -30,8 +30,8 @@ Event_Manager::Event_Manager( Event_Manager_Config const& config )
     m_is_running(config.Get_Event_Work_Queue_Thread_Count(), true)
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
-    
+    CLI_LOG_CLASS_ENTRY();
+
     // Create the event queue
     m_event_queue = std::make_shared<An_Event_Queue>(m_config.Get_Event_Queue_Max_Capacity());
     
@@ -50,7 +50,7 @@ Event_Manager::Event_Manager( Event_Manager_Config const& config )
     }
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -60,7 +60,7 @@ Event_Manager::Event_Manager( Event_Manager_Config const& config )
 Event_Manager::~Event_Manager()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_ENTRY();
 
     // Stop the thread
     for( size_t i=0; i<m_event_process_threads.size(); i++ )
@@ -89,7 +89,7 @@ Event_Manager::~Event_Manager()
     m_event_queue.reset();
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: " << m_class_name << ", File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -213,7 +213,7 @@ void Event_Manager::Process_Event( const int& instance,
     // Log Entry
     const std::string m_class_name = "Event_Manager";
     CLI_LOG_CLASS( trace, 
-                   "Start of method. Event-ID: " + std::to_string(event) + ", Instance: " + std::to_string(instance));
+                   "Start of method. Event-ID: " + CLI_Event_Type_To_String(event) + ", Instance: " + std::to_string(instance));
     
     // Make sure we are initialized
     if( Is_Initialized() == false )

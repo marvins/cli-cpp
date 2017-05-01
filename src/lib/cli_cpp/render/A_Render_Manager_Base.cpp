@@ -88,7 +88,7 @@ void A_Render_Manager_Base::Process_Command()
 
     
     // Log 
-    BOOST_LOG_TRIVIAL(trace) << "File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ << ", Command Result: " << result->To_Debug_String();
+    CLI_LOG_CLASS(trace, "Command Result: " + result->To_Debug_String());
 
     
     // Add to history
@@ -97,14 +97,16 @@ void A_Render_Manager_Base::Process_Command()
 
     
     //  Look for CLI Shutdown
-    if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_SHUTDOWN ){
+    if( result->Get_Parse_Status() == CMD::CommandParseStatus::CLI_SHUTDOWN )
+    {
         EVT::Event_Manager::Process_Event( m_instance_id,
                                            (int)CLI_Event_Type::CLI_SHUTDOWN );
     }
     
 
     // Look for other CLI Command
-    else if( CMD::Is_Valid_CLI_Command( result->Get_Parse_Status() ) == true ){
+    else if( CMD::Is_Valid_CLI_Command( result->Get_Parse_Status() ) == true )
+    {
         m_render_state->Process_Command_Result( result );
     }
 
@@ -136,7 +138,7 @@ void A_Render_Manager_Base::Process_Command()
     
     // Clear the cursor    
     m_render_state->Clear_Cursor_Text();
-    
+
     
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
@@ -245,7 +247,8 @@ void A_Render_Manager_Base::Process_Keyboard_Input( const int& key )
 
     // Log Exit
     process_stopwatch.Stop();
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__ << ", Time to process: " << std::fixed << process_stopwatch.Get_Duration().count() << " seconds";
+    CLI_LOG_CLASS(trace,
+                  "End of Method. Time to process: " + std::to_string(process_stopwatch.Get_Duration().count()) + " seconds");
 }
 
 

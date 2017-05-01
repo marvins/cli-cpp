@@ -91,7 +91,7 @@
              a large number of resources. Two is required so that when a CLI job is
              running, refresh requests can still be made to the screen.
         -->
-        <work-queue-thread-count value="1" />
+        <work-queue-thread-count value="2" />
 
     </event-manager>
 

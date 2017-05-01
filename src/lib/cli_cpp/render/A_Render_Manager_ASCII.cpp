@@ -421,12 +421,10 @@ std::string A_Render_Manager_ASCII::Get_Header_Async_Bar_Text()
     {
         output = UTILS::ANSI_BACK_RED + UTILS::ANSI_WHITE + UTILS::Format_String("Async MSG Rcv'd",
                                                                                  mode_bar_width );
-        std::cout << "Async Message Sent" << std::endl;
     }
     else
     {
         output = UTILS::Format_String(" ", mode_bar_width );
-        std::cout << "Async Message Not Sent" << std::endl;
     }
 
     return output;
