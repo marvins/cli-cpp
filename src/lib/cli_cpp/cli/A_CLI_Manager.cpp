@@ -123,7 +123,8 @@ void A_CLI_Manager::Connect()
 
 
     // Do not connect if thread is already running
-    if( m_handler_thread_running == true ){
+    if( m_handler_thread_running == true )
+    {
         BOOST_LOG_TRIVIAL(warning) << "CLI-Manager Handler thread already running.";
         return;
     }
@@ -160,7 +161,8 @@ void A_CLI_Manager::Disconnect()
     EVT::Event_Manager::Finalize();
 
     // Make sure the connection manager is not already de-allocated
-    if( m_connection_manager != nullptr ){
+    if( m_connection_manager != nullptr )
+    {
 
         // Stop the thread
         m_connection_manager->Signal_Shutdown();
@@ -342,13 +344,21 @@ void A_CLI_Manager::Send_Asynchronous_Message( const std::string& topic_name,
     // Log Entry
     CLI_LOG_CLASS_ENTRY();
 
+    // Check the initialization status
+    if( !EVT::Event_Manager::Is_Initialized() )
+    {
+        CLI_LOG_CLASS( error, "CLI-Manager has already been disconnected.");
+    }
 
-    // Attach the window
-    RENDER::A_Render_Manager_Factory::Send_Asynchronous_Message( topic_name,
-                                                                 message );
-    
-    // Refresh Screens
-    m_connection_manager->Refresh_Screens();
+    else
+    {
+        // Attach the window
+        RENDER::A_Render_Manager_Factory::Send_Asynchronous_Message(topic_name,
+                                                                    message);
+
+        // Refresh Screens
+        m_connection_manager->Refresh_Screens();
+    }
 
     // Log Exit and return
     CLI_LOG_CLASS_EXIT();

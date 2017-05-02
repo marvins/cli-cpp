@@ -57,15 +57,14 @@ void A_Render_Manager_Base::Process_Command()
 {
 
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+    CLI_LOG_CLASS_ENTRY();
 
     // Make sure the command is not blank
     if( UTILS::String_Trim( m_render_state->Get_Cursor_Text() ).size() <= 0 )
     {
         
         // Clear the string
-        BOOST_LOG_TRIVIAL(debug) << "Empty command. Skipping action.";
+        CLI_LOG_CLASS( debug, "Empty command. Skipping action.");
         m_render_state->Clear_Cursor_Text();
         
         return;
@@ -75,7 +74,7 @@ void A_Render_Manager_Base::Process_Command()
     if(  Check_Waiting_Command_Response() )
     {
         // Clear the cursor text
-        BOOST_LOG_TRIVIAL(debug) << "Waiting on response for existing command. Skipping action.";
+        CLI_LOG_CLASS( debug, "Waiting on response for existing command. Skipping action.");
         m_render_state->Clear_Cursor_Text();
     
         return;
@@ -141,7 +140,7 @@ void A_Render_Manager_Base::Process_Command()
 
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 /************************************/

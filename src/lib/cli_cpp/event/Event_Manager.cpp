@@ -218,7 +218,8 @@ void Event_Manager::Process_Event( const int& instance,
     // Make sure we are initialized
     if( Is_Initialized() == false )
     {
-        BOOST_LOG_TRIVIAL(error) << "Event-Manager is not initialized. Method: " << __func__ << ", Class: Event_Manager,  File: " << __FILE__ << ", Line: " << __LINE__;
+        CLI_LOG_CLASS( error,
+                       "vent-Manager is not initialized.");
         return;
     }
     
@@ -227,8 +228,10 @@ void Event_Manager::Process_Event( const int& instance,
 
     
     // Add event to queue
-    if( inst == nullptr || inst->m_event_queue == nullptr ){
-        BOOST_LOG_TRIVIAL(trace) << "Event queue is currently null.";
+    if( inst == nullptr || inst->m_event_queue == nullptr )
+    {
+        CLI_LOG_CLASS( trace,
+                       "Event queue is currently null.");
         return;
     }
     

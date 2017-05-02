@@ -58,12 +58,11 @@ void State_Manager::Finalize()
 /********************************************/
 void State_Manager::Signal_System_Shutdown()
 {
+    // Set flag
+    m_shutdown_system = true;
 
     // Notify the condition variable
     m_shutdown_cv.notify_all();
-
-    // Set flag
-    m_shutdown_system = true;
 
 }
 
@@ -81,10 +80,14 @@ void State_Manager::Wait_On_System_Shutdown()
 
     // wait to exit
     std::unique_lock<std::mutex> ulock( m_shutdown_mutex );
-    while( m_shutdown_system == false ){
+    std::cout << "Starting Wait-On-System-Shutdown" << std::endl;
+    while( m_shutdown_system == false )
+    {
         m_shutdown_cv.wait( ulock );
     }
 
+    // Log Exit
+    std::cout << "Exiting Wait-On-System-Shutdown" << std::endl;
 }
 
 

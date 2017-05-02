@@ -61,6 +61,14 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int&                    in
 }
 
 
+/***************************************/
+/*              Destructor             */
+/***************************************/
+A_Render_Manager_ASCII::~A_Render_Manager_ASCII()
+{
+    // Destroy the render context
+    Finalize();
+}
 
 
 /********************************/
@@ -437,7 +445,7 @@ std::string A_Render_Manager_ASCII::Get_Header_Async_Bar_Text()
 void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_ENTRY();
 
     // Set the buffer row
     int cli_row = m_render_driver_context->Get_Window_Rows() - 2;
@@ -472,7 +480,7 @@ void A_Render_Manager_ASCII::Print_CLI( std::vector<std::string>& print_buffer )
     print_buffer[cli_row+0] = output + BUFFER_NEWLINE +  UTILS::ANSI_CURSORINVIS;
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 /****************************************************/

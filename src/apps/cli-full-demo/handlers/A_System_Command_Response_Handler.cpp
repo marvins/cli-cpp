@@ -24,7 +24,8 @@ A_System_Command_Response_Handler::A_System_Command_Response_Handler( State_Mana
 bool A_System_Command_Response_Handler::Is_Supported( CLI::CMD::A_Command_Result const& result ) const
 {
     // Make sure the command name matches
-    if( result.Get_Command().Get_Name() == "system-shutdown" ){
+    if( result.Get_Command().Get_Name() == "system-shutdown" )
+    {
         return true;
     }
 
@@ -40,7 +41,8 @@ void A_System_Command_Response_Handler::Process_Command( CLI::CMD::A_Command_Res
 {
 
     // Check for system shutdown
-    if( response->Get_Command().Get_Name() == "system-shutdown" ){
+    if( response->Get_Command().Get_Name() == "system-shutdown" )
+    {
         std::cout << "System shutdown message received" << std::endl;
         m_state_manager.Signal_System_Shutdown();
         response->Set_System_Response("Shutting down system now!");
