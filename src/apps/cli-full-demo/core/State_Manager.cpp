@@ -14,9 +14,11 @@
 State_Manager::State_Manager( )
   : m_shutdown_system(false),
     m_timer_running(false),
-    m_timer_wait(std::chrono::milliseconds(5000))
+    m_timer_wait(std::chrono::milliseconds(5000)),
+    m_network_scanner(std::make_shared<Network_Scanner>())
 {
     // Add some assets
+    m_network_scanner->Add_Network_Asset( "Google", "8.8.8.8", 10 );
 
 }
 
@@ -26,7 +28,6 @@ State_Manager::State_Manager( )
 /*****************************/
 State_Manager::~State_Manager()
 {
-
 }
 
 
@@ -37,6 +38,9 @@ void State_Manager::Initialize()
 {
     // Start Timer Thread
     m_timer_thread = std::thread( &State_Manager::Run_Timer, this);
+
+    // Start the scanner
+    m_network_scanner->Start_Scanner();
 }
 
 /************************************************/
@@ -50,6 +54,9 @@ void State_Manager::Finalize()
         m_timer_running = false;
         m_timer_thread.join();
     }
+
+    // Stop the Server
+    m_network_scanner->Stop_Scanner();
 }
 
 

@@ -40,10 +40,16 @@ endif()
 set( CLI_FULL_APP_SOURCES
      main.cpp
      core/State_Manager.cpp
-     handlers/A_User_Session_Event_Handler.cpp
+     handlers/A_Netstat_Command_Response_Handler.cpp
+     handlers/A_Network_Asset_Command_Response_Handler.cpp
+     handlers/A_Ping_Command_Response_Handler.cpp
      handlers/A_System_Command_Response_Handler.cpp
+     handlers/A_User_Session_Event_Handler.cpp
+     render/A_Network_Status_Render_Window.cpp
      render/A_User_Status_Render_Window.cpp
      utils/Init_Utilities.cpp
+     utils/Network_Scanner.cpp
+     utils/System_Utilities.cpp
 )     
 
 
@@ -51,11 +57,17 @@ set( CLI_FULL_APP_SOURCES
 #-    Define our demo headers     -#
 #----------------------------------#
 set( CLI_FULL_APP_HEADERS
-     core/State_Manager.hpp
-     handlers/A_User_Session_Event_Handler.hpp
-     handlers/A_System_Command_Response_Handler.hpp
-     render/A_User_Status_Render_Window.hpp
-     utils/Init_Utilities.hpp
+        core/State_Manager.hpp
+        handlers/A_Netstat_Command_Response_Handler.cpp
+        handlers/A_Network_Asset_Command_Response_Handler.cpp
+        handlers/A_Ping_Command_Response_Handler.cpp
+        handlers/A_System_Command_Response_Handler.hpp
+        handlers/A_User_Session_Event_Handler.hpp
+        render/A_Network_Status_Render_Window.cpp
+        render/A_User_Status_Render_Window.hpp
+        utils/Init_Utilities.hpp
+        utils/Network_Scanner.hpp
+        utils/System_Utilities.hpp
 )
 
 

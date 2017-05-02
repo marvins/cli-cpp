@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
 <command-alias-list>
 	<alias name="ping-localhost" value="ping localhost 10" />
+    <alias name="go-alias-test"  value="run-script ../data/alias-test-script.sh" /> 
 </command-alias-list>

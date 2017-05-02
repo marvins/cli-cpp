@@ -700,7 +700,6 @@ void A_Render_Manager_ASCII::Listen_Async_Messages()
         // Check if wait timed out
         if( m_async_message_cv.wait_for(lck, m_async_message_sleep_time) == std::cv_status::timeout )
         {
-            std::cout << "--> Timed Out" << std::endl;
             // set back to false
             m_async_message_sent = false;
 
@@ -713,7 +712,6 @@ void A_Render_Manager_ASCII::Listen_Async_Messages()
         else
         {
             // Try again
-            std::cout << "--> Notified" << std::endl;
 
         }
     }

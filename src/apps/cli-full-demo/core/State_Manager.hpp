@@ -14,6 +14,7 @@
 
 // Application Libraries
 #include <cli_cpp.hpp>
+#include "../utils/Network_Scanner.hpp"
 
 
 /**
@@ -88,6 +89,13 @@ class State_Manager
         inline std::deque<CLI::CORE::Session_Event> Get_Session_Event_List()const{
             return m_session_events;
         }
+
+        /**
+         * @brief Get the network scanner.
+        */
+        inline Network_Scanner::ptr_t Get_Network_Scanner(){
+            return m_network_scanner;
+        }
         
 
     private:
@@ -118,6 +126,9 @@ class State_Manager
 
         /// Timer Wait
         std::chrono::milliseconds m_timer_wait;
+
+        /// Network Scanner
+        Network_Scanner::ptr_t m_network_scanner;
 
 }; // End of State_Manager Class
 

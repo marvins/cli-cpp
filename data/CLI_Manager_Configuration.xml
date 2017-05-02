@@ -27,7 +27,7 @@
         <listening-port value="12345" />
 
         <!-- Window Size -->
-        <window-size rows="40" cols="140" />
+        <window-size rows="50" cols="180" />
 
         <!-- Read Timeout Sleep Time -->
         <read-timeout-sleep-time microseconds="5000" />
@@ -91,7 +91,7 @@
              a large number of resources. Two is required so that when a CLI job is
              running, refresh requests can still be made to the screen.
         -->
-        <work-queue-thread-count value="1" />
+        <work-queue-thread-count value="2" />
 
     </event-manager>
 
