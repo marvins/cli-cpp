@@ -14,6 +14,7 @@
 
 // CLI Libraries
 #include "../cli/A_Connection_Manager_Socket_Config.hpp"
+#include "../cli/A_Connection_Manager_Socket_JSON_Config.hpp"
 
 namespace CLI{
 namespace IO{
@@ -186,7 +187,8 @@ bool Load_Connection_Config_XML_Nodes( pugi::xml_node&                          
     
     
     // Process the socket connection information 
-    if( cli_conn_type == CORE::ConnectionType::SOCKET ){
+    if( cli_conn_type == CORE::ConnectionType::SOCKET )
+    {
 
         // Socket Config
         pugi::xml_node socket_config_node = root_node.child("socket-configuration");
@@ -261,13 +263,59 @@ bool Load_Connection_Config_XML_Nodes( pugi::xml_node&                          
         connection_manager_config = std::make_shared<A_Connection_Manager_Socket_Config>( portno,
                                                                                           sleep_time,
                                                                                           max_connections );
-        
-
+    }
     
-
+    // Process the socket connection information
+    else if( cli_conn_type == CORE::ConnectionType::SOCKET_JSON )
+    {
+    
+        // Socket Config
+        pugi::xml_node socket_config_node = root_node.child("socket-json-configuration");
+    
+        // Check if we need to create the node
+        if( create_if_missing == true &&
+            socket_config_node == pugi::xml_node() )
+        {
+            socket_config_node = root_node.append_child("socket-json-configuration");
+            socket_config_node.append_attribute("value").set_value("SOCKET_JSON");
+        
+        }
+        else if( create_if_missing == false &&
+                 socket_config_node == pugi::xml_node() )
+        {
+            return false;
+        }
+        else{
+        
+        }
+    
+    
+        // Check if the internal nodes are valid and the input config is not null
+        if( create_if_missing == true &&
+            connection_manager_config != nullptr )
+        {
+        
+            // Create socket config
+            A_Connection_Manager_Socket_JSON_Config::ptr_t socket_config = std::dynamic_pointer_cast<A_Connection_Manager_Socket_JSON_Config>(connection_manager_config);
+        
+            // Listening Port Configuration
+            if( socket_config_node.child("listening-port") == pugi::xml_node() ){
+                socket_config_node.append_child("listening-port").append_attribute("value").set_value(socket_config->Get_Port());
+            }
+            if( socket_config_node.child("listening-port").attribute("value") == pugi::xml_attribute() ){
+                socket_config_node.child("listening-port").append_attribute("value").set_value(socket_config->Get_Port());
+            }
+        }
+    
+        // Get the port number
+        int portno = socket_config_node.child("listening-port").attribute("value").as_int();
+    
+        
+        // Create the configuration
+        connection_manager_config = std::make_shared<A_Connection_Manager_Socket_JSON_Config>( portno );
     }
 
-
+    
     return true;
 }
 

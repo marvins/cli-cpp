@@ -16,15 +16,16 @@
           
           Supported Options:
           - SOCKET : Connect via network
+          - SOCKET_JSON : JSON Interface
     -->
-    <connection-type value="SOCKET" />
+    <connection-type value="SOCKET_JSON" />
 
 
     <!-- Socket CLI Configuration -->
     <socket-configuration>
 
         <!-- Listening Port Number -->
-        <listening-port value="12345" />
+        <listening-port value="12344" />
 
         <!-- Window Size -->
         <window-size rows="50" cols="180" />
@@ -37,6 +38,14 @@
 
     </socket-configuration>
 
+
+    <!-- JSON Socket Configuration -->
+    <socket-json-configuration>
+
+        <!-- Listening Port -->
+        <listening-port value="12348" />
+
+    </socket-json-configuration>
 
     <!-- Command Configuration -->
     <command-configuration path="../data/Command_Configuration.xml" />
