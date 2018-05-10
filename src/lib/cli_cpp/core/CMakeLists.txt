@@ -8,9 +8,10 @@
 #-      Core Module Sources     -#
 #--------------------------------#
 set( LIB_CLI_CORE_MODULE_SOURCES
-     A_Session.cpp
-     CLI_Event_Type.cpp
-     ConnectionType.cpp
+        A_Session.cpp
+        CLI_Event_Type.cpp
+        ConnectionType.cpp
+        SessionType.cpp
 )
 
 
@@ -18,9 +19,10 @@ set( LIB_CLI_CORE_MODULE_SOURCES
 #-      Core Module Headers     -#
 #--------------------------------#
 set( LIB_CLI_CMD_MODULE_HEADERS
-     A_Session.hpp
-     CLI_Event_Type.hpp
-     ConnectionType.hpp
+        A_Session.hpp
+        CLI_Event_Type.hpp
+        ConnectionType.hpp
+        SessionType.hpp
 )
 
 

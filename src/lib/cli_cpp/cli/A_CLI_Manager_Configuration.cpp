@@ -21,12 +21,9 @@ namespace CLI{
 /***************************/
 /*      Constructor        */
 /***************************/
-A_CLI_Manager_Configuration::A_CLI_Manager_Configuration( CORE::ConnectionType const& cli_conn_type )
+A_CLI_Manager_Configuration::A_CLI_Manager_Configuration()
   : m_class_name("A_CLI_Manager_Configuration"),
-    m_conn_type(cli_conn_type),
     m_command_parser(nullptr),
-    m_socket_window_rows(20),
-    m_socket_window_cols(80),
     m_redirect_stdout(false),
     m_redirect_stderr(false),
     m_async_message_refresh_time(500)
@@ -40,8 +37,15 @@ A_CLI_Manager_Configuration::A_CLI_Manager_Configuration( CORE::ConnectionType c
 bool A_CLI_Manager_Configuration::Is_Valid()const
 {
     // Check if the configuration is null
-    if( m_connection_manager_configuration == nullptr ){
+    if( m_connection_manager_configurations.empty() )
+    {
         return false;
+    }
+    for( auto mgr_conf : m_connection_manager_configurations )
+    {
+        if( mgr_conf == nullptr ){
+            return false;
+        }
     }
 
 

@@ -10,7 +10,7 @@
 #include "A_Connection_Manager_Base.hpp"
 #include "A_Connection_Manager_Base_Config.hpp"
 #include "A_Connection_Manager_Socket_Config.hpp"
-#include "A_Socket_Connection_Instance.hpp"
+#include "A_Socket_Telnet_Instance.hpp"
 
 // C++ Standard Libraries
 #include <memory>
@@ -124,7 +124,7 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
        
         
         /// Socket Instance List
-        std::vector<A_Socket_Connection_Instance::ptr_t> m_connection_list;
+        std::vector<A_Socket_Telnet_Instance::ptr_t> m_connection_list;
 
 }; // End of A_Connection_Manager_Socket Class
 

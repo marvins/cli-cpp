@@ -7,7 +7,6 @@
 
 // CLI Libraries
 #include "A_Connection_Manager_Socket.hpp"
-#include "A_Connection_Manager_Socket_JSON.hpp"
 
 namespace CLI{
 
@@ -30,11 +29,6 @@ A_Connection_Manager_Base::ptr_t A_Connection_Manager_Factory::Initialize( A_Con
 
         // Return socket
         return std::make_shared<A_Connection_Manager_Socket>( socket_config  );
-    } else if( configuration->Get_ConnectionType() == CORE::ConnectionType::SOCKET_JSON ){
-        
-        A_Connection_Manager_Socket_JSON_Config::ptr_t socket_config == std::dynamic_pointer_cast<A_Connection_Manager_Socket_JSON_Config>(configuration);
-        
-        return std::make_shared<A_Connection_Manager_Socket_JSON>(socket_config);
     }
     
     // return manager

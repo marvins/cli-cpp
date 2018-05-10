@@ -3,11 +3,12 @@
  * @author  Marvin Smith
  * @date    5/18/2015
  */
-#ifndef __CLI_A_CLI_CONFIGURATION_FILE_PARSER_HPP__
-#define __CLI_A_CLI_CONFIGURATION_FILE_PARSER_HPP__
+#ifndef CLI_A_CLI_CONFIGURATION_FILE_PARSER_HPP
+#define CLI_A_CLI_CONFIGURATION_FILE_PARSER_HPP
 
 // C++ Standard Libraries
 #include <string>
+#include <vector>
 
 
 // CLI Libraries
@@ -100,7 +101,7 @@ class A_CLI_Configuration_File_Parser{
 
         
         /// Connection Handler Configuration
-        A_Connection_Manager_Base_Config::ptr_t m_connection_manager_config;
+        std::vector<A_Connection_Manager_Base_Config::ptr_t> m_connection_manager_configs;
 
         
         /// Event Manager Configuration

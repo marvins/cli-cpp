@@ -25,11 +25,6 @@ ConnectionType  StringToConnectionType( const std::string& cli_type )
         return ConnectionType::SOCKET;
     }
     
-    // Socket
-    if( cli_type == "SOCKET_JSON" ){
-        return ConnectionType::SOCKET_JSON;
-    }
-
     return ConnectionType::UNKNOWN;
 }
 
@@ -42,7 +37,6 @@ std::string ConnectionTypeToString( const ConnectionType& cli_type )
 {
     if( cli_type == ConnectionType::BASE  ){ return "BASE"; }
     if( cli_type == ConnectionType::SOCKET ){ return "SOCKET"; }
-    if( cli_type == ConnectionType::SOCKET_JSON ){ return "SOCKET_JSON"; }
     return "UNKNOWN";
 }
 

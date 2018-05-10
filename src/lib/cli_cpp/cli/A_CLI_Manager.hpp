@@ -67,16 +67,6 @@ class A_CLI_Manager{
 
 
         /**
-         * @brief Get the CLI Connection Type
-         *
-         * @return CLI Connection Type.
-         */
-        inline CORE::ConnectionType Get_Connection_Type()const{
-            return m_configuration.Get_Connection_Type();
-        }
-
-
-        /**
          * @brief Register Command Response Handler.
          *
          * @param[in] handler Command-Response Handler to register with the system.

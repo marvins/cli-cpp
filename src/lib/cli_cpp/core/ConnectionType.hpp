@@ -16,10 +16,9 @@ namespace CORE{
  * @enum ConnectionType
  */
 enum class ConnectionType : uint8_t {
-    UNKNOWN     = 0,
-    BASE        = 1,
-    SOCKET      = 2,
-    SOCKET_JSON = 3,
+    UNKNOWN  = 0,
+    BASE     = 1,
+    SOCKET   = 2,
 }; // End of ConnectionType Enum
 
 

@@ -14,7 +14,9 @@
 
 // CLI Libraries
 #include "../cli/A_Connection_Manager_Socket_Config.hpp"
-#include "../cli/A_Connection_Manager_Socket_JSON_Config.hpp"
+#include "../core/ConnectionType.hpp"
+#include "../core/SessionType.hpp"
+#include "../utility/Log_Utilities.hpp"
 
 namespace CLI{
 namespace IO{
@@ -143,110 +145,53 @@ bool Load_Logging_Config_XML_Node( pugi::xml_node&    root_node,
 /*********************************************************/
 /*      Load the Connection Configuration XML Nodes      */
 /*********************************************************/
-bool Load_Connection_Config_XML_Nodes( pugi::xml_node&                          root_node,
-                                       bool const&                              create_if_missing,
-                                       CORE::ConnectionType&                    cli_conn_type,
-                                       A_Connection_Manager_Base_Config::ptr_t& connection_manager_config,
-                                       int&                                     window_rows,
-                                       int&                                     window_cols )
+bool Parse_Connection_Node( pugi::xml_node&                          root_node,
+                            bool const&                              create_if_missing,
+                            A_Connection_Manager_Base_Config::ptr_t& connection_manager_config )
 {
-    // Get the connection type node
-    pugi::xml_node connection_type_node = root_node.child("connection-type");
-
-    // If missing, check if we should create
-    if( create_if_missing == true &&
-        connection_type_node == pugi::xml_node() )
-    {
-        // Create the node
-        connection_type_node = root_node.append_child("connection-type");
-
-    }
-
-    else if( create_if_missing == false &&
-             connection_type_node == pugi::xml_node() )
-    {
-        return false;
-    }
-
-    // If not missing, continue
-    else{
-
-    }
+    // Get the connection type
+    CORE::ConnectionType connection_type = CORE::StringToConnectionType( root_node.attribute("conn_type").as_string());
+    CORE::SessionType    session_type    = CORE::StringToSessionType( root_node.attribute("session_type").as_string());
     
-    // Get the Connection Type
-    CORE::ConnectionType def_cli_conn_type = CORE::ConnectionType::SOCKET;
-    if( create_if_missing == true && 
-        connection_type_node.attribute("value") == pugi::xml_attribute())
+    // Check If SOcket
+    if( connection_type == CORE::ConnectionType::SOCKET )
     {
-        // Create node
-        connection_type_node.append_attribute("value").set_value(CORE::ConnectionTypeToString(cli_conn_type).c_str());
-    }
-    else{
-        cli_conn_type = CORE::StringToConnectionType(connection_type_node.attribute("value").as_string(CORE::ConnectionTypeToString(def_cli_conn_type).c_str()));
-    }
-    
-    
-    // Process the socket connection information 
-    if( cli_conn_type == CORE::ConnectionType::SOCKET )
-    {
-
-        // Socket Config
-        pugi::xml_node socket_config_node = root_node.child("socket-configuration");
-
-        // Check if we need to create the node
-        if( create_if_missing == true &&
-            socket_config_node == pugi::xml_node() )
-        {
-            socket_config_node = root_node.append_child("socket-configuration");
-            socket_config_node.append_attribute("value").set_value("SOCKET");
-            
-        }
-        else if( create_if_missing == false &&
-                 socket_config_node == pugi::xml_node() )
-        {
-            return false;
-        }
-        else{
-        
-        }
-        
-        
-        // Check if the internal nodes are valid and the input config is not null
-        if( create_if_missing == true &&
-            connection_manager_config != nullptr )
+        // Check the session-type as telnet
+        if( session_type == CORE::SessionType::TELNET )
         {
         
-            // Create socket config
-            A_Connection_Manager_Socket_Config::ptr_t socket_config = std::dynamic_pointer_cast<A_Connection_Manager_Socket_Config>(connection_manager_config);
-                
-            // Listening Port Configuration
-            if( socket_config_node.child("listening-port") == pugi::xml_node() ){
-                socket_config_node.append_child("listening-port").append_attribute("value").set_value(socket_config->Get_Port());
-            }
-            if( socket_config_node.child("listening-port").attribute("value") == pugi::xml_attribute() ){
-                socket_config_node.child("listening-port").append_attribute("value").set_value(socket_config->Get_Port());
-            }
-
-            // Window Size
-            if( socket_config_node.child("window-size") == pugi::xml_node() ){
-                socket_config_node.append_child("window-size").append_attribute("rows").set_value(window_rows);
-                socket_config_node.child("window-size").append_attribute("cols").set_value(window_cols);
-            }
-            if( socket_config_node.child("window-size").attribute("rows") == pugi::xml_attribute()){
-                socket_config_node.child("window-size").append_attribute("rows").set_value(window_rows);
-            }
-            if( socket_config_node.child("window-size").attribute("cols") == pugi::xml_attribute()){
-                socket_config_node.child("window-size").append_attribute("cols").set_value(window_cols);
-            }
-
-            // Read Timeout Sleep Time
-            if( socket_config_node.child("read-timeout-sleep-time") == pugi::xml_node() ){
-                socket_config_node.append_child("read-timeout-sleep-time").append_attribute("microseconds").set_value((unsigned long long)socket_config->Get_Read_Timeout_Sleep_Microseconds());
-            }
-            if( socket_config_node.child("read-timeout-sleep-time").attribute("microseconds") == pugi::xml_attribute() ){
-                socket_config_node.child("read-timeout-sleep-time").append_attribute("microseconds").set_value((unsigned long long)socket_config->Get_Read_Timeout_Sleep_Microseconds());
-            }
         }
+        
+        // Check if JSON
+        else if( session_type == CORE::SessionType::JSON )
+        {
+        
+        }
+        
+        // Otherwise, error
+        else
+        {
+            std::stringstream sin;
+            sin << "Unable to find valid Session-Type: " << std::string(root_node.attribute("session_type").as_string());
+            CLI_LOG_FUNC( error, sin.str());
+            return;
+        }
+        
+        // Create the Connection-Config
+        connection_manager_config = std::make_shared<A_Connection_Manager_Socket_Config>( port_number,
+                                                                                          read_timeout,
+                                                                                          max_connections,
+                                                                                          session_config );
+    }
+    
+    // Otherwise, error
+    else
+    {
+        CLI_LOG_FUNC( error,
+                      "Unable to find Connection-Type: " + root_node.attribute("conn_type").as_string());
+    }
+    
+    
 
         // Grab the window rows
         window_rows = socket_config_node.child("window-size").attribute("rows").as_int();
@@ -257,7 +202,10 @@ bool Load_Connection_Config_XML_Nodes( pugi::xml_node&                          
         
         // Get the timeout time
         int64_t sleep_time  = socket_config_node.child("read-timeout-sleep-time").attribute("microseconds").as_int(500000);
-        int max_connections = socket_config_node.child("max-connections").attribute("value").as_int(1); 
+        int max_connections = socket_config_node.child("max-connections").attribute("value").as_int(1);
+        
+        // Get the Session-Type
+        SessionType session_type = StringToSessionType( )
         
         // Create the configuration
         connection_manager_config = std::make_shared<A_Connection_Manager_Socket_Config>( portno,
@@ -265,55 +213,6 @@ bool Load_Connection_Config_XML_Nodes( pugi::xml_node&                          
                                                                                           max_connections );
     }
     
-    // Process the socket connection information
-    else if( cli_conn_type == CORE::ConnectionType::SOCKET_JSON )
-    {
-    
-        // Socket Config
-        pugi::xml_node socket_config_node = root_node.child("socket-json-configuration");
-    
-        // Check if we need to create the node
-        if( create_if_missing == true &&
-            socket_config_node == pugi::xml_node() )
-        {
-            socket_config_node = root_node.append_child("socket-json-configuration");
-            socket_config_node.append_attribute("value").set_value("SOCKET_JSON");
-        
-        }
-        else if( create_if_missing == false &&
-                 socket_config_node == pugi::xml_node() )
-        {
-            return false;
-        }
-        else{
-        
-        }
-    
-    
-        // Check if the internal nodes are valid and the input config is not null
-        if( create_if_missing == true &&
-            connection_manager_config != nullptr )
-        {
-        
-            // Create socket config
-            A_Connection_Manager_Socket_JSON_Config::ptr_t socket_config = std::dynamic_pointer_cast<A_Connection_Manager_Socket_JSON_Config>(connection_manager_config);
-        
-            // Listening Port Configuration
-            if( socket_config_node.child("listening-port") == pugi::xml_node() ){
-                socket_config_node.append_child("listening-port").append_attribute("value").set_value(socket_config->Get_Port());
-            }
-            if( socket_config_node.child("listening-port").attribute("value") == pugi::xml_attribute() ){
-                socket_config_node.child("listening-port").append_attribute("value").set_value(socket_config->Get_Port());
-            }
-        }
-    
-        // Get the port number
-        int portno = socket_config_node.child("listening-port").attribute("value").as_int();
-    
-        
-        // Create the configuration
-        connection_manager_config = std::make_shared<A_Connection_Manager_Socket_JSON_Config>( portno );
-    }
 
     
     return true;

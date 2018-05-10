@@ -12,40 +12,42 @@
              log_level="trace" />
 
     
-    <!-- Type of Connection 
-          
-          Supported Options:
-          - SOCKET : Connect via network
-          - SOCKET_JSON : JSON Interface
-    -->
-    <connection-type value="SOCKET_JSON" />
-
-
     <!-- Socket CLI Configuration -->
-    <socket-configuration>
+    <connection_configuration>
 
-        <!-- Listening Port Number -->
-        <listening-port value="12344" />
+        <connection conn_type="SOCKET"
+                    session_type="TELNET" >
 
-        <!-- Window Size -->
-        <window-size rows="50" cols="180" />
+            <!-- Listening Port Number -->
+            <listening-port value="12344" />
 
-        <!-- Read Timeout Sleep Time -->
-        <read-timeout-sleep-time microseconds="5000" />
+            <!-- Window Size -->
+            <window-size rows="50" cols="180" />
+
+            <!-- Read Timeout Sleep Time -->
+            <read-timeout-sleep-time microseconds="5000" />
         
-        <!-- Max Number of Connections -->
-        <max-connections value="5" />
+            <!-- Max Number of Connections -->
+            <max-connections value="5" />
 
-    </socket-configuration>
+        </connection>
 
+        <connection conn_type="SOCKET"
+                    session_type="JSON" >
 
-    <!-- JSON Socket Configuration -->
-    <socket-json-configuration>
+            <!-- Listening Port Number -->
+            <listening-port value="12345" />
 
-        <!-- Listening Port -->
-        <listening-port value="12348" />
+            <!-- Read Timeout Sleep Time -->
+            <read-timeout-sleep-time microseconds="5000" />
 
-    </socket-json-configuration>
+            <!-- Max Number of Connections -->
+            <max-connections value="5" />
+
+        </connection>
+
+    </connection_configuration>
+
 
     <!-- Command Configuration -->
     <command-configuration path="../data/Command_Configuration.xml" />

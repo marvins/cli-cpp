@@ -66,10 +66,7 @@ bool Load_Logging_Config_XML_Node( pugi::xml_node& root_node,
 */
 bool Load_Connection_Config_XML_Nodes( pugi::xml_node&                          root_node,
                                        bool const&                              create_if_missing,
-                                       CORE::ConnectionType&                    cli_conn_type,
-                                       A_Connection_Manager_Base_Config::ptr_t& connection_manager_config,
-                                       int&                                     window_rows,
-                                       int&                                     window_cols);
+                                       A_Connection_Manager_Base_Config::ptr_t& connection_manager_config );
 
 
 } // End of XML    Namespace

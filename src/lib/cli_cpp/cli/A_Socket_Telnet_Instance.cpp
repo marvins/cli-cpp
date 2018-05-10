@@ -3,7 +3,7 @@
  * @author  Marvin Smith
  * @date    7/9/2015
 */
-#include "A_Socket_Connection_Instance.hpp"
+#include "A_Socket_Telnet_Instance.hpp"
 
 // CLI Libraries
 #include "../event/Event_Manager.hpp"
@@ -39,7 +39,7 @@ const std::string KEYBOARD_F5_KEY     = "\033\133\061\065\176";
 /************************************/
 /*           Constructor            */
 /************************************/
-A_Socket_Connection_Instance::A_Socket_Connection_Instance( const int&           instance, 
+A_Socket_Telnet_Instance::A_Socket_Telnet_Instance( const int&           instance, 
                                                             const CORE::Session& session,
                                                             const int&           client_fd,
                                                             const int&           read_sleep_timeout_usec)
@@ -62,7 +62,7 @@ A_Socket_Connection_Instance::A_Socket_Connection_Instance( const int&          
 /********************************/
 /*         Destructor           */
 /********************************/
-A_Socket_Connection_Instance::~A_Socket_Connection_Instance()
+A_Socket_Telnet_Instance::~A_Socket_Telnet_Instance()
 {
     // Join
     if( m_thread.joinable() == true ){
@@ -73,7 +73,7 @@ A_Socket_Connection_Instance::~A_Socket_Connection_Instance()
 /************************************/
 /*          Run Instance            */
 /************************************/
-void A_Socket_Connection_Instance::Run()
+void A_Socket_Telnet_Instance::Run()
 {
     // Get the render manager
     m_render_manager = RENDER::A_Render_Manager_Factory::Instance_Of( m_instance_id );
@@ -278,7 +278,7 @@ void A_Socket_Connection_Instance::Run()
 /*********************************/
 /*       Refresh the screen      */
 /*********************************/
-void A_Socket_Connection_Instance::Refresh_Screen()
+void A_Socket_Telnet_Instance::Refresh_Screen()
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
@@ -315,16 +315,16 @@ void A_Socket_Connection_Instance::Refresh_Screen()
 /*******************************/
 /*            Start            */
 /*******************************/
-void A_Socket_Connection_Instance::Start()
+void A_Socket_Telnet_Instance::Start()
 {
-    m_thread = std::thread( &A_Socket_Connection_Instance::Run,
+    m_thread = std::thread( &A_Socket_Telnet_Instance::Run,
                             this );
 }
 
 /*********************************/
 /*          Join Thread          */
 /*********************************/
-void A_Socket_Connection_Instance::Join()
+void A_Socket_Telnet_Instance::Join()
 {
     // Set flag
     m_is_running = false;
@@ -339,7 +339,7 @@ void A_Socket_Connection_Instance::Join()
 /**************************************/
 /*        Process Special Keys        */
 /**************************************/
-int A_Socket_Connection_Instance::Process_Special_Key( const std::string& input_str )const
+int A_Socket_Telnet_Instance::Process_Special_Key( const std::string& input_str )const
 {
     // Log Entry
     BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
@@ -366,7 +366,7 @@ int A_Socket_Connection_Instance::Process_Special_Key( const std::string& input_
 /********************************************/
 /*      Configure the Special Key Map       */
 /********************************************/
-void A_Socket_Connection_Instance::Configure_Special_Key_List()
+void A_Socket_Telnet_Instance::Configure_Special_Key_List()
 {
     // Add each keyboard to event mapping here
     m_special_key_list.push_back( std::make_tuple( TELNET_JUNK,          (int)CLI_Event_Type::CLI_NULL             ));

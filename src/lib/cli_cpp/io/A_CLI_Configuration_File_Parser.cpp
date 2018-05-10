@@ -49,11 +49,12 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
 {
 
     /// List of queries
-    const std::string CONNECTION_TYPE_QUERY   = "connection-type";
+    const std::string CONNECTIONS_QUERY       = "connection_configuration";
+    const std::string CONNECTION_QUERY        = "connection";
     const std::string COMMAND_CONFIG_NODE     = "command-configuration";
     const std::string CLI_CONFIG_QUERY        = "cli";
     const std::string CLI_TITLE_QUERY         = "title";
-    const std::string CLI_COMMAND_QUEUE_QUERY = "command-queue"; 
+    const std::string CLI_COMMAND_QUEUE_QUERY = "command-queue";
     const std::string CLI_REDIRECT_QUERY      = "redirect";
     const std::string EVENT_MANAGER_QUERY     = "event-manager";
 
@@ -97,40 +98,33 @@ void A_CLI_Configuration_File_Parser::Parse_Configuration_File()
 
 
     // Configure the connection information
-    CORE::ConnectionType cli_conn_type;
-    int window_rows, window_cols;
-    if( XML::Load_Connection_Config_XML_Nodes( root_node, false,
-                                               cli_conn_type,
-                                               m_connection_manager_config,
-                                               window_rows,
-                                               window_cols ) != true )
+    auto connections_node = xmldoc.child(CONNECTIONS_QUERY.c_str());
+    for( auto connection_node : connections_node.children(CONNECTION_QUERY.c_str()))
     {
-        BOOST_LOG_TRIVIAL(error) << "unable to load the Connection-Manager Configuration.";
-        return;
+        A_Connection_Manager_Base_Config::ptr_t  connection_manager_config;
+        
+        if( !Parse_Connection_Node( connection_node,
+                                    true,
+                                    connection_manager_config ) ){
+            BOOST_LOG_TRIVIAL(error) << "Unable to load the Connection-Config.";
+            return;
+        }
+        else
+        {
+            m_connection_manager_configs.push_back(connection_manager_config);
+        }
     }
-
-    // Check the connection type
-    if( cli_conn_type == CORE::ConnectionType::UNKNOWN ){
-        std::stringstream sin;
-        sin << "error: " << __FILE__ << ", Line: " << __LINE__ << ". CLI Connection Type value is invalid.";
-        std::cerr << sin.str() << std::endl;
-        return;
-    }
-    m_current_configuration.Set_Connection_Type( cli_conn_type );
     
         
     // Set the connection manager config inside the CLI configuration
-    if( m_connection_manager_config == nullptr ){
-        BOOST_LOG_TRIVIAL(error) << "Unable to load the connection manager configuration. Currently null.";
+    if( m_connection_manager_configs.empty() )
+    {
+        BOOST_LOG_TRIVIAL(error) << "Unable to load the connection manager configurations. Currently empty.";
         return;
     }
-    m_current_configuration.Set_Connection_Manager_Config( m_connection_manager_config );
+    m_current_configuration.Set_Connection_Manager_Configs( m_connection_manager_configs );
     
-    // set the window size
-    m_current_configuration.Set_Socket_Window_Rows( window_rows );
-    m_current_configuration.Set_Socket_Window_Cols( window_cols );
-
-
+    
     // Grab the CLI Node
     pugi::xml_node cli_node = root_node.child(CLI_CONFIG_QUERY.c_str());
 
@@ -302,7 +296,6 @@ void A_CLI_Configuration_File_Parser::Parse_CLI_Node()
 
 
 }
-
 
 } // End of CONFIG Namespace
 } // End of IO     Namespace

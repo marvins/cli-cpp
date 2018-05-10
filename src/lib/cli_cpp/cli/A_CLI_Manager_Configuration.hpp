@@ -3,11 +3,12 @@
  * @author  Marvin Smith
  * @date    5/18/2015
  */
-#ifndef __CLI_A_CLI_MANAGER_CONFIGURATION_HPP__
-#define __CLI_A_CLI_MANAGER_CONFIGURATION_HPP__
+#ifndef CLI_A_CLI_MANAGER_CONFIGURATION_HPP
+#define CLI_A_CLI_MANAGER_CONFIGURATION_HPP
 
 // C++ Standard Libraries
 #include <string>
+#include <vector>
 
 // CLI Libraries
 #include "A_Connection_Manager_Base.hpp"
@@ -27,37 +28,14 @@ namespace CLI{
  *
  * @brief Configuration parameters required for the CLI-Manager.
  */
-class A_CLI_Manager_Configuration{
-
+class A_CLI_Manager_Configuration
+{
     public:
 
         /**
          * @brief Constructor
-         *
-         * @param[in] conn_type Connection type.
          */
-        A_CLI_Manager_Configuration( CORE::ConnectionType const& conn_type );
-
-
-        /**
-         * @brief Get the Communication Type
-         *
-         * @return Connection Type
-         */
-        inline CORE::ConnectionType Get_Connection_Type()const{
-            return m_conn_type;
-        }
-
-
-        /**
-         * @brief Set the Connection Type.
-         *
-         * @param[in] conn_type Connection Type.
-         */
-        inline void Set_Connection_Type( CORE::ConnectionType const& conn_type )
-        {
-            m_conn_type = conn_type;
-        }
+        A_CLI_Manager_Configuration();
 
 
         /**
@@ -65,9 +43,9 @@ class A_CLI_Manager_Configuration{
          *
          * @param[in] configuration Configuration object to set.
          */
-        inline void Set_Connection_Manager_Config( A_Connection_Manager_Base_Config::ptr_t configuration )
+        inline void Set_Connection_Manager_Configs( std::vector<A_Connection_Manager_Base_Config::ptr_t> configurations )
         {
-            m_connection_manager_configuration = configuration;
+            m_connection_manager_configurations = configurations;
         }
 
         /**
@@ -75,8 +53,8 @@ class A_CLI_Manager_Configuration{
          *
          * @return Connection-Manager configuration object.
         */
-        inline A_Connection_Manager_Base_Config::ptr_t Get_Connection_Manager_Config()const{
-            return m_connection_manager_configuration;
+        inline std::vector<A_Connection_Manager_Base_Config::ptr_t> Get_Connection_Manager_Config()const{
+            return m_connection_manager_configurations;
         }
 
 
@@ -253,7 +231,7 @@ class A_CLI_Manager_Configuration{
         CORE::ConnectionType m_conn_type;
 
         /// Connection Manager Configuration
-        A_Connection_Manager_Base_Config::ptr_t m_connection_manager_configuration;
+        std::vector<A_Connection_Manager_Base_Config::ptr_t> m_connection_manager_configurations;
 
 
         /// Command Parser
