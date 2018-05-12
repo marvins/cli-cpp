@@ -39,20 +39,18 @@ const std::string KEYBOARD_F5_KEY     = "\033\133\061\065\176";
 /************************************/
 /*           Constructor            */
 /************************************/
-A_Socket_Telnet_Instance::A_Socket_Telnet_Instance( const int&           instance, 
-                                                            const CORE::Session& session,
-                                                            const int&           client_fd,
-                                                            const int&           read_sleep_timeout_usec)
-  : m_class_name("A_Socket_Connection_Instance"),
-    m_instance_id(instance),
-    m_session(session),
-    m_client_fd(client_fd),
-    m_read_sleep_timeout_usec(read_sleep_timeout_usec),
-    m_is_running(false),
+A_Socket_Telnet_Instance::A_Socket_Telnet_Instance( A_Socket_Instance_Config_Base::ptr_t  config,
+                                                    int                                   instance_id,
+                                                    const CORE::Session&                  session,
+                                                    int                                   client_fd )
+  : A_Socket_Base_Instance( config,
+                            instance_id,
+                            session,
+                            client_fd ),
+    m_class_name("A_Socket_Telnet_Instance"),
     m_skip_render(false),
     m_first_command_received(false)
 {
-
     // Configure Special Key List
     Configure_Special_Key_List();
 
@@ -144,7 +142,7 @@ void A_Socket_Telnet_Instance::Run()
             }
 
             // Finally sleep
-            usleep(m_read_sleep_timeout_usec);
+            std::this_thread.sleep_for( m_config->Get_Read_Sleep_Timeout() );
         }
 
         // Check if we are still running
@@ -309,30 +307,6 @@ void A_Socket_Telnet_Instance::Refresh_Screen()
 
     // Log Exit
     BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-}
-
-
-/*******************************/
-/*            Start            */
-/*******************************/
-void A_Socket_Telnet_Instance::Start()
-{
-    m_thread = std::thread( &A_Socket_Telnet_Instance::Run,
-                            this );
-}
-
-/*********************************/
-/*          Join Thread          */
-/*********************************/
-void A_Socket_Telnet_Instance::Join()
-{
-    // Set flag
-    m_is_running = false;
-
-    // Wait to finish
-    if( m_thread.joinable() ){
-        m_thread.join();
-    }
 }
 
 

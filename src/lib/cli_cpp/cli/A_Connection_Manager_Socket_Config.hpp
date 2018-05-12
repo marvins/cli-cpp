@@ -11,6 +11,7 @@
 
 // CLI Libraries
 #include "A_Connection_Manager_Base_Config.hpp"
+#include "A_Socket_Base_Instance.hpp"
 
 namespace CLI{
 
@@ -32,15 +33,9 @@ class A_Connection_Manager_Socket_Config : public A_Connection_Manager_Base_Conf
          * @param[in] read_timeout_sleep_time_usec 
          * @param[in] max_connections
         */
-        A_Connection_Manager_Socket_Config( const int& port,
-                                            const int64_t& read_timeout_sleep_time_usec,
-                                            const int&   max_connections );
-
-
-        /**
-         * @brief Destructor
-        */
-        ~A_Connection_Manager_Socket_Config();
+        A_Connection_Manager_Socket_Config( int                                   port,
+                                            int                                   max_connections,
+                                            A_Socket_Instance_Config_Base::ptr_t instance_config );
 
         
         /**
@@ -48,8 +43,7 @@ class A_Connection_Manager_Socket_Config : public A_Connection_Manager_Base_Conf
          *
          * @return Port number.
          */
-        inline int Get_Port()const
-        {
+        inline int Get_Port()const{
             return m_port;
         }
        
@@ -65,16 +59,6 @@ class A_Connection_Manager_Socket_Config : public A_Connection_Manager_Base_Conf
 
 
         /**
-         * @brief Get the Read Timeout Sleep Time in Microseconds.
-         *
-         * @return Sleep time.
-        */
-        inline int64_t Get_Read_Timeout_Sleep_Microseconds()const{
-            return m_read_timeout_sleep_usec;
-        }
-
-
-        /**
          * @brief Get the max number of connections.
          *
          * @return Max number of connections.
@@ -82,24 +66,29 @@ class A_Connection_Manager_Socket_Config : public A_Connection_Manager_Base_Conf
         inline int Get_Max_Connections()const{
             return m_max_connections;
         }
+        
+        
+        /**
+         * @brief Get the Instance Config
+         * @return
+         */
+        inline  A_Socket_Instance_Config_Base::ptr_t  Get_Instance_Config()const{
+            return m_instance_config;
+        }
 
 
     private:
         
         /// Class Name
         std::string m_class_name;
-
         
         /// Port Number
         int m_port;
 
-
-        /// Read Timeout Sleep Time
-        int64_t m_read_timeout_sleep_usec;
-
-
         /// Max Connections
         int m_max_connections;
+        
+        A_Socket_Instance_Config_Base::ptr_t m_instance_config;
 
         
 }; // End of A_Connection_Manager_Socket_Config Class

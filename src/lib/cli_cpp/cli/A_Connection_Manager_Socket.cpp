@@ -186,10 +186,10 @@ void A_Connection_Manager_Socket::Run_Handler()
                                CORE::ConnectionType::SOCKET );
         session.Add_Connection_Data_Entry("IP_ADDRESS", std::string(host));
 
-        m_connection_list[next_position] = std::make_shared<A_Socket_Telnet_Instance>( next_position,
-                                                                                           session,
-                                                                                           client_fd,
-                                                                                           m_configuration->Get_Read_Timeout_Sleep_Microseconds()); 
+        m_connection_list[next_position] = std::make_shared<A_Socket_Telnet_Instance>( m_configuration->Get_Instance_Config(),
+                                                                                       next_position,
+                                                                                       session,
+                                                                                       client_fd );
 
         
         // Process Event

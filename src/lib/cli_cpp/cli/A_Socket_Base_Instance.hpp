@@ -23,16 +23,32 @@ class A_Socket_Instance_Config_Base
 {
     public:
         
+        /// Pointer Type
+        typedef std::shared_ptr<A_Socket_Instance_Config_Base> ptr_t;
+        
+        
         /**
          * @brief Constructor
          *
-         * @param instance
-         * @param session
-         * @param client_fd
          * @param read_sleep_timeout
          */
         A_Socket_Instance_Config_Base( std::chrono::microseconds  read_sleep_timeout );
         
+        
+        /**
+         * @brief Get the Read Sleep Timeout
+         */
+        inline std::chrono::microseconds Get_Read_Sleep_Timeout()const{
+            return m_read_sleep_timeout;
+        }
+        
+    private:
+        
+        /// Class-Name
+        std::string m_class_name;
+        
+        /// Read-Sleep Timeout
+        std::chrono::microseconds m_read_sleep_timeout;
 };
 
 /**
@@ -53,22 +69,18 @@ class A_Socket_Base_Instance
          * @param[in] instance Instance ID of the client.
          * @param[in] client_fd Socket File Descriptor of Client.
          */
-        A_Socket_Base_Instance( const A_Socket_Instance_Config_Base& instance_config,
-                                int                        instance,
-                                const CORE::Session&       session,
-                                int                        client_fd );
+        A_Socket_Base_Instance( A_Socket_Instance_Config_Base::ptr_t  config,
+                                int                                   instance_id,
+                                const CORE::Session&                  session,
+                                int                                   client_fd );
         
         
-        /**
-         * @brief Destructor
-        */
-        virtual ~A_Socket_Telnet_Instance();
         
         
         /**
          * @brief Run
         */
-        void Run();
+        virtual void Run() = 0;
         
         
         /**
@@ -97,10 +109,11 @@ class A_Socket_Base_Instance
             return m_is_running;
         }
         
+        
         /**
          * @brief Refresh the Screen
         */
-        void Refresh_Screen();
+        virtual void Refresh_Screen() = 0;
         
         
         /**
@@ -110,30 +123,7 @@ class A_Socket_Base_Instance
             return m_session;
         }
     
-    
-    private:
-        
-        /**
-         * @brief Check for special keys.
-         *
-         * @param[in]  key_str String of digits from system.
-         *
-         * @return Key value.  -1 if no key present.
-        */
-        int Process_Special_Key( std::string const& key_str ) const;
-        
-        
-        /**
-         * @brief Configure the Special Key List.
-        */
-        void Configure_Special_Key_List();
-        
-        
-        /// Class Name
-        std::string m_class_name;
-        
-        /// Internal Thread
-        std::thread m_thread;
+    protected:
         
         /// Instance ID
         int m_instance_id;
@@ -144,8 +134,8 @@ class A_Socket_Base_Instance
         /// Client File Descriptor
         int m_client_fd;
         
-        /// Read Sleep Timeout Microseconds
-        int m_read_sleep_timeout_usec;
+        /// Internal Thread
+        std::thread m_thread;
         
         /// Flag if running
         bool m_is_running;
@@ -153,20 +143,15 @@ class A_Socket_Base_Instance
         /// Flag if Connected
         bool m_is_connected;
         
-        /// Local Render Manager Instance
-        RENDER::A_Render_Manager_Base::ptr_t m_render_manager;
+    private:
         
-        /// Keyboard Special Key Map
-        std::vector<std::tuple<std::string,int>> m_special_key_list;
         
-        /// Refresh Screen Mutex Lock
-        std::mutex m_refresh_lock;
+        /// Class Name
+        std::string m_class_name;
         
-        /// Skip the Rendering
-        bool m_skip_render;
+        // Configuration
+        A_Socket_Instance_Config_Base::ptr_t m_config;
         
-        bool m_first_command_received;
-    
 }; // End of A_Socket_Base_Instance Class
 
 

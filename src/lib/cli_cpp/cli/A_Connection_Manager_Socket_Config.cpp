@@ -11,30 +11,16 @@ namespace CLI{
 /**************************/
 /*      Constructor       */
 /**************************/
-A_Connection_Manager_Socket_Config::A_Connection_Manager_Socket_Config( const int&     port,
-                                                                        const int64_t& read_timeout_sleep_usec,
-                                                                        const int&     max_connections)
+A_Connection_Manager_Socket_Config::A_Connection_Manager_Socket_Config( int                                   port,
+                                                                        int                                   max_connections,
+                                                                        A_Socket_Instance_Config_Base::ptr_t instance_config )
   : A_Connection_Manager_Base_Config(),
     m_class_name("A_Connection_Manager_Socket_Config"),
     m_port(port),
-    m_read_timeout_sleep_usec(read_timeout_sleep_usec),
-    m_max_connections(max_connections)
+    m_max_connections(max_connections),
+    m_instance_config(instance_config)
 {
-
-
 }
-
-
-
-/**************************/
-/*      Destructor        */
-/**************************/
-A_Connection_Manager_Socket_Config::~A_Connection_Manager_Socket_Config()
-{
-
-
-}
-
 
 } // End of CLI Namespace
 

@@ -156,7 +156,15 @@ bool Parse_Connection_Node( pugi::xml_node&                          root_node,
     // Check If SOcket
     if( connection_type == CORE::ConnectionType::SOCKET )
     {
+        // Grab the port number
+        int port_number = root_node.child("listening-port").attribute("value").as_int();
+        
+        // Max Connections
+        int max_connections = root_node.child("max-connections").attribute("value").as_int();
+        
+        
         // Check the session-type as telnet
+        A_Socket_Instance_Config_Base::ptr_t instance_config;
         if( session_type == CORE::SessionType::TELNET )
         {
         
@@ -174,21 +182,22 @@ bool Parse_Connection_Node( pugi::xml_node&                          root_node,
             std::stringstream sin;
             sin << "Unable to find valid Session-Type: " << std::string(root_node.attribute("session_type").as_string());
             CLI_LOG_FUNC( error, sin.str());
-            return;
+            return false;
         }
         
         // Create the Connection-Config
         connection_manager_config = std::make_shared<A_Connection_Manager_Socket_Config>( port_number,
-                                                                                          read_timeout,
                                                                                           max_connections,
-                                                                                          session_config );
+                                                                                          instance_config );
     }
     
     // Otherwise, error
     else
     {
-        CLI_LOG_FUNC( error,
-                      "Unable to find Connection-Type: " + root_node.attribute("conn_type").as_string());
+        std::stringstream sin;
+        sin << "Unable to find Connection-Type: " << root_node.attribute("conn_type").as_string();
+        
+        CLI_LOG_FUNC( error, sin.str() );
     }
     
     

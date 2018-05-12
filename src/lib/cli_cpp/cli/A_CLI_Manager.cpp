@@ -44,7 +44,7 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
 
 
     // Initialize the Render-Driver Context Factory
-    RENDER::A_Render_Driver_Context_Factory::Initialize( configuration.Get_Connection_Type(),
+    RENDER::A_Render_Driver_Context_Factory::Initialize( configuration.Get_Render_Configs(),
                                                          configuration.Get_CLI_Title(),
                                                          configuration.Get_Socket_Window_Rows(),
                                                          configuration.Get_Socket_Window_Cols(),

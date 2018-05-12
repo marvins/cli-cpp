@@ -34,7 +34,6 @@ namespace CONFIG{
 A_CLI_Configuration_File_Parser::A_CLI_Configuration_File_Parser( const std::string& config_path )
   : m_class_name("A_CLI_Configuration_File_Parser"),
     m_config_pathname(config_path),
-    m_current_configuration(A_CLI_Manager_Configuration(CORE::ConnectionType::SOCKET)),
     m_is_valid(false)
 {
     // Parse the file
