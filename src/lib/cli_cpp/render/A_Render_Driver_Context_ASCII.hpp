@@ -3,10 +3,11 @@
  * @author  Marvin Smith
  * @date    5/22/2015
 */
-#ifndef __CLI_CPP_RENDER_A_RENDER_DRIVER_CONTEXT_ASCII_HPP__
-#define __CLI_CPP_RENDER_A_RENDER_DRIVER_CONTEXT_ASCII_HPP__
+#ifndef CLI_CPP_RENDER_A_RENDER_DRIVER_CONTEXT_ASCII_HPP
+#define CLI_CPP_RENDER_A_RENDER_DRIVER_CONTEXT_ASCII_HPP
 
 // CLI Libraries
+#include "../core/SessionType.hpp"
 #include "A_Render_Driver_Context_Base.hpp"
 
 // C++ Standard Libraries
@@ -188,6 +189,13 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
             return m_min_content_col;
         }
         
+        
+        /**
+         * @brief Get the Async Time Refresh
+         */
+        inline std::chrono::milliseconds Get_Async_Tab_Refresh_Time()const{
+            return m_async_tab_refresh;
+        }
 
     private:
         
@@ -205,6 +213,9 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
         int m_window_cols;
         int m_min_content_row;
         int m_min_content_col;
+        
+        /// Async Tab Refresh Time
+        std::chrono::milliseconds m_async_tab_refresh;
 
 }; // End of A_Render_Driver_Context_NCurses
 

@@ -90,22 +90,22 @@
     </cli>
 
     <!-- Event Manager Configuration -->
-    <event-manager>
+    <event_manager>
         
         <!-- Max capacity of the Event Manager's event queue.
             - More slots means you can back up more items.  If you fill
               up the queue, doing a push will become a blocking operation until
               room opens up on the queue.
         -->
-        <event-queue-max-capacity value="10000" />
+        <event_queue_max_capacity value="10000" />
 
         <!-- Number of work queue threads.  More threads means you can process more jobs
              in parallel.  This will prevent blocking when a particular job is taking
              a large number of resources. Two is required so that when a CLI job is
              running, refresh requests can still be made to the screen.
         -->
-        <work-queue-thread-count value="2" />
+        <work_queue_thread_count value="2" />
 
-    </event-manager>
+    </event_manager>
 
 </cli_manager_configuration>

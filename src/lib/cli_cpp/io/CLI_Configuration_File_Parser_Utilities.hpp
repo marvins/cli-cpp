@@ -70,7 +70,7 @@ class A_CLI_Config_Parser_PugiXML
          * @param root_node
          * @return
          */
-        EVT::Event_Manager_Config  Parse_Event_Manager_Config( pugi::xml_node& root_node );
+        EVT::Event_Manager_Config  Parse_Event_Manager_Node( pugi::xml_node& root_node );
         
         
         /// Class Name

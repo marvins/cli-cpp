@@ -32,6 +32,20 @@ class A_Socket_Instance_Config_Telnet : public A_Socket_Instance_Config_Base
         A_Socket_Instance_Config_Telnet( std::chrono::microseconds  read_sleep_timeout );
         
         
+        /**
+         * @brief Get the session-type
+         */
+        CORE::SessionType Get_Session_Type()const override{
+            return CORE::SessionType::TELNET;
+        }
+        
+        
+        /**
+         * @brief Print to Log String
+         */
+        virtual std::string To_Log_String( int indent )const;
+        
+        
     private:
         
         /// Class-Name
@@ -101,6 +115,9 @@ class A_Socket_Telnet_Instance : public A_Socket_Base_Instance
 
         /// Class Name
         std::string m_class_name;
+        
+        /// Configuration
+        A_Socket_Instance_Config_Telnet::ptr_t m_config;
     
         /// Local Render Manager Instance
         RENDER::A_Render_Manager_Base::ptr_t m_render_manager; 

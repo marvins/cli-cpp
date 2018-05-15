@@ -8,6 +8,7 @@
 
 // CLI Libraries
 #include "../core/ConnectionType.hpp"
+#include "../core/SessionType.hpp"
 #include "A_Render_Driver_Context_Base.hpp"
 #include "A_Render_Manager_Base.hpp"
 
@@ -35,9 +36,7 @@ class A_Render_Manager_Factory
          * @param[in] cli_title CLI Title to post to render-managers.
          * @param[in] command_parser Command-Parser to process command information.
         */
-        static void Initialize( CORE::ConnectionType const&   conn_type,
-                                const std::string&            cli_title,
-                                CMD::A_Command_Parser::ptr_t  command_parser,
+        static void Initialize( CMD::A_Command_Parser::ptr_t  command_parser,
                                 CMD::A_Command_Queue::ptr_t   command_queue );
 
 
@@ -52,7 +51,8 @@ class A_Render_Manager_Factory
          *
          * @param[in] instance_id Instance of the render manager.
         */
-        static A_Render_Manager_Base::ptr_t Instance_Of( const int& instance_id );
+        static A_Render_Manager_Base::ptr_t Instance_Of( int                instance_id,
+                                                         CORE::SessionType  session_type );
 
 
         /**
@@ -99,36 +99,24 @@ class A_Render_Manager_Factory
          *
          * @param[in] instance_id ID to load into the render-manager.  Used for grabbing the driver and state.
          */
-        A_Render_Manager_Base::ptr_t Create_Manager_Instance( const int& instance_id )const;
+        A_Render_Manager_Base::ptr_t Create_Manager_Instance( int                instance_id,
+                                                              CORE::SessionType  session_type )const;
 
 
         /// Class Name
         std::string m_class_name;
 
-
         /// Render Manager List
         std::vector<A_Render_Manager_Base::ptr_t> m_render_managers;
-
-
-        /// Configuration Items
-        CORE::ConnectionType m_conn_type;
-
-
-        /// CLI Title
-        std::string m_cli_title;
-
 
         /// Command Parser
         CMD::A_Command_Parser::ptr_t m_command_parser;
 
-
         /// Command Queue
         CMD::A_Command_Queue::ptr_t m_command_queue;
 
-
         /// Custom Window
         std::vector<An_ASCII_Render_Window_Base::ptr_t> m_custom_render_windows;
-
 
         /// Initialized Flag
         bool m_is_initialized;

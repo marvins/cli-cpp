@@ -34,10 +34,12 @@ const std::string BUFFER_NEWLINE = "\n\r";
 /****************************/
 /*      Constructor         */
 /****************************/
-A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int&                    instance_id,
+A_Render_Manager_ASCII::A_Render_Manager_ASCII( int                           instance_id,
+                                                CORE::SessionType             session_type,
                                                 CMD::A_Command_Parser::ptr_t  command_parser,
                                                 CMD::A_Command_Queue::ptr_t   command_queue )
  :  A_Render_Manager_Base( instance_id,
+                           session_type,
                            command_parser,
                            command_queue ),
     m_class_name("A_Render_Manager_ASCII"),
@@ -47,7 +49,7 @@ A_Render_Manager_ASCII::A_Render_Manager_ASCII( const int&                    in
     m_async_message_thread_running(false)
 {
     // Cast the driver
-    A_Render_Driver_Context_Base::ptr_t render_driver = A_Render_Driver_Context_Factory::Create_Instance();
+    A_Render_Driver_Context_Base::ptr_t render_driver = A_Render_Driver_Context_Factory::Create_Instance( m_session_type );
     m_render_driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>(render_driver);
 
     // Local Rendering State
@@ -84,16 +86,13 @@ void A_Render_Manager_ASCII::Initialize()
     A_Render_Driver_Context_ASCII::ptr_t driver_context = std::dynamic_pointer_cast<A_Render_Driver_Context_ASCII>( m_render_driver_context);
 
     // Make sure it is not null
-    if( driver_context == nullptr )
-    {
-        CLI_LOG_CLASS( error,
-                       "Driver-Context is null.  Expect seg fault.");
+    if( driver_context == nullptr ) {
+        LOG_ERROR("Driver-Context is null.  Expect seg fault.");
     }
 
     // Make sure the command-parser is not null
-    if( m_command_parser == nullptr )
-    {
-        BOOST_LOG_TRIVIAL(fatal) << "Command-Parser is null. Expect a seg fault. File: " << __FILE__ << ", Line: " << __LINE__;
+    if( m_command_parser == nullptr ) {
+        LOG_ERROR("Command-Parser is null. Expect a seg fault.");
     }
 
     // Add the main window [0]
@@ -126,7 +125,7 @@ void A_Render_Manager_ASCII::Initialize()
     }
 
     // Set the sleep time
-    m_async_message_sleep_time = driver_context->Get_Async_Tab_Refresh_Time_MS();
+    m_async_message_sleep_time = driver_context->Get_Async_Tab_Refresh_Time();
     
     // Start Timer Thread
     m_async_message_thread = std::thread( &A_Render_Manager_ASCII::Listen_Async_Messages, this );
@@ -142,7 +141,7 @@ void A_Render_Manager_ASCII::Initialize()
 void A_Render_Manager_ASCII::Finalize()
 {
     // Log Entry
-    CLI_LOG_CLASS_EXIT();
+    CLI_LOG_CLASS_ENTRY();
 
     // Clear out the windows
     m_window_list.clear();
@@ -168,7 +167,7 @@ void A_Render_Manager_ASCII::Finalize()
 std::vector<std::string> A_Render_Manager_ASCII::Get_Console_Buffer()
 {
     // Log Entry
-    CLI_LOG_CLASS_EXIT();
+    CLI_LOG_CLASS_ENTRY();
 
     // Lock the mutex
     m_refresh_mutex.lock();
@@ -190,10 +189,8 @@ std::vector<std::string> A_Render_Manager_ASCII::Get_Console_Buffer()
     // Unlock the mutex
     m_refresh_mutex.unlock();
 
-    // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-
     // Return the current window
+    CLI_LOG_CLASS_EXIT();
     return output;
 }
 
@@ -204,17 +201,9 @@ std::vector<std::string> A_Render_Manager_ASCII::Get_Console_Buffer()
 void A_Render_Manager_ASCII::Set_CLI_Window_Size( const int& rows,
                                                   const int& cols )
 {
-    // Lock the mutex
     m_refresh_mutex.lock();
-
-
-    // Update Driver
     m_render_driver_context->Set_CLI_Window_Size( rows, cols );
-
-
-    // Unlock the mutex
     m_refresh_mutex.unlock();
-
 }
 
 
@@ -223,7 +212,6 @@ void A_Render_Manager_ASCII::Set_CLI_Window_Size( const int& rows,
 /**********************************/
 bool A_Render_Manager_ASCII::Check_Async_Message_Sent()
 {
-    // result
     bool result = false;
     
     // Lock the mutex
@@ -244,9 +232,7 @@ bool A_Render_Manager_ASCII::Check_Async_Message_Sent()
 /********************************/
 void A_Render_Manager_ASCII::Refresh()
 {
-    // Log Entry
-    CLI_LOG_CLASS( trace,
-                   "Start of Method. Current-Window-ID: " + std::to_string(m_current_window));
+    LOG_TRACE("Start of Method. Current-Window-ID: " + std::to_string(m_current_window));
 
     // Pick the right window
     An_ASCII_Render_Window_Base::ptr_t ref;
@@ -561,10 +547,8 @@ int A_Render_Manager_ASCII::Register_Custom_Render_Window( An_ASCII_Render_Windo
     int window_id = -1;
 
     // Make sure the driver context is not null
-    if( m_render_driver_context == nullptr )
-    {
-        CLI_LOG_CLASS( error,
-                       "Render-Driver Context is null. Expect a seg fault.");
+    if( m_render_driver_context == nullptr ){
+        LOG_ERROR("Render-Driver Context is null. Expect a seg fault.");
     }
 
     // Otherwise, Process window
@@ -578,9 +562,7 @@ int A_Render_Manager_ASCII::Register_Custom_Render_Window( An_ASCII_Render_Windo
 
         window_id = m_window_list.size()-1;
 
-        // Log
-        CLI_LOG_CLASS( trace,
-                   "Adding new Render-Window to window-list.  ID: " + std::to_string(window_id));
+        LOG_TRACE("Adding new Render-Window to window-list.  ID: " + std::to_string(window_id));
 
     }
 
@@ -606,7 +588,7 @@ int A_Render_Manager_ASCII::Find_Window_ID_By_Trigger_Command( const CMD::A_Comm
 
 
     // Iterate over help windows
-    for( int x=0; x<m_help_windows.size() && result < 0; x++ )
+    for( int x=0; x<(int)m_help_windows.size() && result < 0; x++ )
     {
         if( m_help_windows[x]->Is_Trigger_Command( command ) )
         {
@@ -617,7 +599,7 @@ int A_Render_Manager_ASCII::Find_Window_ID_By_Trigger_Command( const CMD::A_Comm
     // Iterate over main windows
     if( result < 0 )
     {
-        for( int x=0; x<m_window_list.size() && result < 0; x++ )
+        for( int x=0; x<(int)m_window_list.size() && result < 0; x++ )
         {
             if( m_window_list[x]->Is_Trigger_Command( command ) )
             {

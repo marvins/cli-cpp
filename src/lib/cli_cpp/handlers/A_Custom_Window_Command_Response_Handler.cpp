@@ -56,7 +56,8 @@ void A_Custom_Window_Command_Response_Handler::Process_Command( CLI::CMD::A_Comm
     int instance = response->Get_Instance_ID();
 
     // Get the render manager
-    RENDER::A_Render_Manager_Base::ptr_t render_manager = RENDER::A_Render_Manager_Factory::Instance_Of( instance );
+    auto render_manager = RENDER::A_Render_Manager_Factory::Instance_Of( instance,
+                                                                         CORE::SessionType::UNKNOWN );
 
     // Make sure the render manager is valid
     if( render_manager == nullptr ){

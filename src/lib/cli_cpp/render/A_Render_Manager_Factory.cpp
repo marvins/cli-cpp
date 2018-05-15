@@ -33,17 +33,13 @@ A_Render_Manager_Factory& A_Render_Manager_Factory::Get_Factory_Instance()
 /****************************/
 /*        Initialize        */
 /****************************/
-void  A_Render_Manager_Factory::Initialize( CORE::ConnectionType const&             connection_type,
-                                            const std::string&                      cli_title,
-                                            CMD::A_Command_Parser::ptr_t            command_parser,
-                                            CMD::A_Command_Queue::ptr_t             command_queue )
+void  A_Render_Manager_Factory::Initialize( CMD::A_Command_Parser::ptr_t  command_parser,
+                                            CMD::A_Command_Queue::ptr_t   command_queue )
 {
     // Get the initial instance
     A_Render_Manager_Factory& factory_instance = Get_Factory_Instance();
 
     // Update the internal values
-    factory_instance.m_conn_type      = connection_type;
-    factory_instance.m_cli_title      = cli_title;
     factory_instance.m_command_parser = command_parser;
     factory_instance.m_command_queue  = command_queue;
 
@@ -76,13 +72,12 @@ void A_Render_Manager_Factory::Finalize()
 /**********************************/
 /*        Get an Instance         */
 /**********************************/
-A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Instance_Of( const int& instance_id )
+A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Instance_Of( int                instance_id,
+                                                                    CORE::SessionType  session_type )
 {
     // Log Entry
     const std::string m_class_name = "A_Render_Manager_Factory";
-    CLI_LOG_CLASS( trace,
-                   "Start of Method.  Instance-ID: "
-                   + std::to_string(instance_id));
+    LOG_TRACE("Start of Method.  Instance-ID: "+ std::to_string(instance_id));
 
     // Misc Variables
     A_Render_Manager_Base::ptr_t result = nullptr;
@@ -91,12 +86,10 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Instance_Of( const int& i
     // Check the factory
     if( Is_Initialized() == false )
     {
-        CLI_LOG_CLASS( error,
-                       "Render-Manager Factory is uninitialized.");
+        LOG_ERROR("Render-Manager Factory is uninitialized.");
     }
     else
     {
-
         // Get the instance
         A_Render_Manager_Factory& render_factory = Get_Factory_Instance();
 
@@ -109,7 +102,8 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Instance_Of( const int& i
         // Make sure the instance is not null
         if( render_factory.m_render_managers[instance_id] == nullptr )
         {
-            render_factory.m_render_managers[instance_id] = render_factory.Create_Manager_Instance( instance_id );
+            render_factory.m_render_managers[instance_id] = render_factory.Create_Manager_Instance( instance_id,
+                                                                                                    session_type );
         }
 
         // Return the instance
@@ -247,8 +241,6 @@ bool A_Render_Manager_Factory::Is_Initialized()
 /*******************************/
 A_Render_Manager_Factory::A_Render_Manager_Factory()
   : m_class_name("A_Render_Manager_Factory"),
-    m_conn_type(CORE::ConnectionType::UNKNOWN),
-    m_cli_title(""),
     m_command_parser(nullptr),
     m_command_queue(nullptr),
     m_is_initialized(false)
@@ -259,52 +251,46 @@ A_Render_Manager_Factory::A_Render_Manager_Factory()
 /********************************/
 /*      Create an Instance      */
 /********************************/
-A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Create_Manager_Instance( const int& instance_id )const
+A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Create_Manager_Instance( int                instance_id,
+                                                                                CORE::SessionType  session_type )const
 {
     // Log Entry
     const std::string m_class_name = "A_Render_Manager_Factory";
-    CLI_LOG_CLASS( trace,
-                   "Start of Method.  Instance-ID: " + std::to_string(instance_id));
+    LOG_TRACE( "Start of Method.  SessionType: " + CORE::SessionTypeToString(session_type)
+               + ", ID: " + std::to_string(instance_id));
 
+    
     // Create the pointer
     RENDER::A_Render_Manager_Base::ptr_t render_manager = nullptr;
 
     // Check the parser
-    if( m_command_parser == nullptr )
-    {
-        CLI_LOG_CLASS( error,
-                       "Command-Parser is currently null.");
+    if( m_command_parser == nullptr ){
+        LOG_ERROR("Command-Parser is currently null.");
+        return nullptr;
     }
 
-    // Create the ASCII Render
-    else if( m_conn_type == CORE::ConnectionType::SOCKET )
+    switch(session_type)
     {
-        render_manager = std::make_shared<RENDER::A_Render_Manager_ASCII>( instance_id,
-                                                                           m_command_parser,
-                                                                           m_command_queue );
+        // Create the ASCII Render
+        case CORE::SessionType::TELNET:
+            render_manager = std::make_shared<RENDER::A_Render_Manager_ASCII>( instance_id,
+                                                                               session_type,
+                                                                               m_command_parser,
+                                                                               m_command_queue );
+        
+        // Error State
+        default:
+            LOG_ERROR("Unsupported SessionType: " + CORE::SessionTypeToString(session_type));
+            return nullptr;
     }
 
 
-    // Return Null
-    else
-    {
-        CLI_LOG_CLASS( error,
-                       "Unknown Connection-Type.");
-    }
-
-    // Continue only if render-manager is not null
-    if( render_manager != nullptr )
-    {
-        // Initialize
-        render_manager->Initialize();
-        int wid;
-
-        // Register the custom windows
-        for( size_t i=0; i<m_custom_render_windows.size(); i++ )
-        {
-            wid = render_manager->Register_Custom_Render_Window( m_custom_render_windows[i] );
-        }
-
+    // Initialize
+    render_manager->Initialize();
+    
+    // Register the custom windows
+    for( size_t i=0; i<m_custom_render_windows.size(); i++ ) {
+        render_manager->Register_Custom_Render_Window( m_custom_render_windows[i] );
     }
 
     // Return the manager

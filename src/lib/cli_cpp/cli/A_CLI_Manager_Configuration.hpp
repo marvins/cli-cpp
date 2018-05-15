@@ -59,7 +59,7 @@ class A_CLI_Manager_Configuration
          *
          * @return Connection-Manager configuration object.
         */
-        inline std::vector<A_Connection_Manager_Base_Config::ptr_t> Get_Connection_Manager_Config()const{
+        inline std::vector<A_Connection_Manager_Base_Config::ptr_t> Get_Connection_Manager_Configs()const{
             return m_connection_manager_configurations;
         }
         

@@ -60,7 +60,8 @@ void A_Render_Manager_Event_Handler::Process_Event( int const& instance,
    
 
     // Get the render manager
-    RENDER::A_Render_Manager_Base::ptr_t render_manager = RENDER::A_Render_Manager_Factory::Instance_Of( instance );
+    RENDER::A_Render_Manager_Base::ptr_t render_manager = RENDER::A_Render_Manager_Factory::Instance_Of( instance,
+                                                                                                         CORE::SessionType::UNKNOWN );
 
     // Make sure the render manager is not null
     if( render_manager == nullptr )

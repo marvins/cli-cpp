@@ -93,15 +93,10 @@ bool A_User_Status_Render_Window::Is_Trigger_Command( const CLI::CMD::A_Command&
 void A_User_Status_Render_Window::Print_Main_Content()
 {
     // Compute the rendering bounds
-    int max_col = m_render_driver->Get_Window_Cols()-3;
     int max_row = m_render_driver->Get_Window_Rows()-4;
     int min_col = m_render_driver->Get_Min_Content_Col();
     int min_row = m_render_driver->Get_Min_Content_Row();
 
-    // Compute the width
-    int width  = max_col - min_col;
-
-    
     /// CLI Print Table Utility
     CLI::UTILS::An_ASCII_Print_Table active_print_table( m_active_table_labels,
                                                          m_active_table_widths );

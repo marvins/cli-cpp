@@ -49,9 +49,10 @@ class A_Render_Manager_Base
          * @param[in] instance_id    ID to load into the manager.
          * @param[in] command_parser Command parser to process cli results.
          */
-        A_Render_Manager_Base( const int&                   instance_id,
-                               CMD::A_Command_Parser::ptr_t command_parser,
-                               CMD::A_Command_Queue::ptr_t  command_queue );
+        A_Render_Manager_Base( int                           instance_id,
+                               CORE::SessionType             session_type,
+                               CMD::A_Command_Parser::ptr_t  command_parser,
+                               CMD::A_Command_Queue::ptr_t   command_queue );
 
 
         /**
@@ -172,6 +173,9 @@ class A_Render_Manager_Base
         */
         virtual std::string Get_Header_Mode_Bar_Text()const = 0;
 
+        
+        /// Session-Type
+        CORE::SessionType m_session_type;
 
         /// Command Queue
         CMD::A_Command_Queue::ptr_t m_command_queue;

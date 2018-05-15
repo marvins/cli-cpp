@@ -29,7 +29,30 @@ Render_Driver_Config_ASCII::Render_Driver_Config_ASCII( const std::string&      
     m_min_content_row(min_content_row),
     m_min_content_col(min_content_col),
     m_async_tab_refresh(async_tab_refresh)
-{}
+{
+}
+
+
+/**************************************/
+/*          Print Log String          */
+/**************************************/
+std::string Render_Driver_Config_ASCII::To_Log_String( int indent )const
+{
+    std::string gap(indent, ' ');
+    
+    std::stringstream sin;
+    
+    sin << gap << " - " << m_class_name << "\n";
+    sin << gap << "     - CLI-Title              : " << Get_CLI_Title() << std::endl;
+    sin << gap << "     - Redirect stdout        : " << std::boolalpha << Get_Redirect_Stdout_Flag() << std::endl;
+    sin << gap << "     - Redirect stderr        : " << std::boolalpha << Get_Redirect_Stderr_Flag() << std::endl;
+    sin << gap << "     - Default Window Rows    : " << m_window_rows << std::endl;
+    sin << gap << "     - Default Window Cols    : " << m_window_cols << std::endl;
+    sin << gap << "     - Default Min Content Row: " << m_min_content_row << std::endl;
+    sin << gap << "     - Default Min Content Col: " << m_min_content_col << std::endl;
+    sin << gap << "     - Async Refresh Rate (ms): " << m_async_tab_refresh.count() << std::endl;
+    return sin.str();
+}
 
 /*************************/
 /*      Constructor      */
@@ -45,6 +68,7 @@ A_Render_Driver_Context_ASCII::A_Render_Driver_Context_ASCII( Render_Driver_Conf
     m_window_cols = m_config->Get_Window_Cols();
     m_min_content_row = m_config->Get_Min_Content_Row();
     m_min_content_col = m_config->Get_Min_Content_Col();
+    m_async_tab_refresh = m_config->Get_Async_Tab_Refresh_Time();
     
 }
 

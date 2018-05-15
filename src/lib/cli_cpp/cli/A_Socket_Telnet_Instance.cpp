@@ -51,6 +51,9 @@ A_Socket_Telnet_Instance::A_Socket_Telnet_Instance( A_Socket_Instance_Config_Bas
     m_skip_render(false),
     m_first_command_received(false)
 {
+    // Cast the config
+    m_config = std::dynamic_pointer_cast<A_Socket_Instance_Config_Telnet>(config);
+    
     // Configure Special Key List
     Configure_Special_Key_List();
 
@@ -63,9 +66,7 @@ A_Socket_Telnet_Instance::A_Socket_Telnet_Instance( A_Socket_Instance_Config_Bas
 A_Socket_Telnet_Instance::~A_Socket_Telnet_Instance()
 {
     // Join
-    if( m_thread.joinable() == true ){
-        m_thread.join();
-    }
+    Join();
 }
 
 /************************************/
@@ -74,11 +75,13 @@ A_Socket_Telnet_Instance::~A_Socket_Telnet_Instance()
 void A_Socket_Telnet_Instance::Run()
 {
     // Get the render manager
-    m_render_manager = RENDER::A_Render_Manager_Factory::Instance_Of( m_instance_id );
+    m_render_manager = RENDER::A_Render_Manager_Factory::Instance_Of( m_instance_id,
+                                                                      m_config->Get_Session_Type() );
 
     // Make sure the instance is valid
-    if( m_render_manager == nullptr ){
-        BOOST_LOG_TRIVIAL(error) << "Render-Manager instance returned was null.";
+    if( m_render_manager == nullptr )
+    {
+        LOG_ERROR("Render-Manager instance returned was null.");
         m_is_running = false;
         return;
     }
@@ -142,7 +145,7 @@ void A_Socket_Telnet_Instance::Run()
             }
 
             // Finally sleep
-            std::this_thread.sleep_for( m_config->Get_Read_Sleep_Timeout() );
+            std::this_thread::sleep_for( m_config->Get_Read_Sleep_Timeout() );
         }
 
         // Check if we are still running

@@ -7,7 +7,7 @@
 
 
 // CLI Libraries
-#include "A_Connection_Manager_Socket.hpp"
+#include "A_Connection_Manager_Factory.hpp"
 #include "../event.hpp"
 #include "../handlers.hpp"
 #include "../render/A_Render_Driver_Context_Factory.hpp"
@@ -76,8 +76,8 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
 A_CLI_Manager::~A_CLI_Manager()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-
+    CLI_LOG_CLASS_ENTRY();
+    
     // Disconnect
     Disconnect();
 
@@ -101,7 +101,7 @@ A_CLI_Manager::~A_CLI_Manager()
     m_command_queue.reset();
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -117,7 +117,7 @@ void A_CLI_Manager::Connect()
     // Do not connect if thread is already running
     if( m_handler_thread_running == true )
     {
-        BOOST_LOG_TRIVIAL(warning) << "CLI-Manager Handler thread already running.";
+        LOG_WARNING("CLI-Manager Handler thread already running.");
         return;
     }
 
@@ -147,8 +147,8 @@ void A_CLI_Manager::Connect()
 void A_CLI_Manager::Disconnect()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-
+    CLI_LOG_CLASS_ENTRY();
+    
     // Disable the Event Manager
     EVT::Event_Manager::Finalize();
 
@@ -163,8 +163,8 @@ void A_CLI_Manager::Disconnect()
         m_connection_manager->Wait_Shutdown();
     }
 
-    BOOST_LOG_TRIVIAL(trace) << "Halting Queue Thread. Func: " << __func__ << ", File: " << __FILE__ << ", Line: " << __LINE__;
-
+    LOG_TRACE("Halting Queue Thread.");
+    
     // Stop the handler thread
     if( m_handler_thread_running == true ){
 
@@ -185,8 +185,7 @@ void A_CLI_Manager::Disconnect()
     m_command_handlers.clear();
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -195,16 +194,12 @@ void A_CLI_Manager::Disconnect()
 /************************************************/
 void A_CLI_Manager::Wait_Shutdown()
 {
-    // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-
+    CLI_LOG_CLASS_ENTRY();
 
     // Wait for the connection handler to stop
     m_connection_manager->Wait_Shutdown();
 
-
-    // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -213,10 +208,7 @@ void A_CLI_Manager::Wait_Shutdown()
 /************************************/
 void A_CLI_Manager::Process_Command_Results()
 {
-
-    // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-
+    CLI_LOG_CLASS_ENTRY();
 
     // Misc Variables
     CMD::A_Command_Result::ptr_t command_result;
@@ -249,9 +241,7 @@ void A_CLI_Manager::Process_Command_Results()
     // Set flag
     m_handler_thread_running = false;
 
-
-    // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -260,10 +250,7 @@ void A_CLI_Manager::Process_Command_Results()
 /*******************************************************/
 void A_CLI_Manager::Register_Command_Response_Handler( A_Command_Response_Handler_Base::ptr_t handler )
 {
-
-    // Add to the list
     m_command_handlers.push_back( handler );
-
 }
 
 
@@ -272,8 +259,6 @@ void A_CLI_Manager::Register_Command_Response_Handler( A_Command_Response_Handle
 /******************************************************/
 void A_CLI_Manager::Register_Session_Event_Handler( A_Session_Event_Handler_Base::ptr_t handler )
 {
-
-
 
 }
 
@@ -291,17 +276,16 @@ bool A_CLI_Manager::Register_Custom_Render_Window( RENDER::An_ASCII_Render_Windo
     bool result = true;
 
     // Make sure the window is valid
-    if( render_window == nullptr ){
-        CLI_LOG_CLASS( error,
-                       "Render window is null. Ignoring.");
+    if( render_window == nullptr )
+    {
+        LOG_ERROR("Render window is null. Ignoring.");
         result = false;
     }
 
     // Make sure the window command handler was created
     else if( m_custom_window_command_handler == nullptr )
     {
-        CLI_LOG_CLASS( error,
-                       "Custom Window Command Handler is null. Ignoring.");
+        LOG_ERROR("Custom Window Command Handler is null. Ignoring.");
         result = false;
     }
 
@@ -339,7 +323,7 @@ void A_CLI_Manager::Send_Asynchronous_Message( const std::string& topic_name,
     // Check the initialization status
     if( !EVT::Event_Manager::Is_Initialized() )
     {
-        CLI_LOG_CLASS( error, "CLI-Manager has already been disconnected.");
+        LOG_ERROR( "CLI-Manager has already been disconnected.");
     }
 
     else
@@ -417,19 +401,12 @@ void A_CLI_Manager::Register_Internal_Event_Handlers()
 /*****************************************************/
 void A_CLI_Manager::Initialize_Connection_Manager()
 {
-
-    // If we are socket, create the handler
-    if( m_configuration.Get_Connection_Type() == CORE::ConnectionType::SOCKET )
+    // Iterate over each connection-manager
+    for( auto mgr_conf : m_configuration.Get_Connection_Manager_Configs() )
     {
-        m_connection_manager = std::make_shared<A_Connection_Manager_Socket>( m_configuration.Get_Connection_Manager_Config() );
+        // Check the type
+        A_Connection_Manager_Factory::Initialize( mgr_conf );
     }
-
-    else{
-        throw std::runtime_error("invalid connection type.");
-    }
-
 }
-
-
 
 } // End of CLI Namespace

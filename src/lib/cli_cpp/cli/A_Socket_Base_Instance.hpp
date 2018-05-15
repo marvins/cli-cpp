@@ -13,6 +13,7 @@
 
 // CLI Libraries
 #include "../core/A_Session.hpp"
+#include "../core/SessionType.hpp"
 #include "../render/A_Render_Manager_Base.hpp"
 
 
@@ -36,11 +37,23 @@ class A_Socket_Instance_Config_Base
         
         
         /**
+         * @brief Get the session-type
+         */
+        virtual CORE::SessionType Get_Session_Type()const = 0;
+        
+        
+        /**
          * @brief Get the Read Sleep Timeout
          */
         inline std::chrono::microseconds Get_Read_Sleep_Timeout()const{
             return m_read_sleep_timeout;
         }
+        
+        
+        /**
+         * @brief Print to Log String
+         */
+        virtual std::string To_Log_String( int indent )const;
         
     private:
         
