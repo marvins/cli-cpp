@@ -36,6 +36,30 @@ const std::string KEYBOARD_F4_KEY     = "\033\117\123";
 const std::string KEYBOARD_F5_KEY     = "\033\133\061\065\176";
 
 
+/*********************************/
+/*          Constructor          */
+/*********************************/
+A_Socket_Instance_Config_Telnet::A_Socket_Instance_Config_Telnet( std::chrono::microseconds  read_sleep_timeout )
+ : A_Socket_Instance_Config_Base(read_sleep_timeout),
+   m_class_name("A_Socket_Instance_Config_Telnet") 
+{
+}
+
+
+/*****************************************/
+/*          Print to Log String          */
+/*****************************************/
+std::string A_Socket_Instance_Config_Telnet::To_Log_String( int offset )const
+{
+    std::string gap(offset, ' ');
+
+    std::stringstream sin;
+    sin << gap << " - " << m_class_name << "\n";
+    sin << gap << "    - Read-Sleep-Timeout: " << Get_Read_Sleep_Timeout().count() << " ms\n";
+    return sin.str();
+}
+
+
 /************************************/
 /*           Constructor            */
 /************************************/

@@ -1,4 +1,6 @@
 # CLI-C++ #
+[![Build Status](https://travis-ci.org/marvins/cli-cpp.svg?branch=master)](https://travis-ci.org/marvins/cli-cpp)
+
 
 A Command-Line Interface (CLI) for use in C++ programs.
 

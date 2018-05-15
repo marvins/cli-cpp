@@ -13,6 +13,16 @@
 namespace CLI{
 
 
+/*********************************/
+/*          Constructor          */
+/*********************************/
+A_Socket_Instance_Config_Base::A_Socket_Instance_Config_Base( std::chrono::microseconds  read_sleep_timeout )
+ : m_class_name("A_Socket_Instance_Config_Base"),
+   m_read_sleep_timeout(read_sleep_timeout)
+{
+}
+
+
 /************************************/
 /*           Constructor            */
 /************************************/

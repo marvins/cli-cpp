@@ -53,7 +53,7 @@ class A_Socket_Instance_Config_Base
         /**
          * @brief Print to Log String
          */
-        virtual std::string To_Log_String( int indent )const;
+        virtual std::string To_Log_String( int indent )const = 0;
         
     private:
         
