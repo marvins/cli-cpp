@@ -11,12 +11,19 @@
 // C++ Libraries
 
 
-/****************************************************/
-/*          Test the Parser (Invalid File)          */
-/****************************************************/
-TEST( A_CLI_Configuration_File_Parser, Constructor_Invalid_Path )
+/**************************************************/
+/*          Test the Parser (Valid File)          */
+/**************************************************/
+TEST( A_CLI_Configuration_File_Parser, Constructor_Valid_Path )
 {
+    // Config Pathname
+    const std::string config_path = "data/CLI_Manager_Configuration.xml";
     
-    FAIL();
+    // Create a Config-Parser
+    auto parser = CLI::IO::CONFIG::A_CLI_Configuration_File_Parser( config_path );
+    
+    ASSERT_TRUE( parser.Is_Valid() );
+    
+    auto cli_config = parser.Get_CLI_Manager_Configuration();
     
 }
