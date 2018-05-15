@@ -3,8 +3,8 @@
  * @author  Marvin Smith
  * @date    5/22/2015
 */
-#ifndef __CLI_CPP__RENDER_A_RENDER_MANAGER_FACTORY_HPP__
-#define __CLI_CPP__RENDER_A_RENDER_MANAGER_FACTORY_HPP__
+#ifndef CLI_CPP__RENDER_A_RENDER_MANAGER_FACTORY_HPP
+#define CLI_CPP__RENDER_A_RENDER_MANAGER_FACTORY_HPP
 
 // CLI Libraries
 #include "../core/ConnectionType.hpp"

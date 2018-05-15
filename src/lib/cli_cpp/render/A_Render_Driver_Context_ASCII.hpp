@@ -17,6 +17,92 @@
 namespace CLI{
 namespace RENDER{
 
+
+/**
+ * @brief ASCII Configuration
+ */
+class Render_Driver_Config_ASCII : public Render_Driver_Config_Base
+{
+    public:
+        
+        /// Pointer Type
+        typedef std::shared_ptr<Render_Driver_Config_ASCII> ptr_t;
+        
+        /**
+         * @brief Constructor
+         */
+        Render_Driver_Config_ASCII( const std::string&         cli_title,
+                                    bool                       redirect_stdout,
+                                    bool                       redirect_stderr,
+                                    int                        window_rows,
+                                    int                        window_cols,
+                                    int                        min_content_row,
+                                    int                        min_content_col,
+                                    std::chrono::milliseconds  async_tab_refresh );
+        
+        
+        /**
+         * @brief Get the Window Size in Rows
+         * @return
+         */
+        inline int Get_Window_Rows()const{
+            return m_window_rows;
+        }
+        
+        /**
+         * @brief Get the Window Size in Cols
+         */
+        inline int Get_Window_Cols()const{
+            return m_window_cols;
+        }
+        
+        
+        /**
+         * @brief Get the Min Content Row
+         */
+        inline int Get_Min_Content_Row()const{
+            return m_min_content_row;
+        }
+        
+        
+        /**
+         * @brief Get the Min Content Col
+         */
+        inline int Get_Min_Content_Col()const{
+            return m_min_content_col;
+        }
+        
+        
+        /**
+         * @brief Get the Async Time Refresh
+         */
+        inline std::chrono::milliseconds Get_Async_Tab_Refresh_Time()const{
+            return m_async_tab_refresh;
+        }
+        
+        
+        /**
+         * @brief Print to Log String
+         */
+        std::string To_Log_String( int indent )const override;
+    
+    private:
+        
+        /// Class Name
+        std::string m_class_name;
+        
+        /// Window Sizes
+        int m_window_rows;
+        int m_window_cols;
+        int m_min_content_row;
+        int m_min_content_col;
+        
+        /// Async Tab Refresh Time
+        std::chrono::milliseconds m_async_tab_refresh;
+        
+};
+
+
 /**
  * @class A_Render_Driver_Context_ASCII
  *
@@ -34,57 +120,9 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
         /**
          * @brief Constructor
          *
-         * @param[in] window_rows Number of window rows.
-         * @param[in] window_cols Number of window columns.
-         * @param[in] min_content_row Minimum row at which content can appear.
-         * @param[in] min_content_col Minimum column at which content can appear.
-         * @param[in] redirect_stdout Flag if we want to redirect standard output.
-         * @param[in] redirect_stderr Flag if we want ot redirect standard error output.
-        */
-        A_Render_Driver_Context_ASCII( const std::string&  cli_title,
-                                       const int&          window_rows,   
-                                       const int&          window_cols,
-                                       const int&          min_content_row,
-                                       const int&          min_content_col,
-                                       const bool&         redirect_stdout,
-                                       const bool&         redirect_stderr,
-                                       const std::chrono::milliseconds& async_tab_refresh_ms );
-
-    
-        /**
-         * @brief Get the number of rows.
-         * 
-         * @return Window rows.
-        */
-        inline virtual int Get_Window_Rows()const{
-            return m_window_rows;
-        }
-
-
-        /**
-         * @brief Get the number of columns.
-         *
-         * @return Window columns.
-        */
-        inline virtual int Get_Window_Cols()const{
-            return m_window_cols;
-        }
-
-
-        /**
-         * @brief Get the min content row.
+         * @param config
          */
-        inline virtual int Get_Min_Content_Row()const{
-            return m_min_content_row;
-        }
-
-
-        /**
-         * @brief Get the min content column.
-        */
-        inline virtual int Get_Min_Content_Col()const{
-            return m_min_content_col;
-        }
+        A_Render_Driver_Context_ASCII( Render_Driver_Config_Base::ptr_t config );
 
 
         /**
@@ -97,8 +135,8 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
          *  to match the CLI window size to avoid the user going out of
          *  bounds on the CLI window.
          */
-        virtual void Set_CLI_Window_Size( const int& rows,
-                                          const int& cols );
+        void Set_CLI_Window_Size( int rows,
+                                  int cols ) override;
 
 
         /**
@@ -107,36 +145,66 @@ class A_Render_Driver_Context_ASCII : public A_Render_Driver_Context_Base
          * @param[in] row Minimum row for data.
          * @param[in] col Minimum column for data.
          */
-        virtual void Set_CLI_Window_Min_Content_Bounds( const int& row,
-                                                        const int& col );
-
+        virtual void Set_CLI_Window_Min_Content_Bounds( int row,
+                                                        int col ) override;
+        
         
         /**
-         * @brief Get the Async Tab Refresh Time in MS
+         * @brief Get the CLI Title
          */
-        inline virtual std::chrono::milliseconds Get_Async_Tab_Refresh_Time_MS()const{
-            return m_async_tab_refresh_ms;
+        inline std::string Get_CLI_Title()const override{
+            return m_cli_title;
         }
+        
+        
+        /**
+         * @brief Get the Window Size in Rows
+         * @return
+         */
+        inline int Get_Window_Rows()const override{
+            return m_window_rows;
+        }
+        
+        /**
+         * @brief Get the Window Size in Cols
+         */
+        inline int Get_Window_Cols()const override{
+            return m_window_cols;
+        }
+        
+        
+        /**
+         * @brief Get the Min Content Row
+         */
+        inline int Get_Min_Content_Row()const override{
+            return m_min_content_row;
+        }
+        
+        
+        /**
+         * @brief Get the Min Content Col
+         */
+        inline int Get_Min_Content_Col()const override{
+            return m_min_content_col;
+        }
+        
 
     private:
         
         /// Class Name 
         std::string m_class_name;
 
-        /// Socket Window Rows
-        int m_window_rows;
-
-        /// Window Cols
-        int m_window_cols;
+        /// Configuration
+        Render_Driver_Config_ASCII::ptr_t m_config;
         
-        /// Min Content Row
+        // Misc Info
+        std::string m_cli_title;
+        
+        /// Current Window-Sizes
+        int m_window_rows;
+        int m_window_cols;
         int m_min_content_row;
-
-        /// Min Content Column
         int m_min_content_col;
-
-        /// Async Message Tab Update Time
-        std::chrono::milliseconds m_async_tab_refresh_ms;
 
 }; // End of A_Render_Driver_Context_NCurses
 

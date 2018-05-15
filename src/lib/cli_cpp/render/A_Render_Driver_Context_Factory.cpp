@@ -44,13 +44,7 @@ bool A_Render_Driver_Context_Factory::Is_Initialized()
 /*************************/
 /*      Initialize       */
 /*************************/
-void A_Render_Driver_Context_Factory::Initialize( const CORE::ConnectionType& conn_type,
-                                                  const std::string&          cli_title,
-                                                  const int&                  window_rows,
-                                                  const int&                  window_cols,
-                                                  const bool&                 redirect_stdout,
-                                                  const bool&                 redirect_stderr,
-                                                  const std::chrono::milliseconds&  async_message_refresh_time )
+void A_Render_Driver_Context_Factory::Initialize( std::map<CORE::SessionType,RENDER::Render_Driver_Config_Base::ptr_t> render_configs )
 {
     // Log Entry
     const std::string m_class_name = "A_Render_Driver_Context_Factory";
@@ -59,15 +53,8 @@ void A_Render_Driver_Context_Factory::Initialize( const CORE::ConnectionType& co
     // Get the instance
     A_Render_Driver_Context_Factory& context_factory = Get_Factory_Instance();
 
-
     // Call the constructor
-    context_factory.m_conn_type       = conn_type;
-    context_factory.m_cli_title       = cli_title;
-    context_factory.m_window_rows     = window_rows;
-    context_factory.m_window_cols     = window_cols;
-    context_factory.m_redirect_stdout = redirect_stdout;
-    context_factory.m_redirect_stderr = redirect_stderr;
-    context_factory.m_async_message_refresh_time = async_message_refresh_time;
+    context_factory.m_render_configs = render_configs;
     context_factory.m_is_initialized  = true;
     
     // Log Exit
@@ -99,7 +86,7 @@ void A_Render_Driver_Context_Factory::Finalize()
 /******************************************/
 /*          Create an Instance            */
 /******************************************/
-A_Render_Driver_Context_Base::ptr_t A_Render_Driver_Context_Factory::Create_Instance()
+A_Render_Driver_Context_Base::ptr_t A_Render_Driver_Context_Factory::Create_Instance( CORE::SessionType session_type )
 {
     
     const std::string m_class_name = "A_Render_Driver_Context_Factory";
@@ -115,25 +102,18 @@ A_Render_Driver_Context_Base::ptr_t A_Render_Driver_Context_Factory::Create_Inst
     // Get the context factory
     A_Render_Driver_Context_Factory& context_factory = Get_Factory_Instance();
     
-    // Set the min content row
-    int min_content_row = 2;
-    int min_content_col = 1;
 
     // Return new instance
-    if( context_factory.m_conn_type == CORE::ConnectionType::SOCKET ){
-        return std::make_shared<A_Render_Driver_Context_ASCII>( context_factory.m_cli_title,
-                                                                context_factory.m_window_rows,
-                                                                context_factory.m_window_cols,
-                                                                min_content_row,
-                                                                min_content_col,
-                                                                context_factory.m_redirect_stdout,
-                                                                context_factory.m_redirect_stderr,
-                                                                context_factory.m_async_message_refresh_time);
-    }
-
-    else{
-        BOOST_LOG_TRIVIAL(error) << "Unknown ConnectionType value (" << CORE::ConnectionTypeToString(context_factory.m_conn_type) << "). File: " << __FILE__ << ", Class: " << context_factory.m_class_name << ", Method: " << __func__ << ", Line: " << __LINE__;
-        return nullptr;
+    switch(session_type)
+    {
+        case CORE::SessionType::TELNET:
+            return std::make_shared<A_Render_Driver_Context_ASCII>( context_factory.m_render_configs[session_type] );
+            
+        case CORE::SessionType::JSON:
+        default:
+            CLI_LOG_CLASS( error,
+                           "Unsupported Session-Type: " + CORE::SessionTypeToString(session_type));
+            return nullptr;
     }
 
     return nullptr;
@@ -145,12 +125,6 @@ A_Render_Driver_Context_Base::ptr_t A_Render_Driver_Context_Factory::Create_Inst
 /**********************************/
 A_Render_Driver_Context_Factory::A_Render_Driver_Context_Factory()
   : m_class_name("A_Render_Driver_Context_Factory"),
-    m_conn_type(CORE::ConnectionType::UNKNOWN),
-    m_cli_title(""),
-    m_window_rows(-1),
-    m_window_cols(-1),
-    m_redirect_stdout(false),
-    m_redirect_stderr(false),
     m_is_initialized(false)
 {
 }

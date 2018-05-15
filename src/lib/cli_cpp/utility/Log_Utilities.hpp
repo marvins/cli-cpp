@@ -3,8 +3,8 @@
  * @author  Marvin Smith
  * @date    5/21/2015
 */
-#ifndef __CLI_CPP_UTILS_LOG_UTILITIES_HPP__
-#define __CLI_CPP_UTILS_LOG_UTILITIES_HPP__
+#ifndef CLI_CPP_UTILS_LOG_UTILITIES_HPP
+#define CLI_CPP_UTILS_LOG_UTILITIES_HPP
 
 
 // Boost Libraries
@@ -39,8 +39,22 @@ using namespace boost::log::trivial;
 #define CLI_LOG_CLASS( severity, message ) BOOST_LOG_TRIVIAL(severity) << "SRC=" << CLI_CLASS_LOG_STR << ", MSG=" << message
 #define CLI_LOG_FUNC( severity, message ) BOOST_LOG_TRIVIAL(severity) << "SRC=" << CLI_FUNC_LOG_STR << ", MSG=" << message
 
-#define CLI_LOG_CLASS_ENTRY() CLI_LOG_CLASS( trace, "Start of Method.")
-#define CLI_LOG_CLASS_EXIT()  CLI_LOG_CLASS( trace, "End of Method.")
+#define LOG_TRACE( message )   CLI_LOG_CLASS( trace, message )
+#define LOG_DEBUG( message )   CLI_LOG_CLASS( debug, message )
+#define LOG_INFO( message )    CLI_LOG_CLASS( info, message )
+#define LOG_WARNING( message ) CLI_LOG_CLASS( warning, message )
+#define LOG_ERROR( message )   CLI_LOG_CLASS( error,  message )
+#define LOG_FATAL( message )   CLI_LOG_CLASS( fatal, message )
+
+#define LOG_FUNC_TRACE( message )   CLI_LOG_FUNC( trace, message )
+#define LOG_FUNC_DEBUG( message )   CLI_LOG_FUNC( debug, message )
+#define LOG_FUNC_INFO( message )    CLI_LOG_FUNC( info, message )
+#define LOG_FUNC_WARNING( message ) CLI_LOG_FUNC( warning, message )
+#define LOG_FUNC_ERROR( message )   CLI_LOG_FUNC( error,  message )
+#define LOG_FUNC_FATAL( message )   CLI_LOG_FUNC( fatal, message )
+
+#define CLI_LOG_CLASS_ENTRY() LOG_TRACE( "Start of Method.")
+#define CLI_LOG_CLASS_EXIT()  LOG_TRACE( "End of Method.")
 
 
 namespace CLI{

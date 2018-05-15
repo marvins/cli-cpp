@@ -15,18 +15,30 @@
 namespace CLI{
 namespace RENDER{
 
+
 /********************************/
 /*          Constructor         */
 /********************************/
-A_Render_Driver_Context_Base::A_Render_Driver_Context_Base( const std::string& cli_title,
-                                                            const bool&        redirect_stdout,
-                                                            const bool&        redirect_stderr )
-  : m_cli_title(cli_title),
+Render_Driver_Config_Base::Render_Driver_Config_Base( const std::string& cli_title,
+                                                      bool               redirect_stdout,
+                                                      bool               redirect_stderr )
+  : m_class_name("Render_Driver_Config_Base"),
+    m_cli_title(cli_title),
     m_redirect_stdout(redirect_stdout),
-    m_redirect_stderr(redirect_stderr),
-    m_class_name("A_Render_Driver_Context_Base"),
+    m_redirect_stderr(redirect_stderr)
+{
+}
+
+/********************************/
+/*          Constructor         */
+/********************************/
+A_Render_Driver_Context_Base::A_Render_Driver_Context_Base( const Render_Driver_Config_Base::ptr_t config )
+  : m_class_name("A_Render_Driver_Context_Base"),
+    m_config(config),
     m_waiting_command_response(false)
 {
+    m_redirect_stdout = m_config->Get_Redirect_Stdout_Flag();
+    m_redirect_stderr = m_config->Get_Redirect_Stderr_Flag();
 }
 
 

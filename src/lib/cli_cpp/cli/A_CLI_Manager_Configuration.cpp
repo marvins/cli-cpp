@@ -22,11 +22,27 @@ namespace CLI{
 /*      Constructor        */
 /***************************/
 A_CLI_Manager_Configuration::A_CLI_Manager_Configuration()
+    : m_class_name("A_CLI_Manager_Configuration"),
+      m_command_parser(nullptr)
+{
+}
+
+
+/***************************/
+/*      Constructor        */
+/***************************/
+A_CLI_Manager_Configuration::A_CLI_Manager_Configuration( std::vector<A_Connection_Manager_Base_Config::ptr_t> connection_configs,
+                                                          std::map<CORE::SessionType,
+                                                                   RENDER::Render_Driver_Config_Base::ptr_t>   render_driver_configs,
+                                                          CMD::A_Command_Parser::ptr_t                         command_parser,
+                                                          CMD::A_Command_Queue_Config                          command_queue_config,
+                                                          EVT::Event_Manager_Config                            event_manager_config )
   : m_class_name("A_CLI_Manager_Configuration"),
-    m_command_parser(nullptr),
-    m_redirect_stdout(false),
-    m_redirect_stderr(false),
-    m_async_message_refresh_time(500)
+    m_connection_manager_configurations(connection_configs),
+    m_render_driver_configs(render_driver_configs),
+    m_command_parser(command_parser),
+    m_event_manager_config(event_manager_config),
+    m_command_queue_config(command_queue_config)
 {
 }
 

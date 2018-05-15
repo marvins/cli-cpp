@@ -1,4 +1,4 @@
-<cli-manager-configuration>
+<cli_manager_configuration>
 
     <!--  Logging Configuration 
     
@@ -10,6 +10,7 @@
     <logging enabled="true" 
              log_path=""
              log_level="trace" />
+
 
     
     <!-- Socket CLI Configuration -->
@@ -55,6 +56,7 @@
 
     <!-- CLI Configuration -->
     <cli>
+
         <!-- CLI Title String -->
         <title value="Command-Line Interface Demo" />
         
@@ -106,4 +108,4 @@
 
     </event-manager>
 
-</cli-manager-configuration>
+</cli_manager_configuration>

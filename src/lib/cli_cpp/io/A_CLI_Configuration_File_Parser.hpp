@@ -42,21 +42,10 @@ class A_CLI_Configuration_File_Parser{
          *
          * @return CLI Manager Configuration Object.
          */
-        inline A_CLI_Manager_Configuration Get_CLI_Manager_Configuration()const
-        {
+        inline A_CLI_Manager_Configuration Get_CLI_Manager_Configuration()const{
             return m_current_configuration;
         }
         
-
-        /**
-         * @brief Get Event Manager Configuration.
-         *
-         * @return Event manager configuration object.
-        */
-        inline EVT::Event_Manager_Config  Get_Event_Manager_Config()const{
-            return m_event_manager_config;
-        }
-
 
         /**
          * @brief Valid Status
@@ -81,12 +70,6 @@ class A_CLI_Configuration_File_Parser{
          */
         void Parse_Configuration_File();
         
-
-        /**
-         * @brief Parse the CLI Node
-         */
-        void Parse_CLI_Node();
-
     
         /// Class Name
         std::string m_class_name;
@@ -98,14 +81,6 @@ class A_CLI_Configuration_File_Parser{
         
         /// Current Configuration
         A_CLI_Manager_Configuration m_current_configuration;
-
-        
-        /// Connection Handler Configuration
-        std::vector<A_Connection_Manager_Base_Config::ptr_t> m_connection_manager_configs;
-
-        
-        /// Event Manager Configuration
-        EVT::Event_Manager_Config m_event_manager_config;
 
 
         /// Parsing Status
