@@ -159,6 +159,11 @@ class A_Command_Parser {
         */
         void Remove_Command_Variable( const A_Command_Variable& old_var );
 
+
+        /**
+         * @brief Print to Log String
+        */
+        std::string To_Log_String( int offset )const;
     
     private:
     

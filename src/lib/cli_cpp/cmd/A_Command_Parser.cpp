@@ -347,9 +347,26 @@ void A_Command_Parser::Remove_Command_Variable( A_Command_Variable const& old_va
         A_Command_Variable::Write_Variable_Configuration_File( m_variable_pathname, 
                                                                m_variable_list );
     }
+}
 
 
+/********************************************/
+/*          Print to Logging String         */
+/********************************************/
+std::string A_Command_Parser::To_Log_String( int offset )const
+{
+    std::string gap( offset, ' ');
 
+    std::stringstream sin;
+
+    sin << gap << " - " << m_class_name << std::endl;
+    sin << gap << "     - Command-List\n";
+    for( auto command : m_command_list )
+    {
+
+    }
+
+    return sin.str();
 }
 
 } // End of CMD Namespace

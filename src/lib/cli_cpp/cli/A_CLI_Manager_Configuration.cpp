@@ -85,6 +85,19 @@ std::string A_CLI_Manager_Configuration::To_Log_String(int offset) const
     {
         sin << config->To_Log_String(offset + 4);
     }
+    sin << gap << "     - Render-Driver Configs (" << m_render_driver_configs.size() << ")\n";
+    for( auto config : m_render_driver_configs )
+    {
+        sin << config.second->To_Log_String(offset+4);
+    }
+    
+    if( m_command_parser != nullptr ){
+        sin << m_command_parser->To_Log_String(offset+4);
+    } else {
+        sin << "     - Command-Parser Is Null" << std::endl;
+    }
+    sin << m_event_manager_config.To_Log_String(offset+4);
+    sin << m_command_queue_config.To_Log_String(offset+4);
     
     return sin.str();
 }

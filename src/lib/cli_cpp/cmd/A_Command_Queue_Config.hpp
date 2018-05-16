@@ -39,6 +39,11 @@ class A_Command_Queue_Config
         }
 
 
+        /**
+         * @brief PRint to Log String
+        */
+        std::string To_Log_String( int offset = 0 )const;
+
     private:
         
         /// Class Name

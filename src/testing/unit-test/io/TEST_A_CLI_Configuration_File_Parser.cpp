@@ -9,9 +9,8 @@
 #include <cli_cpp/io/A_CLI_Configuration_File_Parser.hpp>
 #include <cli_cpp/utility/Log_Utilities.hpp>
 
-
 // C++ Libraries
-
+#include <iostream>
 
 
 /**************************************************/
@@ -29,5 +28,6 @@ TEST( A_CLI_Configuration_File_Parser, Constructor_Valid_Path )
     
     auto cli_config = parser.Get_CLI_Manager_Configuration();
     
-    LOG_FUNC_TRACE(cli_config.To_Log_String());
+    std::cout << cli_config.To_Log_String() << std::endl;
+    //LOG_FUNC_TRACE(cli_config.To_Log_String());
 }

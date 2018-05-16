@@ -63,6 +63,12 @@ class Event_Manager_Config
         }
 
 
+        /**
+         * @brief Print to Log String
+        */
+        std::string To_Log_String( int offset )const;
+
+
     private:
         
         /// Class Name
