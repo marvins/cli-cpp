@@ -3,8 +3,8 @@
  * @author  Marvin Smith
  * @date    7/2/2015
 */
-#ifndef __CLI_CPP_IO_CONFIGURATION_FILE_PARSER_UTILITIES_HPP__
-#define __CLI_CPP_IO_CONFIGURATION_FILE_PARSER_UTILITIES_HPP__
+#ifndef CLI_CPP_IO_CONFIGURATION_FILE_PARSER_UTILITIES_HPP
+#define CLI_CPP_IO_CONFIGURATION_FILE_PARSER_UTILITIES_HPP
 
 // CLI Libraries
 #include "../cli/A_Connection_Manager_Base_Config.hpp"

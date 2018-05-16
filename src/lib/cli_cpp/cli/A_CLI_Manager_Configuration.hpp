@@ -110,6 +110,11 @@ class A_CLI_Manager_Configuration
          */
         bool Is_Valid()const;
 
+        
+        /**
+         * @brief Print to Logging String
+         */
+        std::string To_Log_String( int offset = 0 )const;
 
     private:
 

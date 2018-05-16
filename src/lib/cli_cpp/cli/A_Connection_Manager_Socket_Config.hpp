@@ -75,6 +75,12 @@ class A_Connection_Manager_Socket_Config : public A_Connection_Manager_Base_Conf
         inline  A_Socket_Instance_Config_Base::ptr_t  Get_Instance_Config()const{
             return m_instance_config;
         }
+        
+        
+        /**
+         * @brief Print to Log String
+         */
+        std::string To_Log_String( int offset = 0 )const override;
 
 
     private:

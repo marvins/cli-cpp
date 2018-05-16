@@ -45,6 +45,12 @@ class A_Connection_Manager_Base_Config{
         inline virtual CORE::ConnectionType Get_ConnectionType()const{
             return CORE::ConnectionType::BASE;
         }
+        
+        
+        /**
+         * @brief Print to Log String
+         */
+        virtual std::string To_Log_String( int offset )const = 0;
 
 
     private:

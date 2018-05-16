@@ -22,5 +22,23 @@ A_Connection_Manager_Socket_Config::A_Connection_Manager_Socket_Config( int     
 {
 }
 
+
+/****************************************/
+/*          Print to Log String         */
+/****************************************/
+std::string A_Connection_Manager_Socket_Config::To_Log_String(int offset) const
+{
+    std::string gap(offset, ' ');
+    
+    std::stringstream sin;
+    
+    sin << gap << " - " << m_class_name << std::endl;
+    sin << gap << "    - port : " << m_port << std::endl;
+    sin << gap << "    - max-connections: " << m_max_connections << std::endl;
+    sin << m_instance_config->To_Log_String(offset+4);
+    
+    return sin.str();
+}
+
 } // End of CLI Namespace
 

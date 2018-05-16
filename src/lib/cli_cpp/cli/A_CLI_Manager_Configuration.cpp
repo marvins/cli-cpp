@@ -70,4 +70,23 @@ bool A_CLI_Manager_Configuration::Is_Valid()const
 }
 
 
+/********************************************/
+/*          Print to Logging String         */
+/********************************************/
+std::string A_CLI_Manager_Configuration::To_Log_String(int offset) const
+{
+    std::string gap(offset, ' ');
+    
+    std::stringstream sin;
+    
+    sin << gap << " - " << m_class_name << std::endl;
+    sin << gap << "     - Connection-Manager Configs (" << m_connection_manager_configurations.size() << ")" << std::endl;
+    for( auto config : m_connection_manager_configurations )
+    {
+        sin << config->To_Log_String(offset + 4);
+    }
+    
+    return sin.str();
+}
+
 } // End of CLI Namespace
