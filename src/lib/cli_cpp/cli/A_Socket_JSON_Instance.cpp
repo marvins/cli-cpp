@@ -128,6 +128,7 @@ void A_Socket_JSON_Instance::Run()
         // Check the buffer
         input = std::string(buffer).substr(0,n);
         
+        LOG_TRACE("INPUT: " + input);
         /*
         // Check if CLI Command Input
         if( m_first_command_received == false    &&

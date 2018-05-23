@@ -53,7 +53,7 @@ void A_CLI_Config_Parser_PugiXML::Parse()
     
     if( result == false )
     {
-        LOG_TRACE( "CLI Config-File parsed with errors. Details: " + std::string(result.description()));
+        LOG_ERROR( "CLI Config-File parsed with errors. Details: " + std::string(result.description()));
         return;
     }
     
@@ -63,7 +63,7 @@ void A_CLI_Config_Parser_PugiXML::Parse()
     
     // Check the node
     if( root_node == pugi::xml_node() ){
-        LOG_TRACE("Root Node Cannot Be Null!");
+        LOG_ERROR("Root Node Cannot Be Null!");
         return;
     }
     
