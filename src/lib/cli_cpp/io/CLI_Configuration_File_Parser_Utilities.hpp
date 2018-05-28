@@ -19,6 +19,7 @@ namespace IO{
 namespace CONFIG{
 namespace XML{
 
+
 /**
  * @brief PugiXML Config Parser
  */
@@ -63,7 +64,13 @@ class A_CLI_Config_Parser_PugiXML
          */
         void Parse_Log_Node( pugi::xml_node& root_node );
         
+
+        /**
+         * @brief Parse the Connection-Manager Nodes.
+        */
+        void Parse_Connection_Manager_Nodes( pugi::xml_node& root_node );
         
+
         /**
          * @brief Parse Event-Manager Configuration
          *
@@ -78,7 +85,10 @@ class A_CLI_Config_Parser_PugiXML
         
         /// Configuration
         std::string m_config_pathname;
-        
+
+        /// Connection-Manager Configs
+        std::vector<A_Connection_Manager_Base_Config::ptr_t> m_connection_manager_configs; 
+
         /// CLI-Manager Config
         A_CLI_Manager_Configuration m_cli_manager_config;
         

@@ -29,6 +29,10 @@ int main( int argc, char* argv[] )
     {
 
         // Parse the Command-Line Options
+        if( argc <= 1 ){
+            std::cerr << "usage: " << argv[0] << " <Config-Path>" << std::endl;
+            return -1;
+        }
         std::string config_pathname = argv[1];
         bool response = false;
 

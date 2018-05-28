@@ -14,6 +14,8 @@
 
 // CLI Libraries
 #include "../cli/A_Connection_Manager_Socket_Config.hpp"
+#include "../cli/A_Socket_JSON_Instance.hpp"
+#include "../cli/A_Socket_Telnet_Instance.hpp"
 #include "../core/ConnectionType.hpp"
 #include "../core/SessionType.hpp"
 #include "../utility/Log_Utilities.hpp"
@@ -68,16 +70,25 @@ void A_CLI_Config_Parser_PugiXML::Parse()
     }
     
     
-    // Log the log configuration
+    // Parse the Logging Config Nodes
     Parse_Log_Node( root_node );
     
+    // Parse the Connection-Manager Nodes
+    Parse_Connection_Manager_Nodes( root_node );
     
     // Parse the Event-Manager-Config
     EVT::Event_Manager_Config event_mgr_config = Parse_Event_Manager_Node( root_node );
     
+
+    // Build the CLI-Manager
+    //m_cli_manager_config = A_CLI_Manager_Configuration( connection_manager_configs,
+    //                                                    render_driver_configs,
+    //                                                    command_parser,
+    //                                                    command_queue_config,
+    //                                                    event_mgr_config );
     
     // Set valid
-    m_is_valid = true;
+    m_is_valid = m_cli_manager_config.Is_Valid();
 }
 
 
@@ -113,6 +124,120 @@ void A_CLI_Config_Parser_PugiXML::Parse_Log_Node( pugi::xml_node&  root_node )
                                   log_path,
                                   logfile_enabled );
     }
+}
+
+
+/********************************************************/
+/*          Parse the Connection-Manager Nodes          */
+/********************************************************/
+void A_CLI_Config_Parser_PugiXML::Parse_Connection_Manager_Nodes( pugi::xml_node& root_node )
+{
+    // Node Queries
+    const std::string CONNECTION_CONFIGS_QUERY = "connection_configuration";
+    const std::string CONNECTION_QUERY         = "connection";
+    const std::string PORT_QUERY               = "listening_port";
+    const std::string WINDOW_SIZE_QUERY        = "window_size";
+    const std::string READ_TIMEOUT_QUERY       = "read_timeout_sleep_time";
+    const std::string MAX_CONN_QUERY           = "max_connections";
+
+    // Attribute Queries
+    const std::string CONN_TYPE_ATTR           = "conn_type";
+    const std::string SESSION_TYPE_ATTR        = "session_type";
+    const std::string VALUE_ATTR               = "value";
+    const std::string MICROSECONDS_ATTR        = "microseconds";
+
+    
+    // Misc Vars
+    std::string temp_str;
+
+
+    // Get the Connection Node
+    auto configs_node = root_node.child(CONNECTION_CONFIGS_QUERY.c_str());
+
+    // Iterate over connection nodes
+    for( auto connection_node = configs_node.child(CONNECTION_QUERY.c_str()); 
+         connection_node;
+         connection_node = connection_node.next_sibling(CONNECTION_QUERY.c_str()))
+    {
+        // Get the Connection-Type
+        temp_str = connection_node.attribute(CONN_TYPE_ATTR.c_str()).as_string();
+        auto connection_type = CORE::StringToConnectionType( temp_str );
+        if( connection_type == CORE::ConnectionType::UNKNOWN ){
+            LOG_ERROR("Unsupported Connection-Type: " + temp_str);
+            continue;
+        }
+
+        
+        // Get the session-type
+        temp_str = connection_node.attribute(SESSION_TYPE_ATTR.c_str()).as_string();
+        auto session_type = CORE::StringToSessionType( temp_str );
+        if( session_type == CORE::SessionType::UNKNOWN ){
+            LOG_ERROR("Unsupported Session-Type: " + temp_str);
+            continue;
+        }
+    
+        
+        // Get the Port-Number
+        auto listening_port = connection_node.child(PORT_QUERY.c_str()).attribute(VALUE_ATTR.c_str()).as_int(-1);
+        if( listening_port < 1000 ){
+            LOG_ERROR("Unsupported Listening-Port: " + std::to_string(listening_port));
+            continue;
+        }
+
+        
+        // Read-Timeout
+        auto timeout_val = connection_node.child(READ_TIMEOUT_QUERY.c_str()).attribute(MICROSECONDS_ATTR.c_str()).as_llong(-1);
+        if( timeout_val < 0 ){
+            LOG_ERROR("Unsupported Read-Sleep timeout: " + std::to_string(timeout_val));
+            continue;
+        }
+        std::chrono::microseconds read_sleep_timeout( timeout_val );
+        
+        
+        // Max-Connections
+        auto max_connections = connection_node.child(MAX_CONN_QUERY.c_str()).attribute(VALUE_ATTR.c_str()).as_int(-1);
+        if( max_connections <= 0 ){
+            LOG_ERROR("Unsupported Max-Connections: " + std::to_string(max_connections));
+            continue;
+        }
+
+
+        // If JSON, continue
+        if( connection_type == CORE::ConnectionType::SOCKET && 
+            session_type == CORE::SessionType::JSON )
+        {
+            auto session_instance_config = std::make_shared<A_Socket_Instance_Config_JSON>( read_sleep_timeout );
+            
+            // Add to Config List
+            auto config_ptr = std::make_shared<A_Connection_Manager_Socket_Config>( listening_port,
+                                                                                    max_connections,
+                                                                                    session_instance_config );
+            m_connection_manager_configs.push_back( config_ptr );
+        }
+
+        // If Telnet, continue
+        else if( connection_type == CORE::ConnectionType::SOCKET && 
+                 session_type == CORE::SessionType::TELNET )
+        {
+            auto session_instance_config = std::make_shared<A_Socket_Instance_Config_Telnet>( read_sleep_timeout );
+            
+            // Add to Config List
+            auto config_ptr = std::make_shared<A_Connection_Manager_Socket_Config>( listening_port,
+                                                                                    max_connections,
+                                                                                    session_instance_config );
+            m_connection_manager_configs.push_back( config_ptr );
+
+        }
+
+        // Otherwise, error
+        else 
+        {
+            LOG_ERROR("Unsupported Session-Type: " + CORE::SessionTypeToString(session_type));
+            continue;
+        }
+
+    }
+
 }
 
 

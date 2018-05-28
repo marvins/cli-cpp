@@ -3,8 +3,9 @@
  * @author  Marvin Smith
  * @date    5/18/2015
  */
-#ifndef __CLI_CPP_CORE_CONNECTIONTYPE_HPP__
-#define __CLI_CPP_CORE_CONNECTIONTYPE_HPP__
+#ifndef CLI_CPP_CORE_CONNECTIONTYPE_HPP
+#define CLI_CPP_CORE_CONNECTIONTYPE_HPP
+
 
 // C++ Standard Libraries
 #include <string>

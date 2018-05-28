@@ -18,8 +18,8 @@ namespace CLI{
 /*          Constructor          */
 /*********************************/
 A_Socket_Instance_Config_JSON::A_Socket_Instance_Config_JSON( std::chrono::microseconds  read_sleep_timeout )
-    : A_Socket_Instance_Config_Base(read_sleep_timeout),
-      m_class_name("A_Socket_Instance_Config_JSON")
+ : A_Socket_Instance_Config_Base(read_sleep_timeout),
+   m_class_name("A_Socket_Instance_Config_JSON")
 {
 }
 
@@ -101,7 +101,7 @@ void A_Socket_JSON_Instance::Run()
                 break;
             }
                 
-                // Check time to quit
+            // Check time to quit
             else if ( m_is_running   == false ||
                       m_is_connected == false )
             {
