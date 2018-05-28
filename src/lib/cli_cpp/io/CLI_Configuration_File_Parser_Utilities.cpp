@@ -44,8 +44,12 @@ A_CLI_Config_Parser_PugiXML::A_CLI_Config_Parser_PugiXML( const std::string& con
 void A_CLI_Config_Parser_PugiXML::Parse()
 {
     /// Queries
-    const std::string ROOT_QUERY    = "cli_manager_configuration";
+    const std::string ROOT_QUERY           = "cli_manager_configuration";
+    const std::string COMMAND_CONFIG_QUERY = "command_configuration";
     
+    // Attributes
+    const std::string PATH_ATTR            = "path";
+
     // Temp Variables
     std::string temp_str;
     
@@ -76,16 +80,28 @@ void A_CLI_Config_Parser_PugiXML::Parse()
     // Parse the Connection-Manager Nodes
     Parse_Connection_Manager_Nodes( root_node );
     
+    // Parse the CLI Node
+    Parse_CLI_Node( root_node );
+
+    // Build the Command-Parser
+    auto cmd_config_path = root_node.child( COMMAND_CONFIG_QUERY.c_str() ).attribute( PATH_ATTR.c_str()).as_string();
+    auto command_parser = CMD::A_Command_Parser_Factory::Initialize( cmd_config_path,
+                                                                     alias_support,
+                                                                     alias_path,
+                                                                     variable_support,
+                                                                     variable_path );
+
+
     // Parse the Event-Manager-Config
     EVT::Event_Manager_Config event_mgr_config = Parse_Event_Manager_Node( root_node );
     
 
     // Build the CLI-Manager
-    //m_cli_manager_config = A_CLI_Manager_Configuration( connection_manager_configs,
-    //                                                    render_driver_configs,
-    //                                                    command_parser,
-    //                                                    command_queue_config,
-    //                                                    event_mgr_config );
+    m_cli_manager_config = A_CLI_Manager_Configuration( m_connection_manager_configs,
+                                                        m_render_driver_configs,
+                                                        command_parser,
+                                                        command_queue_config,
+                                                        event_mgr_config );
     
     // Set valid
     m_is_valid = m_cli_manager_config.Is_Valid();

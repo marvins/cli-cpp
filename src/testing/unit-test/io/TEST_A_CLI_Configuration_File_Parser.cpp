@@ -23,11 +23,14 @@ TEST( A_CLI_Configuration_File_Parser, Constructor_Valid_Path )
     
     // Create a Config-Parser
     auto parser = CLI::IO::CONFIG::A_CLI_Configuration_File_Parser( config_path );
+   
     
+    // Log the config
+   auto cli_config = parser.Get_CLI_Manager_Configuration();
+    LOG_FUNC_TRACE(cli_config.To_Log_String());
+    
+    // Check the validity
     ASSERT_TRUE( parser.Is_Valid() );
     
-    auto cli_config = parser.Get_CLI_Manager_Configuration();
     
-    std::cout << cli_config.To_Log_String() << std::endl;
-    //LOG_FUNC_TRACE(cli_config.To_Log_String());
 }

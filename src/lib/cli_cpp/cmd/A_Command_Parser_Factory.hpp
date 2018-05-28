@@ -3,8 +3,8 @@
  * @author  Marvin Smith
  * @date    5/18/2015
 */
-#ifndef __CLI_CMD_CMD_A_COMMAND_PARSER_FACTORY_HPP__
-#define __CLI_CMD_CMD_A_COMMAND_PARSER_FACTORY_HPP__
+#ifndef CLI_CMD_CMD_A_COMMAND_PARSER_FACTORY_HPP
+#define CLI_CMD_CMD_A_COMMAND_PARSER_FACTORY_HPP
 
 // C++ Standard Libraries
 #include <string>
@@ -20,8 +20,8 @@ namespace CMD{
  *
  * @brief Builds the command parser given a configuration file.
 */
-class A_Command_Parser_Factory{
-
+class A_Command_Parser_Factory
+{
     public:
         
         /**
@@ -36,9 +36,9 @@ class A_Command_Parser_Factory{
          * @return Command parser pointer.  Null if there was an issue.
          */
         static A_Command_Parser::ptr_t  Initialize( const std::string&  configuration_path,
-                                                    const bool&         alias_support,
+                                                    bool                alias_support,
                                                     const std::string&  alias_path,
-                                                    const bool&         variable_support,
+                                                    bool                variable_support,
                                                     const std::string&  variable_path );
     
 }; // End of A_Command_Parser_Factory Class
