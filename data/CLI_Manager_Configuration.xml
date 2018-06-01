@@ -51,7 +51,7 @@
 
 
     <!-- Command Configuration -->
-    <command_configuration path="../data/Command_Configuration.xml" />
+    <command_configuration path="data/Command_Configuration.xml" />
 
 
     <!-- CLI Configuration -->
@@ -68,22 +68,14 @@
                   stderr="false" />
 
         <!-- Alias Configuration -->
-        <alias_support enable="true" >
-
-            <!-- Path to the alias list. Stored as an XML File. -->
-            <alias_list  pathname="../data/Command_Alias_List.xml" />
-             
-        </alias-support>
+        <alias_support enable="true"
+                       config_pathname="data/Command_Alias_List.xml" />
     
     
         <!-- Variable Configuration -->
-        <variable_support enable="true" >
-
-            <!-- Command-Variable Path -->
-            <variable_list pathname="../data/Command_Variable_List.xml" />
+        <variable_support enable="true"
+                          config_pathname="data/Command_Variable_List.xml" />
     
-        </variable_support>
-
         <!-- Async Window Refresh Time -->
         <async_message_refresh_time ms="1500" />
 

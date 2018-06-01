@@ -3,8 +3,8 @@
  * @author  Marvin Smith
  * @date    5/18/2015
 */
-#ifndef __CLI_A_CLI_CONNECTION_MANAGER_SOCKET_HPP__
-#define __CLI_A_CLI_CONNECTION_MANAGER_SOCKET_HPP__
+#ifndef CLI_A_CLI_CONNECTION_MANAGER_SOCKET_HPP
+#define CLI_A_CLI_CONNECTION_MANAGER_SOCKET_HPP
 
 // CLI Libraries
 #include "A_Connection_Manager_Base.hpp"
@@ -55,22 +55,24 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
          *
          * @param[in] instance Client instance to refresh.
          */
-        virtual void Refresh_Screen( const int& instance );
+        void Refresh_Screen( int instance ) override;
         
         
         /**
          * @brief Refresh all Instances
         */
-        virtual void Refresh_Screens();
+        void Refresh_Screens() override;
 
         
         /**
          * @brief Set the Is Connection Flag
         */
-        inline virtual void Set_Is_Connected_Flag( int const& instance, 
-                                                   const bool& is_connected )
+        inline void Set_Is_Connected_Flag( int  instance,
+                                           bool is_connected ) override
         {
             m_connection_list[instance]->Set_Connection_Flag( is_connected );
+
+            // If it is false, we should take down
         }
 
         
@@ -80,6 +82,12 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
          * @return session list.
          */
         virtual std::vector<CORE::Session> Get_Active_Session_List()const;
+
+
+        /**
+         * @brief Print Current STate
+         */
+        std::string To_Log_String( int offset ) const override;
     
 
     protected:
@@ -123,8 +131,8 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
         int m_sock_fd;
        
         
-        /// Socket Instance List
-        std::vector<A_Socket_Telnet_Instance::ptr_t> m_connection_list;
+        /// Socket Instance List (Key is the Instance-ID)
+        std::map<int,A_Socket_Base_Instance::ptr_t> m_connection_list;
 
 }; // End of A_Connection_Manager_Socket Class
 

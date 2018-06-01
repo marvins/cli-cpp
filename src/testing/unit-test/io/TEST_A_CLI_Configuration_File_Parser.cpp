@@ -26,7 +26,7 @@ TEST( A_CLI_Configuration_File_Parser, Constructor_Valid_Path )
    
     
     // Log the config
-   auto cli_config = parser.Get_CLI_Manager_Configuration();
+    auto cli_config = parser.Get_CLI_Manager_Configuration();
     LOG_FUNC_TRACE(cli_config.To_Log_String());
     
     // Check the validity

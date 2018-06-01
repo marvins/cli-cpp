@@ -111,7 +111,7 @@ class A_Socket_Base_Instance
         /**
          * @brief Set the Connection Flag
         */
-        void Set_Connection_Flag( const int& connect_flag ){
+        void Set_Connection_Flag( int connect_flag ){
             m_is_connected = connect_flag;
         }
         

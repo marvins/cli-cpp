@@ -13,6 +13,8 @@
 #include "../thirdparty/pugixml.hpp"
 #include "../cli/A_CLI_Manager_Configuration.hpp"
 
+// Boost Libraries
+#include <boost/property_tree/ptree.hpp>
 
 namespace CLI{
 namespace IO{
@@ -69,7 +71,14 @@ class A_CLI_Config_Parser_PugiXML
          * @brief Parse the Connection-Manager Nodes.
         */
         void Parse_Connection_Manager_Nodes( pugi::xml_node& root_node );
-        
+
+
+        /**
+         * @brief Parse the CLI Node
+         * @param root_node
+         */
+        void Parse_CLI_Node( pugi::xml_node& root_node );
+
 
         /**
          * @brief Parse Event-Manager Configuration
@@ -78,6 +87,12 @@ class A_CLI_Config_Parser_PugiXML
          * @return
          */
         EVT::Event_Manager_Config  Parse_Event_Manager_Node( pugi::xml_node& root_node );
+
+
+        /**
+         * @brief From settings, build the render-configs
+         */
+        void Build_Render_Driver_Configs();
         
         
         /// Class Name
@@ -87,11 +102,22 @@ class A_CLI_Config_Parser_PugiXML
         std::string m_config_pathname;
 
         /// Connection-Manager Configs
-        std::vector<A_Connection_Manager_Base_Config::ptr_t> m_connection_manager_configs; 
+        std::vector<A_Connection_Manager_Base_Config::ptr_t> m_connection_manager_configs;
+
+        /// Command-Queue Config
+        CMD::A_Command_Queue_Config m_command_queue_config;
+
+        /// Render Configurations
+        std::map<CORE::SessionType,RENDER::Render_Driver_Config_Base::ptr_t>   m_render_driver_configs;
 
         /// CLI-Manager Config
         A_CLI_Manager_Configuration m_cli_manager_config;
-        
+
+        // Misc Properties
+        boost::property_tree::ptree m_misc_settings;
+
+        std::chrono::milliseconds m_async_message_refresh_time;
+
         /// Valid Flag
         bool m_is_valid;
 };

@@ -232,15 +232,14 @@ void An_Event_Queue::Pop_Event( int& instance,
                                 int& event )
 {
     // Log Entry
-    CLI_LOG_CLASS( trace,
-                   "Start of Method. Inst-ID: " + std::to_string(instance) 
-                   + ", Event-ID: " + std::to_string(event));
-    
+    const std::string log_tag = "Instance: " + std::to_string(instance) + ", Event-ID: " + std::to_string(event) + " (" + CLI_Event_Type_To_String(event) + ")";
+    LOG_TRACE( log_tag + ", Start of Method.");
+
     // Decrement the pop semaphore
     if( sem_wait( m_pop_semaphore ) != 0 )
     {
         std::stringstream sin;
-        sin << "sem_wait failed with error. Details: " << strerror(errno) << ", File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__;
+        sin << "sem_wait failed with error. Details: " << strerror(errno) << ", File: " << __FILE__ << ", Line: " << __LINE__ << ", Func: " << __func__ << " " << log_tag;
         throw std::runtime_error(sin.str());
     }
 
@@ -248,7 +247,7 @@ void An_Event_Queue::Pop_Event( int& instance,
     // Return if the close flag requested
     else if( m_close_flag == true )
     {
-        CLI_LOG_CLASS( trace, "Close Event Queue Requested.");
+        LOG_TRACE( log_tag + ", Close Event Queue Requested.");
         instance = -1;
         event = (int)CLI_Event_Type::CLI_NULL;
     }

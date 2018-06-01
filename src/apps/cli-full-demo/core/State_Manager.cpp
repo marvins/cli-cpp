@@ -81,16 +81,17 @@ void State_Manager::Wait_On_System_Shutdown()
 {
 
     // If shutdown already set, skip
-    if( m_shutdown_system == true ){
+    if( m_shutdown_system ){
         return;
     }
 
     // wait to exit
     std::unique_lock<std::mutex> ulock( m_shutdown_mutex );
     std::cout << "Starting Wait-On-System-Shutdown" << std::endl;
-    while( m_shutdown_system == false )
+    while( !m_shutdown_system )
     {
-        m_shutdown_cv.wait( ulock );
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        //m_shutdown_cv.wait( ulock );
     }
 
     // Log Exit
@@ -121,12 +122,10 @@ void State_Manager::Run_Timer()
         std::cout << "Triggering Timer" << std::endl;
         std::this_thread::sleep_for(m_timer_wait);
 
-        if( m_cli_manager != nullptr )
-        {
+        if( m_cli_manager != nullptr ){
             m_cli_manager->Send_Asynchronous_Message( "CLI_TIMER", "Timer Triggered");
         }
-        else
-        {
+        else{
             std::cerr << "ERROR: CLI-Manager instance is null." << std::endl;
         }
     }

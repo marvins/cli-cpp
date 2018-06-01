@@ -3,8 +3,8 @@
  * @author  Marvin Smith
  * @date    10/26/2016
 */
-#ifndef __CLI_CPP_APPS_MULTIUSER_CORE_STATE_MANAGER_HPP__
-#define __CLI_CPP_APPS_MULTIUSER_CORE_STATE_MANAGER_HPP__
+#ifndef CLI_CPP_APPS_FULL_CORE_STATE_MANAGER_HPP
+#define CLI_CPP_APPS_FULL_CORE_STATE_MANAGER_HPP
 
 // C++ Standard Libraries
 #include <condition_variable>

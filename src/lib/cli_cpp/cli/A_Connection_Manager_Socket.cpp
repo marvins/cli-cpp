@@ -7,6 +7,8 @@
 
 // CLI Libraries
 #include "A_Connection_Manager_Socket_Config.hpp"
+#include "A_Socket_JSON_Instance.hpp"
+#include "A_Socket_Telnet_Instance.hpp"
 #include "../event/Event_Manager.hpp"
 #include "../render/A_Render_Manager_ASCII.hpp"
 #include "../utility/ANSI_Utilities.hpp"
@@ -109,6 +111,28 @@ void A_Connection_Manager_Socket::Close_Socket()
 }
 
 
+/****************************************/
+/*          Print to Log String         */
+/****************************************/
+std::string A_Connection_Manager_Socket::To_Log_String(int offset) const
+{
+    std::string gap(offset, ' ');
+
+    std::stringstream sin;
+
+    sin << gap << " - " << m_class_name << std::endl;
+    sin << gap << "     - Session-Type: " << CORE::SessionTypeToString(m_configuration->Get_Session_Type()) << "\n";
+    sin << gap << "     - Connection-Type: " << CORE::ConnectionTypeToString(m_configuration->Get_ConnectionType()) << "\n";
+    sin << gap << "     - Is-Running: " << std::boolalpha << m_is_running << std::endl;
+    sin << gap << "     - Connection List (Size: " + std::to_string(m_connection_list.size()) + ")\n";
+    for( auto conn : m_connection_list )
+    {
+    }
+
+    return sin.str();
+}
+
+
 /***********************************************/
 /*          Run the message handler            */
 /***********************************************/
@@ -116,21 +140,22 @@ void A_Connection_Manager_Socket::Run_Handler()
 {
 
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+    CLI_LOG_CLASS_ENTRY();
+
     // Get the length
+    const std::string log_tag = "SessionType: " + CORE::SessionTypeToString(m_configuration->Get_Session_Type());
     socklen_t clilen;
     struct sockaddr_in cli_addr;
     clilen = sizeof(cli_addr);
     
     //  Iteratively load connections
-    while( m_is_running == true )
+    while( m_is_running )
     {
         // Spawn a new instance
         int client_fd;
 
         // Accept the socket
-        BOOST_LOG_TRIVIAL(trace) << "Waiting for connection.  (Socket FD: " << m_sock_fd << ")";
+        LOG_TRACE( log_tag + ", Waiting for connection.  (Socket FD: " + std::to_string(m_sock_fd) + ")");
         client_fd = accept( m_sock_fd, 
                             (struct sockaddr*)&cli_addr,
                             &clilen);
@@ -162,34 +187,48 @@ void A_Connection_Manager_Socket::Run_Handler()
                      NI_NUMERICHOST);
 
         // Log Connection
-        CLI_LOG_CLASS( debug,
-                       "Connection has been made by " + std::string(host));
+        LOG_DEBUG(log_tag + ", Connection has been made by " + std::string(host));
 
 
         // Call the process method
         int next_position = Get_Next_Client_Slot();
         
         // Make sure we are not past the max number
-        if( next_position < 0 )
-        {
-            CLI_LOG_CLASS( debug,
-                           "Connection is rejected as max number of connections reached.");
+        if( next_position < 0 ){
+            LOG_DEBUG( log_tag + ", Connection is rejected as max number of connections reached.");
             continue;
         }
 
         
         // Log the Creation
-        BOOST_LOG_TRIVIAL(debug) << "Starting the Socket Connection for ID " << next_position << ".";
+        LOG_DEBUG( log_tag + ", Starting the Socket Connection for ID " + std::to_string(next_position) + ".");
         
         // Add new Connection Instance
         CORE::Session session( next_position, 
                                CORE::ConnectionType::SOCKET );
         session.Add_Connection_Data_Entry("IP_ADDRESS", std::string(host));
 
-        m_connection_list[next_position] = std::make_shared<A_Socket_Telnet_Instance>( m_configuration->Get_Instance_Config(),
-                                                                                       next_position,
-                                                                                       session,
-                                                                                       client_fd );
+        A_Socket_Base_Instance::ptr_t new_connection = nullptr;
+
+        switch(m_configuration->Get_Session_Type())
+        {
+            case CORE::SessionType::JSON:
+                new_connection = std::make_shared<A_Socket_JSON_Instance>( m_configuration->Get_Instance_Config(),
+                                                                           next_position,
+                                                                           session,
+                                                                           client_fd );
+                break;
+
+            case CORE::SessionType::TELNET:
+                new_connection = std::make_shared<A_Socket_Telnet_Instance>( m_configuration->Get_Instance_Config(),
+                                                                             next_position,
+                                                                             session,
+                                                                             client_fd );
+                break;
+
+            default:
+                LOG_FATAL("Unsuported Session-Type: " + CORE::SessionTypeToString(m_configuration->Get_Session_Type()));
+        }
 
         
         // Process Event
@@ -199,7 +238,8 @@ void A_Connection_Manager_Socket::Run_Handler()
         
         
         // Start
-        m_connection_list[next_position]->Start();
+        new_connection->Start();
+        m_connection_list[next_position] = new_connection;
                                                                                            
     } 
 
@@ -207,17 +247,17 @@ void A_Connection_Manager_Socket::Run_Handler()
     m_is_running = false;
 
     // Stop each connection
-    for( size_t i=0; i<m_connection_list.size(); i++ )
+    for( auto conn : m_connection_list )
     {
-        m_connection_list[i]->Set_Connection_Flag(false);
-        m_connection_list[i]->Join();
+        conn.second->Set_Connection_Flag(false);
+        conn.second->Join();
     }
 
     // Close Socket
     Close_Socket();
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -242,38 +282,45 @@ void A_Connection_Manager_Socket::Refresh_Screens()
 /*********************************/
 /*       Refresh the screen      */
 /*********************************/
-void A_Connection_Manager_Socket::Refresh_Screen( const int& instance_id )
+void A_Connection_Manager_Socket::Refresh_Screen( int instance_id )
 {
     // Log Entry
-    CLI_LOG_CLASS( trace,
-                   "Start of Method. Instance-ID: " + std::to_string(instance_id));
-    
+    LOG_TRACE("Start of Method. Instance-ID: " + std::to_string(instance_id));
+
     // If Instance-ID is -1, then iterate
     if( instance_id < 0 )
     {
         for( auto connection : m_connection_list )
         {
-            if( connection != nullptr &&
-                connection->Is_Running() )
+            if( connection.second != nullptr &&
+                connection.second->Is_Running() )
             {
-                connection->Refresh_Screen();
+                connection.second->Refresh_Screen();
+            }
+            else {
+                LOG_ERROR("Why are we hare?");
             }
         }
     }
 
     // Otherwise, 
+    else if( m_connection_list.find(instance_id) != m_connection_list.end() )
+    {
+        if( m_connection_list[instance_id] == nullptr ||
+            !m_connection_list[instance_id]->Is_Running() )
+        {
+            m_connection_list.erase(instance_id);
+        }else {
+            m_connection_list[instance_id]->Refresh_Screen();
+        }
+    }
     else
     {
-        if( m_connection_list[instance_id] != nullptr && 
-            m_connection_list[instance_id]->Is_Running() )
-        {
-            m_connection_list[instance_id]->Refresh_Screen(); 
-        }
+        LOG_TRACE("Connection-Manager does not have Instance-ID: " + std::to_string(instance_id) + ".");
     }
     
     // Log Exit
-    CLI_LOG_CLASS( trace,
-                   "End of Method. Instance-ID: " + std::to_string(instance_id));
+    LOG_TRACE("End of Method. Instance-ID: " + std::to_string(instance_id));
 }
 
 
@@ -284,11 +331,11 @@ std::vector<CORE::Session> A_Connection_Manager_Socket::Get_Active_Session_List(
 {
     // Create output list
     std::vector<CORE::Session> output;
-    
-    for( size_t i=0; i<m_connection_list.size(); i++ ){
-        
+
+    for( auto conn : m_connection_list )
+    {
         // Check if null
-        if( m_connection_list[i] == nullptr )
+        if( conn.second == nullptr )
         {
 
         }
@@ -296,7 +343,7 @@ std::vector<CORE::Session> A_Connection_Manager_Socket::Get_Active_Session_List(
         // Otherwise, continue
         else
         {
-            output.push_back(m_connection_list[i]->Get_Session_Info());
+            output.push_back(conn.second->Get_Session_Info());
         }
     }
 
@@ -310,27 +357,12 @@ std::vector<CORE::Session> A_Connection_Manager_Socket::Get_Active_Session_List(
 /*****************************************************/
 int A_Connection_Manager_Socket::Get_Next_Client_Slot()
 {
-
-    // Iterate over existing items
-    for( size_t i=0; i<m_connection_list.size(); i++ ){
-
-        // Look for dead thread
-        if( m_connection_list[i] == nullptr ){
-            return i;
-        }
-        else if( m_connection_list[i]->Is_Running() == false ){
-            return i;
-        }
-    }
-    
     // Make sure we are not past the max number of connections
     if( (int)m_connection_list.size() > m_configuration->Get_Max_Connections() ){
         return -1;
     }
 
-    // If we get here, push another open spot
-    m_connection_list.push_back(nullptr);
-    return (m_connection_list.size()-1);
+    return EVT::Event_Manager::Request_Instance_ID();
 }
 
 } // End of CLI Namespacee

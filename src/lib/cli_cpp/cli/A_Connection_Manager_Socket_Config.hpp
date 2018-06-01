@@ -53,8 +53,20 @@ class A_Connection_Manager_Socket_Config : public A_Connection_Manager_Base_Conf
          *
          * @return ConnectionType.
         */
-        inline virtual CORE::ConnectionType Get_ConnectionType()const{
+        inline CORE::ConnectionType Get_ConnectionType()const override{
             return CORE::ConnectionType::SOCKET;
+        }
+
+
+        /**
+         * @brief Get the Session-Type
+         * @return
+         */
+        inline CORE::SessionType Get_Session_Type()const override{
+            if( m_instance_config == nullptr ){
+                return CORE::SessionType::UNKNOWN;
+            }
+            return m_instance_config->Get_Session_Type();
         }
 
 

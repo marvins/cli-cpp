@@ -16,6 +16,7 @@
 #include "../cli/A_Connection_Manager_Socket_Config.hpp"
 #include "../cli/A_Socket_JSON_Instance.hpp"
 #include "../cli/A_Socket_Telnet_Instance.hpp"
+#include "../cmd/A_Command_Parser_Factory.hpp"
 #include "../core/ConnectionType.hpp"
 #include "../core/SessionType.hpp"
 #include "../utility/Log_Utilities.hpp"
@@ -86,21 +87,25 @@ void A_CLI_Config_Parser_PugiXML::Parse()
     // Build the Command-Parser
     auto cmd_config_path = root_node.child( COMMAND_CONFIG_QUERY.c_str() ).attribute( PATH_ATTR.c_str()).as_string();
     auto command_parser = CMD::A_Command_Parser_Factory::Initialize( cmd_config_path,
-                                                                     alias_support,
-                                                                     alias_path,
-                                                                     variable_support,
-                                                                     variable_path );
+                                                                     m_misc_settings.get<bool>("cli.alias_support_enabled"),
+                                                                     m_misc_settings.get<std::string>("cli.alias_config_path"),
+                                                                     m_misc_settings.get<bool>("cli.var_support_enabled"),
+                                                                     m_misc_settings.get<std::string>("cli.var_config_path") );
 
 
     // Parse the Event-Manager-Config
     EVT::Event_Manager_Config event_mgr_config = Parse_Event_Manager_Node( root_node );
-    
+
+
+    // Build the Render-Driver Configs
+    Build_Render_Driver_Configs();
+
 
     // Build the CLI-Manager
     m_cli_manager_config = A_CLI_Manager_Configuration( m_connection_manager_configs,
                                                         m_render_driver_configs,
                                                         command_parser,
-                                                        command_queue_config,
+                                                        m_command_queue_config,
                                                         event_mgr_config );
     
     // Set valid
@@ -161,6 +166,8 @@ void A_CLI_Config_Parser_PugiXML::Parse_Connection_Manager_Nodes( pugi::xml_node
     const std::string SESSION_TYPE_ATTR        = "session_type";
     const std::string VALUE_ATTR               = "value";
     const std::string MICROSECONDS_ATTR        = "microseconds";
+    const std::string ROWS_ATTR                = "rows";
+    const std::string COLS_ATTR                = "cols";
 
     
     // Misc Vars
@@ -236,7 +243,19 @@ void A_CLI_Config_Parser_PugiXML::Parse_Connection_Manager_Nodes( pugi::xml_node
                  session_type == CORE::SessionType::TELNET )
         {
             auto session_instance_config = std::make_shared<A_Socket_Instance_Config_Telnet>( read_sleep_timeout );
-            
+
+            // Get the window stats
+            int window_rows = connection_node.child(WINDOW_SIZE_QUERY.c_str()).attribute(ROWS_ATTR.c_str()).as_int();
+            int window_cols = connection_node.child(WINDOW_SIZE_QUERY.c_str()).attribute(COLS_ATTR.c_str()).as_int();
+            int min_content_col = 1;
+            int min_content_row = 2;
+
+            m_misc_settings.put("connections.socket.telnet.window_rows", window_rows);
+            m_misc_settings.put("connections.socket.telnet.window_cols", window_cols);
+            m_misc_settings.put("connections.socket.telnet.min_content_row", min_content_col);
+            m_misc_settings.put("connections.socket.telnet.min_content_col", min_content_row);
+
+
             // Add to Config List
             auto config_ptr = std::make_shared<A_Connection_Manager_Socket_Config>( listening_port,
                                                                                     max_connections,
@@ -256,6 +275,63 @@ void A_CLI_Config_Parser_PugiXML::Parse_Connection_Manager_Nodes( pugi::xml_node
 
 }
 
+
+/****************************************/
+/*          Parse the CLI Node          */
+/****************************************/
+void A_CLI_Config_Parser_PugiXML::Parse_CLI_Node( pugi::xml_node& root_node )
+{
+
+    // Node Queries
+    const std::string CLI_QUERY           = "cli";
+    const std::string TITLE_QUERY         = "title";
+    const std::string COMMAND_QUEUE_QUERY = "command_queue";
+    const std::string REDIRECT_QUERY      = "redirect";
+    const std::string ALIAS_QUERY         = "alias_support";
+    const std::string VARIABLE_QUERY      = "variable_support";
+    const std::string ASYNC_TIME_QUERY    = "async_message_refresh_time";
+
+    // Attribute Queries
+    const std::string VALUE_ATTR          = "value";
+    const std::string MAX_SIZE_ATTR       = "max_size";
+    const std::string STDOUT_ATTR         = "stdout";
+    const std::string STDERR_ATTR         = "stderr";
+    const std::string ENABLE_ATTR         = "enable";
+    const std::string CONFIG_PATH_ATTR    = "config_pathname";
+    const std::string MS_ATTR             = "ms";
+
+
+    // Get the cli node
+    auto cli_node = root_node.child(CLI_QUERY.c_str());
+    if( cli_node == pugi::xml_node() ){
+        LOG_ERROR("No <" + CLI_QUERY + "> Node found in XML doc.");
+        return;
+    }
+
+
+    // Grab title
+    m_misc_settings.put("cli.title", cli_node.child(TITLE_QUERY.c_str()).attribute(VALUE_ATTR.c_str()).as_string());
+
+    // Get the Comand-Queue Size
+    int cq_max_size = cli_node.child(COMMAND_QUEUE_QUERY.c_str()).attribute(MAX_SIZE_ATTR.c_str()).as_int();
+    m_command_queue_config = CMD::A_Command_Queue_Config( cq_max_size );
+
+    // Get the Redirect Variables
+    m_misc_settings.put("cli.redirect_stdout", cli_node.child(REDIRECT_QUERY.c_str()).attribute(STDOUT_ATTR.c_str()).as_bool());
+    m_misc_settings.put("cli.redirect_stderr", cli_node.child(REDIRECT_QUERY.c_str()).attribute(STDERR_ATTR.c_str()).as_bool());
+
+    // Grab the Alias Vars
+    m_misc_settings.put("cli.alias_support_enabled", cli_node.child(ALIAS_QUERY.c_str()).attribute(ENABLE_ATTR.c_str()).as_bool());
+    m_misc_settings.put("cli.alias_config_path",     cli_node.child(ALIAS_QUERY.c_str()).attribute(CONFIG_PATH_ATTR.c_str()).as_string());
+
+    // Get the Variable Vars
+    m_misc_settings.put("cli.var_support_enabled",   cli_node.child(VARIABLE_QUERY.c_str()).attribute(ENABLE_ATTR.c_str()).as_bool());
+    m_misc_settings.put("cli.var_config_path",       cli_node.child(VARIABLE_QUERY.c_str()).attribute(CONFIG_PATH_ATTR.c_str()).as_string());
+
+    // Get the async Message time
+    int64_t ms_val = cli_node.child(ASYNC_TIME_QUERY.c_str()).attribute(MS_ATTR.c_str()).as_llong();
+    m_async_message_refresh_time = std::chrono::milliseconds(ms_val);
+}
 
 /************************************************************/
 /*          Parse the Event-Manager Configuration           */
@@ -306,6 +382,33 @@ EVT::Event_Manager_Config  A_CLI_Config_Parser_PugiXML::Parse_Event_Manager_Node
     // Create the return object
     return EVT::Event_Manager_Config( event_queue_max_cap,
                                       thread_count );
+}
+
+
+/************************************************************/
+/*          Build the Render Driver Configurations          */
+/************************************************************/
+void A_CLI_Config_Parser_PugiXML::Build_Render_Driver_Configs()
+{
+    // Iterate over each connection-manager config
+    for( auto config : m_connection_manager_configs )
+    {
+        // Check the Session-Type
+        if( config->Get_ConnectionType() == CORE::ConnectionType::SOCKET &&
+            config->Get_Session_Type()   == CORE::SessionType::TELNET )
+        {
+            // add new render-config
+            m_render_driver_configs[CORE::SessionType::TELNET] = std::make_shared<RENDER::Render_Driver_Config_ASCII>( m_misc_settings.get<std::string>("cli.title"),
+                                                                                                                       m_misc_settings.get<bool>("cli.redirect_stdout"),
+                                                                                                                       m_misc_settings.get<bool>("cli.redirect_stderr"),
+                                                                                                                       m_misc_settings.get<int>("connections.socket.telnet.window_rows"),
+                                                                                                                       m_misc_settings.get<int>("connections.socket.telnet.window_cols"),
+                                                                                                                       m_misc_settings.get<int>("connections.socket.telnet.min_content_row"),
+                                                                                                                       m_misc_settings.get<int>("connections.socket.telnet.min_content_col"),
+                                                                                                                       m_async_message_refresh_time );
+        }
+    }
+
 }
 
 

@@ -129,7 +129,7 @@ enum class CLI_Event_Type : int32_t
  *
  * @return String Format
 */
-std::string CLI_Event_Type_To_String( const int& event_id );
+std::string CLI_Event_Type_To_String( int event_id );
 
 
 } // End of CLI  Namespace

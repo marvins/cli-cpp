@@ -75,7 +75,6 @@ Event_Manager::~Event_Manager()
     {
         if( m_event_process_threads[i].joinable() )
         {
-            std::cout << "Closing Thread: " << i << std::endl;
             m_event_process_threads[i].join();
         }
     }
@@ -99,8 +98,9 @@ Event_Manager::~Event_Manager()
 void Event_Manager::Initialize( Event_Manager_Config const& config )
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
-    
+    const std::string m_class_name = "Event_Manager";
+    CLI_LOG_CLASS_ENTRY();
+
     // Check the singleton instance
     if( instance == nullptr ){
         instance = Event_Manager::ptr_t(new Event_Manager( config ));
@@ -110,7 +110,7 @@ void Event_Manager::Initialize( Event_Manager_Config const& config )
     instance->m_is_initialized = true;
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -188,7 +188,7 @@ void Event_Manager::Register_CLI_Event_Handler( A_CLI_Event_Handler_Base::ptr_t 
     
     // Make sure we are initialized
     if( Is_Initialized() == false ){
-        BOOST_LOG_TRIVIAL(error) << "Unable to register the CLI Event Handler as the Event-Manager is not initialized. File: " << __FILE__ << ", Method: " << __func__ << ", Line: " << __LINE__;
+        LOG_ERROR("Unable to register the CLI Event Handler as the Event-Manager is not initialized.");
     }
 
 
@@ -199,27 +199,26 @@ void Event_Manager::Register_CLI_Event_Handler( A_CLI_Event_Handler_Base::ptr_t 
     inst->m_event_handlers.push_back(handler);
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. Class: Event_Manager, File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
 /*****************************************/
 /*           Process an Event            */
 /*****************************************/
-void Event_Manager::Process_Event( const int& instance, 
-                                   const int& event )
+void Event_Manager::Process_Event( int instance,
+                                   int event )
 {
 
     // Log Entry
     const std::string m_class_name = "Event_Manager";
-    CLI_LOG_CLASS( trace, 
-                   "Start of method. Event-ID: " + CLI_Event_Type_To_String(event) + ", Instance: " + std::to_string(instance));
+    const std::string log_tag = "Event-ID: " + std::to_string(event) + " (" + CLI_Event_Type_To_String(event) + "), Instance: " + std::to_string(instance);
+    LOG_TRACE(log_tag + ", Start of method.");
     
     // Make sure we are initialized
     if( Is_Initialized() == false )
     {
-        CLI_LOG_CLASS( error,
-                       "vent-Manager is not initialized.");
+        LOG_ERROR( log_tag + ", Event-Manager is not initialized.");
         return;
     }
     
@@ -230,8 +229,7 @@ void Event_Manager::Process_Event( const int& instance,
     // Add event to queue
     if( inst == nullptr || inst->m_event_queue == nullptr )
     {
-        CLI_LOG_CLASS( trace,
-                       "Event queue is currently null.");
+        LOG_ERROR(log_tag + ", Event queue is currently null.");
         return;
     }
     
@@ -245,15 +243,82 @@ void Event_Manager::Process_Event( const int& instance,
                                      filter );
 
     // Log Exit
-    CLI_LOG_CLASS( trace, 
-                   "End of method. Event-ID: " + std::to_string(event) + ", Instance: " + std::to_string(instance));
+    LOG_TRACE(log_tag + ", End of method.");
+}
+
+
+/****************************************/
+/*          Request Instance-ID         */
+/****************************************/
+int Event_Manager::Request_Instance_ID()
+{
+    const std::string m_class_name = "Event_Manager";
+    if( !Is_Initialized() ){
+        LOG_ERROR("Event-Manager is uninitialized.");
+        return -1;
+    }
+
+    // Get instance
+    auto inst = Instance_Of();
+
+    int val = 0;
+
+    // Access list
+    inst->m_instance_id_mtx.lock();
+
+    // Starting from 0, check for values until one doesn't exist
+    const int MAX_VAL = 10;
+    while( true )
+    {
+        if( inst->m_instance_ids.find(val) == inst->m_instance_ids.end() ){
+            inst->m_instance_ids.insert(val);
+            break;
+        }
+        else if( val > MAX_VAL ){
+            LOG_FATAL("Over " + std::to_string(MAX_VAL) + " instances already registered, probably something bad is going to happen.");
+        } else {
+            val++;
+        }
+
+    }
+
+    inst->m_instance_id_mtx.unlock();
+
+    return val;
+}
+
+
+/****************************************/
+/*          Release Instance-ID         */
+/****************************************/
+void Event_Manager::Release_Instance_ID(int instance_id)
+{
+    const std::string m_class_name = "Event_Manager";
+    if( !Is_Initialized() ){
+        LOG_ERROR("Event-Manager is uninitialized.");
+        return;
+    }
+
+    // Get instance
+    auto inst = Instance_Of();
+
+    // Access list
+    inst->m_instance_id_mtx.lock();
+    if( inst->m_instance_ids.find(instance_id) != inst->m_instance_ids.end() ){
+        inst->m_instance_ids.erase(instance_id);
+    }
+    else{
+        LOG_WARNING("No instance-id found in set: " + std::to_string(instance_id));
+    }
+    inst->m_instance_id_mtx.unlock();
+
 }
 
 
 /*********************************/
 /*          Event Runner         */
 /*********************************/
-void Event_Manager::Event_Process_Runner( const int& thread_id )
+void Event_Manager::Event_Process_Runner( int thread_id )
 {
     // Log Entry
     const std::string m_class_name = "Event_Manager";
@@ -269,8 +334,7 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
     {
         
         // Log wait
-        CLI_LOG_CLASS( trace,
-                       "Event-Thread: " + std::to_string(thread_id) + ", Starting Event-Queue Pop.");
+        LOG_TRACE("Event-Thread: " + std::to_string(thread_id) + ", Starting Event-Queue Pop.");
         
         // Get the next event
         wait_stopwatch.Start();
@@ -279,14 +343,14 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
         wait_stopwatch.Stop();
         event_stopwatch.Start();    
 
-        // Log result    
-        CLI_LOG_CLASS( trace,
-                       "Event-Thread: " + std::to_string(thread_id) + ", Popped event (" + std::to_string(temp_event) 
-                       + "), Event queue size: " + std::to_string(m_event_queue->Get_Current_Size()));
+        // create log tag str
+        std::stringstream log_sin;
+        log_sin << "Event-Thread: " << thread_id << ", Popped Event: " << temp_event << " (" << CLI_Event_Type_To_String(temp_event);
+        log_sin << ") , Event queue size: " << m_event_queue->Get_Current_Size();
 
         // Skip null events
         if( temp_event == (int)CLI_Event_Type::CLI_NULL ){
-            BOOST_LOG_TRIVIAL(trace) << "CLI_NULL event detected.  Skipping.";
+            LOG_TRACE( log_sin.str() + ", CLI_NULL event detected.  Skipping.");
             continue;
         }
     
@@ -294,21 +358,17 @@ void Event_Manager::Event_Process_Runner( const int& thread_id )
         for( size_t i=0; i<m_event_handlers.size(); i++ ){
             
             // Log
-            CLI_LOG_CLASS( trace,
-                           "Event-Thread: " + std::to_string(thread_id) + ", Processing Event: " 
-                           + std::to_string(temp_event) + ", Handler: " + std::to_string(i));
+            LOG_TRACE( log_sin.str() + ", Processing Event: Handler: " + std::to_string(i));
 
             // Check if null
             if( m_event_handlers[i] == nullptr )
             {
-                CLI_LOG_CLASS( warning,
-                               "Event-Thread: " + std::to_string(thread_id) + ", Event handler at position " 
-                               + std::to_string(i) + " is currently nullptr.");
+                LOG_WARNING( "Event-Thread: " + std::to_string(thread_id) + ", Event handler at position "
+                             + std::to_string(i) + " is currently nullptr.");
             }
 
             // Check if supported
-            else if( m_event_handlers[i]->Is_Supported_Event( temp_event ) == true )
-            {
+            else if( m_event_handlers[i]->Is_Supported_Event( temp_event ) == true ){
                 m_event_handlers[i]->Process_Event( temp_instance, 
                                                     temp_event);
             }

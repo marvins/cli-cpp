@@ -74,8 +74,20 @@ class Event_Manager{
          * @param[in] instance Which client the event originated from.
          * @param[in] event Event ID.  For keyboard entries, this is the ascii value, for CLI Commands, this is < -2. Check CLI_Event_Type class for more info.
         */
-        static void Process_Event( const int& instance, 
-                                   const int& event );
+        static void Process_Event( int instance,
+                                   int event );
+
+        /**
+         * @brief Request new Instance-ID
+         * @return int >= 0 on success, <0 on failure
+         */
+        static int Request_Instance_ID();
+
+        /**
+         * @brief Release an instance-id back to system
+         */
+        static void Release_Instance_ID( int instance_id );
+
 
     private:
 
@@ -89,7 +101,7 @@ class Event_Manager{
          * @param[in] event_queue_max_capacity Max size of the event queue.
          * @param[in] event_work_queue_threads Number of threads to process jobs.
          */
-        Event_Manager( Event_Manager_Config const& config );
+        Event_Manager( const Event_Manager_Config& config );
         
         
         /**
@@ -105,7 +117,7 @@ class Event_Manager{
          *
          * @param[in] thread_id ID of the particular thread for indexing specific resources.
          */
-        void Event_Process_Runner( const int& thread_id );
+        void Event_Process_Runner( int thread_id );
 
 
         /// Class Name
@@ -134,6 +146,10 @@ class Event_Manager{
 
         // Initialized 
         std::atomic<bool> m_is_initialized;
+
+        /// List of Instance-IDs
+        std::mutex m_instance_id_mtx;
+        std::set<int> m_instance_ids;
 
 }; // End of Event_Manager Class
 

@@ -252,20 +252,22 @@ std::vector<A_Command> Parse_Standard_Commands( pugi::xml_node& commands_node )
 /*********************************************/
 /*          Create a Command Parser          */
 /*********************************************/
-A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string& config_path,
-                                                               const bool&        alias_support,
-                                                               const std::string& alias_path,
-                                                               const bool&        variable_support,
-                                                               const std::string& variable_path )
+A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string&  config_path,
+                                                               bool                alias_support,
+                                                               const std::string&  alias_path,
+                                                               bool                variable_support,
+                                                               const std::string&  variable_path )
 {
     // Create XML Document
     pugi::xml_document xmldoc;
     pugi::xml_parse_result result = xmldoc.load_file( config_path.c_str() );
 
+    /// Log init
+    const std::string m_class_name = "A_Command_Parser_Factory";
+    CLI_LOG_CLASS_ENTRY();
+
     if( result == false ){
-        std::stringstream sin;
-        sin << "error: " << __FILE__ << ", Line: " << __LINE__ << ". CLI Command Configuration File parsed with errors. Details: " << result.description();
-        BOOST_LOG_TRIVIAL(error) << sin.str();
+        LOG_ERROR("CLI Command Configuration File parsed with errors. Details: " + std::string(result.description()));
         return nullptr;
     }
 
@@ -342,6 +344,7 @@ A_Command_Parser::ptr_t  A_Command_Parser_Factory::Initialize( const std::string
                                                                          variable_support );
 
     // Return new parser
+    CLI_LOG_CLASS_EXIT();
     return parser;
 }
 

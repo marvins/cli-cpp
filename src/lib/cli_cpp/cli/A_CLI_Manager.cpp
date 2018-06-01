@@ -34,8 +34,10 @@ A_CLI_Manager::A_CLI_Manager( A_CLI_Manager_Configuration const& configuration )
 {
 
     // Register the event manager
-    if( EVT::Event_Manager::Is_Initialized() != true ){
+    if( !EVT::Event_Manager::Is_Initialized() ){
         EVT::Event_Manager::Initialize( configuration.Get_Event_Manager_Config() );
+    } else {
+        LOG_DEBUG("Event-Manager already initialized.");
     }
 
 
@@ -115,8 +117,7 @@ void A_CLI_Manager::Connect()
 
 
     // Do not connect if thread is already running
-    if( m_handler_thread_running == true )
-    {
+    if( m_handler_thread_running ){
         LOG_WARNING("CLI-Manager Handler thread already running.");
         return;
     }
@@ -126,14 +127,16 @@ void A_CLI_Manager::Connect()
                                     this );
 
 
-    // For giggles, make sure the connection manager is not null
-    if( m_connection_manager == nullptr )
-    {
-        throw std::runtime_error("Connection Manager was null.");
-    }
+    for( auto conn_mgr : m_connection_managers ){
 
-    // Kick off the communication thread
-    m_connection_manager->Start_Handler();
+        // For giggles, make sure the connection manager is not null
+        if (conn_mgr == nullptr){
+            throw std::runtime_error("Connection Manager was null.");
+        }
+
+        // Kick off the communication thread
+        conn_mgr->Start_Handler();
+    }
 
     // Log Exit
     CLI_LOG_CLASS_EXIT();
@@ -152,16 +155,16 @@ void A_CLI_Manager::Disconnect()
     // Disable the Event Manager
     EVT::Event_Manager::Finalize();
 
-    // Make sure the connection manager is not already de-allocated
-    if( m_connection_manager != nullptr )
+    for( auto conn_mgr : m_connection_managers )
     {
-
         // Stop the thread
-        m_connection_manager->Signal_Shutdown();
+        conn_mgr->Signal_Shutdown();
 
         // Join the thread
-        m_connection_manager->Wait_Shutdown();
+        conn_mgr->Wait_Shutdown();
     }
+    m_connection_managers.clear();
+
 
     LOG_TRACE("Halting Queue Thread.");
     
@@ -197,7 +200,9 @@ void A_CLI_Manager::Wait_Shutdown()
     CLI_LOG_CLASS_ENTRY();
 
     // Wait for the connection handler to stop
-    m_connection_manager->Wait_Shutdown();
+    for( auto conn_mgr : m_connection_managers ){
+        conn_mgr->Wait_Shutdown();
+    }
 
     CLI_LOG_CLASS_EXIT();
 }
@@ -321,8 +326,7 @@ void A_CLI_Manager::Send_Asynchronous_Message( const std::string& topic_name,
     CLI_LOG_CLASS_ENTRY();
 
     // Check the initialization status
-    if( !EVT::Event_Manager::Is_Initialized() )
-    {
+    if( !EVT::Event_Manager::Is_Initialized() ){
         LOG_ERROR( "CLI-Manager has already been disconnected.");
     }
 
@@ -333,7 +337,10 @@ void A_CLI_Manager::Send_Asynchronous_Message( const std::string& topic_name,
                                                                     message);
 
         // Refresh Screens
-        m_connection_manager->Refresh_Screens();
+        for( auto conn_mgr : m_connection_managers )
+        {
+            conn_mgr->Refresh_Screens();
+        }
     }
 
     // Log Exit and return
@@ -347,13 +354,17 @@ void A_CLI_Manager::Send_Asynchronous_Message( const std::string& topic_name,
 /************************************************/
 std::vector<CORE::Session> A_CLI_Manager::Get_Active_Session_List()const
 {
+    std::vector<CORE::Session> sessions;
+
     // Make sure we have been connected
-    if( m_connection_manager == nullptr ){
-        return std::vector<CORE::Session>();
+    for( auto conn_mgr : m_connection_managers )
+    {
+        auto slist = conn_mgr->Get_Active_Session_List();
+        sessions.insert( sessions.end(), slist.begin(), slist.end());
     }
 
     // Otherwise, continue
-    return m_connection_manager->Get_Active_Session_List();
+    return sessions;
 }
 
 
@@ -391,7 +402,9 @@ void A_CLI_Manager::Register_Internal_Event_Handlers()
     EVT::Event_Manager::Register_CLI_Event_Handler( std::make_shared<EVT::A_Render_Manager_Event_Handler>());
 
     // Add the Connection Manager's Event Handler
-    EVT::Event_Manager::Register_CLI_Event_Handler( std::make_shared<EVT::A_Connection_Manager_Event_Handler>( m_connection_manager ));
+    for( auto conn_mgr : m_connection_managers ){
+        EVT::Event_Manager::Register_CLI_Event_Handler( std::make_shared<EVT::A_Connection_Manager_Event_Handler>( conn_mgr ));
+    }
 
 }
 
@@ -404,8 +417,14 @@ void A_CLI_Manager::Initialize_Connection_Manager()
     // Iterate over each connection-manager
     for( auto mgr_conf : m_configuration.Get_Connection_Manager_Configs() )
     {
-        // Check the type
-        A_Connection_Manager_Factory::Initialize( mgr_conf );
+        auto new_mgr = A_Connection_Manager_Factory::Initialize( mgr_conf );
+        if( new_mgr == nullptr ){
+            LOG_ERROR("Connection-Manager returned was null.\nConfig: " + mgr_conf->To_Log_String(4));
+        }
+        else{
+            // Check the type
+            m_connection_managers.push_back(new_mgr);
+        }
     }
 }
 

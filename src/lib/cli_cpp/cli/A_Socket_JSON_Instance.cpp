@@ -225,7 +225,9 @@ void A_Socket_JSON_Instance::Run()
     
     // exit
     m_is_running = false;
-    
+
+    // Release our Instance-ID
+    EVT::Event_Manager::Release_Instance_ID(m_instance_id);
 }
 
 

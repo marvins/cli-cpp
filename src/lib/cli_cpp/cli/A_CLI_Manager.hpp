@@ -145,7 +145,7 @@ class A_CLI_Manager{
 
 
         /// CLI Connection Handler
-        A_Connection_Manager_Base::ptr_t m_connection_manager;
+        std::vector<A_Connection_Manager_Base::ptr_t> m_connection_managers;
 
 
         /// Handler Thread

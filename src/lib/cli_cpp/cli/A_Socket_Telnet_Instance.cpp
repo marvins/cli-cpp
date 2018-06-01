@@ -41,7 +41,7 @@ const std::string KEYBOARD_F5_KEY     = "\033\133\061\065\176";
 /*********************************/
 A_Socket_Instance_Config_Telnet::A_Socket_Instance_Config_Telnet( std::chrono::microseconds  read_sleep_timeout )
  : A_Socket_Instance_Config_Base(read_sleep_timeout),
-   m_class_name("A_Socket_Instance_Config_Telnet") 
+   m_class_name("A_Socket_Instance_Config_Telnet")
 {
 }
 
@@ -73,7 +73,8 @@ A_Socket_Telnet_Instance::A_Socket_Telnet_Instance( A_Socket_Instance_Config_Bas
                             client_fd ),
     m_class_name("A_Socket_Telnet_Instance"),
     m_skip_render(false),
-    m_first_command_received(false)
+    m_first_command_received(false),
+    m_last_refresh(std::chrono::steady_clock::now())
 {
     // Cast the config
     m_config = std::dynamic_pointer_cast<A_Socket_Instance_Config_Telnet>(config);
@@ -260,7 +261,7 @@ void A_Socket_Telnet_Instance::Run()
         BOOST_LOG_TRIVIAL(trace) << "Event_Manager::Process_Event returned.";
 
         // Refresh
-        if( m_skip_render == true ){
+        if( m_skip_render ){
             Refresh_Screen();
         }
 
@@ -279,7 +280,7 @@ void A_Socket_Telnet_Instance::Run()
 
     // Before we close the socket, write out the vis string to
     // remove the effects of hiding the cursor
-    if( m_skip_render != true )
+    if( !m_skip_render )
     {
         std::string close_socket_str = UTILS::ANSI_CLEARSCREEN +  UTILS::ANSI_CURSORVIS;
         res = write( m_client_fd, 
@@ -297,6 +298,8 @@ void A_Socket_Telnet_Instance::Run()
     // exit
     m_is_running = false;
 
+    EVT::Event_Manager::Release_Instance_ID(m_instance_id);
+
 }
 
 
@@ -306,11 +309,17 @@ void A_Socket_Telnet_Instance::Run()
 void A_Socket_Telnet_Instance::Refresh_Screen()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_ENTRY();
 
     // Check if we are skipping the refresh
-    if( m_skip_render == true ){
-        BOOST_LOG_TRIVIAL(debug) << "Skipping Rendering in Connection-Manager.";
+    if( m_skip_render ){
+        LOG_DEBUG("Skipping Rendering in Connection-Manager.");
+        return;
+    }
+
+    // Check if we rendered previously too soon
+    if( (std::chrono::steady_clock::now() - m_last_refresh) < std::chrono::milliseconds(50)){
+        LOG_ERROR("rendering too soon. skipping.");
         return;
     }
 
@@ -324,16 +333,17 @@ void A_Socket_Telnet_Instance::Refresh_Screen()
     for( size_t i=0; i<buffer_data.size(); i++ ){
         int res = write( m_client_fd, buffer_data[i].c_str(), buffer_data[i].size() );   
         if( res < 0 ){
-            BOOST_LOG_TRIVIAL(error) << "Unable to write to socket.";
+            LOG_ERROR("Unable to write to socket.");
         }
     }
 
     // Unlock the mutex
     m_refresh_lock.unlock();
 
+    m_last_refresh = std::chrono::steady_clock::now();
 
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -343,7 +353,7 @@ void A_Socket_Telnet_Instance::Refresh_Screen()
 int A_Socket_Telnet_Instance::Process_Special_Key( const std::string& input_str )const
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_ENTRY();
 
     // Iterate over list
     for( size_t i=0; i<m_special_key_list.size(); i++ ){

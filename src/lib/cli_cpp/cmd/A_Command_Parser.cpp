@@ -292,7 +292,7 @@ void A_Command_Parser::Remove_Command_Alias( const A_Command_Alias& alias )
     }
 
     // Write the list
-    if( m_alias_list_write_access == true && modified == true ){
+    if( m_alias_list_write_access && modified ){
         A_Command_Alias::Write_Alias_Configuration_File( m_alias_pathname, 
                                                          m_alias_list );
     }
@@ -320,8 +320,6 @@ void A_Command_Parser::Add_Command_Variable( A_Command_Variable const& new_var )
         A_Command_Variable::Write_Variable_Configuration_File( m_variable_pathname, 
                                                                m_variable_list );
     }
-
-
 }
 
 
@@ -361,9 +359,16 @@ std::string A_Command_Parser::To_Log_String( int offset )const
 
     sin << gap << " - " << m_class_name << std::endl;
     sin << gap << "     - Command-List\n";
-    for( auto command : m_command_list )
-    {
-
+    for( auto command : m_command_list ){
+        sin << gap << "        - " << command.Get_Name() << std::endl;
+    }
+    sin << gap << "     - CLI Command-List\n";
+    for( auto command : m_cli_command_list ){
+        sin << gap << "        - " << command.Get_Formal_Name() << std::endl;
+    }
+    sin << gap << "     - Alias-List\n";
+    for( auto alias : m_alias_list ){
+        sin << gap << "        - " << alias.Get_Alias_Name() << std::endl;
     }
 
     return sin.str();

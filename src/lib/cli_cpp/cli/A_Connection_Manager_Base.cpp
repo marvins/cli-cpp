@@ -40,8 +40,8 @@ A_Connection_Manager_Base::~A_Connection_Manager_Base()
 void A_Connection_Manager_Base::Start_Handler()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+    CLI_LOG_CLASS_ENTRY();
+
     // Signal that we are running
     m_is_running = true;
 
@@ -51,7 +51,7 @@ void A_Connection_Manager_Base::Start_Handler()
     
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -61,8 +61,8 @@ void A_Connection_Manager_Base::Start_Handler()
 void A_Connection_Manager_Base::Wait_Shutdown()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+    CLI_LOG_CLASS_ENTRY();
+
     // Only join if we are running
     if( m_is_running == true || 
         m_connection_thread.joinable() == true )
@@ -73,7 +73,7 @@ void A_Connection_Manager_Base::Wait_Shutdown()
     
     
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -83,14 +83,13 @@ void A_Connection_Manager_Base::Wait_Shutdown()
 void A_Connection_Manager_Base::Signal_Shutdown()
 {
     // Log Entry
-    BOOST_LOG_TRIVIAL(trace) << "Start of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
-    
+    CLI_LOG_CLASS_ENTRY();
+
     // set the flag
     m_is_running = false;
-    
-    
+
     // Log Exit
-    BOOST_LOG_TRIVIAL(trace) << "End of " << __func__ << " method. File: " << __FILE__ << ", Line: " << __LINE__;
+    CLI_LOG_CLASS_EXIT();
 }
 
 

@@ -133,6 +133,8 @@ class A_Socket_Telnet_Instance : public A_Socket_Base_Instance
 
         bool m_first_command_received;
 
+        std::chrono::steady_clock::time_point m_last_refresh;
+
 }; // End of A_Socket_Connection_Instance_Class
 
 

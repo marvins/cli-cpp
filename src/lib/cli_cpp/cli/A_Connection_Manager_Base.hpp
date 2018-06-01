@@ -69,8 +69,8 @@ class A_Connection_Manager_Base{
          * @param[in] instance_id Instance to set flag for.
          * @param[in] is_connected Flag to set.
         */
-        virtual void Set_Is_Connected_Flag( const int& instance_id,
-                                            const bool& is_connected ) = 0;
+        virtual void Set_Is_Connected_Flag( int instance_id,
+                                            bool is_connected ) = 0;
 
 
         /**
@@ -78,7 +78,7 @@ class A_Connection_Manager_Base{
          *
          * @param[in] instance Client instance to refresh.
          */
-        virtual void Refresh_Screen( const int& instance ) = 0;
+        virtual void Refresh_Screen( int instance ) = 0;
 
 
         /**
@@ -94,6 +94,11 @@ class A_Connection_Manager_Base{
          */
         virtual std::vector<CORE::Session> Get_Active_Session_List()const = 0;
 
+
+        /**
+         * @brief Print to Logging String
+         */
+        virtual std::string To_Log_String( int offset )const = 0;
 
     protected:
         

@@ -12,6 +12,7 @@
 
 // CLI Libraries
 #include "../core/ConnectionType.hpp"
+#include "../core/SessionType.hpp"
 
 namespace CLI{
 
@@ -45,7 +46,13 @@ class A_Connection_Manager_Base_Config{
         inline virtual CORE::ConnectionType Get_ConnectionType()const{
             return CORE::ConnectionType::BASE;
         }
-        
+
+
+        /**
+         * @brief Get the Session-Type
+         * @return
+         */
+        virtual CORE::SessionType Get_Session_Type()const = 0;
         
         /**
          * @brief Print to Log String

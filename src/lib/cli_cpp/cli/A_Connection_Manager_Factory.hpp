@@ -3,8 +3,8 @@
  * @author  Marvin Smith
  * @date    5/22/2015
 */
-#ifndef __CLI_CMD_CLI_A_CONNECTION_MANAGER_FACTORY_HPP__
-#define __CLI_CMD_CLI_A_CONNECTION_MANAGER_FACTORY_HPP__
+#ifndef CLI_CMD_CLI_A_CONNECTION_MANAGER_FACTORY_HPP
+#define CLI_CMD_CLI_A_CONNECTION_MANAGER_FACTORY_HPP
 
 // CLI Libraries
 #include "A_Connection_Manager_Base.hpp"

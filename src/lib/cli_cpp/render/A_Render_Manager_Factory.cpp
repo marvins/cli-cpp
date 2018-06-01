@@ -36,6 +36,9 @@ A_Render_Manager_Factory& A_Render_Manager_Factory::Get_Factory_Instance()
 void  A_Render_Manager_Factory::Initialize( CMD::A_Command_Parser::ptr_t  command_parser,
                                             CMD::A_Command_Queue::ptr_t   command_queue )
 {
+    const std::string m_class_name = "A_Render_Manager_Factory";
+    CLI_LOG_CLASS_ENTRY();
+
     // Get the initial instance
     A_Render_Manager_Factory& factory_instance = Get_Factory_Instance();
 
@@ -46,6 +49,7 @@ void  A_Render_Manager_Factory::Initialize( CMD::A_Command_Parser::ptr_t  comman
     // Set the initialized value to true
     factory_instance.m_is_initialized = true;
 
+    CLI_LOG_CLASS_EXIT();
 }
 
 
@@ -128,10 +132,8 @@ int A_Render_Manager_Factory::Register_Custom_Render_Window( An_ASCII_Render_Win
     int id = -1;
 
     // Make sure the factory exists
-    if( Is_Initialized() == false )
-    {
-        CLI_LOG_CLASS( error,
-                       "Unable to add window as Render-Manager Factory is uninitialized.");
+    if( Is_Initialized() == false ){
+        LOG_ERROR( "Unable to add window as Render-Manager Factory is uninitialized.");
     }
 
     // Otherwise, continue
@@ -146,8 +148,7 @@ int A_Render_Manager_Factory::Register_Custom_Render_Window( An_ASCII_Render_Win
         // Make sure we have at least one render manager
         if( render_factory.m_render_managers.size() <= 0 )
         {
-            CLI_LOG_CLASS( warning,
-                           "No render-managers available in render-factory.");
+            LOG_INFO("No render-managers available in render-factory.");
         }
 
         // Otherwise, continue
@@ -160,15 +161,13 @@ int A_Render_Manager_Factory::Register_Custom_Render_Window( An_ASCII_Render_Win
             {
                 id = render_factory.m_render_managers[i]->Register_Custom_Render_Window( render_window );
                 exit_loop = true;
+
+                // Check for error
+                if( id < 0 ){
+                    LOG_ERROR( "Problem registering window. Window-ID: " + std::to_string(id));
+                }
             }
         }
-    }
-
-    // Check for error
-    if( id < 0 )
-    {
-        CLI_LOG_CLASS( error,
-                       "Problem registering window. Window-ID: " + std::to_string(id));
     }
 
 
@@ -188,10 +187,8 @@ void A_Render_Manager_Factory::Send_Asynchronous_Message( const std::string& top
 
 
     // Make sure the factory exists
-    if( Is_Initialized() == false )
-    {
-        CLI_LOG_CLASS( error,
-                       "Unable to Send-Message as Render-Manager Factory is uninitialized.");
+    if( !Is_Initialized() ){
+        LOG_ERROR("Unable to Send-Message as Render-Manager Factory is uninitialized.");
     }
 
     // Otherwise, continue
@@ -202,16 +199,13 @@ void A_Render_Manager_Factory::Send_Asynchronous_Message( const std::string& top
 
 
         // Make sure we have at least one render manager
-        if( render_factory.m_render_managers.size() <= 0 )
-        {
-            CLI_LOG_CLASS( warning,
-                           "No render-managers available in render-factory.");
+        if( render_factory.m_render_managers.size() <= 0 ){
+            LOG_WARNING("No render-managers available in render-factory.");
         }
 
         // Otherwise, continue
         else
         {
-
             // Send message to each render-manager.
             for( size_t i=0; i<render_factory.m_render_managers.size(); i++ )
             {
@@ -277,7 +271,8 @@ A_Render_Manager_Base::ptr_t A_Render_Manager_Factory::Create_Manager_Instance( 
                                                                                session_type,
                                                                                m_command_parser,
                                                                                m_command_queue );
-        
+            break;
+
         // Error State
         default:
             LOG_ERROR("Unsupported SessionType: " + CORE::SessionTypeToString(session_type));
