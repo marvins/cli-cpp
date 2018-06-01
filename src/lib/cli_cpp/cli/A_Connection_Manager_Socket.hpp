@@ -67,13 +67,8 @@ class A_Connection_Manager_Socket : public A_Connection_Manager_Base
         /**
          * @brief Set the Is Connection Flag
         */
-        inline void Set_Is_Connected_Flag( int  instance,
-                                           bool is_connected ) override
-        {
-            m_connection_list[instance]->Set_Connection_Flag( is_connected );
-
-            // If it is false, we should take down
-        }
+        void Set_Is_Connected_Flag( int  instance,
+                                    bool is_connected ) override;
 
         
         /**

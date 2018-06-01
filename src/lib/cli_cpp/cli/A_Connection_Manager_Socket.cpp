@@ -352,6 +352,22 @@ std::vector<CORE::Session> A_Connection_Manager_Socket::Get_Active_Session_List(
 }
 
 
+/********************************************/
+/*          Set the connection flag         */
+/********************************************/
+void A_Connection_Manager_Socket::Set_Is_Connected_Flag( int  instance,
+                                                         bool is_connected)
+{
+    // Check if instance is in this manager
+    if( m_connection_list.find(instance) == m_connection_list.end() ){
+        LOG_TRACE("Skipping as Connection-Manager does not contain instance.");
+    } else {
+        m_connection_list[instance]->Set_Connection_Flag(is_connected);
+    }
+    // If it is false, we should take down
+}
+
+
 /*****************************************************/
 /*          Get the Next Open Client Slot            */
 /*****************************************************/
